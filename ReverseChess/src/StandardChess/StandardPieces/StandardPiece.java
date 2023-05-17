@@ -1,4 +1,4 @@
-package StandardChess.Pieces;
+package StandardChess.StandardPieces;
 
 import StandardChess.Piece;
 import StandardChess.Coordinate;
