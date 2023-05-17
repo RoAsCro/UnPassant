@@ -1,11 +1,10 @@
 import StandardChess.Board;
 import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
-import StandardChess.StandardPieceFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class BoardTest {
+public class BoardBuilderTest {
 
     Board board = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
@@ -39,10 +38,5 @@ public class BoardTest {
     public void badInput(String input) {
         Assertions.assertThrows(IllegalArgumentException.class, () -> BoardBuilder.buildBoard(input));
     }
-
-//    @Test
-//    public void testFENInputNulls() {
-//        Assertions.assertEquals(this.board.at(new StandardChess.Coordinate(0, 3)).getType(), "null");
-//    }
 
 }
