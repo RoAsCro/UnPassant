@@ -15,13 +15,46 @@ public class BoardBuilder {
     private final static PieceFactory factory = StandardPieceFactory.getInstance();
 
     public static Board buildBoard(String FEN) throws IllegalArgumentException {
+        String[] params = FEN.split(" ");
+        int paramLength = params.length;
+
+        if (paramLength < 1) {
+            throw new IllegalArgumentException();
+        }
         Board board = new Board();
-        fenDecode(FEN.substring(0, !FEN.contains(" ")
-                ? FEN.length()
-                : FEN.indexOf(' ')), board);
+        fenDecode(params[0], board);
+
+        String turn = "white";
+        if (paramLength > 1) {
+            if (params[1].equals("b")) {
+                turn = "black";
+            }
+        }
+        String castleInput;
+        if (paramLength > 2) {
+            castleInput = params[2];
+        } else {
+            castleInput = "KQkq";
+        }
+        castleDecode(castleInput, board);
+
         return board;
     }
 
+    private static void castleDecode(String input, Board board) throws IllegalArgumentException {
+        if (!input.equals("-")) {
+            char[] inputs = input.toCharArray();
+            for (char c : inputs) {
+                switch (c) {
+                    case 'K' -> board.setCastleBlackKing(true);
+                    case 'Q' -> board.setCastleBlackQueen(true);
+                    case 'k' -> board.setCastleWhiteKing(true);
+                    case 'q' -> board.setCastleWhiteQueen(true);
+                    default -> throw new IllegalArgumentException("Bad castling parameters");
+                }
+            }
+        }
+    }
 
     private static void fenDecode(String FEN, Board board) throws IllegalArgumentException {
         String[] rows = FEN.split("/");

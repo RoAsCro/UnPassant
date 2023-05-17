@@ -1,14 +1,12 @@
 package StandardChess;
 
 import StandardChess.StandardPieces.*;
-
 import java.util.Map;
-import java.util.TreeMap;
 
 public class StandardPieceFactory implements PieceFactory {
 
 
-    private static Map<String, PieceStrategy> pieces = Map.of(
+    private Map<String, PieceStrategy> pieces = Map.of(
             "p", new PawnStrategy(),
             "r", new RookStrategy(),
             "n", new KnightStrategy(),
@@ -28,16 +26,16 @@ public class StandardPieceFactory implements PieceFactory {
 
     @Override
     public Piece getPiece(String type) throws IllegalArgumentException {
-        if (!pieces.containsKey(type.toLowerCase())) {
+        if (!this.pieces.containsKey(type.toLowerCase())) {
             throw new IllegalArgumentException();
         }
         return new StandardPiece(Character.isLowerCase(type.charAt(0))
                 ? "white"
                 : "black",
-                pieces.get(type.toLowerCase()));
+                this.pieces.get(type.toLowerCase()));
     }
 
-    public static void register(String key, PieceStrategy value) {
-        pieces.put(key, value);
+    public void register(String key, PieceStrategy value) {
+        this.pieces.put(key, value);
     }
 }

@@ -29,7 +29,6 @@ public class BoardBuilderTest {
 
     @Test
     public void testFENBadInput() {
-//        System.out.println(StandardPieceFactory.getInstance().getPiece("g"));
         badInput("");
         badInput("8/8/8/8/8/8/8");
         badInput("g7/8/8/8/8/8/8/8");
@@ -38,5 +37,23 @@ public class BoardBuilderTest {
     public void badInput(String input) {
         Assertions.assertThrows(IllegalArgumentException.class, () -> BoardBuilder.buildBoard(input));
     }
+
+    @Test
+    public void testFENCastling() {
+
+        Assertions.assertTrue(this.board.canCastleWhiteKing());
+        Assertions.assertTrue(this.board.canCastleWhiteQueen());
+        Assertions.assertTrue(this.board.canCastleBlackKing());
+        Assertions.assertTrue(this.board.canCastleBlackQueen());
+
+        Board boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1");
+        Assertions.assertFalse(boardTwo.canCastleWhiteKing());
+        Assertions.assertTrue(boardTwo.canCastleWhiteQueen());
+        Assertions.assertTrue(boardTwo.canCastleBlackKing());
+        Assertions.assertTrue(boardTwo.canCastleBlackQueen());
+
+    }
+
+
 
 }
