@@ -1,3 +1,5 @@
+package StandardChess;
+
 public class Coordinate {
 
     private final int x;

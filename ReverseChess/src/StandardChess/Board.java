@@ -1,3 +1,4 @@
+package StandardChess;
 
 public class Board {
 
