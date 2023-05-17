@@ -21,7 +21,7 @@ public class BoardBuilderTest {
     }
 
     @Test
-    public void testFENINputComplex() {
+    public void testFENInputComplex() {
         Board boardTwo = BoardBuilder.buildBoard("p2p2p1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         for (int i = 0 ; i < 8 ; i++) {
            System.out.println(boardTwo.at(new Coordinate(i, 7)) == null);
@@ -53,9 +53,9 @@ public class BoardBuilderTest {
         uniformCastlingTest(true, this.board);
 
         Board boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1");
-        Assertions.assertFalse(boardTwo.canCastleWhiteKing());
+        Assertions.assertTrue(boardTwo.canCastleWhiteKing());
         Assertions.assertTrue(boardTwo.canCastleWhiteQueen());
-        Assertions.assertTrue(boardTwo.canCastleBlackKing());
+        Assertions.assertFalse(boardTwo.canCastleBlackKing());
         Assertions.assertTrue(boardTwo.canCastleBlackQueen());
 
         boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
@@ -63,6 +63,9 @@ public class BoardBuilderTest {
 
         boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w");
         uniformCastlingTest(true, boardTwo);
+
+        boardTwo = BoardBuilder.buildBoard("1nbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQ1BNR w");
+        uniformCastlingTest(false, boardTwo);
 
     }
 

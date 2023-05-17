@@ -6,12 +6,7 @@ public class BoardBuilder {
 
     private final static int LENGTH = 8;
     private final static int VALUE_OF_ZERO = 48;
-//    private final static StandardChess.Piece NULL_PIECE = new StandardChess.Piece() {
-//        @Override
-//        public String getType() {
-//            return "null";
-//        }
-//    };
+
     private final static PieceFactory factory = StandardPieceFactory.getInstance();
 
     public static Board buildBoard(String FEN) throws IllegalArgumentException {
@@ -34,11 +29,37 @@ public class BoardBuilder {
         if (paramLength > 2) {
             castleInput = params[2];
         } else {
-            castleInput = "KQkq";
+            castleInput = castleParse(board);
         }
         castleDecode(castleInput, board);
 
         return board;
+    }
+
+    private static String castleParse(Board board) {
+
+        String returnString = "";
+        if (castleParseHelper(board.at(new Coordinate(4, 0)), "king", "white")) {
+            if (castleParseHelper(board.at(new Coordinate(7, 0)), "rook", "white")) {
+                returnString += "K";
+            }
+            if (castleParseHelper(board.at(new Coordinate(0, 0)), "rook", "white")) {
+                returnString += "Q";
+            }
+        }
+        if (castleParseHelper(board.at(new Coordinate(4, 7)), "king", "black")) {
+            if (castleParseHelper(board.at(new Coordinate(7, 7)), "rook", "black")) {
+                returnString += "k";
+            }
+            if (castleParseHelper(board.at(new Coordinate(0, 7)), "rook", "black")) {
+                returnString += "q";
+            }
+        }
+        return returnString;
+    }
+
+    private static boolean castleParseHelper(Piece piece, String type, String colour) {
+        return piece != null && piece.getType().equals(type) && piece.getColour().equals(colour);
     }
 
     private static void castleDecode(String input, Board board) throws IllegalArgumentException {
@@ -46,10 +67,10 @@ public class BoardBuilder {
             char[] inputs = input.toCharArray();
             for (char c : inputs) {
                 switch (c) {
-                    case 'K' -> board.setCastleBlackKing(true);
-                    case 'Q' -> board.setCastleBlackQueen(true);
-                    case 'k' -> board.setCastleWhiteKing(true);
-                    case 'q' -> board.setCastleWhiteQueen(true);
+                    case 'k' -> board.setCastleBlackKing(true);
+                    case 'q' -> board.setCastleBlackQueen(true);
+                    case 'K' -> board.setCastleWhiteKing(true);
+                    case 'Q' -> board.setCastleWhiteQueen(true);
                     default -> throw new IllegalArgumentException("Bad castling parameters");
                 }
             }
@@ -68,14 +89,13 @@ public class BoardBuilder {
                 int x = 0;
                 for (int c = 0; c < characters.length ; c++) {
                     char current = row.charAt(c);
-                    
+
                     int span = 1;
                     Piece piece = null;
 
                     if (Character.isDigit(current)) {
                         span = ((int) current) - VALUE_OF_ZERO;
                     } else {
-                        System.out.println("Here");
                         piece = factory.getPiece("" + current);
                     }
 
