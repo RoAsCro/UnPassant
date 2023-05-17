@@ -1,6 +1,7 @@
 import StandardChess.Board;
 import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
+import StandardChess.StandardPieceFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -26,6 +27,19 @@ public class BoardTest {
         Assertions.assertEquals(this.board.at(new Coordinate(0, 7)).getColour(), "black");
 
     }
+
+    @Test
+    public void testFENBadInput() {
+//        System.out.println(StandardPieceFactory.getInstance().getPiece("g"));
+        badInput("");
+        badInput("8/8/8/8/8/8/8");
+        badInput("g7/8/8/8/8/8/8/8");
+    }
+
+    public void badInput(String input) {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> BoardBuilder.buildBoard(input));
+    }
+
 //    @Test
 //    public void testFENInputNulls() {
 //        Assertions.assertEquals(this.board.at(new StandardChess.Coordinate(0, 3)).getType(), "null");

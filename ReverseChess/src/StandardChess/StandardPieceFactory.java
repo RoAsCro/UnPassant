@@ -17,6 +17,8 @@ public class StandardPieceFactory implements PieceFactory {
             "k", new KingStrategy());
     private static PieceFactory instance;
 
+    private StandardPieceFactory(){}
+
     public static PieceFactory getInstance() {
         if (instance == null) {
             instance = new StandardPieceFactory();
@@ -26,6 +28,9 @@ public class StandardPieceFactory implements PieceFactory {
 
     @Override
     public Piece getPiece(String type) throws IllegalArgumentException {
+        if (!pieces.containsKey(type.toLowerCase())) {
+            throw new IllegalArgumentException();
+        }
         return new StandardPiece(Character.isLowerCase(type.charAt(0))
                 ? "white"
                 : "black",
