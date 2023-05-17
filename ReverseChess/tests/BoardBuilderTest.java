@@ -76,6 +76,4 @@ public class BoardBuilderTest {
         Assertions.assertEquals(flag, board.canCastleBlackQueen());
     }
 
-
-
 }

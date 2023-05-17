@@ -1,13 +1,11 @@
 package StandardChess.StandardPieces;
 
+import StandardChess.Coordinate;
+
 public abstract class CollisableStrategy extends AbstractStrategy {
-    public CollisableStrategy(String name) {
-        super(name);
+    public CollisableStrategy(String name, int speed) {
+        super(name, speed);
     }
 
-    @Override
-    public boolean tryMove() {
-        //Check collision...
-        return false;
-    }
+
 }

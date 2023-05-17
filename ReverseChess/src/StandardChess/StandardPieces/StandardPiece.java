@@ -25,6 +25,10 @@ public class StandardPiece implements Piece {
 
     @Override
     public boolean tryMove(Coordinate origin, Coordinate target) {
-        return false;
+        return this.strategy.tryMove(origin, target);
     }
+    public Coordinate[] getMoves(Coordinate origin){
+        return this.strategy.getMoves(origin);
+    }
+
 }
