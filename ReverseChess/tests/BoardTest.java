@@ -7,6 +7,8 @@ public class BoardTest {
     public void testFENInput() {
         Board board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         Assertions.assertEquals(board.at(0, 0).getType(), "rook");
+        Assertions.assertEquals(board.at(7, 0).getType(), "rook");
+        Assertions.assertEquals(board.at(0, 3).getType(), "null");
     }
 
 }

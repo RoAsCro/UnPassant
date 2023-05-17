@@ -1,10 +1,9 @@
-import java.util.Arrays;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public class Board {
 
     private final static int LENGTH = 8;
+    private final static int VALUE_OF_ZERO = 51;
     private final Piece nullPiece = new Piece() {
         @Override
         public String getType() {
@@ -38,21 +37,21 @@ public class Board {
         }
         for (int y = LENGTH - 1 ; y >= 0 ; y--) {
             String row = rows[y];
-            System.out.println(row);
             int finalY = y;
             Stream.iterate(0, i -> i + 1)
-                    .limit(row.length() - 1)
+                    .limit(row.length())
                     .forEach(x -> {
                         char current = row.charAt(x);
                         int span = 1;
                         Piece piece = this.nullPiece;
-                        System.out.println(current);
 
                         if (Character.isDigit(current)) {
-                            span = current;
+                            span = current - 51;
                         } else {
                             piece = this.factory.getPiece("" + current);
                         }
+                        System.out.println(x + span);
+
                         for (int i = x ; i < x + span ; i++) {
                             this.board[i][finalY] = piece;
                         }
