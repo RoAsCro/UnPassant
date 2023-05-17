@@ -20,6 +20,12 @@ public class BoardTest {
         Assertions.assertEquals(this.board.at(new Coordinate(4, 7)).getType(), "king");
     }
 
+    @Test
+    public void testFENInputColour() {
+        Assertions.assertEquals(this.board.at(new Coordinate(0, 0)).getColour(), "white");
+        Assertions.assertEquals(this.board.at(new Coordinate(0, 7)).getColour(), "black");
+
+    }
 //    @Test
 //    public void testFENInputNulls() {
 //        Assertions.assertEquals(this.board.at(new StandardChess.Coordinate(0, 3)).getType(), "null");
