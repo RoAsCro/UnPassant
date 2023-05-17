@@ -30,8 +30,8 @@ public class StandardPieceFactory implements PieceFactory {
             throw new IllegalArgumentException();
         }
         return new StandardPiece(Character.isLowerCase(type.charAt(0))
-                ? "white"
-                : "black",
+                ? "black"
+                : "white",
                 this.pieces.get(type.toLowerCase()));
     }
 

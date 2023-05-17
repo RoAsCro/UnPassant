@@ -21,6 +21,15 @@ public class BoardBuilderTest {
     }
 
     @Test
+    public void testFENINputComplex() {
+        Board boardTwo = BoardBuilder.buildBoard("p2p2p1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        for (int i = 0 ; i < 8 ; i++) {
+           System.out.println(boardTwo.at(new Coordinate(i, 7)) == null);
+        }
+        Assertions.assertEquals(boardTwo.at(new Coordinate(3, 7)).getType(), "pawn");
+    }
+
+    @Test
     public void testFENInputColour() {
         Assertions.assertEquals(this.board.at(new Coordinate(0, 0)).getColour(), "white");
         Assertions.assertEquals(this.board.at(new Coordinate(0, 7)).getColour(), "black");
@@ -41,10 +50,7 @@ public class BoardBuilderTest {
     @Test
     public void testFENCastling() {
 
-        Assertions.assertTrue(this.board.canCastleWhiteKing());
-        Assertions.assertTrue(this.board.canCastleWhiteQueen());
-        Assertions.assertTrue(this.board.canCastleBlackKing());
-        Assertions.assertTrue(this.board.canCastleBlackQueen());
+        uniformCastlingTest(true, this.board);
 
         Board boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1");
         Assertions.assertFalse(boardTwo.canCastleWhiteKing());
@@ -52,6 +58,19 @@ public class BoardBuilderTest {
         Assertions.assertTrue(boardTwo.canCastleBlackKing());
         Assertions.assertTrue(boardTwo.canCastleBlackQueen());
 
+        boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
+        uniformCastlingTest(false, boardTwo);
+
+        boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w");
+        uniformCastlingTest(true, boardTwo);
+
+    }
+
+    public void uniformCastlingTest(boolean flag, Board board) {
+        Assertions.assertEquals(flag, board.canCastleWhiteKing());
+        Assertions.assertEquals(flag, board.canCastleWhiteQueen());
+        Assertions.assertEquals(flag, board.canCastleBlackKing());
+        Assertions.assertEquals(flag, board.canCastleBlackQueen());
     }
 
 
