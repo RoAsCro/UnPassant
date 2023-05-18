@@ -48,7 +48,6 @@ public abstract class AbstractStrategy implements PieceStrategy{
         Piece piece = board.at(origin);
         while (!finished) {
             currentCoord = Coordinates.add(currentCoord, direction);
-            System.out.println(currentCoord);
             Piece currentPiece = board.at(currentCoord);
             if (currentCoord.equals(target)) {
                 if (currentPiece.getColour().equals(piece.getColour())) {
