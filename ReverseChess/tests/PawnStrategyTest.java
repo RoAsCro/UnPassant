@@ -50,6 +50,15 @@ public class PawnStrategyTest {
         Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(3, 5), boardTwo));
 
     }
+    @Test
+    public void testTryMoveCollisionAlliedPiecesDoubleMove() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("8/2p5/8/2p5/2P5/8/2P5/8");
+
+        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(2, 3), boardTwo));
+
+        Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(2, 4), boardTwo));
+
+    }
 
     @Test
     public void testTryMoveCollisionEnemyPieces() {
@@ -58,6 +67,16 @@ public class PawnStrategyTest {
         Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(2, 2), boardTwo));
 
         Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(2, 5), boardTwo));
+
+    }
+
+    @Test
+    public void testTryMoveCollisionEnemyPiecesDoubleMove() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("8/2p5/8/2P5/2p5/8/2P5/8");
+
+        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(2, 3), boardTwo));
+
+        Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(2, 4), boardTwo));
 
     }
 //
