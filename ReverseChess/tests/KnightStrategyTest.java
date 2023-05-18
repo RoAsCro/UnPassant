@@ -40,4 +40,11 @@ public class KnightStrategyTest {
 
     }
 
+    @Test
+    public void testTryUnMoveCollision() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("8/2n5/4n3/2N5/8/8/8/8");
+        // Opposing piece on target
+        Assertions.assertFalse(piece.tryUnMove(origin, new Coordinate(2, 4), boardTwo));
+    }
+
 }
