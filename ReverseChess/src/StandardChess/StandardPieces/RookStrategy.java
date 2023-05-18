@@ -15,6 +15,12 @@ public class RookStrategy extends AbstractStrategy{
     }
 
     @Override
+    public boolean tryUnMove(Coordinate origin, Coordinate target, ChessBoard board) {
+        return PERPENDICULAR.test(origin, target)
+                && super.tryUnMove(origin, target, board);
+    }
+
+    @Override
     public Coordinate[] getMoves(Coordinate origin) {
         return new Coordinate[0];
     }
