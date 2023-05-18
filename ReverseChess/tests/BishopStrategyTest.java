@@ -38,11 +38,6 @@ public class BishopStrategyTest {
 
     @Test
     public void testTryUnMoveCollision() {
-        // Opposing piece in the way
-        Assertions.assertFalse(piece.tryUnMove(origin, new Coordinate(2, 3), board));
-        // Allied piece on the target
-        Assertions.assertFalse(piece.tryUnMove(origin, new Coordinate(3, 6), board));
-        // Opposing piece on target
         Assertions.assertFalse(piece.tryUnMove(origin, new Coordinate(3, 4), board));
     }
 

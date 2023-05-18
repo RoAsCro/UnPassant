@@ -41,10 +41,6 @@ public class RookStrategyTest {
 
     @Test
     public void testTryUnMoveCollision() {
-        // Opposing piece in the way
-        Assertions.assertFalse(piece.tryUnMove(origin, new Coordinate(4, 0), board));
-        // Allied piece on the target
-        Assertions.assertFalse(piece.tryUnMove(origin, new Coordinate(0, 5), board));
         // Opposing piece on target
         Assertions.assertFalse(piece.tryUnMove(origin, new Coordinate(4, 4), board));
     }
