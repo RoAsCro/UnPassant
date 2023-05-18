@@ -11,7 +11,11 @@ public class KnightStrategy extends AbstractStrategy{
 
     @Override
     public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
-        return true;
+        int xDiff = Math.abs(origin.getX() - target.getX());
+        int yDiff = Math.abs(origin.getY() - target.getY());
+
+        return ((xDiff == 2 && yDiff == 1) || (xDiff == 1 && yDiff == 2))
+                && super.tryMove(origin, target, board);
     }
 
     @Override

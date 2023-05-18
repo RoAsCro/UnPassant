@@ -28,6 +28,10 @@ public abstract class AbstractStrategy implements PieceStrategy{
 
     @Override
     public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
+        if (origin.equals(target)) {
+            return false;
+        }
+
         Coordinate direction;
         int xDiff = (target.getX() - origin.getX());
         int yDiff = (target.getY() - origin.getY());
@@ -44,6 +48,7 @@ public abstract class AbstractStrategy implements PieceStrategy{
         Piece piece = board.at(origin);
         while (!finished) {
             currentCoord = Coordinates.add(currentCoord, direction);
+            System.out.println(currentCoord);
             Piece currentPiece = board.at(currentCoord);
             if (currentCoord.equals(target)) {
                 if (currentPiece.getColour().equals(piece.getColour())) {
