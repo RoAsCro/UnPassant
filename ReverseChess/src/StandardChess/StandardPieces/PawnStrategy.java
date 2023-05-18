@@ -4,7 +4,10 @@ import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
 import StandardChess.Piece;
 
+import java.util.function.BiPredicate;
+
 public class PawnStrategy extends CollisableStrategy {
+
     public PawnStrategy() {
         super("pawn", 1);
     }
@@ -17,19 +20,38 @@ public class PawnStrategy extends CollisableStrategy {
     @Override
     public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
         int xDiff = Math.abs(origin.getX() - target.getX());
+        ;
+
         int yDiff = origin.getY() - target.getY();
         Piece me = board.at(origin);
-        return yCheck(me, yDiff)
-                    &&
-                ((xDiff == 0 && board.at(target).getType().equals("null"))
-                || (xDiff == 1
-                && captureCheck(target, board, me)))
+        String colour = me.getColour();
+        boolean noXChange = xCheck(xDiff, 0,
+                target, false,
+                board, colour);
+        return (yCheck(colour, yDiff, 1)
+                    && (
+                        noXChange
+                        ||
+                        (xCheck(xDiff, 1,
+                                target, true,
+                                board, colour))
+                    )
+                )
+                ||
+                (yCheck(colour, yDiff, 2)
+                && noXChange)
                 && super.tryMove(origin, target, board);
     }
 
-    private boolean yCheck(Piece me, int yDiff) {
-        return (me.getColour().equals("white") && yDiff == -1)
-                || (me.getColour().equals("black") && yDiff == 1);
+    private boolean yCheck(String colour, int yDiff, int targetY) {
+        int modifier = 1;
+        if (colour.equals("white")) {
+            modifier = -1;
+        } else if (colour.equals("black")) {
+            modifier = 1;
+        }
+        System.out.println(targetY * modifier);
+        return yDiff == targetY * modifier;
     }
 
     private boolean captureCheck(Coordinate target,ChessBoard board, Piece me) {
@@ -37,5 +59,14 @@ public class PawnStrategy extends CollisableStrategy {
         return !captureTarget.getType().equals("null")
                 && !captureTarget.getColour().equals(me.getColour());
     }
+
+    private boolean xCheck(int xDiff, int requiredDiff,
+                           Coordinate target, boolean notNull,
+                           ChessBoard board, String notColour) {
+        return xDiff == requiredDiff
+                && (!board.at(target).getType().equals("null") == notNull)
+                && (!board.at(target).getColour().equals(notColour));
+    }
+
 
 }

@@ -31,6 +31,13 @@ public class PawnStrategyTest {
     }
 
     @Test
+    public void testTryMoveDoubleMove() {
+        Assertions.assertTrue(whitePiece.tryMove(whiteOrigin, new Coordinate(2, 3), board));
+
+        Assertions.assertTrue(blackPiece.tryMove(blackOrigin, new Coordinate(2, 4), board));
+    }
+
+    @Test
     public void testTryMoveCollisionAlliedPieces() {
         ChessBoard boardTwo = BoardBuilder.buildBoard("1P1P4/2p5/1ppp4/8/8/1PPP4/2P5/1P1P4");
 
