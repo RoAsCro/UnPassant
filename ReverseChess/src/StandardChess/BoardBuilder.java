@@ -59,6 +59,7 @@ public class BoardBuilder {
                 returnString += "q";
             }
         }
+//        System.out.println(returnString);
         return returnString;
     }
 

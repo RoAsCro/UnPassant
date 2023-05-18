@@ -77,7 +77,7 @@ public class PawnStrategy extends CollisableStrategy {
         Piece targetPiece = board.at(ePTarget);
         return board.getEnPassant().equals(target)
                 &&
-                !targetPiece.getType().equals("null")
+                targetPiece.getType().equals("pawn")
                 &&
                 !targetPiece.getColour().equals(colour);
     }
