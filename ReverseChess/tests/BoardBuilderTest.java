@@ -1,12 +1,13 @@
 import StandardChess.Board;
 import StandardChess.BoardBuilder;
+import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class BoardBuilderTest {
 
-    Board board = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    ChessBoard board = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
     @Test
     public void testFENInputRooks() {
@@ -22,7 +23,7 @@ public class BoardBuilderTest {
 
     @Test
     public void testFENInputComplex() {
-        Board boardTwo = BoardBuilder.buildBoard("p2p2p1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        ChessBoard boardTwo = BoardBuilder.buildBoard("p2p2p1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         Assertions.assertEquals(boardTwo.at(new Coordinate(3, 7)).getType(), "pawn");
     }
 
@@ -49,7 +50,7 @@ public class BoardBuilderTest {
 
         uniformCastlingTest(true, this.board);
 
-        Board boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1");
+        ChessBoard boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1");
         Assertions.assertTrue(boardTwo.canCastleWhiteKing());
         Assertions.assertTrue(boardTwo.canCastleWhiteQueen());
         Assertions.assertFalse(boardTwo.canCastleBlackKing());
@@ -66,7 +67,7 @@ public class BoardBuilderTest {
 
     }
 
-    public void uniformCastlingTest(boolean flag, Board board) {
+    public void uniformCastlingTest(boolean flag, ChessBoard board) {
         Assertions.assertEquals(flag, board.canCastleWhiteKing());
         Assertions.assertEquals(flag, board.canCastleWhiteQueen());
         Assertions.assertEquals(flag, board.canCastleBlackKing());

@@ -23,7 +23,7 @@ public class NullPiece implements Piece{
     }
 
     @Override
-    public boolean tryMove(Coordinate origin, Coordinate target) {
+    public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
         return false;
     }
 

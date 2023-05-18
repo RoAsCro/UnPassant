@@ -2,6 +2,7 @@ package StandardChess;
 
 public class Coordinate {
 
+    private final static int BOARD_LENGTH = 8;
     private final int x;
     private final int y;
 
@@ -29,6 +30,11 @@ public class Coordinate {
     @Override
     public int hashCode() {
         return this.x + this.y * 9;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + this.x + ", " + this.y + ")";
     }
 
 }

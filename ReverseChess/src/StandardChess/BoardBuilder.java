@@ -5,10 +5,15 @@ public class BoardBuilder {
 
     private final static int LENGTH = 8;
     private final static int VALUE_OF_ZERO = 48;
+    private final static String INITIAL_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     private final static PieceFactory factory = StandardPieceFactory.getInstance();
 
-    public static Board buildBoard(String FEN) throws IllegalArgumentException {
+    public static ChessBoard buildBoard() {
+        return buildBoard(INITIAL_POSITION);
+    }
+
+    public static ChessBoard buildBoard(String FEN) throws IllegalArgumentException {
         String[] params = FEN.split(" ");
         int paramLength = params.length;
 

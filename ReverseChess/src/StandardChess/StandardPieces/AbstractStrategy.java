@@ -29,12 +29,12 @@ public abstract class AbstractStrategy implements PieceStrategy{
     @Override
     public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
         Coordinate direction;
-        int xDiff = (origin.getX() - target.getX());
-        int yDiff = (origin.getY() - target.getY());
+        int xDiff = (target.getX() - origin.getX());
+        int yDiff = (target.getY() - origin.getY());
         int absDiff = Math.abs(xDiff) - Math.abs(yDiff);
         if (xDiff * yDiff * absDiff == 0) {
-            direction = new Coordinate( ((int) (xDiff / (Math.abs(xDiff) - 0.4))),
-                    ((int) (yDiff / (Math.abs(yDiff) - 0.4))));
+            direction = new Coordinate(Integer.compare(xDiff, 0),
+                    Integer.compare(yDiff, 0));
         } else {
             direction = new Coordinate(xDiff, yDiff);
         }
@@ -57,6 +57,5 @@ public abstract class AbstractStrategy implements PieceStrategy{
         }
         return true;
     }
-
 
 }

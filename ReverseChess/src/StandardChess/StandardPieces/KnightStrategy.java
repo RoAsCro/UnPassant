@@ -11,7 +11,7 @@ public class KnightStrategy extends AbstractStrategy{
 
     @Override
     public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
-        return super.tryMove(origin, target, board);
+        return true;
     }
 
     @Override
