@@ -72,6 +72,17 @@ public class PawnStrategyTest {
 
     }
 
+    @Test
+    public void testTryMoveInvalidDirectionDiagonal() {
+        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(1, 0), board));
+        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(3, 0), board));
+
+
+        Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(1, 7), board));
+        Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(3, 7), board));
+
+    }
+
 
 //
 //    @Test
