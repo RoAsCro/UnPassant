@@ -5,8 +5,9 @@ import StandardChess.Coordinate;
 
 public interface PieceStrategy {
 
-    public String getName();
-    public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board);
-    public Coordinate[] getMoves(Coordinate origin);
+    String getName();
+    boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board);
+    boolean tryUnmove(Coordinate origin, Coordinate target, ChessBoard board);
+    Coordinate[] getMoves(Coordinate origin);
 
 }

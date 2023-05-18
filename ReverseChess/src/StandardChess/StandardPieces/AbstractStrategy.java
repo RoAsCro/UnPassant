@@ -3,9 +3,11 @@ package StandardChess.StandardPieces;
 import StandardChess.*;
 
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 public abstract class AbstractStrategy implements PieceStrategy{
 
+    protected final static Predicate<Piece> NOT_NULL = p -> !p.getType().equals("null");
     protected final static BiPredicate<Coordinate, Coordinate> DIAGONAL =
             (c, d) -> Math.abs(c.getX() - d.getX())
                     == Math.abs(c.getY() - d.getY());
@@ -23,12 +25,7 @@ public abstract class AbstractStrategy implements PieceStrategy{
         return this.name;
     }
 
-    @Override
-    public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
-        if (origin.equals(target)) {
-            return false;
-        }
-
+    private Coordinate getDirection(Coordinate origin, Coordinate target) {
         Coordinate direction;
         int xDiff = (target.getX() - origin.getX());
         int yDiff = (target.getY() - origin.getY());
@@ -39,6 +36,16 @@ public abstract class AbstractStrategy implements PieceStrategy{
         } else {
             direction = new Coordinate(xDiff, yDiff);
         }
+        return direction;
+    }
+
+    public boolean tryAnyMove(Coordinate origin, Coordinate target, ChessBoard board,
+                              BiPredicate<Piece, Piece> condition) {
+        if (origin.equals(target)) {
+            return false;
+        }
+
+        Coordinate direction = getDirection(origin, target);
 
         boolean finished = false;
         Coordinate currentCoord = origin;
@@ -47,16 +54,28 @@ public abstract class AbstractStrategy implements PieceStrategy{
             currentCoord = Coordinates.add(currentCoord, direction);
             Piece currentPiece = board.at(currentCoord);
             if (currentCoord.equals(target)) {
-                if (currentPiece.getColour().equals(piece.getColour())) {
+                if (condition.test(currentPiece, piece)) {
                     return false;
                 }
                 finished = true;
             }
-            else if (!currentPiece.getType().equals("null")) {
+            else if (NOT_NULL.test(currentPiece)) {
                 return false;
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
+        return tryAnyMove(origin, target, board,
+                (p, q) -> p.getColour().equals(q.getColour()));
+    }
+
+    @Override
+    public boolean tryUnmove(Coordinate origin, Coordinate target, ChessBoard board) {
+        return tryAnyMove(origin, target, board,
+                (p, q) -> NOT_NULL.test(p));
     }
 
 }

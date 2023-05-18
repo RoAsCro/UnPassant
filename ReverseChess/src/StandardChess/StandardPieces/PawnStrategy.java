@@ -60,7 +60,7 @@ public class PawnStrategy extends AbstractStrategy {
 
     private boolean captureCheck(Coordinate target,ChessBoard board, Piece me) {
         Piece captureTarget = board.at(target);
-        return !captureTarget.getType().equals("null")
+        return NOT_NULL.test(captureTarget)
                 && !captureTarget.getColour().equals(me.getColour());
     }
 
@@ -68,7 +68,7 @@ public class PawnStrategy extends AbstractStrategy {
                            Coordinate target, boolean notNull,
                            ChessBoard board, String notColour) {
         return xDiff == requiredDiff
-                && (!board.at(target).getType().equals("null") == notNull)
+                && (NOT_NULL.test(board.at(target)) == notNull)
                 && (!board.at(target).getColour().equals(notColour));
     }
 
