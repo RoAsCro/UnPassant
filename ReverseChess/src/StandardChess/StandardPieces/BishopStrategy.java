@@ -1,5 +1,6 @@
 package StandardChess.StandardPieces;
 
+import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
 
 public class BishopStrategy extends CollisableStrategy{
@@ -10,8 +11,8 @@ public class BishopStrategy extends CollisableStrategy{
     }
 
     @Override
-    public boolean tryMove(Coordinate origin, Coordinate target) {
-        return DIAGONAL.test(origin, target);
+    public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
+        return DIAGONAL.test(origin, target) && super.tryMove(origin, target, board);
     }
 
     @Override

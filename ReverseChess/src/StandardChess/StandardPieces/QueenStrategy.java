@@ -1,5 +1,6 @@
 package StandardChess.StandardPieces;
 
+import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
 
 public class QueenStrategy extends CollisableStrategy{
@@ -8,8 +9,9 @@ public class QueenStrategy extends CollisableStrategy{
     }
 
     @Override
-    public boolean tryMove(Coordinate origin, Coordinate target) {
-        return DIAGONAL.test(origin, target) || PERPENDICULAR.test(origin, target);
+    public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
+        return DIAGONAL.test(origin, target) || PERPENDICULAR.test(origin, target)
+                && super.tryMove(origin, target, board);
     }
 
     @Override

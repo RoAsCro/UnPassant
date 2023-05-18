@@ -1,5 +1,7 @@
 package StandardChess.StandardPieces;
 
+import StandardChess.Board;
+import StandardChess.ChessBoard;
 import StandardChess.Piece;
 import StandardChess.Coordinate;
 
@@ -24,8 +26,8 @@ public class StandardPiece implements Piece {
     }
 
     @Override
-    public boolean tryMove(Coordinate origin, Coordinate target) {
-        return this.strategy.tryMove(origin, target);
+    public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
+        return this.strategy.tryMove(origin, target, board);
     }
     public Coordinate[] getMoves(Coordinate origin){
         return this.strategy.getMoves(origin);

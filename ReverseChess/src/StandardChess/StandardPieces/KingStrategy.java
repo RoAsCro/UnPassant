@@ -1,5 +1,6 @@
 package StandardChess.StandardPieces;
 
+import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
 
 public class KingStrategy extends CollisableStrategy{
@@ -8,10 +9,11 @@ public class KingStrategy extends CollisableStrategy{
     }
 
     @Override
-    public boolean tryMove(Coordinate origin, Coordinate target) {
+    public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
         return (DIAGONAL.test(origin, target) || PERPENDICULAR.test(origin, target))
                 && Math.abs(origin.getX() - target.getX()) <= 1
-                && Math.abs(origin.getY() - target.getY()) <= 1;
+                && Math.abs(origin.getY() - target.getY()) <= 1
+                && super.tryMove(origin, target, board);
     }
 
     @Override
