@@ -15,6 +15,12 @@ public class PawnStrategy extends CollisableStrategy {
 
     @Override
     public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
-        return super.tryMove(origin, target, board);
+        int xDiff = Math.abs(origin.getX() - target.getX());
+        int yDiff = origin.getY() - target.getY();
+        return ((board.at(origin).getColour().equals("white") && yDiff == -1)
+                || (board.at(origin).getColour().equals("black") && yDiff == 1))
+                    &&
+                (xDiff == 0)
+                && super.tryMove(origin, target, board);
     }
 }
