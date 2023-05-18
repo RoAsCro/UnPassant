@@ -10,6 +10,7 @@ public class Board implements ChessBoard{
     private boolean castleBlackQueen = false;
     private boolean castleWhiteKing = false;
     private boolean castleWhiteQueen = false;
+    private Coordinate enPassant = new Coordinate(-1, -1);
     private String turn = "white";
 
     @Override
@@ -74,12 +75,12 @@ public class Board implements ChessBoard{
 
     @Override
     public Coordinate getEnPassant() {
-        return null;
+        return this.enPassant;
     }
 
     @Override
     public void setEnPassant(Coordinate coordinate) {
-
+        this.enPassant = coordinate;
     }
 
 

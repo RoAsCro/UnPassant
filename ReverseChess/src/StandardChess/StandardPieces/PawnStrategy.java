@@ -1,5 +1,6 @@
 package StandardChess.StandardPieces;
 
+import StandardChess.Board;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
 import StandardChess.Piece;
@@ -20,7 +21,6 @@ public class PawnStrategy extends CollisableStrategy {
     @Override
     public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
         int xDiff = Math.abs(origin.getX() - target.getX());
-        ;
 
         int yDiff = origin.getY() - target.getY();
         Piece me = board.at(origin);
@@ -35,6 +35,11 @@ public class PawnStrategy extends CollisableStrategy {
                         (xCheck(xDiff, 1,
                                 target, true,
                                 board, colour))
+                        ||
+                        (xCheck(xDiff, 1,
+                                target, false,
+                                board, colour)
+                        && enPassantCheck(yDiff, target, colour, board))
                     )
                 )
                 ||
@@ -50,7 +55,6 @@ public class PawnStrategy extends CollisableStrategy {
         } else if (colour.equals("black")) {
             modifier = 1;
         }
-        System.out.println(targetY * modifier);
         return yDiff == targetY * modifier;
     }
 
@@ -66,6 +70,16 @@ public class PawnStrategy extends CollisableStrategy {
         return xDiff == requiredDiff
                 && (!board.at(target).getType().equals("null") == notNull)
                 && (!board.at(target).getColour().equals(notColour));
+    }
+
+    private boolean enPassantCheck(int yDiff, Coordinate target, String colour, ChessBoard board) {
+        Coordinate ePTarget = new Coordinate(target.getX(), target.getY() + yDiff);
+        Piece targetPiece = board.at(ePTarget);
+        return board.getEnPassant().equals(target)
+                &&
+                !targetPiece.getType().equals("null")
+                &&
+                !targetPiece.getColour().equals(colour);
     }
 
 

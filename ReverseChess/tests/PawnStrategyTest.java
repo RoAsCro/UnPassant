@@ -38,6 +38,36 @@ public class PawnStrategyTest {
     }
 
     @Test
+    public void testTryMoveEnPassant() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard(
+                "rnbqkbnr/8/8/3pP3/3Pp3/8/8/RNBQKBNR w KQkq d3 0 1");
+        boardTwo.setEnPassant(new Coordinate(3, 5));
+        Coordinate whiteOriginTwo = new Coordinate(4,4);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertTrue(whitePieceTwo.tryMove(whiteOriginTwo, new Coordinate(3, 5), boardTwo));
+
+        boardTwo.setEnPassant(new Coordinate(3, 2));
+        Coordinate blackOriginTwo = new Coordinate(4,3);
+        Piece blackPieceTwo = boardTwo.at(blackOriginTwo);
+        Assertions.assertTrue(blackPieceTwo.tryMove(blackOriginTwo, new Coordinate(3, 2), boardTwo));
+    }
+
+    @Test
+    public void testTryMoveNonPassant() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard(
+                "rnbqkbnr/8/8/3pP3/3Pp3/8/8/RNBQKBNR w KQkq d3 0 1");
+        boardTwo.setEnPassant(new Coordinate(3, 5));
+        Coordinate whiteOriginTwo = new Coordinate(4,4);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(whitePieceTwo.tryMove(whiteOriginTwo, new Coordinate(5, 5), boardTwo));
+
+        boardTwo.setEnPassant(new Coordinate(3, 2));
+        Coordinate blackOriginTwo = new Coordinate(4,3);
+        Piece blackPieceTwo = boardTwo.at(blackOriginTwo);
+        Assertions.assertFalse(blackPieceTwo.tryMove(blackOriginTwo, new Coordinate(5, 2), boardTwo));
+    }
+
+    @Test
     public void testTryMoveCollisionAlliedPieces() {
         ChessBoard boardTwo = BoardBuilder.buildBoard("1P1P4/2p5/1ppp4/8/8/1PPP4/2P5/1P1P4");
 
