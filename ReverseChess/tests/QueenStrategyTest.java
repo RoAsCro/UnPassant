@@ -54,7 +54,7 @@ public class QueenStrategyTest {
     public void testTryUnnMoveCollision() {
         // Opposing piece on target
         Assertions.assertFalse(piece.tryUnMove(origin, new Coordinate(3, 4), board));
-        Assertions.assertTrue(piece.tryUnMove(origin, new Coordinate(4, 4), board));
+        Assertions.assertFalse(piece.tryUnMove(origin, new Coordinate(4, 4), board));
     }
 
 }

@@ -8,16 +8,31 @@ public class KingStrategy extends AbstractStrategy{
         super("king");
     }
 
+    public boolean normalMove(Coordinate origin, Coordinate target, int yDiff) {
+        return (DIAGONAL.test(origin, target) || PERPENDICULAR.test(origin, target))
+                && Math.abs(origin.getX() - target.getX()) <= 1
+                && yDiff <= 1;
+    }
+
     @Override
     public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
+        int yDiff = Math.abs(origin.getY() - target.getY());
+        return ((normalMove(origin, target, yDiff))
+                ||
+                (yDiff == 0
+                && castleCheck(origin, target, board)))
+                && super.tryMove(origin, target, board);
+    }
+    @Override
+    public boolean tryUnMove(Coordinate origin, Coordinate target, ChessBoard board) {
         int yDiff = Math.abs(origin.getY() - target.getY());
         return (((DIAGONAL.test(origin, target) || PERPENDICULAR.test(origin, target))
                 && Math.abs(origin.getX() - target.getX()) <= 1
                 && yDiff <= 1)
                 ||
                 (yDiff == 0
-                && castleCheck(origin, target, board)))
-                && super.tryMove(origin, target, board);
+                        && castleCheck(origin, target, board)))
+                && super.tryUnMove(origin, target, board);
     }
 
     @Override
