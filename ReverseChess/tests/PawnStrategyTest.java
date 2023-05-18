@@ -33,11 +33,20 @@ public class PawnStrategyTest {
 //    }
 //
     @Test
-    public void testTryMoveInvalidDirection() {
+    public void testTryMoveInvalidDirectionHorizontal() {
         Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(1, 1), board));
-        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(2, 1), board));
+        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(3, 1), board));
+
         Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(1, 6), board));
         Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(3, 6), board));
+
+    }
+
+    @Test
+    public void testTryMoveInvalidDirectionVertical() {
+        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(2, 0), board));
+
+        Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(2, 7), board));
 
     }
 //
