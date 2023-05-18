@@ -92,4 +92,11 @@ public class PawnStrategyTest {
         Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(0, 4), board));
     }
 
+    @Test
+    public void testTryMoveInvalidDistanceVertical() {
+        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(2, 4), board));
+
+        Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(2, 3), board));
+    }
+
 }
