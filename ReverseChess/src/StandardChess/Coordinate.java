@@ -18,4 +18,17 @@ public class Coordinate {
     public int getY() {
         return y;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Coordinate c
+                && c.getX() == this.getX()
+                && c.getY() == this.getY();
+    }
+
+    @Override
+    public int hashCode() {
+        return this.x + this.y * 9;
+    }
+
 }

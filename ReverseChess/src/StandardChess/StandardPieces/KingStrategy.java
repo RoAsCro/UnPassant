@@ -8,6 +8,13 @@ public class KingStrategy extends CollisableStrategy{
     }
 
     @Override
+    public boolean tryMove(Coordinate origin, Coordinate target) {
+        return (DIAGONAL.test(origin, target) || PERPENDICULAR.test(origin, target))
+                && Math.abs(origin.getX() - target.getX()) <= 1
+                && Math.abs(origin.getY() - target.getY()) <= 1;
+    }
+
+    @Override
     public Coordinate[] getMoves(Coordinate origin) {
         return new Coordinate[0];
     }

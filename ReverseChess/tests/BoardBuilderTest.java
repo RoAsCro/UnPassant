@@ -23,9 +23,6 @@ public class BoardBuilderTest {
     @Test
     public void testFENInputComplex() {
         Board boardTwo = BoardBuilder.buildBoard("p2p2p1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-        for (int i = 0 ; i < 8 ; i++) {
-           System.out.println(boardTwo.at(new Coordinate(i, 7)) == null);
-        }
         Assertions.assertEquals(boardTwo.at(new Coordinate(3, 7)).getType(), "pawn");
     }
 

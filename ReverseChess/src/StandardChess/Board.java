@@ -62,4 +62,6 @@ public class Board {
         this.castleBlackQueen = castleBlackQueen;
     }
 
+
+
 }

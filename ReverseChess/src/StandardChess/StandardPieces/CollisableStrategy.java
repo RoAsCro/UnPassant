@@ -7,5 +7,4 @@ public abstract class CollisableStrategy extends AbstractStrategy {
         super(name, speed);
     }
 
-
 }

@@ -1,6 +1,5 @@
 package StandardChess;
 
-import java.util.stream.Stream;
 
 public class BoardBuilder {
 
@@ -91,7 +90,7 @@ public class BoardBuilder {
                     char current = row.charAt(c);
 
                     int span = 1;
-                    Piece piece = null;
+                    Piece piece = NullPiece.getInstance();
 
                     if (Character.isDigit(current)) {
                         span = ((int) current) - VALUE_OF_ZERO;

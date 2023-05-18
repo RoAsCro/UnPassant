@@ -11,8 +11,7 @@ public class BishopStrategy extends CollisableStrategy{
 
     @Override
     public boolean tryMove(Coordinate origin, Coordinate target) {
-        return Math.abs(origin.getX() - target.getX()) == Math.abs(origin.getY() - target.getY())
-                && super.tryMove(origin, target);
+        return DIAGONAL.test(origin, target);
     }
 
     @Override

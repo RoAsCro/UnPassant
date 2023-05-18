@@ -1,11 +1,18 @@
 package StandardChess.StandardPieces;
 
 import StandardChess.Coordinate;
-import StandardChess.Path;
+
+import java.util.function.BiPredicate;
 
 public abstract class AbstractStrategy implements PieceStrategy{
 
-    public final static int BOARD_LENGTH = 8;
+    protected final static int BOARD_LENGTH = 8;
+    protected final static BiPredicate<Coordinate, Coordinate> DIAGONAL =
+            (c, d) -> Math.abs(c.getX() - d.getX())
+                    == Math.abs(c.getY() - d.getY());
+    protected final static BiPredicate<Coordinate, Coordinate> PERPENDICULAR =
+            (c, d) -> c.getX() == d.getX() || c.getY() == d.getY();
+
     private int speed;
     private String name;
 
@@ -19,10 +26,5 @@ public abstract class AbstractStrategy implements PieceStrategy{
         return this.name;
     }
 
-    @Override
-    public boolean tryMove(Coordinate origin, Coordinate target) {
-        //Check collision...
-        return true;
-    }
 
 }
