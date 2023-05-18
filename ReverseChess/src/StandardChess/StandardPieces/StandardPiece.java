@@ -29,6 +29,11 @@ public class StandardPiece implements Piece {
     public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
         return this.strategy.tryMove(origin, target, board);
     }
+    @Override
+    public boolean tryUnMove(Coordinate origin, Coordinate target, ChessBoard board) {
+        return this.strategy.tryUnMove(origin, target, board);
+    }
+
     public Coordinate[] getMoves(Coordinate origin){
         return this.strategy.getMoves(origin);
     }

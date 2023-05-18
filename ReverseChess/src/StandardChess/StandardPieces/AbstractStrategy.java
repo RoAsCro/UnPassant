@@ -73,7 +73,7 @@ public abstract class AbstractStrategy implements PieceStrategy{
     }
 
     @Override
-    public boolean tryUnmove(Coordinate origin, Coordinate target, ChessBoard board) {
+    public boolean tryUnMove(Coordinate origin, Coordinate target, ChessBoard board) {
         return tryAnyMove(origin, target, board,
                 (p, q) -> NOT_NULL.test(p));
     }

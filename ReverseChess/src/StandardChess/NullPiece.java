@@ -28,6 +28,11 @@ public class NullPiece implements Piece{
     }
 
     @Override
+    public boolean tryUnMove(Coordinate origin, Coordinate target, ChessBoard board) {
+        return false;
+    }
+
+    @Override
     public Coordinate[] getMoves(Coordinate origin) {
         return new Coordinate[0];
     }
