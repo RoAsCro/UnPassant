@@ -7,10 +7,10 @@ import StandardChess.Piece;
 
 import java.util.function.BiPredicate;
 
-public class PawnStrategy extends CollisableStrategy {
+public class PawnStrategy extends AbstractStrategy {
 
     public PawnStrategy() {
-        super("pawn", 1);
+        super("pawn");
     }
 
     @Override

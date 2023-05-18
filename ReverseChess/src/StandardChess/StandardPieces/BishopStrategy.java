@@ -3,11 +3,11 @@ package StandardChess.StandardPieces;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
 
-public class BishopStrategy extends CollisableStrategy{
+public class BishopStrategy extends AbstractStrategy{
 
 
     public BishopStrategy() {
-        super("bishop", BOARD_LENGTH);
+        super("bishop");
     }
 
     @Override

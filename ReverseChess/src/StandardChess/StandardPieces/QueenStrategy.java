@@ -3,9 +3,9 @@ package StandardChess.StandardPieces;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
 
-public class QueenStrategy extends CollisableStrategy{
+public class QueenStrategy extends AbstractStrategy{
     public QueenStrategy() {
-        super("queen", BOARD_LENGTH);
+        super("queen");
     }
 
     @Override

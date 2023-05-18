@@ -3,9 +3,9 @@ package StandardChess.StandardPieces;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
 
-public class RookStrategy extends CollisableStrategy{
+public class RookStrategy extends AbstractStrategy{
     public RookStrategy() {
-        super("rook", BOARD_LENGTH);
+        super("rook");
     }
 
     @Override

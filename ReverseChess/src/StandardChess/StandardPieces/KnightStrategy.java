@@ -6,7 +6,7 @@ import StandardChess.Coordinate;
 public class KnightStrategy extends AbstractStrategy{
 
     public KnightStrategy() {
-        super("knight", 1);
+        super("knight");
     }
 
     @Override
