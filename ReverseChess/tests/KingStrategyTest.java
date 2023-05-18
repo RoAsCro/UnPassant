@@ -81,4 +81,23 @@ public class KingStrategyTest {
 
     }
 
+    @Test
+    public void testTryUnMoveCastleBadKingPosition() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("1k1r1r1k/8/8/8/8/8/8/1K1R1R1K");
+        Coordinate originTwo = new Coordinate(1, 0);
+        Piece pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+        originTwo = new Coordinate(7, 0);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+
+        originTwo = new Coordinate(2, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+        originTwo = new Coordinate(7, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+
+    }
+
 }

@@ -71,23 +71,33 @@ public class KingStrategy extends AbstractStrategy{
         Coordinate[] coordinates = colour.equals("white")
                 ? WHITE_COORDS
                 : BLACK_COORDS;
-        boolean targetLocation = target.equals(coordinates[0]) && board.at(target).getType().equals("null");
-        boolean kingLocation = origin.equals(new Coordinate(coordinates[1].getX() - 1, coordinates[1].getY()))
-                || origin.equals(new Coordinate(coordinates[2].getX() + 2, coordinates[2].getY()));
+
+        // Nothing at target location and target location is king's origin
+        if (!(target.equals(coordinates[0]) && board.at(target).getType().equals("null"))) {
+            return false;
+        }
+        // Starting location is valid
+        if (!(origin.equals(new Coordinate(coordinates[1].getX() - 1, coordinates[1].getY()))
+                || origin.equals(new Coordinate(coordinates[2].getX() + 2, coordinates[2].getY())))) {
+            return false;
+        }
         int originTargetDiff = ((target.getX() - origin.getX()) / 2);
         Piece rook = board.at(new Coordinate(
                 target.getX() + originTargetDiff,
                         origin.getY()));
-        boolean rookLocation = rook.getType().equals("rook")
-                && rook.getColour().equals(colour);
-        boolean rookTargetLocation = board.at(
-                new Coordinate(origin.getX() - originTargetDiff, origin.getY()))
+        // There is a rook of the correct colour between king and king's origin
+        if (!(rook.getType().equals("rook")
+                && rook.getColour().equals(colour))) {
+            return false;
+        }
+        // There are no pieces blocking the castle
+        return board.at(
+                        new Coordinate(origin.getX() - originTargetDiff, origin.getY()))
                 .getType().equals("null")
                 &&
                 (origin.getX() - originTargetDiff * 2 > 7
                         || board.at(new Coordinate(origin.getX() - originTargetDiff * 2, origin.getY()))
                         .getType().equals("null"));
-        return targetLocation && kingLocation && rookLocation && rookTargetLocation;
 
     }
 }
