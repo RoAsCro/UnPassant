@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class PawnStrategyTest {
 
-    ChessBoard board = BoardBuilder.buildBoard("1P1P4/2p5/1P1P4/4P/4p/1p1p4/2P5/1P1P4");
+    ChessBoard board = BoardBuilder.buildBoard("1P1P4/2p5/1P1P4/4P3/4p3/1p1p4/2P5/1P1P4");
     Coordinate whiteOrigin = new Coordinate(2, 1);
     Coordinate blackOrigin = new Coordinate(2,6);
     Piece whitePiece = board.at(whiteOrigin);
@@ -35,6 +35,17 @@ public class PawnStrategyTest {
         Assertions.assertTrue(whitePiece.tryMove(whiteOrigin, new Coordinate(2, 3), board));
 
         Assertions.assertTrue(blackPiece.tryMove(blackOrigin, new Coordinate(2, 4), board));
+    }
+
+    @Test
+    public void testTryMoveDoubleMoveBadPosition() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("8/8/7p/8/P7/8/8/8");
+
+        Coordinate whiteOriginTwo = new Coordinate(0, 3);
+        Assertions.assertTrue(board.at(whiteOriginTwo).tryMove(whiteOriginTwo, new Coordinate(0, 5), board));
+
+        Coordinate blackOriginTwo = new Coordinate(7, 5);
+        Assertions.assertTrue(board.at(blackOriginTwo).tryMove(blackOriginTwo, new Coordinate(7, 3), board));
     }
 
     @Test

@@ -1,11 +1,8 @@
 package StandardChess.StandardPieces;
 
-import StandardChess.Board;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
 import StandardChess.Piece;
-
-import java.util.function.BiPredicate;
 
 public class PawnStrategy extends AbstractStrategy {
 
@@ -43,9 +40,14 @@ public class PawnStrategy extends AbstractStrategy {
                     )
                 )
                 ||
+                // double move
                 (yCheck(colour, yDiff, 2)
                 && noXChange)
                 && super.tryMove(origin, target, board);
+    }
+    @Override
+    public boolean tryUnMove(Coordinate origin, Coordinate target, ChessBoard board) {
+        return true;
     }
 
     private boolean yCheck(String colour, int yDiff, int targetY) {
@@ -82,5 +84,5 @@ public class PawnStrategy extends AbstractStrategy {
                 !targetPiece.getColour().equals(colour);
     }
 
-
+    //TODO promotion
 }

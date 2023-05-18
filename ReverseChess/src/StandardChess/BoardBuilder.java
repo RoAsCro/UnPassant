@@ -2,8 +2,6 @@ package StandardChess;
 
 
 public class BoardBuilder {
-
-    private final static int LENGTH = 8;
     private final static int VALUE_OF_ZERO = 48;
     private final static String INITIAL_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -20,8 +18,8 @@ public class BoardBuilder {
         if (paramLength < 1) {
             throw new IllegalArgumentException();
         }
-        Board board = new Board();
-        fenDecode(params[0], board);
+        ChessBoard board = new StandardBoard();
+        positionDecode(params[0], board);
 
         String turn = "white";
         if (paramLength > 1) {
@@ -42,7 +40,7 @@ public class BoardBuilder {
         return board;
     }
 
-    private static String castleParse(Board board) {
+    private static String castleParse(ChessBoard board) {
 
         String returnString = "";
         if (castleParseHelper(board.at(Coordinates.WHITE_KING), "king", "white")) {
@@ -61,7 +59,6 @@ public class BoardBuilder {
                 returnString += "q";
             }
         }
-//        System.out.println(returnString);
         return returnString;
     }
 
@@ -69,7 +66,7 @@ public class BoardBuilder {
         return piece != null && piece.getType().equals(type) && piece.getColour().equals(colour);
     }
 
-    private static void castleDecode(String input, Board board) throws IllegalArgumentException {
+    private static void castleDecode(String input, ChessBoard board) throws IllegalArgumentException {
         if (!input.equals("-")) {
             String king = "king";
             String queen = "queen";
@@ -88,14 +85,14 @@ public class BoardBuilder {
         }
     }
 
-    private static void fenDecode(String FEN, Board board) throws IllegalArgumentException {
+    private static void positionDecode(String FEN, ChessBoard board) throws IllegalArgumentException {
         String[] rows = FEN.split("/");
-        if (rows.length != LENGTH) {
+        if (rows.length != ChessBoard.LENGTH) {
             throw new IllegalArgumentException("FEN not formatted correctly.");
         }
         try {
-            for (int y = 0 ; y < LENGTH ; y++) {
-                String row = rows[LENGTH - 1 - y];
+            for (int y = 0 ; y < ChessBoard.LENGTH ; y++) {
+                String row = rows[ChessBoard.LENGTH - 1 - y];
                 char[] characters = row.toCharArray();
                 int x = 0;
                 for (int c = 0; c < characters.length ; c++) {

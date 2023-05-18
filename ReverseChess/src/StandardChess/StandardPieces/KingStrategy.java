@@ -52,7 +52,6 @@ public class KingStrategy extends AbstractStrategy{
         if (Math.abs(xDiff) != 2) {
             return false;
         }
-        Coordinate[] coordinates = getCoordinateSet(colour);
         for (int i = target.getX() ; i < ChessBoard.LENGTH - 1 && i > 0 ; i -= xDiff / 2) {
             if (!board.at(new Coordinate(i, target.getY())).getType().equals("null")) {
                 return false;
@@ -95,4 +94,5 @@ public class KingStrategy extends AbstractStrategy{
                         .getType().equals("null"));
 
     }
+    //TODO castling through check
 }

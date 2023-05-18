@@ -1,4 +1,3 @@
-import StandardChess.Board;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;

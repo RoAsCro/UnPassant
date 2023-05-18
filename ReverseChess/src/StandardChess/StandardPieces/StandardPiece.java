@@ -1,6 +1,5 @@
 package StandardChess.StandardPieces;
 
-import StandardChess.Board;
 import StandardChess.ChessBoard;
 import StandardChess.Piece;
 import StandardChess.Coordinate;
