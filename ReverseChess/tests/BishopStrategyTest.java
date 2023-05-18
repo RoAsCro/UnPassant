@@ -27,7 +27,13 @@ public class BishopStrategyTest {
         Assertions.assertFalse(piece.tryMove(origin, new Coordinate(3, 6), board));
         // Opposing piece on target
         Assertions.assertTrue(piece.tryMove(origin, new Coordinate(3, 4), board));
+    }
 
+    @Test
+    public void testTryMoveInvalidDirection() {
+        Assertions.assertFalse(piece.tryMove(origin, new Coordinate(4, 3), board));
+        Assertions.assertFalse(piece.tryMove(origin, new Coordinate(0, 5), board));
+        Assertions.assertFalse(piece.tryMove(origin, new Coordinate(6, 4), board));
 
     }
 
