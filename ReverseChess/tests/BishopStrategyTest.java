@@ -10,7 +10,6 @@ public class BishopStrategyTest {
 
     @Test
     public void testTryMoveNormal() {
-        System.out.println(board.at(new Coordinate(5, 6)).getType());
         Assertions.assertTrue(piece.tryMove(origin, new Coordinate(5, 6), board));
         Assertions.assertTrue(piece.tryMove(origin, new Coordinate(6, 7), board));
 
