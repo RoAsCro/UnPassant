@@ -2,8 +2,6 @@ package StandardChess;
 
 public class Board implements ChessBoard{
 
-    private final static int LENGTH = 8;
-
     private final Piece[][] board = new Piece[LENGTH][LENGTH];
 
     private boolean castleBlackKing = false;

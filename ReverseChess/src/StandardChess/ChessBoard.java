@@ -1,6 +1,8 @@
 package StandardChess;
 
 public interface ChessBoard {
+    final static int LENGTH = 8;
+
     public Piece at(Coordinate coordinate);
 
     public String getTurn();

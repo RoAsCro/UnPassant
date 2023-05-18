@@ -1,9 +1,6 @@
 package StandardChess.StandardPieces;
 
-import StandardChess.ChessBoard;
-import StandardChess.Coordinate;
-import StandardChess.Coordinates;
-import StandardChess.Piece;
+import StandardChess.*;
 
 public class KingStrategy extends AbstractStrategy{
 
@@ -16,7 +13,13 @@ public class KingStrategy extends AbstractStrategy{
         super("king");
     }
 
-    public boolean normalMove(Coordinate origin, Coordinate target, int yDiff) {
+    private Coordinate[] getCoordinateSet(String colour) {
+        return colour.equals("white")
+                ? WHITE_COORDS
+                : BLACK_COORDS;
+    }
+
+    private boolean normalMove(Coordinate origin, Coordinate target, int yDiff) {
         return (DIAGONAL.test(origin, target) || PERPENDICULAR.test(origin, target))
                 && Math.abs(origin.getX() - target.getX()) <= 1
                 && yDiff <= 1;
@@ -46,6 +49,15 @@ public class KingStrategy extends AbstractStrategy{
     private boolean castleCheck(Coordinate origin, Coordinate target, ChessBoard board) {
         String colour = board.at(origin).getColour();
         int xDiff = origin.getX() - target.getX();
+        if (Math.abs(xDiff) != 2) {
+            return false;
+        }
+        Coordinate[] coordinates = getCoordinateSet(colour);
+        for (int i = target.getX() ; i < ChessBoard.LENGTH - 1 && i > 0 ; i -= xDiff / 2) {
+            if (!board.at(new Coordinate(i, target.getY())).getType().equals("null")) {
+                return false;
+            }
+        }
         if (colour.equals("white")) {
             if (xDiff == 2) {
                 return board.canCastleWhiteQueen();
@@ -68,9 +80,7 @@ public class KingStrategy extends AbstractStrategy{
 
     private boolean unCastleCheck(Coordinate origin,Coordinate target, ChessBoard board) {
         String colour = board.at(origin).getColour();
-        Coordinate[] coordinates = colour.equals("white")
-                ? WHITE_COORDS
-                : BLACK_COORDS;
+        Coordinate[] coordinates = getCoordinateSet(colour);
 
         // Nothing at target location and target location is king's origin
         if (!(target.equals(coordinates[0]) && board.at(target).getType().equals("null"))) {
@@ -95,7 +105,7 @@ public class KingStrategy extends AbstractStrategy{
                         new Coordinate(origin.getX() - originTargetDiff, origin.getY()))
                 .getType().equals("null")
                 &&
-                (origin.getX() - originTargetDiff * 2 > 7
+                (origin.getX() - originTargetDiff * 2 > ChessBoard.LENGTH - 1
                         || board.at(new Coordinate(origin.getX() - originTargetDiff * 2, origin.getY()))
                         .getType().equals("null"));
 

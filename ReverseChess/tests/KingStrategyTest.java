@@ -40,6 +40,21 @@ public class KingStrategyTest {
     }
 
     @Test
+    public void testTryMoveCastleBlocking() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("rb2k1Br/8/8/8/8/8/8/R2bKb1R");
+        Coordinate originTwo = new Coordinate(4, 0);
+        Piece pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryMove(originTwo, new Coordinate(2, 0), boardTwo));
+        Assertions.assertFalse(pieceTwo.tryMove(originTwo, new Coordinate(6, 0), boardTwo));
+
+        originTwo = new Coordinate(4, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryMove(originTwo, new Coordinate(2, 7), boardTwo));
+        Assertions.assertFalse(pieceTwo.tryMove(originTwo, new Coordinate(6, 7), boardTwo));
+
+    }
+
+    @Test
     public void testTryMoveCollision() {
         ChessBoard boardTwo = BoardBuilder.buildBoard("8/8/4kn2/4N3/8/8/8/8");
 
