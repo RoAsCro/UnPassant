@@ -1,7 +1,4 @@
-import StandardChess.BoardBuilder;
-import StandardChess.ChessBoard;
-import StandardChess.Coordinate;
-import StandardChess.Piece;
+import StandardChess.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -63,6 +60,25 @@ public class KingStrategyTest {
     public void testTryMoveInvalidDistance() {
         Assertions.assertFalse(piece.tryMove(origin, new Coordinate(4, 0), board));
         Assertions.assertFalse(piece.tryMove(origin, new Coordinate(6, 7), board));
+    }
+
+    @Test
+    public void testTryUnMoveCastle() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("2kr1rk1/8/8/8/8/8/8/2KR1RK1");
+        Coordinate originTwo = new Coordinate(2, 0);
+        Piece pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertTrue(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+        originTwo = new Coordinate(6, 0);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertTrue(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+
+        originTwo = new Coordinate(2, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertTrue(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+        originTwo = new Coordinate(6, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertTrue(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+
     }
 
 }

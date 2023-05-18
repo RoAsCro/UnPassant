@@ -29,6 +29,8 @@ public class BoardBuilder {
                 turn = "black";
             }
         }
+        board.setTurn(turn);
+
         String castleInput;
         if (paramLength > 2) {
             castleInput = params[2];
@@ -43,19 +45,19 @@ public class BoardBuilder {
     private static String castleParse(Board board) {
 
         String returnString = "";
-        if (castleParseHelper(board.at(new Coordinate(4, 0)), "king", "white")) {
-            if (castleParseHelper(board.at(new Coordinate(7, 0)), "rook", "white")) {
+        if (castleParseHelper(board.at(Coordinates.WHITE_KING), "king", "white")) {
+            if (castleParseHelper(board.at(Coordinates.WHITE_KING_ROOK), "rook", "white")) {
                 returnString += "K";
             }
-            if (castleParseHelper(board.at(new Coordinate(0, 0)), "rook", "white")) {
+            if (castleParseHelper(board.at(Coordinates.WHITE_QUEEN_ROOK), "rook", "white")) {
                 returnString += "Q";
             }
         }
-        if (castleParseHelper(board.at(new Coordinate(4, 7)), "king", "black")) {
-            if (castleParseHelper(board.at(new Coordinate(7, 7)), "rook", "black")) {
+        if (castleParseHelper(board.at(Coordinates.BLACK_KING), "king", "black")) {
+            if (castleParseHelper(board.at(Coordinates.BLACK_KING_ROOK), "rook", "black")) {
                 returnString += "k";
             }
-            if (castleParseHelper(board.at(new Coordinate(0, 7)), "rook", "black")) {
+            if (castleParseHelper(board.at(Coordinates.BLACK_QUEEN_ROOK), "rook", "black")) {
                 returnString += "q";
             }
         }
