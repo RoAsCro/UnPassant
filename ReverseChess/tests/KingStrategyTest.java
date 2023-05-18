@@ -99,5 +99,42 @@ public class KingStrategyTest {
         Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
 
     }
+    @Test
+    public void testTryUnMoveCastleBadRookPosition() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("2k3kr/8/8/8/8/8/8/2K1RRK1");
+        Coordinate originTwo = new Coordinate(2, 0);
+        Piece pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+        originTwo = new Coordinate(6, 0);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+
+        originTwo = new Coordinate(2, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+        originTwo = new Coordinate(6, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+
+    }
+
+    @Test
+    public void testTryUnMoveCastlePieceBlocking() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("1bkr1rkr/8/8/8/8/8/8/1RKRrRK1");
+        Coordinate originTwo = new Coordinate(2, 0);
+        Piece pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+        originTwo = new Coordinate(6, 0);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+
+        originTwo = new Coordinate(2, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+        originTwo = new Coordinate(6, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+
+    }
 
 }
