@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class PawnStrategyTest {
 
-    ChessBoard board = BoardBuilder.buildBoard("1P1P4/2p5/1P1P4/8/8/1p1p4/2P5/1P1P4");
+    ChessBoard board = BoardBuilder.buildBoard("1P1P4/2p5/1P1P4/4P/4p/1p1p4/2P5/1P1P4");
     Coordinate whiteOrigin = new Coordinate(2, 1);
     Coordinate blackOrigin = new Coordinate(2,6);
     Piece whitePiece = board.at(whiteOrigin);
@@ -77,18 +77,19 @@ public class PawnStrategyTest {
         Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(1, 0), board));
         Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(3, 0), board));
 
-
         Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(1, 7), board));
         Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(3, 7), board));
 
     }
 
 
-//
-//    @Test
-//    public void testTryMoveInvalidDistance() {
-//        Assertions.assertFalse(piece.tryMove(origin, new Coordinate(4, 0), board));
-//        Assertions.assertFalse(piece.tryMove(origin, new Coordinate(6, 7), board));
-//    }
+    @Test
+    public void testTryMoveInvalidDistanceDiagonal() {
+        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(4, 3), board));
+        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(0, 3), board));
+
+        Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(4, 4), board));
+        Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(0, 4), board));
+    }
 
 }
