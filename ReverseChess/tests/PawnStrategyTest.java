@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class PawnStrategyTest {
 
-    ChessBoard board = BoardBuilder.buildBoard("8/2p5/1P1P4/8/8/1p1p4/2P5/8");
+    ChessBoard board = BoardBuilder.buildBoard("1P1P4/2p5/1P1P4/8/8/1p1p4/2P5/1P1P4");
     Coordinate whiteOrigin = new Coordinate(2, 1);
     Coordinate blackOrigin = new Coordinate(2,6);
     Piece whitePiece = board.at(whiteOrigin);
@@ -16,21 +16,43 @@ public class PawnStrategyTest {
 
     @Test
     public void testTryMoveNormal() {
-        // Vertical
         Assertions.assertTrue(whitePiece.tryMove(whiteOrigin, new Coordinate(2, 2), board));
         Assertions.assertTrue(blackPiece.tryMove(blackOrigin, new Coordinate(2, 5), board));
     }
 
-//    @Test
-//    public void testTryMoveCollision() {
-//        ChessBoard boardTwo = BoardBuilder.buildBoard("8/8/4kn2/4N3/8/8/8/8");
-//
-//        // Allied piece on the target
-//        Assertions.assertFalse(piece.tryMove(origin, new Coordinate(5, 5), boardTwo));
-//
-//        // Opposing piece on target
-//        Assertions.assertTrue(piece.tryMove(origin, new Coordinate(4, 4), boardTwo));
-//    }
+    @Test
+    public void testTryMoveNormalCapture() {
+        Assertions.assertTrue(whitePiece.tryMove(whiteOrigin, new Coordinate(1, 2), board));
+        Assertions.assertTrue(whitePiece.tryMove(whiteOrigin, new Coordinate(3, 2), board));
+
+        Assertions.assertTrue(blackPiece.tryMove(blackOrigin, new Coordinate(1, 5), board));
+        Assertions.assertTrue(blackPiece.tryMove(blackOrigin, new Coordinate(3, 5), board));
+
+    }
+
+    @Test
+    public void testTryMoveCollisionAlliedPieces() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("1P1P4/2p5/1ppp4/8/8/1PPP4/2P5/1P1P4");
+
+        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(2, 2), boardTwo));
+        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(1, 2), boardTwo));
+        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(3, 2), boardTwo));
+
+        Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(2, 5), boardTwo));
+        Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(1, 5), boardTwo));
+        Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(3, 5), boardTwo));
+
+    }
+
+    @Test
+    public void testTryMoveCollisionEnemyPieces() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("1P1P4/2p5/1pPp4/8/8/1PpP4/2P5/1P1P4");
+
+        Assertions.assertFalse(whitePiece.tryMove(whiteOrigin, new Coordinate(2, 2), boardTwo));
+
+        Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(2, 5), boardTwo));
+
+    }
 //
     @Test
     public void testTryMoveInvalidDirectionHorizontal() {
@@ -49,6 +71,8 @@ public class PawnStrategyTest {
         Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(2, 7), board));
 
     }
+
+
 //
 //    @Test
 //    public void testTryMoveInvalidDistance() {
