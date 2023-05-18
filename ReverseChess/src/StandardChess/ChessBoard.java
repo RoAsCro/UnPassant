@@ -11,21 +11,25 @@ public interface ChessBoard {
 
     public void place(Coordinate coordinate, Piece piece);
 
-    public boolean canCastleWhiteKing();
+    public boolean canCastle(String pieceSide, String colour);
 
-    public void setCastleWhiteKing(boolean castleWhiteKing);
-
-    public boolean canCastleWhiteQueen();
-
-    public void setCastleWhiteQueen(boolean castleWhiteQueen);
-
-    public boolean canCastleBlackKing();
-
-    public void setCastleBlackKing(boolean castleBlackKing);
-
-    public boolean canCastleBlackQueen();
-
-    public void setCastleBlackQueen(boolean castleBlackQueen);
+    public void setCastle(String pieceSide, String colour, boolean canCastle);
+//
+//    public boolean canCastleWhiteKing();
+//
+//    public void setCastleWhiteKing(boolean castleWhiteKing);
+//
+//    public boolean canCastleWhiteQueen();
+//
+//    public void setCastleWhiteQueen(boolean castleWhiteQueen);
+//
+//    public boolean canCastleBlackKing();
+//
+//    public void setCastleBlackKing(boolean castleBlackKing);
+//
+//    public boolean canCastleBlackQueen();
+//
+//    public void setCastleBlackQueen(boolean castleBlackQueen);
 
     Coordinate getEnPassant();
 

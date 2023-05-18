@@ -58,23 +58,8 @@ public class KingStrategy extends AbstractStrategy{
                 return false;
             }
         }
-        if (colour.equals("white")) {
-            if (xDiff == 2) {
-                return board.canCastleWhiteQueen();
-            }
-            if (xDiff == -2) {
-                return board.canCastleWhiteKing();
-            }
-        }
-        if (colour.equals("black")) {
-            if (xDiff == 2) {
-                return board.canCastleBlackQueen();
-            }
-            if (xDiff == -2) {
-                return board.canCastleBlackKing();
-            }
-        }
-        return false;
+        String side = xDiff > 0 ? "queen" : "king";
+        return board.canCastle(side, colour);
 
     }
 

@@ -71,13 +71,17 @@ public class BoardBuilder {
 
     private static void castleDecode(String input, Board board) throws IllegalArgumentException {
         if (!input.equals("-")) {
+            String king = "king";
+            String queen = "queen";
+            String white = "white";
+            String black = "black";
             char[] inputs = input.toCharArray();
             for (char c : inputs) {
                 switch (c) {
-                    case 'k' -> board.setCastleBlackKing(true);
-                    case 'q' -> board.setCastleBlackQueen(true);
-                    case 'K' -> board.setCastleWhiteKing(true);
-                    case 'Q' -> board.setCastleWhiteQueen(true);
+                    case 'k' -> board.setCastle(king, black, true);
+                    case 'q' -> board.setCastle(queen, black, true);
+                    case 'K' -> board.setCastle(king, white, true);
+                    case 'Q' -> board.setCastle(queen, white, true);
                     default -> throw new IllegalArgumentException("Bad castling parameters");
                 }
             }

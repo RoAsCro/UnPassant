@@ -1,15 +1,24 @@
 package StandardChess;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
 public class Board implements ChessBoard{
 
     private final Piece[][] board = new Piece[LENGTH][LENGTH];
 
-    private boolean castleBlackKing = false;
-    private boolean castleBlackQueen = false;
-    private boolean castleWhiteKing = false;
-    private boolean castleWhiteQueen = false;
+    Map<String, Boolean> castlingRights = new TreeMap<>();
     private Coordinate enPassant = new Coordinate(-1, -1);
     private String turn = "white";
+
+    public Board() {
+        castlingRights.put("blackking", false);
+        castlingRights.put("blackqueen", false);
+        castlingRights.put("whiteking", false);
+        castlingRights.put("whitequeen", false);
+    }
+
 
     @Override
     public Piece at(Coordinate coordinate) {
@@ -32,44 +41,54 @@ public class Board implements ChessBoard{
     }
 
     @Override
-    public boolean canCastleWhiteKing() {
-        return this.castleWhiteKing;
+    public boolean canCastle(String pieceSide, String colour) {
+        return this.castlingRights.get(colour.toLowerCase() + pieceSide.toLowerCase());
     }
 
     @Override
-    public void setCastleWhiteKing(boolean castleWhiteKing) {
-        this.castleWhiteKing = castleWhiteKing;
+    public void setCastle(String pieceSide, String colour, boolean canCastle) {
+        this.castlingRights.replace(colour.toLowerCase() + pieceSide.toLowerCase(), canCastle);
     }
 
-    @Override
-    public boolean canCastleWhiteQueen() {
-        return this.castleWhiteQueen;
-    }
-
-    @Override
-    public void setCastleWhiteQueen(boolean castleWhiteQueen) {
-        this.castleWhiteQueen = castleWhiteQueen;
-    }
-
-    @Override
-    public boolean canCastleBlackKing() {
-        return this.castleBlackKing;
-    }
-
-    @Override
-    public void setCastleBlackKing(boolean castleBlackKing) {
-        this.castleBlackKing = castleBlackKing;
-    }
-
-    @Override
-    public boolean canCastleBlackQueen() {
-        return this.castleBlackQueen;
-    }
-
-    @Override
-    public void setCastleBlackQueen(boolean castleBlackQueen) {
-        this.castleBlackQueen = castleBlackQueen;
-    }
+//    @Override
+//    public boolean canCastleWhiteKing() {
+//        return this.castleWhiteKing;
+//    }
+//
+//    @Override
+//    public void setCastleWhiteKing(boolean castleWhiteKing) {
+//        this.castleWhiteKing = castleWhiteKing;
+//    }
+//
+//    @Override
+//    public boolean canCastleWhiteQueen() {
+//        return this.castleWhiteQueen;
+//    }
+//
+//    @Override
+//    public void setCastleWhiteQueen(boolean castleWhiteQueen) {
+//        this.castleWhiteQueen = castleWhiteQueen;
+//    }
+//
+//    @Override
+//    public boolean canCastleBlackKing() {
+//        return this.castleBlackKing;
+//    }
+//
+//    @Override
+//    public void setCastleBlackKing(boolean castleBlackKing) {
+//        this.castleBlackKing = castleBlackKing;
+//    }
+//
+//    @Override
+//    public boolean canCastleBlackQueen() {
+//        return this.castleBlackQueen;
+//    }
+//
+//    @Override
+//    public void setCastleBlackQueen(boolean castleBlackQueen) {
+//        this.castleBlackQueen = castleBlackQueen;
+//    }
 
     @Override
     public Coordinate getEnPassant() {

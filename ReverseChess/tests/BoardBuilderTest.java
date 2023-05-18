@@ -51,10 +51,10 @@ public class BoardBuilderTest {
         uniformCastlingTest(true, this.board);
 
         ChessBoard boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1");
-        Assertions.assertTrue(boardTwo.canCastleWhiteKing());
-        Assertions.assertTrue(boardTwo.canCastleWhiteQueen());
-        Assertions.assertFalse(boardTwo.canCastleBlackKing());
-        Assertions.assertTrue(boardTwo.canCastleBlackQueen());
+        Assertions.assertTrue(boardTwo.canCastle("king", "white"));
+        Assertions.assertTrue(boardTwo.canCastle("queen", "white"));
+        Assertions.assertFalse(boardTwo.canCastle("king", "black"));
+        Assertions.assertTrue(boardTwo.canCastle("queen", "black"));
 
         boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
         uniformCastlingTest(false, boardTwo);
@@ -68,10 +68,10 @@ public class BoardBuilderTest {
     }
 
     public void uniformCastlingTest(boolean flag, ChessBoard board) {
-        Assertions.assertEquals(flag, board.canCastleWhiteKing());
-        Assertions.assertEquals(flag, board.canCastleWhiteQueen());
-        Assertions.assertEquals(flag, board.canCastleBlackKing());
-        Assertions.assertEquals(flag, board.canCastleBlackQueen());
+        Assertions.assertEquals(flag, board.canCastle("king", "white"));
+        Assertions.assertEquals(flag, board.canCastle("queen", "white"));
+        Assertions.assertEquals(flag, board.canCastle("king", "black"));
+        Assertions.assertEquals(flag, board.canCastle("queen", "black"));
     }
 
 }
