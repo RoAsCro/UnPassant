@@ -13,6 +13,8 @@ public interface ChessBoard {
 
     public void place(Coordinate coordinate, Piece piece);
 
+    public void remove(Coordinate coordinate);
+
     public boolean canCastle(String pieceSide, String colour);
 
     public void setCastle(String pieceSide, String colour, boolean canCastle);

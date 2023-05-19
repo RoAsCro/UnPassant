@@ -50,6 +50,11 @@ public class StandardBoard implements ChessBoard{
     }
 
     @Override
+    public void remove(Coordinate coordinate) {
+        this.board[coordinate.getX()][coordinate.getY()] = NullPiece.getInstance();
+    }
+
+    @Override
     public boolean canCastle(String pieceSide, String colour) {
         return this.castlingRights.get(colour.toLowerCase() + pieceSide.toLowerCase());
     }
