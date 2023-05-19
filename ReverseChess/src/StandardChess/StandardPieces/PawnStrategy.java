@@ -27,12 +27,15 @@ public class PawnStrategy extends AbstractStrategy {
                 board, colour);
         return (yCheck(colour, yDiff, 1)
                     && (
+                        // Normal move
                         noXChange
                         ||
+                        // Capture
                         (xCheck(xDiff, 1,
                                 target, true,
                                 board, colour))
                         ||
+                        // En Passant
                         (xCheck(xDiff, 1,
                                 target, false,
                                 board, colour)
@@ -40,9 +43,9 @@ public class PawnStrategy extends AbstractStrategy {
                     )
                 )
                 ||
-                // double move
+                // Double move
                 (yCheck(colour, yDiff, 2)
-                && noXChange)
+                && noXChange && doubleMoveCheck(origin, colour))
                 && super.tryMove(origin, target, board);
     }
     @Override
@@ -82,6 +85,11 @@ public class PawnStrategy extends AbstractStrategy {
                 targetPiece.getType().equals("pawn")
                 &&
                 !targetPiece.getColour().equals(colour);
+    }
+
+    private boolean doubleMoveCheck(Coordinate origin, String colour) {
+        return (origin.getY() == 1 && colour.equals("white"))
+                || (origin.getY() == 6 && colour.equals("black"));
     }
 
     //TODO promotion
