@@ -33,6 +33,11 @@ public class NullPiece implements Piece{
     }
 
     @Override
+    public void updateBoard(Coordinate origin, Coordinate target, ChessBoard board, boolean unMove) {
+
+    }
+
+    @Override
     public Coordinate[] getMoves(Coordinate origin) {
         return new Coordinate[0];
     }

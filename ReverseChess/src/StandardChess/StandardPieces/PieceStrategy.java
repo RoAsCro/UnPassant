@@ -8,6 +8,8 @@ public interface PieceStrategy {
     String getName();
     boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board);
     boolean tryUnMove(Coordinate origin, Coordinate target, ChessBoard board);
+    void updateBoard(Coordinate origin, Coordinate target, ChessBoard board, boolean unMove);
+
     Coordinate[] getMoves(Coordinate origin);
 
 }

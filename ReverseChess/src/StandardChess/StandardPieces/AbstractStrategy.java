@@ -78,4 +78,10 @@ public abstract class AbstractStrategy implements PieceStrategy{
                 (p, q) -> NOT_NULL.test(p));
     }
 
+    @Override
+    public void updateBoard(Coordinate origin, Coordinate target, ChessBoard board, boolean unMove) {
+        board.setEnPassant(new Coordinate(-1, -1));
+    }
+
+
 }

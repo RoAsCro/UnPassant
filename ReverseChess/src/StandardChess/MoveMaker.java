@@ -11,6 +11,7 @@ public class MoveMaker {
     public boolean makeMove(Coordinate origin, Coordinate target) {
         Piece piece = this.board.at(origin);
         if (piece.tryMove(origin, target, this.board)) {
+            piece.updateBoard(origin, target, this.board, false);
             this.board.place(target, piece);
             this.board.remove(origin);
             return true;

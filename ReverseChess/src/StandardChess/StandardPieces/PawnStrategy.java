@@ -44,8 +44,7 @@ public class PawnStrategy extends AbstractStrategy {
         )
                 ||
                 // Double move
-                (yCheck(colour, yDiff, 2 * unMove)
-                        && noXChange && doubleMoveCheck(origin, colour, (yDiff / 2)));
+                (noXChange && doubleMoveCheck(origin, colour, yDiff, unMove));
     }
 
     @Override
@@ -58,6 +57,26 @@ public class PawnStrategy extends AbstractStrategy {
         return tryMoveGeneral(origin, target, board, -1)
                 && super.tryUnMove(origin, target, board);
     }
+
+    @Override
+    public void updateBoard(Coordinate origin, Coordinate target, ChessBoard board, boolean unMove) {
+        int xDiff = Math.abs(origin.getX() - target.getX());
+        int yDiff = origin.getY() - target.getY();
+        String colour = board.at(origin).getColour();
+        if (unMove) {
+
+        } else {
+            if (doubleMoveCheck(origin, colour, yDiff, 1)) {
+                board.setEnPassant(new Coordinate(origin.getX(), origin.getY() - yDiff / 2));
+            } else if (xCheck(xDiff, 1,
+                    target, false,
+                    board, colour)
+                    && enPassantCheck(yDiff, target, colour, board)) {
+                board.remove(new Coordinate(target.getX(), target.getY()+ yDiff));
+            }
+        }
+    }
+
 
     private boolean yCheck(String colour, int yDiff, int targetY) {
         int modifier = 1;
@@ -78,6 +97,7 @@ public class PawnStrategy extends AbstractStrategy {
     }
 
     private boolean enPassantCheck(int yDiff, Coordinate target, String colour, ChessBoard board) {
+
         Coordinate ePTarget = new Coordinate(target.getX(), target.getY() + yDiff);
         Piece targetPiece = board.at(ePTarget);
         return board.getEnPassant().equals(target)
@@ -93,9 +113,13 @@ public class PawnStrategy extends AbstractStrategy {
         return board.at(ePTarget).getType().equals("null");
     }
 
-    private boolean doubleMoveCheck(Coordinate origin, String colour, int offSet) {
-        return (origin.getY() == 2 + offSet && colour.equals("white"))
-                || (origin.getY() == 5 + offSet && colour.equals("black"));
+    private boolean doubleMoveCheck(Coordinate origin, String colour, int yDiff, int unMove) {
+        if (!yCheck(colour, yDiff, 2 * unMove)) {
+            return false;
+        }
+
+        return (origin.getY() == 2 + yDiff / 2 && colour.equals("white"))
+                || (origin.getY() == 5 + yDiff / 2 && colour.equals("black"));
     }
 
     //TODO promotion
