@@ -26,7 +26,7 @@ public class KingStrategyTest {
 
     @Test
     public void testTryMoveCastle() {
-        ChessBoard boardTwo = BoardBuilder.buildBoard("r3k2r/8/8/8/8/8/8/R3K2R");
+        ChessBoard boardTwo = BoardBuilder.buildBoard("r3k2r/8/8/8/PPPPPPPP/8/8/R3K2R");
         Coordinate originTwo = new Coordinate(4, 0);
         Piece pieceTwo = boardTwo.at(originTwo);
         Assertions.assertTrue(pieceTwo.tryMove(originTwo, new Coordinate(2, 0), boardTwo));
@@ -49,6 +49,22 @@ public class KingStrategyTest {
 
         originTwo = new Coordinate(4, 7);
         pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryMove(originTwo, new Coordinate(2, 7), boardTwo));
+        Assertions.assertFalse(pieceTwo.tryMove(originTwo, new Coordinate(6, 7), boardTwo));
+
+    }
+
+    @Test
+    public void testTryMoveCastleCheck() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("r3k2r/6B1/3R4/PPPPPPPP/8/8/8/R3K1rR");
+        Coordinate originTwo = new Coordinate(4, 0);
+        Piece pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryMove(originTwo, new Coordinate(2, 0), boardTwo));
+        Assertions.assertFalse(pieceTwo.tryMove(originTwo, new Coordinate(6, 0), boardTwo));
+
+        originTwo = new Coordinate(4, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        System.out.println(boardTwo.at(new Coordinate(2, 5)).getType());
         Assertions.assertFalse(pieceTwo.tryMove(originTwo, new Coordinate(2, 7), boardTwo));
         Assertions.assertFalse(pieceTwo.tryMove(originTwo, new Coordinate(6, 7), boardTwo));
 
@@ -79,7 +95,7 @@ public class KingStrategyTest {
 
     @Test
     public void testTryUnMoveCastle() {
-        ChessBoard boardTwo = BoardBuilder.buildBoard("2kr1rk1/8/8/8/8/8/8/2KR1RK1");
+        ChessBoard boardTwo = BoardBuilder.buildBoard("2kr1rk1/8/8/8/PPPPPPPP/8/8/2KR1RK1");
         Coordinate originTwo = new Coordinate(2, 0);
         Piece pieceTwo = boardTwo.at(originTwo);
         Assertions.assertTrue(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
@@ -93,6 +109,25 @@ public class KingStrategyTest {
         originTwo = new Coordinate(6, 7);
         pieceTwo = boardTwo.at(originTwo);
         Assertions.assertTrue(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+
+    }
+
+    @Test
+    public void testTryUnMoveCastleCheck() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("2kr1rk1/6B1/3R4/PPPPPPPP/8/8/4q3/2KR1RK1");
+        Coordinate originTwo = new Coordinate(2, 0);
+        Piece pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+        originTwo = new Coordinate(6, 0);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+
+        originTwo = new Coordinate(2, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+        originTwo = new Coordinate(6, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
 
     }
 

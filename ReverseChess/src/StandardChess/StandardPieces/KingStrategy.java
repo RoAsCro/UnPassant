@@ -58,7 +58,7 @@ public class KingStrategy extends AbstractStrategy{
             }
         }
         String side = xDiff > 0 ? "queen" : "king";
-        return board.canCastle(side, colour);
+        return board.canCastle(side, colour) && !castleCheckCheck(origin, -(xDiff/2), board);
 
     }
 
@@ -75,24 +75,47 @@ public class KingStrategy extends AbstractStrategy{
                 || origin.equals(new Coordinate(coordinates[2].getX() + 2, coordinates[2].getY())))) {
             return false;
         }
+
         int originTargetDiff = ((target.getX() - origin.getX()) / 2);
         Piece rook = board.at(new Coordinate(
                 target.getX() + originTargetDiff,
                         origin.getY()));
+
         // There is a rook of the correct colour between king and king's origin
         if (!(rook.getType().equals("rook")
                 && rook.getColour().equals(colour))) {
             return false;
         }
         // There are no pieces blocking the castle
-        return board.at(
+        if (!(board.at(
                         new Coordinate(origin.getX() - originTargetDiff, origin.getY()))
                 .getType().equals("null")
                 &&
                 (origin.getX() - originTargetDiff * 2 > ChessBoard.LENGTH - 1
                         || board.at(new Coordinate(origin.getX() - originTargetDiff * 2, origin.getY()))
-                        .getType().equals("null"));
+                        .getType().equals("null")))) {
+            return false;
 
+        }
+        return !castleCheckCheck(origin, originTargetDiff, board);
     }
-    //TODO castling through check
+
+    /**
+     * This should only be called if all other castling checks have been carried out
+     * @param origin
+     * @param direction
+     * @param board
+     * @return
+     */
+    private boolean castleCheckCheck(Coordinate origin, int direction, ChessBoard board) {
+        Piece king = board.at(origin);
+        board.remove(origin);
+        Coordinate checkedSquare = new Coordinate(origin.getX() + direction, origin.getY());
+        Piece rook = board.at(checkedSquare);
+        board.place(checkedSquare, king);
+        boolean inCheck = board.getReader().inCheck(checkedSquare);
+        board.place(origin, king);
+        board.place(checkedSquare, rook);
+        return inCheck;
+    }
 }
