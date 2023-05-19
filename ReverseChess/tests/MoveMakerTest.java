@@ -1,6 +1,8 @@
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
+import StandardChess.Coordinate;
 import StandardChess.MoveMaker;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class MoveMakerTest {
@@ -10,6 +12,7 @@ public class MoveMakerTest {
     @Test
     public void tryMakeMove() {
         MoveMaker moveMaker = new MoveMaker(board);
+        Assertions.assertTrue(moveMaker.makeMove(new Coordinate(2, 2), new Coordinate(0, 3)));
     }
 
 }

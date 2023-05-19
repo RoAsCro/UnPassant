@@ -8,4 +8,8 @@ public class MoveMaker {
         this.board = board;
     }
 
+    public boolean makeMove(Coordinate origin, Coordinate target) {
+        return true;
+    }
+
 }
