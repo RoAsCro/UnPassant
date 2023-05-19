@@ -18,10 +18,10 @@ public class PawnStrategy extends AbstractStrategy {
 
     private boolean tryMoveGeneral(Coordinate origin, Coordinate target, ChessBoard board, int unMove) {
         int xDiff = Math.abs(origin.getX() - target.getX());
-
         int yDiff = origin.getY() - target.getY();
         Piece me = board.at(origin);
         String colour = me.getColour();
+
         boolean noXChange = xCheck(xDiff, 0,
                 target, false,
                 board, colour);
@@ -32,32 +32,31 @@ public class PawnStrategy extends AbstractStrategy {
                         ||
                         // Capture
                         (xCheck(xDiff, 1,
-                                target, true,
+                                target, unMove == 1,
                                 board, colour))
                         ||
                         // En Passant
                         (xCheck(xDiff, 1,
                                 target, false,
                                 board, colour)
-                                && (unMove == 1
-                                ? enPassantCheck(yDiff, target, colour, board)
-                                : unPassantCheck(yDiff, origin, board)))
+                                && enPassantCheck(yDiff, target, colour, board))
         )
         )
                 ||
                 // Double move
                 (yCheck(colour, yDiff, 2 * unMove)
-                        && noXChange && doubleMoveCheck(origin, colour, (yDiff / 2) * unMove))
-                        && super.tryMove(origin, target, board);
+                        && noXChange && doubleMoveCheck(origin, colour, (yDiff / 2)));
     }
 
     @Override
     public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
-        return tryMoveGeneral(origin, target, board, 1);
+        return tryMoveGeneral(origin, target, board, 1)
+                && super.tryMove(origin, target, board);
     }
     @Override
     public boolean tryUnMove(Coordinate origin, Coordinate target, ChessBoard board) {
-        return tryMoveGeneral(origin, target, board, -1);
+        return tryMoveGeneral(origin, target, board, -1)
+                && super.tryUnMove(origin, target, board);
     }
 
     private boolean yCheck(String colour, int yDiff, int targetY) {
@@ -68,12 +67,6 @@ public class PawnStrategy extends AbstractStrategy {
             modifier = 1;
         }
         return yDiff == targetY * modifier;
-    }
-
-    private boolean captureCheck(Coordinate target,ChessBoard board, Piece me) {
-        Piece captureTarget = board.at(target);
-        return NOT_NULL.test(captureTarget)
-                && !captureTarget.getColour().equals(me.getColour());
     }
 
     private boolean xCheck(int xDiff, int requiredDiff,
@@ -94,6 +87,7 @@ public class PawnStrategy extends AbstractStrategy {
                 !targetPiece.getColour().equals(colour);
     }
 
+    @Deprecated
     private boolean unPassantCheck(int yDiff, Coordinate origin, ChessBoard board) {
         Coordinate ePTarget = new Coordinate(origin.getX(), origin.getY() + yDiff);
         return board.at(ePTarget).getType().equals("null");
@@ -105,4 +99,5 @@ public class PawnStrategy extends AbstractStrategy {
     }
 
     //TODO promotion
+    //TODO can't unmove to back rank
 }

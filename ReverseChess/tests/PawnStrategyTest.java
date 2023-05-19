@@ -180,6 +180,18 @@ public class PawnStrategyTest {
     }
 
     @Test
+    public void testTryUnMoveNormalBlocked() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("1P1P4/1Pp5/1p1p4/4P3/4p3/1P1P4/1pP5/1P1P4");
+        Coordinate whiteOriginTwo =new Coordinate(1, 2);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(whitePieceTwo.tryUnMove(whiteOriginTwo, new Coordinate(1, 1), boardTwo));
+
+        Coordinate blackOriginTwo =new Coordinate(1, 5);
+        Piece blackPieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(1, 6), boardTwo));
+    }
+
+    @Test
     public void testTryUnMoveWrongDirection() {
         ChessBoard boardTwo = BoardBuilder.buildBoard("1P1P4/2p5/1p1p4/4P3/4p3/1P1P4/2P5/1P1P4");
         Coordinate whiteOriginTwo =new Coordinate(1, 2);
@@ -213,6 +225,77 @@ public class PawnStrategyTest {
         Coordinate blackOriginTwo =new Coordinate(4, 4);
         Piece blackPieceTwo = boardTwo.at(whiteOriginTwo);
         Assertions.assertTrue(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(4, 6), boardTwo));
+    }
+
+    @Test
+    public void testTryUnMoveDoubleBadPosition() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("8/8/8/3P4/4p3/8/8/8");
+        Coordinate whiteOriginTwo =new Coordinate(3, 4);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(whitePieceTwo.tryUnMove(whiteOriginTwo, new Coordinate(3, 2), boardTwo));
+
+        Coordinate blackOriginTwo =new Coordinate(4, 3);
+        Piece blackPieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(4, 5), boardTwo));
+    }
+
+    @Test
+    public void testTryUnMoveDoubleBlockedPartway() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("8/8/4N3/4p3/4P3/4n3/8/8");
+        Coordinate whiteOriginTwo =new Coordinate(4, 3);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(whitePieceTwo.tryUnMove(whiteOriginTwo, new Coordinate(4, 1), boardTwo));
+
+        Coordinate blackOriginTwo =new Coordinate(4, 4);
+        Piece blackPieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(4, 6), boardTwo));
+    }
+
+    @Test
+    public void testTryUnMoveDoubleBlockedOnTarget() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("8/4N3/8/4p3/4P3/8/4n3/8");
+        Coordinate whiteOriginTwo =new Coordinate(4, 3);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(whitePieceTwo.tryUnMove(whiteOriginTwo, new Coordinate(4, 1), boardTwo));
+
+        Coordinate blackOriginTwo =new Coordinate(4, 4);
+        Piece blackPieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(4, 6), boardTwo));
+    }
+
+    @Test
+    public void testTryUnCapture() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("8/8/4P3/8/8/4p3/8/8");
+        Coordinate whiteOriginTwo =new Coordinate(4, 5);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertTrue(whitePieceTwo.tryUnMove(whiteOriginTwo, new Coordinate(5, 4), boardTwo));
+
+        Coordinate blackOriginTwo =new Coordinate(4, 2);
+        Piece blackPieceTwo = boardTwo.at(blackOriginTwo);
+        Assertions.assertTrue(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(3, 3), boardTwo));
+    }
+
+    @Test
+    public void testTryUnCaptureBlocked() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("8/8/4P3/5n2/3N4/4p3/8/8");
+        Coordinate whiteOriginTwo =new Coordinate(4, 5);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(whitePieceTwo.tryUnMove(whiteOriginTwo, new Coordinate(5, 4), boardTwo));
+
+        Coordinate blackOriginTwo =new Coordinate(4, 2);
+        Piece blackPieceTwo = boardTwo.at(blackOriginTwo);
+        Assertions.assertFalse(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(3, 3), boardTwo));
+    }
+    @Test
+    public void testTryUnCaptureTooFar() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("8/8/4P3/8/8/4p3/8/8");
+        Coordinate whiteOriginTwo =new Coordinate(4, 5);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(whitePieceTwo.tryUnMove(whiteOriginTwo, new Coordinate(6, 3), boardTwo));
+
+        Coordinate blackOriginTwo =new Coordinate(4, 2);
+        Piece blackPieceTwo = boardTwo.at(blackOriginTwo);
+        Assertions.assertFalse(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(2, 4), boardTwo));
     }
 
 }
