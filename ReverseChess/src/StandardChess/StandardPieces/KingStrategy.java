@@ -42,6 +42,23 @@ public class KingStrategy extends AbstractStrategy{
     }
 
     @Override
+    public void updateBoard(Coordinate origin, Coordinate target, ChessBoard board, boolean unMove) {
+        int xDiff = origin.getX() - target.getX();
+        Piece king = board.at(origin);
+        if (unMove) {
+
+        } else {
+            board.setCastle("king", king.getColour(), false);
+            board.setCastle("queen", king.getColour(), false);
+            if (Math.abs(xDiff) == 2) {
+                Coordinate rookLocation = new Coordinate(target.getX() - (xDiff < 0 ? xDiff / 2 : xDiff), target.getY());
+                board.place(new Coordinate(origin.getX() - xDiff / 2, origin.getY()), board.at(rookLocation));
+                board.remove(rookLocation);
+            }
+        }
+    }
+
+    @Override
     public Coordinate[] getMoves(Coordinate origin) {
         return new Coordinate[0];
     }

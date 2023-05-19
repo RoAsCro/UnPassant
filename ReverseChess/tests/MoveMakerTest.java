@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class MoveMakerTest {
 
-    ChessBoard board = BoardBuilder.buildBoard("rnbqkbnr/pp1pppp1/2p5/1Q1P2B1/7p/2N5/PPP1PPPP/R3KBNR w KQkq - 0 1");
+    ChessBoard board = BoardBuilder.buildBoard("rnbqkbnr/pp1pppp1/2p5/1Q1P2B1/7p/2N1NB2/PPP1PPPP/R3K2R w KQkq - 0 1");
 
     @Test
     public void tryMakeMove() {
@@ -35,6 +35,22 @@ public class MoveMakerTest {
         Assertions.assertTrue(moveMaker.makeMove(new Coordinate(7, 3), new Coordinate(6, 2)));
         Assertions.assertEquals("null", this.board.at(new Coordinate(6, 3)).getType());
 
+    }
+
+    @Test
+    public void tryMakeMoveCastle() {
+        MoveMaker moveMaker = new MoveMaker(board);
+        Assertions.assertTrue(moveMaker.makeMove(new Coordinate(4, 0), new Coordinate(2, 0)));
+        Assertions.assertEquals("rook", this.board.at(new Coordinate(3, 0)).getType());
+        Assertions.assertEquals("null", this.board.at(new Coordinate(0, 0)).getType());
+
+
+        this.board = BoardBuilder.buildBoard("rnbqkbnr/pp1pppp1/2p5/1Q1P2B1/7p/2N1NB2/PPP1PPPP/R3K2R w KQkq - 0 1");
+        moveMaker = new MoveMaker(board);
+        Assertions.assertTrue(moveMaker.makeMove(new Coordinate(4, 0), new Coordinate(6, 0)));
+        Assertions.assertEquals("rook", this.board.at(new Coordinate(5, 0)).getType());
+        Assertions.assertEquals("null", this.board.at(new Coordinate(7, 0)).getType());
+        
     }
 
 }
