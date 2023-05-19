@@ -1,8 +1,11 @@
 package StandardChess;
 
-import java.util.stream.Stream;
-
 public class MoveMaker {
 
+    private ChessBoard board;
+
+    public MoveMaker(ChessBoard board) {
+        this.board = board;
+    }
 
 }
