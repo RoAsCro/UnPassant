@@ -15,6 +15,40 @@ public class PawnStrategy extends AbstractStrategy {
         return new Coordinate[0];
     }
 
+
+    private boolean tryMoveGeneral(Coordinate origin, Coordinate target, ChessBoard board, int unMove) {
+        int xDiff = Math.abs(origin.getX() - target.getX());
+
+        int yDiff = origin.getY() - target.getY();
+        Piece me = board.at(origin);
+        String colour = me.getColour();
+        boolean noXChange = xCheck(xDiff, 0,
+                target, false,
+                board, colour);
+        return (yCheck(colour, yDiff, unMove)
+                && (
+                // Normal move
+                noXChange
+                        ||
+                        // Capture
+                        (xCheck(xDiff, 1,
+                                target, true,
+                                board, colour))
+                        ||
+                        // En Passant
+                        (xCheck(xDiff, 1,
+                                target, false,
+                                board, colour)
+                                && enPassantCheck(yDiff, target, colour, board))
+        )
+        )
+                ||
+                // Double move
+                (yCheck(colour, yDiff, 2 * unMove)
+                        && noXChange && doubleMoveCheck(origin, colour))
+                        && super.tryMove(origin, target, board);
+    }
+
     @Override
     public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
         int xDiff = Math.abs(origin.getX() - target.getX());
@@ -50,6 +84,14 @@ public class PawnStrategy extends AbstractStrategy {
     }
     @Override
     public boolean tryUnMove(Coordinate origin, Coordinate target, ChessBoard board) {
+        int xDiff = Math.abs(origin.getX() - target.getX());
+
+        int yDiff = origin.getY() - target.getY();
+        Piece me = board.at(origin);
+        String colour = me.getColour();
+        boolean noXChange = xCheck(xDiff, 0,
+                target, false,
+                board, colour);
         return true;
     }
 
