@@ -167,4 +167,52 @@ public class PawnStrategyTest {
         Assertions.assertFalse(blackPiece.tryMove(blackOrigin, new Coordinate(2, 3), board));
     }
 
+    @Test
+    public void testTryUnMoveNormal() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("1P1P4/2p5/1p1p4/4P3/4p3/1P1P4/2P5/1P1P4");
+        Coordinate whiteOriginTwo =new Coordinate(1, 2);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertTrue(whitePieceTwo.tryUnMove(whiteOriginTwo, new Coordinate(1, 1), boardTwo));
+
+        Coordinate blackOriginTwo =new Coordinate(1, 5);
+        Piece blackPieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertTrue(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(1, 6), boardTwo));
+    }
+
+    @Test
+    public void testTryUnMoveWrongDirection() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("1P1P4/2p5/1p1p4/4P3/4p3/1P1P4/2P5/1P1P4");
+        Coordinate whiteOriginTwo =new Coordinate(1, 2);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(whitePieceTwo.tryUnMove(whiteOriginTwo, new Coordinate(1, 3), boardTwo));
+
+        Coordinate blackOriginTwo =new Coordinate(1, 5);
+        Piece blackPieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(1, 4), boardTwo));
+    }
+
+    @Test
+    public void testTryUnMoveTooFar() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("8/8/8/3P4/4p3/8/8/8");
+        Coordinate whiteOriginTwo =new Coordinate(3, 4);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(whitePieceTwo.tryUnMove(whiteOriginTwo, new Coordinate(3, 1), boardTwo));
+
+        Coordinate blackOriginTwo =new Coordinate(4, 3);
+        Piece blackPieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(4, 6), boardTwo));
+    }
+
+    @Test
+    public void testTryUnMoveDouble() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("8/8/8/4p3/4P3/8/8/8");
+        Coordinate whiteOriginTwo =new Coordinate(4, 3);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertTrue(whitePieceTwo.tryUnMove(whiteOriginTwo, new Coordinate(4, 1), boardTwo));
+
+        Coordinate blackOriginTwo =new Coordinate(4, 4);
+        Piece blackPieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertTrue(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(4, 6), boardTwo));
+    }
+
 }

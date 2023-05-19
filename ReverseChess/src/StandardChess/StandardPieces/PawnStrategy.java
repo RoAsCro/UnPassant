@@ -39,7 +39,9 @@ public class PawnStrategy extends AbstractStrategy {
                         (xCheck(xDiff, 1,
                                 target, false,
                                 board, colour)
-                                && enPassantCheck(yDiff, target, colour, board))
+                                && (unMove == 1
+                                ? enPassantCheck(yDiff, target, colour, board)
+                                : unPassantCheck(yDiff, origin, board)))
         )
         )
                 ||
@@ -90,6 +92,11 @@ public class PawnStrategy extends AbstractStrategy {
                 targetPiece.getType().equals("pawn")
                 &&
                 !targetPiece.getColour().equals(colour);
+    }
+
+    private boolean unPassantCheck(int yDiff, Coordinate origin, ChessBoard board) {
+        Coordinate ePTarget = new Coordinate(origin.getX(), origin.getY() + yDiff);
+        return board.at(ePTarget).getType().equals("null");
     }
 
     private boolean doubleMoveCheck(Coordinate origin, String colour, int offSet) {
