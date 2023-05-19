@@ -12,7 +12,9 @@ public class MoveMakerTest {
     @Test
     public void tryMakeMove() {
         MoveMaker moveMaker = new MoveMaker(board);
-        Assertions.assertTrue(moveMaker.makeMove(new Coordinate(2, 2), new Coordinate(0, 3)));
+        Coordinate target = new Coordinate(0, 3);
+        moveMaker.makeMove(new Coordinate(2, 2), target);
+        Assertions.assertEquals(this.board.at(target).getType(), "knight");
     }
 
 }

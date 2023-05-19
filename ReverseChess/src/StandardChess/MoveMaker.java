@@ -9,7 +9,13 @@ public class MoveMaker {
     }
 
     public boolean makeMove(Coordinate origin, Coordinate target) {
-        return true;
+        Piece piece = this.board.at(origin);
+        if (piece.tryMove(origin, target, this.board)) {
+            this.board.place(target, piece);
+            this.board.remove(origin);
+            return true;
+        }
+        return false;
     }
 
 }
