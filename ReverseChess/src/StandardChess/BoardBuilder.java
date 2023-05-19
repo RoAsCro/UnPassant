@@ -3,7 +3,7 @@ package StandardChess;
 
 public class BoardBuilder {
     private final static int VALUE_OF_ZERO = 48;
-    private final static String INITIAL_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    private final static String INITIAL_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -";
 
     private final static PieceFactory factory = StandardPieceFactory.getInstance();
 

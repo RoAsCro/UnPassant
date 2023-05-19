@@ -7,6 +7,8 @@ public interface ChessBoard {
 
     public String getTurn();
 
+    public BoardReader getReader();
+
     public void setTurn(String turn);
 
     public void place(Coordinate coordinate, Piece piece);
@@ -14,22 +16,6 @@ public interface ChessBoard {
     public boolean canCastle(String pieceSide, String colour);
 
     public void setCastle(String pieceSide, String colour, boolean canCastle);
-//
-//    public boolean canCastleWhiteKing();
-//
-//    public void setCastleWhiteKing(boolean castleWhiteKing);
-//
-//    public boolean canCastleWhiteQueen();
-//
-//    public void setCastleWhiteQueen(boolean castleWhiteQueen);
-//
-//    public boolean canCastleBlackKing();
-//
-//    public void setCastleBlackKing(boolean castleBlackKing);
-//
-//    public boolean canCastleBlackQueen();
-//
-//    public void setCastleBlackQueen(boolean castleBlackQueen);
 
     Coordinate getEnPassant();
 

@@ -30,6 +30,11 @@ public class StandardBoard implements ChessBoard{
     }
 
     @Override
+    public BoardReader getReader() {
+        return new StandardBoardReader(this);
+    }
+
+    @Override
     public void setTurn(String turn) {
         this.turn = turn;
     }
