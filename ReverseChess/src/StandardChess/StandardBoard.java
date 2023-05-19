@@ -21,7 +21,12 @@ public class StandardBoard implements ChessBoard{
 
     @Override
     public Piece at(Coordinate coordinate) {
-        return this.board[coordinate.getX()][coordinate.getY()];
+        int x = coordinate.getX();
+        int y = coordinate.getY();
+
+        return x < LENGTH && x >= 0 && y < LENGTH && y >= 0
+                ? this.board[coordinate.getX()][coordinate.getY()]
+                : NullPiece.getInstance();
     }
 
     @Override

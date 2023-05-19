@@ -119,5 +119,5 @@ public class BoardBuilder {
         }
 
     }
-
+    //TODO consider including en passant rights
 }

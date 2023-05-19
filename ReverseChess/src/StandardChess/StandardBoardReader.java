@@ -1,7 +1,7 @@
 package StandardChess;
 
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -14,7 +14,16 @@ public class StandardBoardReader implements BoardReader {
 
     private static final int ASCII_LOWERCASE_A = 97;
 
-    private StandardBoard board;
+    private static final List<Coordinate> STANDARD_DIRECTIONS = List.of(
+            Coordinates.UP, Coordinates.DOWN, Coordinates.LEFT,
+            Coordinates.RIGHT, Coordinates.UP_RIGHT, Coordinates.UP_LEFT,
+            Coordinates.DOWN_LEFT, Coordinates.DOWN_RIGHT);
+    private static final List<Coordinate> KNIGHT_DIRECTIONS = List.of( new Coordinate(1, 2),
+            new Coordinate(1, -2), new Coordinate(-1, 2), new Coordinate(-1, -2),
+            new Coordinate(2, 1), new Coordinate(-2, 1), new Coordinate(2, -1),
+            new Coordinate(-2, -1));
+
+    private final StandardBoard board;
 
     private Coordinate current = new Coordinate(0, 0);
 
@@ -91,7 +100,25 @@ public class StandardBoardReader implements BoardReader {
     }
 
     @Override
-    public boolean inCheck(String colour) {
+    public boolean inCheck(Coordinate kingLocation) {
+        Predicate<Coordinate> canAttackKing =
+                c -> this.board.at(this.current).tryMove(this.current, kingLocation, this.board);
+        for (Coordinate currentDirection : STANDARD_DIRECTIONS) {
+            to(Coordinates.add(kingLocation, currentDirection));
+            nextWhile(currentDirection,
+                    c -> hasNext(currentDirection)
+                            && this.board.at(this.current).getType().equals("null")
+            );
+            if (canAttackKing.test(kingLocation)) {
+                return true;
+            }
+        }
+        for (Coordinate currentDirection : KNIGHT_DIRECTIONS) {
+            to(Coordinates.add(kingLocation, currentDirection));
+            if (canAttackKing.test(kingLocation)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -130,6 +157,7 @@ public class StandardBoardReader implements BoardReader {
 
     @Override
     public Piece to(Coordinate target) {
+
         this.current = target;
         return this.board.at(this.current);
     }

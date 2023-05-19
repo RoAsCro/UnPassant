@@ -42,10 +42,10 @@ public class PawnStrategyTest {
         ChessBoard boardTwo = BoardBuilder.buildBoard("8/8/7p/8/P7/8/8/8");
 
         Coordinate whiteOriginTwo = new Coordinate(0, 3);
-        Assertions.assertTrue(board.at(whiteOriginTwo).tryMove(whiteOriginTwo, new Coordinate(0, 5), board));
+        Assertions.assertFalse(board.at(whiteOriginTwo).tryMove(whiteOriginTwo, new Coordinate(0, 5), board));
 
         Coordinate blackOriginTwo = new Coordinate(7, 5);
-        Assertions.assertTrue(board.at(blackOriginTwo).tryMove(blackOriginTwo, new Coordinate(7, 3), board));
+        Assertions.assertFalse(board.at(blackOriginTwo).tryMove(blackOriginTwo, new Coordinate(7, 3), board));
     }
 
     @Test

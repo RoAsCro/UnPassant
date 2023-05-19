@@ -7,7 +7,7 @@ public interface BoardReader {
 
     public String toFEN();
 
-    public boolean inCheck(String colour);
+    public boolean inCheck(Coordinate kingLocation);
 
     public Piece next(Coordinate direction);
 
