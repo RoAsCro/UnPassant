@@ -56,10 +56,10 @@ public class StandardBoardReader implements BoardReader {
                             ? 1
                             : 0));
                 }});
+            if (counter[0] != 0) {
+                builder.append(counter[0]);
+            }
             if (y != 0) {
-                if (counter[0] != 0) {
-                    builder.append(counter[0]);
-                }
                 builder.append("/");
             }
         }

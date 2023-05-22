@@ -35,6 +35,11 @@ public class BoardReaderTest {
         testFEN("r1bq2nr/pppppppp/3p4/8/8/8/PPPPPPPP/RNBQKBNR b KQkq -");
     }
 
+    @Test
+    public void testToFENMissingEndingBug() {
+        testFEN("1r1q1rk1/1b4b1/ppnpp1pp/5n2/3P1P2/P2BBNQ1/1P1N2PP/3R1RK1 w - -");
+    }
+
     private void testCheck(String fen, boolean inCheck, Coordinate kingLocation) {
         ChessBoard boardTwo = BoardBuilder.buildBoard(fen);
         Assertions.assertEquals(inCheck, boardTwo.getReader().inCheck(kingLocation));
