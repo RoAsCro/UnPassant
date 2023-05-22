@@ -36,6 +36,8 @@ public class UnMoveMaker {
 
             if (!this.captureFlag && piece.getType().equals("pawn") && origin.getX() != target.getX()) {
                 return false;
+            } else if (this.captureFlag && piece.getType().equals("pawn") && origin.getX() == target.getX()) {
+                return false;
             }
             else if (this.captureFlag && piece.getType().equals("king") && Math.abs(origin.getX() - target.getX()) == 2) {
                 return false;

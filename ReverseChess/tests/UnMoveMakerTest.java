@@ -107,6 +107,13 @@ public class UnMoveMakerTest {
         Coordinate origin = new Coordinate(3, 2);
         makeUnMove(origin, target, "pawn", "null", false, this.boardTwo);
     }
+    @Test
+    public void tryMakeUnMovePawnUnCaptureVertical() {
+        Coordinate target = new Coordinate(3, 3);
+        Coordinate origin = new Coordinate(3, 2);
+        this.boardTwo.setTurn("b");
+        makeUnMoveWithCapture(origin, target, "pawn", "null", false, "q", this.boardTwo, false);
+    }
 
     @Test
     public void tryMakeUnMovePawnUnPassant() {
