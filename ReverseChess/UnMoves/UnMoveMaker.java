@@ -1,13 +1,10 @@
-import StandardChess.ChessBoard;
-import StandardChess.Coordinate;
-import StandardChess.NullPiece;
-import StandardChess.Piece;
+import StandardChess.*;
 
 public class UnMoveMaker {
     private boolean captureFlag = false;
     private boolean enPassantFlag = false;
+    private boolean promotionFlag = false;
     private Piece capturePiece = NullPiece.getInstance();
-
     private ChessBoard board;
     private static final Coordinate nullCoordinate = new Coordinate(-1, -1);
 
@@ -28,6 +25,11 @@ public class UnMoveMaker {
                     || !piece.getType().equals("pawn")) {
                 return false;
             }
+        } else if (this.promotionFlag ) {
+            if (origin.getY() != (this.board.getTurn().equals("w") ? ChessBoard.LENGTH - 1 : 0)) {
+                return false;
+            }
+            piece = StandardPieceFactory.getInstance().getPiece("p");
         }
         if (piece.tryUnMove(origin, target, this.board)) {
             if (!this.captureFlag && piece.getType().equals("pawn") && origin.getX() != target.getX()) {
@@ -44,6 +46,7 @@ public class UnMoveMaker {
             }
             return true;
         }
+
         return false;
     }
 
@@ -57,5 +60,9 @@ public class UnMoveMaker {
 
     public void setCapturePiece(Piece piece) {
         this.capturePiece = piece;
+    }
+
+    public void setPromotionFlag(boolean promotionFlag) {
+        this.promotionFlag = promotionFlag;
     }
 }
