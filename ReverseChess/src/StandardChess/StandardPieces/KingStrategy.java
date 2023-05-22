@@ -48,7 +48,9 @@ public class KingStrategy extends AbstractStrategy{
         Piece king = board.at(origin);
         if (unMove) {
             if (castle) {
-                
+                Coordinate rookLocation = new Coordinate(target.getX() + xDiff / 2, target.getY());
+                board.place(new Coordinate(origin.getX() + (xDiff > 0 ? xDiff / 2 : xDiff), origin.getY()), board.at(rookLocation));
+                board.remove(rookLocation);
             }
         } else {
             board.setCastle("king", king.getColour(), false);

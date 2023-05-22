@@ -24,7 +24,8 @@ public class UnMoveMaker {
         Coordinate captureLocation = origin;
         if (this.enPassantFlag) {
             captureLocation = new Coordinate(origin.getX(), origin.getY() - (this.board.getTurn().equals("w") ? 1 : -1));
-            if (!this.board.at(captureLocation).getType().equals("null")) {
+            if (!this.board.at(captureLocation).getType().equals("null")
+                    || !piece.getType().equals("pawn")) {
                 return false;
             }
         }
@@ -32,6 +33,10 @@ public class UnMoveMaker {
             if (!this.captureFlag && piece.getType().equals("pawn") && origin.getX() != target.getX()) {
                 return false;
             }
+            else if (this.captureFlag && piece.getType().equals("king") && Math.abs(origin.getX() - target.getX()) == 2) {
+                return false;
+            }
+            piece.updateBoard(origin, target, board, true);
             this.board.remove(origin);
             this.board.place(target, piece);
             if (this.captureFlag) {

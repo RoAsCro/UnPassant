@@ -19,6 +19,8 @@ public interface ChessBoard {
 
     public void setCastle(String pieceSide, String colour, boolean canCastle);
 
+//    public void setUnCastle(String pieceSide, String colour);
+
     Coordinate getEnPassant();
 
     void setEnPassant(Coordinate coordinate);
