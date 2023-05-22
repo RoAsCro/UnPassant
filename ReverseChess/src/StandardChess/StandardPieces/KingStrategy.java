@@ -44,13 +44,16 @@ public class KingStrategy extends AbstractStrategy{
     @Override
     public void updateBoard(Coordinate origin, Coordinate target, ChessBoard board, boolean unMove) {
         int xDiff = origin.getX() - target.getX();
+        boolean castle = Math.abs(xDiff) == 2;
         Piece king = board.at(origin);
         if (unMove) {
-
+            if (castle) {
+                
+            }
         } else {
             board.setCastle("king", king.getColour(), false);
             board.setCastle("queen", king.getColour(), false);
-            if (Math.abs(xDiff) == 2) {
+            if (castle) {
                 Coordinate rookLocation = new Coordinate(target.getX() - (xDiff < 0 ? xDiff / 2 : xDiff), target.getY());
                 board.place(new Coordinate(origin.getX() - xDiff / 2, origin.getY()), board.at(rookLocation));
                 board.remove(rookLocation);
@@ -90,12 +93,13 @@ public class KingStrategy extends AbstractStrategy{
         // Starting location is valid
         if (!(origin.equals(new Coordinate(coordinates[1].getX() - 1, coordinates[1].getY()))
                 || origin.equals(new Coordinate(coordinates[2].getX() + 2, coordinates[2].getY())))) {
+
             return false;
         }
 
         int originTargetDiff = ((target.getX() - origin.getX()) / 2);
         Piece rook = board.at(new Coordinate(
-                target.getX() + originTargetDiff,
+                target.getX() - originTargetDiff,
                         origin.getY()));
 
         // There is a rook of the correct colour between king and king's origin
@@ -104,6 +108,7 @@ public class KingStrategy extends AbstractStrategy{
             return false;
         }
         // There are no pieces blocking the castle
+
         if (!(board.at(
                         new Coordinate(origin.getX() - originTargetDiff, origin.getY()))
                 .getType().equals("null")
@@ -111,9 +116,11 @@ public class KingStrategy extends AbstractStrategy{
                 (origin.getX() - originTargetDiff * 2 > ChessBoard.LENGTH - 1
                         || board.at(new Coordinate(origin.getX() - originTargetDiff * 2, origin.getY()))
                         .getType().equals("null")))) {
+
             return false;
 
         }
+
         return !castleCheckCheck(origin, originTargetDiff, board);
     }
 

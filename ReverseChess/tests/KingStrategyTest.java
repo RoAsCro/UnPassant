@@ -111,6 +111,13 @@ public class KingStrategyTest {
         Assertions.assertTrue(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
 
     }
+    @Test
+    public void testTryUnMoveCastleCheckingWrongSquareBug() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("2kr1rk1/8/8/8/PPPPPPPP/8/8/5RK1");
+        Coordinate originTwo = new Coordinate(6, 0);
+        Piece pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertTrue(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+    }
 
     @Test
     public void testTryUnMoveCastleCheck() {

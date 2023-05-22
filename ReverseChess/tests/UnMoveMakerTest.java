@@ -110,9 +110,10 @@ public class UnMoveMakerTest {
 
     @Test
     public void tryMakeUnMoveCastle() {
-        Coordinate target = new Coordinate(4, 0);
+        Coordinate target = Coordinates.WHITE_KING;
         Coordinate origin = new Coordinate(6, 0);
         this.board.setTurn("w");
+        System.out.println(this.board.getReader().toFEN());
         makeUnMove(origin, target, "null", "king", true, this.board);
         Assertions.assertEquals("null", this.board.at(new Coordinate(5, 0)).getType());
         Assertions.assertEquals("rook", this.board.at(new Coordinate(7, 0)).getType());
