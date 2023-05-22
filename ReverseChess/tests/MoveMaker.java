@@ -1,4 +1,6 @@
-package StandardChess;
+import StandardChess.ChessBoard;
+import StandardChess.Coordinate;
+import StandardChess.Piece;
 
 public class MoveMaker {
 

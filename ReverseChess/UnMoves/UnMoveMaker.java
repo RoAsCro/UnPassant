@@ -19,6 +19,9 @@ public class UnMoveMaker {
     private boolean makeUnMoveHelper(Coordinate origin, Coordinate target) {
         Piece piece = this.board.at(origin);
         Coordinate captureLocation = origin;
+        if (!this.board.getTurn().equals(piece.getColour().toLowerCase().substring(0, 1))) {
+            return false;
+        }
         if (this.enPassantFlag) {
             captureLocation = new Coordinate(origin.getX(), origin.getY() - (this.board.getTurn().equals("w") ? 1 : -1));
             if (!this.board.at(captureLocation).getType().equals("null")

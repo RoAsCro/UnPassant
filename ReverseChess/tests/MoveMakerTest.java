@@ -1,7 +1,6 @@
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
-import StandardChess.MoveMaker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

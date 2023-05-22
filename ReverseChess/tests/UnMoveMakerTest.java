@@ -13,6 +13,7 @@ public class UnMoveMakerTest {
 
 
     public void makeUnMove(Coordinate origin, Coordinate target, String originType, String targetType, boolean pass, ChessBoard board) {
+        board.setTurn(board.at(origin).getColour().substring(0,1));
         UnMoveMaker unMoveMaker = new UnMoveMaker(board);
         Assertions.assertEquals(pass, unMoveMaker.makeUnMove(origin, target));
         Assertions.assertEquals(targetType, board.at(target).getType(), "target piece wrong");
@@ -20,6 +21,7 @@ public class UnMoveMakerTest {
     }
 
     public void makeUnMoveWithCapture(Coordinate origin, Coordinate target, String originType, String targetType, boolean pass, String capturePiece, ChessBoard board, boolean ep) {
+        board.setTurn(board.at(origin).getColour().substring(0,1));
         UnMoveMaker unMoveMaker = new UnMoveMaker(board);
         unMoveMaker.setCaptureFlag(true);
         unMoveMaker.setEnPassantFlag(ep);
@@ -31,6 +33,7 @@ public class UnMoveMakerTest {
     }
 
     public void makeUnMoveWithPromotion(Coordinate origin, Coordinate target, String originType, String targetType, boolean pass, ChessBoard board, boolean capture, String piece ) {
+        board.setTurn(board.at(origin).getColour().substring(0,1));
         UnMoveMaker unMoveMaker = new UnMoveMaker(board);
         unMoveMaker.setCaptureFlag(true);
         unMoveMaker.setPromotionFlag(true);
@@ -245,7 +248,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMovePromoteCaptureWrongColour() {
         Coordinate target = new Coordinate(3, 1);
         Coordinate origin = new Coordinate(3, 0);
-        boardFour.setTurn("w");
         makeUnMoveWithPromotion(origin, target, "queen", "null", false, boardFour, false, "q");
     }
 
@@ -253,8 +255,19 @@ public class UnMoveMakerTest {
     public void tryMakeUnMovePromoteKing() {
         Coordinate target = new Coordinate(1, 6);
         Coordinate origin = new Coordinate(1, 7);
-        boardFour.setTurn("w");
         makeUnMoveWithPromotion(origin, target, "king", "null", false, boardFour, false, "q");
     }
+
+    @Test
+    public void tryMakeUnMoveWrongTurn() {
+        Coordinate target = new Coordinate(5, 3);
+        Coordinate origin = new Coordinate(4, 4);
+        UnMoveMaker unMoveMaker = new UnMoveMaker(this.boardFour);
+        this.boardFour.setTurn("w");
+        Assertions.assertFalse(unMoveMaker.makeUnMove(origin, target));
+    }
+
+    // TODO turn taking
+    // TODO
 
 }
