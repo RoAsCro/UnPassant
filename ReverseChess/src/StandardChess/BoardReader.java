@@ -9,6 +9,8 @@ public interface BoardReader {
 
     public boolean inCheck(Coordinate kingLocation);
 
+    public Coordinate getCoord();
+
     public Piece next(Coordinate direction);
 
     public boolean hasNext(Coordinate direction);

@@ -13,8 +13,11 @@ public class MoveMakerTest {
     public void tryMakeMove() {
         MoveMaker moveMaker = new MoveMaker(board);
         Coordinate target = new Coordinate(0, 3);
-        moveMaker.makeMove(new Coordinate(2, 2), target);
+        Coordinate origin = new Coordinate(2, 2);
+        moveMaker.makeMove(origin, target);
         Assertions.assertEquals(this.board.at(target).getType(), "knight");
+        Assertions.assertEquals(this.board.at(origin).getType(), "null");
+
     }
 
     @Test
@@ -44,13 +47,12 @@ public class MoveMakerTest {
         Assertions.assertEquals("rook", this.board.at(new Coordinate(3, 0)).getType());
         Assertions.assertEquals("null", this.board.at(new Coordinate(0, 0)).getType());
 
-
         this.board = BoardBuilder.buildBoard("rnbqkbnr/pp1pppp1/2p5/1Q1P2B1/7p/2N1NB2/PPP1PPPP/R3K2R w KQkq - 0 1");
         moveMaker = new MoveMaker(board);
         Assertions.assertTrue(moveMaker.makeMove(new Coordinate(4, 0), new Coordinate(6, 0)));
         Assertions.assertEquals("rook", this.board.at(new Coordinate(5, 0)).getType());
         Assertions.assertEquals("null", this.board.at(new Coordinate(7, 0)).getType());
-        
+
     }
 
 }

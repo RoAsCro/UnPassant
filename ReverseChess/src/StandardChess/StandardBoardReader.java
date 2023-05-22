@@ -122,6 +122,11 @@ public class StandardBoardReader implements BoardReader {
         return false;
     }
 
+    @Override
+    public Coordinate getCoord() {
+        return this.current;
+    }
+
     private Coordinate getNext(Coordinate direction) {
         return Coordinates.add(this.current, direction);
     }
