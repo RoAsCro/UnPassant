@@ -32,6 +32,8 @@ public class UnMoveMaker {
             piece = StandardPieceFactory.getInstance().getPiece("p");
         }
         if (piece.tryUnMove(origin, target, this.board)) {
+            System.out.println(origin.getX() != target.getX());
+
             if (!this.captureFlag && piece.getType().equals("pawn") && origin.getX() != target.getX()) {
                 return false;
             }
