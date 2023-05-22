@@ -32,14 +32,13 @@ public class UnMoveMaker {
             piece = StandardPieceFactory.getInstance().getPiece("p");
         }
         if (piece.tryUnMove(origin, target, this.board)) {
-            System.out.println(origin.getX() != target.getX());
-
-            if (!this.captureFlag && piece.getType().equals("pawn") && origin.getX() != target.getX()) {
+            int xDiff = origin.getX() - target.getX();
+            if (!this.captureFlag && piece.getType().equals("pawn") && xDiff != 0) {
                 return false;
-            } else if (this.captureFlag && piece.getType().equals("pawn") && origin.getX() == target.getX()) {
+            } else if (this.captureFlag && piece.getType().equals("pawn") && xDiff == 0) {
                 return false;
             }
-            else if (this.captureFlag && piece.getType().equals("king") && Math.abs(origin.getX() - target.getX()) == 2) {
+            else if (this.captureFlag && piece.getType().equals("king") && Math.abs(xDiff) == 2) {
                 return false;
             }
             piece.updateBoard(origin, target, board, true);
