@@ -109,6 +109,13 @@ public class UnMoveMakerTest {
         makeUnMoveWithCapture(origin, target, "pawn", "null",  false, "p", this.boardTwo, true);
         Assertions.assertEquals("knight", this.boardTwo.at(new Coordinate(5, 4)).getType());
     }
+    @Test
+    public void tryMakeUnMovePawnUnPassantNotAPawn() {
+        Coordinate target = new Coordinate(4, 4);
+        Coordinate origin = new Coordinate(4, 3);
+        this.boardThree.setTurn("w");
+        makeUnMoveWithCapture(origin, target, "rook", "null",  false, "p", this.boardThree, true);
+    }
 
     @Test
     public void tryMakeUnMoveCastleWhiteKing() {
