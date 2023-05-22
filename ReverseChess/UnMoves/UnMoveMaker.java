@@ -26,7 +26,7 @@ public class UnMoveMaker {
                 return false;
             }
         } else if (this.promotionFlag ) {
-            if (origin.getY() != (this.board.getTurn().equals("w") ? ChessBoard.LENGTH - 1 : 0)) {
+            if (origin.getY() != (this.board.getTurn().equals("w") ? ChessBoard.LENGTH - 1 : 0) || piece.getType().equals("king")) {
                 return false;
             }
             piece = StandardPieceFactory.getInstance().getPiece("p");
