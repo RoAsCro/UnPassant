@@ -19,17 +19,17 @@ public class UnMoveMaker {
     private boolean makeUnMoveHelper(Coordinate origin, Coordinate target) {
         Piece piece = this.board.at(origin);
         Coordinate captureLocation = origin;
-        if (!this.board.getTurn().equals(piece.getColour().toLowerCase().substring(0, 1))) {
+        if (!this.board.getTurn().equals(piece.getColour())) {
             return false;
         }
         if (this.enPassantFlag) {
-            captureLocation = new Coordinate(origin.getX(), origin.getY() - (this.board.getTurn().equals("w") ? 1 : -1));
+            captureLocation = new Coordinate(origin.getX(), origin.getY() - (this.board.getTurn().equals("white") ? 1 : -1));
             if (!this.board.at(captureLocation).getType().equals("null")
                     || !piece.getType().equals("pawn")) {
                 return false;
             }
         } else if (this.promotionFlag ) {
-            if (origin.getY() != (this.board.getTurn().equals("w") ? ChessBoard.LENGTH - 1 : 0) || piece.getType().equals("king")) {
+            if (origin.getY() != (this.board.getTurn().equals("white") ? ChessBoard.LENGTH - 1 : 0) || piece.getType().equals("king")) {
                 return false;
             }
             piece = StandardPieceFactory.getInstance().getPiece("p");
@@ -52,7 +52,6 @@ public class UnMoveMaker {
             }
             return true;
         }
-
         return false;
     }
 

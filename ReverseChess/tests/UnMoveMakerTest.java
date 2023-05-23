@@ -13,7 +13,7 @@ public class UnMoveMakerTest {
 
 
     public void makeUnMove(Coordinate origin, Coordinate target, String originType, String targetType, boolean pass, ChessBoard board) {
-        board.setTurn(board.at(origin).getColour().substring(0,1));
+        board.setTurn(board.at(origin).getColour());
         UnMoveMaker unMoveMaker = new UnMoveMaker(board);
         Assertions.assertEquals(pass, unMoveMaker.makeUnMove(origin, target));
         Assertions.assertEquals(targetType, board.at(target).getType(), "target piece wrong");
@@ -21,7 +21,7 @@ public class UnMoveMakerTest {
     }
 
     public void makeUnMoveWithCapture(Coordinate origin, Coordinate target, String originType, String targetType, boolean pass, String capturePiece, ChessBoard board, boolean ep) {
-        board.setTurn(board.at(origin).getColour().substring(0,1));
+        board.setTurn(board.at(origin).getColour());
         UnMoveMaker unMoveMaker = new UnMoveMaker(board);
         unMoveMaker.setCaptureFlag(true);
         unMoveMaker.setEnPassantFlag(ep);
@@ -33,7 +33,7 @@ public class UnMoveMakerTest {
     }
 
     public void makeUnMoveWithPromotion(Coordinate origin, Coordinate target, String originType, String targetType, boolean pass, ChessBoard board, boolean capture, String piece ) {
-        board.setTurn(board.at(origin).getColour().substring(0,1));
+        board.setTurn(board.at(origin).getColour());
         UnMoveMaker unMoveMaker = new UnMoveMaker(board);
         unMoveMaker.setCaptureFlag(true);
         unMoveMaker.setPromotionFlag(true);
@@ -122,7 +122,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMovePawnUnPassant() {
         Coordinate target = new Coordinate(4, 3);
         Coordinate origin = new Coordinate(3, 2);
-        this.boardTwo.setTurn("b");
         makeUnMoveWithCapture(origin, target, "null", "pawn",  true, "p", this.boardTwo, true);
         Assertions.assertEquals("pawn", this.boardTwo.at(new Coordinate(3, 3)).getType());
     }
@@ -131,7 +130,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMovePawnUnPassantUnCaptureLocationBlocked() {
         Coordinate target = new Coordinate(4, 4);
         Coordinate origin = new Coordinate(5, 5);
-        this.boardTwo.setTurn("w");
         makeUnMoveWithCapture(origin, target, "pawn", "null",  false, "p", this.boardTwo, true);
         Assertions.assertEquals("knight", this.boardTwo.at(new Coordinate(5, 4)).getType());
     }
@@ -139,7 +137,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMovePawnUnPassantNotAPawn() {
         Coordinate target = new Coordinate(4, 4);
         Coordinate origin = new Coordinate(4, 3);
-        this.boardThree.setTurn("w");
         makeUnMoveWithCapture(origin, target, "rook", "null",  false, "p", this.boardThree, true);
     }
 
@@ -147,7 +144,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMoveCastleWhiteKing() {
         Coordinate target = Coordinates.WHITE_KING;
         Coordinate origin = new Coordinate(6, 0);
-        this.board.setTurn("w");
         makeUnMove(origin, target, "null", "king", true, this.board);
         Assertions.assertEquals("null", this.board.at(new Coordinate(5, 0)).getType());
         Assertions.assertEquals("rook", this.board.at(new Coordinate(7, 0)).getType());
@@ -157,7 +153,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMoveCastleWhiteQueen() {
         Coordinate target = Coordinates.WHITE_KING;
         Coordinate origin = new Coordinate(2, 0);
-        this.boardTwo.setTurn("w");
         makeUnMove(origin, target, "null", "king", true, this.boardTwo);
         Assertions.assertEquals("null", this.boardTwo.at(new Coordinate(1, 0)).getType());
         Assertions.assertEquals("rook", this.boardTwo.at(new Coordinate(0, 0)).getType());
@@ -167,7 +162,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMoveCastleBlackKing() {
         Coordinate target = Coordinates.BLACK_KING;
         Coordinate origin = new Coordinate(6, 7);
-        this.boardTwo.setTurn("w");
         makeUnMove(origin, target, "null", "king", true, this.boardTwo);
         Assertions.assertEquals("null", this.boardTwo.at(new Coordinate(6, 7)).getType());
         Assertions.assertEquals("rook", this.boardTwo.at(new Coordinate(7, 7)).getType());
@@ -177,7 +171,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMoveCastleBlackQueen() {
         Coordinate target = Coordinates.BLACK_KING;
         Coordinate origin = new Coordinate(2, 7);
-        this.boardThree.setTurn("b");
         makeUnMove(origin, target, "null", "king", true, this.boardThree);
         Assertions.assertEquals("null", this.boardThree.at(new Coordinate(1, 7)).getType());
         Assertions.assertEquals("rook", this.boardThree.at(new Coordinate(0, 7)).getType());
@@ -187,7 +180,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMoveCastleBlocked() {
         Coordinate target = Coordinates.WHITE_KING;
         Coordinate origin = new Coordinate(2, 0);
-        this.boardThree.setTurn("w");
         makeUnMove(origin, target, "king", "null", false, this.boardThree);
         Assertions.assertEquals("knight", this.boardThree.at(new Coordinate(1, 0)).getType());
         Assertions.assertEquals("null", this.boardThree.at(new Coordinate(0, 0)).getType());
@@ -198,7 +190,6 @@ public class UnMoveMakerTest {
         ChessBoard board = BoardBuilder.buildBoard("2kr1bn1/pppppppp/4q3/8/4R3/1N6/PPPPPPPP/2KR1B2 w - - 0 1");
         Coordinate target = Coordinates.WHITE_KING;
         Coordinate origin = new Coordinate(2, 0);
-        board.setTurn("w");
         makeUnMoveWithCapture(origin, target, "king", "null", false, "r", board, false);
         Assertions.assertEquals("rook", board.at(new Coordinate(3, 0)).getType());
         Assertions.assertEquals("null", board.at(new Coordinate(0, 0)).getType());
@@ -208,7 +199,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMovePromote() {
         Coordinate target = new Coordinate(2, 6);
         Coordinate origin = new Coordinate(2, 7);
-        boardFour.setTurn("w");
         makeUnMoveWithPromotion(origin, target, "null", "pawn", true, boardFour, false, "p");
     }
 
@@ -216,7 +206,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMovePromoteCapture() {
         Coordinate target = new Coordinate(3, 1);
         Coordinate origin = new Coordinate(2, 0);
-        boardFour.setTurn("b");
         makeUnMoveWithPromotion(origin, target, "queen", "pawn", true, boardFour, true, "q");
     }
 
@@ -224,7 +213,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMovePromoteTooFar() {
         Coordinate target = new Coordinate(6, 5);
         Coordinate origin = new Coordinate(5, 7);
-        boardFour.setTurn("w");
         makeUnMoveWithPromotion(origin, target, "knight", "null", false, boardFour, false, "p");
     }
 
@@ -232,7 +220,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMovePromoteCaptureVertical() {
         Coordinate target = new Coordinate(5, 6);
         Coordinate origin = new Coordinate(5, 7);
-        boardFour.setTurn("w");
         makeUnMoveWithPromotion(origin, target, "knight", "null", false, boardFour, true, "q");
     }
 
@@ -240,7 +227,6 @@ public class UnMoveMakerTest {
     public void tryMakeUnMovePromoteCaptureWrongLocation() {
         Coordinate target = new Coordinate(4, 5);
         Coordinate origin = new Coordinate(4, 4);
-        boardFour.setTurn("b");
         makeUnMoveWithPromotion(origin, target, "bishop", "null", false, boardFour, false, "q");
     }
 
@@ -263,11 +249,8 @@ public class UnMoveMakerTest {
         Coordinate target = new Coordinate(5, 3);
         Coordinate origin = new Coordinate(4, 4);
         UnMoveMaker unMoveMaker = new UnMoveMaker(this.boardFour);
-        this.boardFour.setTurn("w");
+        this.boardFour.setTurn("white");
         Assertions.assertFalse(unMoveMaker.makeUnMove(origin, target));
     }
-
-    // TODO turn taking
-    // TODO
 
 }
