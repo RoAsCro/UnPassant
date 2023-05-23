@@ -33,7 +33,8 @@ public class UnMoveMakerTest {
     }
 
     public void makeUnMoveWithPromotion(Coordinate origin, Coordinate target, String originType, String targetType, boolean pass, ChessBoard board, boolean capture, String piece ) {
-        board.setTurn(board.at(origin).getColour());
+        String colour =  board.at(origin).getColour();
+        board.setTurn(colour);
         UnMoveMaker unMoveMaker = new UnMoveMaker(board);
         unMoveMaker.setCaptureFlag(true);
         unMoveMaker.setPromotionFlag(true);
@@ -42,6 +43,9 @@ public class UnMoveMakerTest {
         Assertions.assertEquals(pass, unMoveMaker.makeUnMove(origin, target));
         Assertions.assertEquals(targetType, board.at(target).getType(), "target piece wrong");
         Assertions.assertEquals(originType, board.at(origin).getType(), "origin piece wrong");
+        if (pass) {
+            Assertions.assertEquals(colour, board.at(target).getColour());
+        }
         unMoveMaker.setPromotionFlag(false);
         unMoveMaker.setCaptureFlag(false);
 

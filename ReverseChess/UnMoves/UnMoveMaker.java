@@ -22,17 +22,18 @@ public class UnMoveMaker {
         if (!this.board.getTurn().equals(piece.getColour())) {
             return false;
         }
+        boolean isWhite = this.board.getTurn().equals("white");
         if (this.enPassantFlag) {
-            captureLocation = new Coordinate(origin.getX(), origin.getY() - (this.board.getTurn().equals("white") ? 1 : -1));
+            captureLocation = new Coordinate(origin.getX(), origin.getY() - (isWhite ? 1 : -1));
             if (!this.board.at(captureLocation).getType().equals("null")
                     || !piece.getType().equals("pawn")) {
                 return false;
             }
         } else if (this.promotionFlag ) {
-            if (origin.getY() != (this.board.getTurn().equals("white") ? ChessBoard.LENGTH - 1 : 0) || piece.getType().equals("king")) {
+            if (origin.getY() != (isWhite ? ChessBoard.LENGTH - 1 : 0) || piece.getType().equals("king")) {
                 return false;
             }
-            piece = StandardPieceFactory.getInstance().getPiece("p");
+            piece = StandardPieceFactory.getInstance().getPiece(isWhite ? "P" : "p");
         }
         if (piece.tryUnMove(origin, target, this.board)) {
             int xDiff = origin.getX() - target.getX();
