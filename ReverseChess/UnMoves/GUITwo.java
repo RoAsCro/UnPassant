@@ -13,45 +13,78 @@ import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.BiConsumer;
 
 public class GUITwo {
 
     private static final String FILE_PATH = "C:/Project/UnPassant/ReverseChess/resources/";
+    private static final Map<String, Image> icons = new TreeMap<>();
     private static Coordinate origin = null;
     private static Coordinate target = null;
     private static final int SQUARE_SIZE = 64;
     private static UnMoveMaker unMoveMaker;
     private static ChessPanel chessPanel;
 
+    public static void main2(String[] args) {
+
+    }
+
     public static void main(String[] args) {
         JFrame frame = new JFrame();
+        GroupLayout layout = new GroupLayout(frame.getContentPane());
+        frame.getContentPane().setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
         frame.setBounds(10, 10, 600, 600);
         ChessBoard board = args.length == 0 ? BoardBuilder.buildBoard() : BoardBuilder.buildBoard(args[0]);
         unMoveMaker = new UnMoveMaker(board);
         ChessPanel panel = new ChessPanel(board);
         chessPanel = panel;
 
-        panel.setBounds(0, 0,
-                SQUARE_SIZE * 8, SQUARE_SIZE * 8);
-
-        frame.add(panel);
+        panel.setMaximumSize(new Dimension(SQUARE_SIZE * 8, SQUARE_SIZE * 8));
         PieceListener pieceListener = new PieceListener();
         panel.addMouseListener(pieceListener);
         panel.addMouseMotionListener(pieceListener);
+
+        frame.add(panel);
+
+
+        JTextField fenField = new JTextField();
+        fenField.setMaximumSize(new Dimension(SQUARE_SIZE * 6, 32));
+        layout.setVerticalGroup(
+                layout.createSequentialGroup()
+                        .addComponent(panel)
+                        .addComponent(fenField)
+        );
+        layout.setHorizontalGroup(
+                layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(panel)
+                                .addComponent(fenField)
+                        )
+        );
+        frame.add(fenField);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
     }
 
     private static Image getImage(Piece piece) {
+        String pieceName = piece.getColour() + piece.getType();
+        if (icons.containsKey(pieceName)) {
+            return icons.get(pieceName);
+        }
         String fileName = piece.getColour().toUpperCase().charAt(0)
                 + piece.getType().substring(0,1).toUpperCase()
                 + piece.getType().toLowerCase().substring(1)
                 + ".png";
         try {
-            return ImageIO.read(new File(FILE_PATH
+            Image icon =  ImageIO.read(new File(FILE_PATH
                     + fileName));
+            icons.put(pieceName, icon);
+            return icon;
         } catch (IOException e) {
             throw new RuntimeException(fileName, e);
         }
@@ -61,10 +94,15 @@ public class GUITwo {
         Coordinate newCoordinate = new Coordinate(x / SQUARE_SIZE, 7 - y / SQUARE_SIZE);
         if (origin == null){
             origin = newCoordinate;
+            System.out.println("Origin set: " + origin);
+
         } else {
             target = newCoordinate;
+            System.out.println("Target set: " + target);
+
         }
         if (origin.equals(target)) {
+
             origin = null;
             target = null;
         } else if (target != null) {
@@ -155,11 +193,6 @@ public class GUITwo {
             }
             System.out.println(System.nanoTime() - start);
         }
-//        @Override
-//        public void repaint() {
-//            setUp = false;
-//            super.repaint();
-//        }
 
 
     }
