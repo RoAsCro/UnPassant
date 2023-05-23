@@ -12,7 +12,11 @@ public class Game {
     }
 
     public void setFEN(String fen) {
-        this.board = BoardBuilder.buildBoard(fen);
+        try {
+            this.board = BoardBuilder.buildBoard(fen);
+        } catch (IllegalArgumentException e) {
+            // TODO
+        }
         this.unMoveMaker = new UnMoveMaker(board);
     }
 

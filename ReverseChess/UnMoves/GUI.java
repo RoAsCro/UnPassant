@@ -6,6 +6,7 @@ import StandardChess.Piece;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -23,10 +24,7 @@ public class GUI {
     private static Coordinate target = null;
     private static final int SQUARE_SIZE = 64;
     private static ChessPanel chessPanel;
-
-    public static void main2(String[] args) {
-
-    }
+    private static JTextField fenField;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame();
@@ -47,8 +45,9 @@ public class GUI {
         frame.add(panel);
 
 
-        JTextField fenField = new JTextField();
+        fenField = new JTextField();
         fenField.setMaximumSize(new Dimension(SQUARE_SIZE * 6, 32));
+        fenField.addActionListener(new FENUpdate());
         layout.setVerticalGroup(
                 layout.createSequentialGroup()
                         .addComponent(panel)
@@ -111,6 +110,13 @@ public class GUI {
             target = null;
         }
 
+    }
+
+    public static class FENUpdate extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            guiInterface.setFEN(fenField.getText());
+        }
     }
 
     public static class PieceListener implements MouseListener, MouseMotionListener {
