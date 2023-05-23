@@ -54,7 +54,8 @@ public class PawnStrategy extends AbstractStrategy {
     }
     @Override
     public boolean tryUnMove(Coordinate origin, Coordinate target, ChessBoard board) {
-        return tryMoveGeneral(origin, target, board, -1)
+        return target.getY() != ChessBoard.LENGTH - 1 && target.getY() != 0
+                && tryMoveGeneral(origin, target, board, -1)
                 && super.tryUnMove(origin, target, board);
     }
 

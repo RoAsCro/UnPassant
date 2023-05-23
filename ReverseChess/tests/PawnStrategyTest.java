@@ -298,4 +298,16 @@ public class PawnStrategyTest {
         Assertions.assertFalse(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(2, 4), boardTwo));
     }
 
+    @Test
+    public void testTryUnMoveBackRow() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("8/7p/8/8/8/8/7P/8");
+        Coordinate whiteOriginTwo =new Coordinate(7, 1);
+        Piece whitePieceTwo = boardTwo.at(whiteOriginTwo);
+        Assertions.assertFalse(whitePieceTwo.tryUnMove(whiteOriginTwo, new Coordinate(7, 0), boardTwo));
+
+        Coordinate blackOriginTwo =new Coordinate(7, 6);
+        Piece blackPieceTwo = boardTwo.at(blackOriginTwo);
+        Assertions.assertFalse(blackPieceTwo.tryUnMove(blackOriginTwo, new Coordinate(7, 7), boardTwo));
+    }
+
 }
