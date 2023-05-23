@@ -20,6 +20,10 @@ public class Game {
         return this.board.getReader().toFEN();
     }
 
+    public String getTurn(){
+        return board.getTurn();
+    }
+
     public boolean makeMove(Coordinate origin, Coordinate target) {
         if (this.unMoveMaker.makeUnMove(origin, target)) {
             this.board.setTurn(this.board.getTurn().equals("white") ? "black" : "white");
