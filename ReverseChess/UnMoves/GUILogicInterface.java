@@ -13,9 +13,10 @@ public class GUILogicInterface extends Game {
     }
 
     @Override
-    public void makeMove(Coordinate origin, Coordinate target) {
-        super.makeMove(origin, target);
+    public boolean makeMove(Coordinate origin, Coordinate target) {
+        boolean flag = super.makeMove(origin, target);
         GUI.update();
+        return flag;
     }
 
 }

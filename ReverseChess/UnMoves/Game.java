@@ -16,10 +16,16 @@ public class Game {
         this.unMoveMaker = new UnMoveMaker(board);
     }
 
-    public void makeMove(Coordinate origin, Coordinate target) {
+    public String getFen() {
+        return this.board.getReader().toFEN();
+    }
+
+    public boolean makeMove(Coordinate origin, Coordinate target) {
         if (this.unMoveMaker.makeUnMove(origin, target)) {
             this.board.setTurn(this.board.getTurn().equals("white") ? "black" : "white");
+            return true;
         }
+        return false;
     }
 
     public void setCaptureFlag(boolean captureFlag) {
