@@ -32,7 +32,7 @@ public class GUI {
         frame.getContentPane().setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
-        frame.setBounds(10, 10, 600, 600);
+        frame.setBounds(10, 10, 600, 700);
         guiInterface = new GUILogicInterface(args.length == 0 ? "" : args[0]);
         ChessPanel panel = new ChessPanel(guiInterface);
         chessPanel = panel;
@@ -41,26 +41,44 @@ public class GUI {
         PieceListener pieceListener = new PieceListener();
         panel.addMouseListener(pieceListener);
         panel.addMouseMotionListener(pieceListener);
-
         frame.add(panel);
-
 
         fenField = new JTextField();
         fenField.setMaximumSize(new Dimension(SQUARE_SIZE * 6, 32));
         fenField.addActionListener(new FENUpdate());
+        frame.add(fenField);
+
+        JButton undo = new JButton();
+        undo.setMaximumSize(new Dimension(32, 15));
+        undo.addActionListener(new Undo());
+
+        JButton redo = new JButton();
+        redo.setMaximumSize(new Dimension(32, 15));
+        redo.addActionListener(new Redo());
+
         layout.setVerticalGroup(
                 layout.createSequentialGroup()
                         .addComponent(panel)
+//                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(undo)
+                                .addComponent(redo)
+                        )
                         .addComponent(fenField)
         );
         layout.setHorizontalGroup(
                 layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(panel)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addComponent(undo)
+                                        .addComponent(redo)
+                                )
                                 .addComponent(fenField)
                         )
+
+
         );
-        frame.add(fenField);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
 
@@ -110,6 +128,20 @@ public class GUI {
             target = null;
         }
 
+    }
+
+    public static class Redo extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            guiInterface.redo();
+        }
+    }
+
+    public static class Undo extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            guiInterface.undo();
+        }
     }
 
     public static class FENUpdate extends AbstractAction {

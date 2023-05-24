@@ -1,8 +1,14 @@
 import StandardChess.*;
 
+import java.util.LinkedList;
+
 public class Game {
     private UnMoveMaker unMoveMaker;
     private ChessBoard board;
+
+    private final LinkedList<String> undoStates = new LinkedList<>();
+    private final LinkedList<String> redoStates = new LinkedList<>();
+
 
     public Game(String fen) {
         this.board = fen.equals("")
@@ -12,12 +18,30 @@ public class Game {
     }
 
     public void setFEN(String fen) {
+        if (trySetFEN(fen)) {
+            this.redoStates.clear();
+            this.undoStates.clear();
+        }
+//        try {
+//            this.board = BoardBuilder.buildBoard(fen);
+//            this.redoStates.clear();
+//            this.undoStates.clear();
+//        } catch (IllegalArgumentException e) {
+//            // TODO
+//            return;
+//        }
+//        this.unMoveMaker = new UnMoveMaker(board);
+    }
+
+    private boolean trySetFEN(String fen) {
         try {
             this.board = BoardBuilder.buildBoard(fen);
+            this.unMoveMaker = new UnMoveMaker(board);
+            return true;
         } catch (IllegalArgumentException e) {
             // TODO
+            return false;
         }
-        this.unMoveMaker = new UnMoveMaker(board);
     }
 
     public String getFen() {
@@ -29,8 +53,11 @@ public class Game {
     }
 
     public boolean makeMove(Coordinate origin, Coordinate target) {
+        String state = this.board.getReader().toFEN();
         if (this.unMoveMaker.makeUnMove(origin, target)) {
             this.board.setTurn(this.board.getTurn().equals("white") ? "black" : "white");
+            this.redoStates.clear();
+            this.undoStates.add(state);
             return true;
         }
         return false;
@@ -54,6 +81,20 @@ public class Game {
 
     public Piece at(Coordinate location) {
         return this.board.at(location);
+    }
+
+    public void redo() {
+        if (!this.redoStates.isEmpty()) {
+            this.undoStates.add(this.board.getReader().toFEN());
+            trySetFEN((this.redoStates.pollLast()));
+        }
+    }
+
+    public void undo() {
+        if (!this.undoStates.isEmpty()) {
+            this.redoStates.add(this.board.getReader().toFEN());
+            trySetFEN(this.undoStates.pollLast());
+        }
     }
 
 }
