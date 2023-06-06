@@ -71,8 +71,6 @@ public class BoardInterface {
 
 
     public boolean inCheck(String player) {
-        System.out.println(whiteKing);
-        System.out.println(blackKing);
         return this.board.getReader().inCheck(player.equals("white") ? this.whiteKing : this.blackKing);
     }
 

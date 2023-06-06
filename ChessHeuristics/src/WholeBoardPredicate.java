@@ -13,7 +13,7 @@ public class WholeBoardPredicate implements Predicate<BoardReader> {
             return false;
         }
         if (currentX >= ChessBoard.LENGTH){
-            reader.to(new Coordinate(0, currentY + 1));
+            reader.to(new Coordinate(-1, currentY + 1));
         }
         return true;
     }
