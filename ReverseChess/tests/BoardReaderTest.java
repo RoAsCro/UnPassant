@@ -1,7 +1,4 @@
-import StandardChess.BoardBuilder;
-import StandardChess.ChessBoard;
-import StandardChess.Coordinate;
-import StandardChess.Coordinates;
+import StandardChess.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -126,6 +123,23 @@ public class BoardReaderTest {
 
         testCheck("8/8/8/Pk6/8/8/8/8 w KQkq b5", false, new Coordinate(1, 4));
 
+    }
+
+    @Test
+    public void testNextWhileNoConsumer() {
+        BoardReader reader = board.getReader();
+        reader.to(new Coordinate(1, 0));
+        reader.nextWhile(Coordinates.RIGHT, c -> !board.at(c).getType().equals("rook"));
+        Assertions.assertEquals(new Coordinate(6, 0), reader.getCoord());
+    }
+
+    @Test
+    public void testNextWhileStarting() {
+        // Starting square fulfills the condition
+        BoardReader reader = board.getReader();
+        reader.to(new Coordinate(0, 0));
+        reader.nextWhile(Coordinates.RIGHT, c -> !board.at(c).getType().equals("rook"));
+        Assertions.assertEquals(new Coordinate(6, 0), reader.getCoord());
     }
 
 
