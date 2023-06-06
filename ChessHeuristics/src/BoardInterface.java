@@ -8,8 +8,11 @@ public class BoardInterface {
     private ChessBoard board;
     private Coordinate whiteKing;
     private Coordinate blackKing;
-    private int pieceNumber;
-    private int pawnNumber;
+    private int whitePieceNumber = 0;
+    private int whitePawnNumber = 0;
+
+    private int blackPieceNumber = 0;
+    private int blackPawnNumber = 0;
 
     public BoardInterface(ChessBoard board) {
         this.board = board;
@@ -28,10 +31,19 @@ public class BoardInterface {
     private void findPieces() {
         iterateOverBoard(c -> true, c -> {
             String type = this.board.at(c).getType();
+            String colour = this.board.at(c).getColour();
             if (!type.equals("null")) {
-                this.pieceNumber++;
+                if (colour.equals("white")) {
+                    this.whitePieceNumber++;
+                } else {
+                    this.blackPieceNumber++;
+                }
                 if (type.equals("pawn")) {
-                    this.pawnNumber++;
+                    if (colour.equals("white")) {
+                        this.whitePawnNumber++;
+                    } else {
+                        this.blackPawnNumber++;
+                    }
                 }
             }
         });
@@ -53,10 +65,26 @@ public class BoardInterface {
         return this.board.getTurn();
     }
 
+    public int getWhitePawnNumber() {
+        return this.whitePawnNumber;
+    }
+
+
     public boolean inCheck(String player) {
         System.out.println(whiteKing);
         System.out.println(blackKing);
         return this.board.getReader().inCheck(player.equals("white") ? this.whiteKing : this.blackKing);
     }
 
+    public int getWhitePieceNumber() {
+        return whitePieceNumber;
+    }
+
+    public int getBlackPieceNumber() {
+        return blackPieceNumber;
+    }
+
+    public int getBlackPawnNumber() {
+        return blackPawnNumber;
+    }
 }
