@@ -19,17 +19,7 @@ public class BoardInterface {
         for (int i = 0 ; i < 2 ; i++) {
             if (i == 1 || !this.board.at(reader.getCoord()).getType().equals("king")) {
                 reader.nextWhile(Coordinates.RIGHT,
-                        c -> !this.board.at(c).getType().equals("king"),
-                        c -> {
-                            int currentX = reader.getCoord().getX();
-                            int currentY = reader.getCoord().getY();
-                            if (currentY > 7){
-                                throw new RuntimeException("Board is missing a king");
-                            }
-                            if (currentX > 7){
-                                reader.to(new Coordinate(0, currentY + 1));
-                            }
-                    }
+                        c -> new WholeBoardPredicate().test(reader) && !this.board.at(c).getType().equals("king")
                 );
                 current = reader.next(Coordinates.RIGHT);
 

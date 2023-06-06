@@ -152,11 +152,23 @@ public class StandardBoardReader implements BoardReader {
     }
 
     @Override
-    public void nextWhile(Coordinate direction,Predicate<Coordinate> condition, Consumer<Piece> function) {
+    public void nextWhile(Coordinate direction, Predicate<Coordinate> condition, Consumer<Piece> function) {
         function.accept(this.board.at(this.current));
         while (condition.test(getNext(direction))) {
             next(direction);
             function.accept(this.board.at(this.current));
+        }
+    }
+
+    @Override
+    public void wholeBoard(Predicate<Coordinate> condition) {
+        wholeBoard(condition, f -> {});
+    }
+
+    @Override
+    public void wholeBoard(Predicate<Coordinate> condition, Consumer<Piece> function) {
+        for (int y = 0 ; y < ChessBoard.LENGTH ; y++) {
+            nextWhile(Coordinates.RIGHT, c -> this.current.getX() < ChessBoard.LENGTH && condition.test(c), function);
         }
     }
 

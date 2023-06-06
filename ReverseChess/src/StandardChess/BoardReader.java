@@ -19,6 +19,10 @@ public interface BoardReader {
 
     public void nextWhile(Coordinate direction, Predicate<Coordinate> condition, Consumer<Piece> function);
 
+    public void wholeBoard(Predicate<Coordinate> condition);
+
+    public void wholeBoard(Predicate<Coordinate> condition, Consumer<Piece> function);
+
     public Piece to(Coordinate target);
 
 }
