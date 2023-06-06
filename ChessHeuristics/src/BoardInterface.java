@@ -1,36 +1,52 @@
 import StandardChess.*;
 
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
 public class BoardInterface {
 
     private ChessBoard board;
     private Coordinate whiteKing;
     private Coordinate blackKing;
+    private int pieceNumber;
+    private int pawnNumber;
 
     public BoardInterface(ChessBoard board) {
         this.board = board;
         findKings();
+        findPieces();
     }
 
-    private void findKings() {
+    private void iterateOverBoard(Predicate<Coordinate> condition, Consumer<Coordinate> function) {
         BoardReader reader = this.board.getReader();
-        Piece current = this.board.at(new Coordinate(0, 0));
         reader.to(new Coordinate(0, 0));
+        reader.nextWhile(Coordinates.RIGHT,
+                c -> new WholeBoardPredicate().test(reader) && condition.test(c),
+                p -> function.accept(reader.getCoord()));
+    }
 
-        for (int i = 0 ; i < 2 ; i++) {
-            if (i == 1 || !this.board.at(reader.getCoord()).getType().equals("king")) {
-                reader.nextWhile(Coordinates.RIGHT,
-                        c -> new WholeBoardPredicate().test(reader) && !this.board.at(c).getType().equals("king")
-                );
-                current = reader.next(Coordinates.RIGHT);
-
+    private void findPieces() {
+        iterateOverBoard(c -> true, c -> {
+            String type = this.board.at(c).getType();
+            if (!type.equals("null")) {
+                this.pieceNumber++;
+                if (type.equals("pawn")) {
+                    this.pawnNumber++;
+                }
             }
-
-            if (current.getColour().equals("white")){
-                whiteKing = reader.getCoord();
-            } else{
-                blackKing = reader.getCoord();
+        });
+    }
+    private void findKings() {
+        iterateOverBoard(c -> true, c -> {
+            Piece p = this.board.at(c);
+            if (p.getType().equals("king")) {
+                if (p.getColour().equals("white")) {
+                    this.whiteKing = c;
+                } else {
+                    this.blackKing = c;
+                }
             }
-        }
+        });
     }
 
     public String getTurn() {
@@ -38,6 +54,8 @@ public class BoardInterface {
     }
 
     public boolean inCheck(String player) {
+        System.out.println(whiteKing);
+        System.out.println(blackKing);
         return this.board.getReader().inCheck(player.equals("white") ? this.whiteKing : this.blackKing);
     }
 
