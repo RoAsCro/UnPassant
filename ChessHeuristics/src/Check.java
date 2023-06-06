@@ -1,4 +1,4 @@
-public interface Assertion {
+public interface Check {
 
     Boolean check(BoardInterface boardInterface);
 

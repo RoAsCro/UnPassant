@@ -1,4 +1,4 @@
-public class ConcreteAssertion implements Assertion {
+public class ConcreteCheck implements Check {
     @Override
     public Boolean check(BoardInterface boardInterface) {
         return null;

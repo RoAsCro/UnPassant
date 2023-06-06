@@ -1,4 +1,4 @@
-public class CheckAssertion implements Assertion{
+public class CheckCheck implements Check {
     @Override
     public Boolean check(BoardInterface boardInterface) {
 

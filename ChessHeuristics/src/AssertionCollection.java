@@ -1,5 +1,5 @@
 public abstract class AssertionCollection {
-    Assertion[] assertions;
+    Check[] checks;
 
-    public abstract Assertion getAssertions();
+    public abstract Check getAssertions();
 }
