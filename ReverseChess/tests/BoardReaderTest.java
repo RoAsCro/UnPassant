@@ -142,6 +142,15 @@ public class BoardReaderTest {
         Assertions.assertEquals(new Coordinate(6, 0), reader.getCoord());
     }
 
+//    @Test
+//    public void testNextWhileOffBoard() {
+//        // Starting square fulfills the condition
+//        BoardReader reader = board.getReader();
+//        reader.to(new Coordinate(0, 0));
+//        reader.nextWhile(Coordinates.RIGHT, c -> !board.at(c).getType().equals("failing string"));
+//        Assertions.assertEquals(new Coordinate(7, 0), reader.getCoord());
+//    }
+
 
     // TODO test other functions
 }

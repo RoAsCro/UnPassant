@@ -1,6 +1,6 @@
 public class ConcreteAssertion implements Assertion {
     @Override
     public Boolean check(BoardInterface boardInterface) {
-        return boardInterface.inCheck(boardInterface.getTurn());
+        return null;
     }
 }
