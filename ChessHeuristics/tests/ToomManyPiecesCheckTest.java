@@ -1,3 +1,5 @@
+import Heuristics.BoardInterface;
+import Heuristics.checks.TooManyPiecesCheck;
 import StandardChess.BoardBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

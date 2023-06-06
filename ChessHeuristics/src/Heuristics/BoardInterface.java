@@ -1,9 +1,15 @@
+package Heuristics;
+
 import StandardChess.*;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class BoardInterface {
+
+    public static final int MAX_PIECE_NUMBER = 16;
+    public static final int MAX_PAWN_NUMBER = 8;
+
 
     private ChessBoard board;
     private Coordinate whiteKing;

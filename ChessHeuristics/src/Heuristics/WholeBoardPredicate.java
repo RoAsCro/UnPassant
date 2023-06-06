@@ -1,3 +1,5 @@
+package Heuristics;
+
 import StandardChess.BoardReader;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;

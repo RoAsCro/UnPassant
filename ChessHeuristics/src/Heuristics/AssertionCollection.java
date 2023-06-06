@@ -1,3 +1,5 @@
+package Heuristics;
+
 public abstract class AssertionCollection {
     Check[] checks;
 

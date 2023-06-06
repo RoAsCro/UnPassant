@@ -1,20 +1,24 @@
 import Heuristics.BoardInterface;
+import Heuristics.checks.BlackPromotionCheck;
 import Heuristics.checks.TooManyPawnsCheck;
+import Heuristics.checks.WhitePromotionCheck;
 import StandardChess.BoardBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class TooManyPawnsCheckTest {
+public class PromotionCheckTest {
     @Test
-    public void rightNumberOfPawns() {
+    public void noPromotion() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
-        Assertions.assertTrue(new TooManyPawnsCheck().check(board));
+        Assertions.assertFalse(new WhitePromotionCheck().check(board));
+        Assertions.assertFalse(new BlackPromotionCheck().check(board));
+
     }
 
     @Test
     public void tooManyPawns() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/1PP5/1PPPPPPP/1NBQKBNR w Kkq - 0 1"));
-        Assertions.assertFalse(new TooManyPawnsCheck().check(board));
+        Assertions.assertFalse(new WhitePromotionCheck().check(board));
 
     }
 }

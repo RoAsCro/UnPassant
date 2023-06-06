@@ -1,3 +1,5 @@
+import Heuristics.BoardInterface;
+import Heuristics.checks.CheckVSTurnCheck;
 import StandardChess.BoardBuilder;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;

@@ -1,3 +1,5 @@
+package Heuristics;
+
 @Deprecated
 public class ImaginaryCheckCheck implements Check {
 
