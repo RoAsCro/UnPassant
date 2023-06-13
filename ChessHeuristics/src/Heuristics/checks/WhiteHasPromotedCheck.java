@@ -1,11 +1,10 @@
 package Heuristics.checks;
 
 import Heuristics.BoardInterface;
-import Heuristics.Check;
 
-public class CheckVSTurnCheck implements Check {
+public class WhiteHasPromotedCheck extends HasPromotedCheck{
     @Override
     public Boolean check(BoardInterface boardInterface) {
-        return boardInterface.inCheck(boardInterface.getTurn());
+        return super.check(boardInterface, true);
     }
 }

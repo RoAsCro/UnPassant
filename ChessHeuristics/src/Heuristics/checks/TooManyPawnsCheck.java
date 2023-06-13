@@ -7,7 +7,7 @@ public class TooManyPawnsCheck implements Check {
 
     @Override
     public Boolean check(BoardInterface boardInterface) {
-        return boardInterface.getBlackPawnNumber() <= BoardInterface.MAX_PAWN_NUMBER &&
-                boardInterface.getWhitePawnNumber() <= BoardInterface.MAX_PAWN_NUMBER;
+        return boardInterface.getBoardFacts().getCoordinates("white", "pawn").size() <= BoardInterface.MAX_PAWN_NUMBER &&
+                boardInterface.getBoardFacts().getCoordinates("black", "pawn").size() <= BoardInterface.MAX_PAWN_NUMBER;
     }
 }

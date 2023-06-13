@@ -10,15 +10,11 @@ public class BoardInterface {
     public static final int MAX_PIECE_NUMBER = 16;
     public static final int MAX_PAWN_NUMBER = 8;
 
+    private StandardObserver standardObserver = new StandardObserver();
 
     private ChessBoard board;
     private Coordinate whiteKing;
     private Coordinate blackKing;
-    private int whitePieceNumber = 0;
-    private int whitePawnNumber = 0;
-
-    private int blackPieceNumber = 0;
-    private int blackPawnNumber = 0;
 
     public BoardInterface(ChessBoard board) {
         this.board = board;
@@ -39,18 +35,7 @@ public class BoardInterface {
             String type = this.board.at(c).getType();
             String colour = this.board.at(c).getColour();
             if (!type.equals("null")) {
-                if (colour.equals("white")) {
-                    this.whitePieceNumber++;
-                } else {
-                    this.blackPieceNumber++;
-                }
-                if (type.equals("pawn")) {
-                    if (colour.equals("white")) {
-                        this.whitePawnNumber++;
-                    } else {
-                        this.blackPawnNumber++;
-                    }
-                }
+                standardObserver.put(colour, type, c);
             }
         });
     }
@@ -71,8 +56,9 @@ public class BoardInterface {
         return this.board.getTurn();
     }
 
-    public int getWhitePawnNumber() {
-        return this.whitePawnNumber;
+
+    public StandardObserver getBoardFacts() {
+        return this.standardObserver;
     }
 
 
@@ -80,15 +66,4 @@ public class BoardInterface {
         return this.board.getReader().inCheck(player.equals("white") ? this.whiteKing : this.blackKing);
     }
 
-    public int getWhitePieceNumber() {
-        return whitePieceNumber;
-    }
-
-    public int getBlackPieceNumber() {
-        return blackPieceNumber;
-    }
-
-    public int getBlackPawnNumber() {
-        return blackPawnNumber;
-    }
 }
