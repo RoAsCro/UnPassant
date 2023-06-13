@@ -7,15 +7,14 @@ import StandardChess.BoardReader;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public abstract class PawnMap extends AbstractDeduction{
 
     private Map<Coordinate, List<Path>> paths;
     private final Map<Coordinate, Path> pawnOrigins = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
+    private final Map<Coordinate, Path> certainOrigins = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
+
 
     @Override
     public List<Observation> getObservations() {
@@ -48,14 +47,33 @@ public abstract class PawnMap extends AbstractDeduction{
                             continue;
                         }
                         Coordinate origin = new Coordinate(x, start);
-                        if (!this.pawnOrigins.entrySet().stream()
-                                .anyMatch(e -> e.getValue().size() == 1 && e.getValue().contains(origin))) {
+                        if (this.certainOrigins.entrySet().stream()
+                                .noneMatch(e -> e.getValue().contains(origin))) {
                             starts.add(origin);
                         }
                     }
+
                     if (starts.size() == 0) {
                         this.state = false;
                     }
+                    Optional<Map.Entry<Coordinate, Path>> entryOptional = this.pawnOrigins.entrySet().stream()
+                            .filter(e -> e.getValue().equals(starts))
+                            .findAny();
+                    if (entryOptional.isPresent() || starts.size() == 1) {
+                        this.certainOrigins.put(pawn, starts);
+                        if (entryOptional.isPresent()) {
+                            Map.Entry<Coordinate, Path> entry = entryOptional.get();
+                            this.certainOrigins.put(entry.getKey(), entry.getValue());
+                        }
+                    }
+
+//                            .forEach(e -> {
+//                                if (e.getValue().equals(starts)) {
+//                                    this.certainOrigins.put(pawn, starts);
+//                                    this.certainOrigins.put(e.getKey(), e.getValue());
+//                                }
+//                            })
+                    ;
                     this.pawnOrigins.put(pawn, starts);
                 }
             });
