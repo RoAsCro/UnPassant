@@ -61,6 +61,10 @@ public class BoardInterface {
         return this.standardObserver;
     }
 
+    public BoardReader getReader() {
+        return board.getReader();
+    }
+
 
     public boolean inCheck(String player) {
         return this.board.getReader().inCheck(player.equals("white") ? this.whiteKing : this.blackKing);

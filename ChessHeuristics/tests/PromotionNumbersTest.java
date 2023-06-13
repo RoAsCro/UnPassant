@@ -29,7 +29,7 @@ public class PromotionNumbersTest {
         String fen = "rnbqkbnr/p2ppppp/8/4B1R1/2BB2R1/3RBB2/2N2PPP/4K3 w kq - 0 1";
         System.out.println(testHelper(fen).getPromotedPieces());
 
-        Assertions.assertEquals(5, testHelper(fen).getPromotedPieces().size());
+        Assertions.assertEquals(4, testHelper(fen).getPromotedPieces().size());
     }
 
     @Test

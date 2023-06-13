@@ -22,7 +22,7 @@ public abstract class PromotedPieces extends AbstractDeduction {
 
     // The Pieces that MAY have been promoted based on the number of pieces
     Map<Coordinate, PromotedPiece> promotedPieces = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
-    private PromotedPieceSet andSet = new PromotedPieceSet("any", true);
+    private List<PromotedPieceSet> andSet = new LinkedList<>();
 
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;
@@ -83,7 +83,7 @@ public abstract class PromotedPieces extends AbstractDeduction {
                 }
             }
         }
-        int promotedPieceCount = this.andSet.getPieces().size();
+        int promotedPieceCount = this.andSet.size();
         if (promotedPieceCount > this.possiblePromotedPieces) {
             return false;
         }
@@ -100,12 +100,36 @@ public abstract class PromotedPieces extends AbstractDeduction {
         return true;
     }
 
+
+    public void update() {
+        updateIter(0);
+    }
+    private void updateIter(int previousUpdates) {
+        int updates = 0;
+        for (int i = 0 ; i < this.andSet.size() ; i++) {
+            PromotedPieceSet set = this.andSet.get(i);
+            if (set.getPieces().size() == 1) {
+                updates++;
+                Coordinate coordinate = set.getLocation();
+                for (int j = 0 ; j < this.andSet.size() ; j++) {
+                    if (j != i) {
+                        PromotedPieceSet setTwo = this.andSet.get(j);
+                        setTwo.remove(coordinate);
+                    }
+                }
+            }
+        }
+        if (updates != previousUpdates) {
+            updateIter(updates);
+        }
+    }
+
 //    public Map<Coordinate, PromotedPiece> getPromotedPieces() {
 //        return this.promotedPieces;
 //    }
 
-    public List<PromotedPiece> getPromotedPieces() {
-        return andSet.getPieces();
+    public List<PromotedPieceSet> getPromotedPieces() {
+        return andSet;
     }
 
 

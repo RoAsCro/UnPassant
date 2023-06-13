@@ -2,6 +2,7 @@ package Heuristics.Deductions;
 
 import StandardChess.Coordinate;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +35,19 @@ public class PromotedPieceSet extends PromotedPiece {
 
     public List<PromotedPiece> getPieces() {
         return this.pieces;
+    }
+
+    public void remove(Coordinate c) {
+        Iterator<PromotedPiece> iterator = pieces.iterator();
+        while (iterator.hasNext()) {
+            PromotedPiece p = iterator.next();
+            if (p.getLocation().equals(c)) {
+                iterator.remove();
+            }
+        }
+        if (this.pieces.size() == 1) {
+            this.location = this.pieces.get(0).location;
+        }
     }
 
     @Override
