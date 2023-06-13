@@ -10,7 +10,7 @@ import StandardChess.Coordinate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class PromotedPieces extends AbstractDedcution {
+public abstract class PromotedPieces extends AbstractDeduction {
 
     private static final Map<String, Integer> PIECE_NUMBERS = Map.of(
             "rook", 2,
@@ -22,14 +22,12 @@ public abstract class PromotedPieces extends AbstractDedcution {
 
     // The Pieces that MAY have been promoted based on the number of pieces
     Map<Coordinate, PromotedPiece> promotedPieces = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
-    PromotedPieceSet andSet = new PromotedPieceSet("any");
+    private PromotedPieceSet andSet = new PromotedPieceSet("any", true);
 
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;
 
     int possiblePromotedPieces = 0;
-    int promotedPieceCount = 0;
-
 
 
     public PromotedPieces() {
@@ -55,7 +53,7 @@ public abstract class PromotedPieces extends AbstractDedcution {
             int pieceCountDifference = currentPieceCoords.size() - PIECE_NUMBERS.get(s);
             if (pieceCountDifference > 0) {
                 for (int i = 0; i < pieceCountDifference; i++) {
-                    PromotedPieceSet xorSet = new PromotedPieceSet(s);
+                    PromotedPieceSet xorSet = new PromotedPieceSet(s, true);
                     andSet.add(xorSet);
                     currentPieceCoords.stream()
                             .forEach(c -> {
@@ -75,7 +73,7 @@ public abstract class PromotedPieces extends AbstractDedcution {
                 List<Coordinate> currentSet = lightAndDarkSquares.get(i);
                 if (currentSet.size() >= 2) {
                     for (int j = 0; j < currentSet.size() - 1; j++) {
-                        PromotedPieceSet xorSet = new PromotedPieceSet("bishop");
+                        PromotedPieceSet xorSet = new PromotedPieceSet("bishop", true);
                         andSet.add(xorSet);
                         currentSet.stream()
                                 .forEach(c -> {
@@ -89,26 +87,25 @@ public abstract class PromotedPieces extends AbstractDedcution {
         if (promotedPieceCount > this.possiblePromotedPieces) {
             return false;
         }
+//        for (int i = 0 ; i < this.possiblePromotedPieces - promotedPieceCount; i++) {
+//            PromotedPieceSet pieceSet = new PromotedPieceSet("any", null);
+//            this.andSet.add(pieceSet);
+//            HeuristicsUtil.PIECE_NAMES.stream()
+//                            .forEach(type -> {
+//                                board.getBoardFacts().getCoordinates(colour, type).stream()
+//                                        .forEach(coordinate -> pieceSet.add(new PromotedPiece(coordinate)));
+//                            });
+//        }
 
-        for (int i = 0 ; i < this.possiblePromotedPieces - promotedPieceCount; i++) {
-            PromotedPieceSet pieceSet = new PromotedPieceSet("any");
-            this.andSet.add(pieceSet);
-            HeuristicsUtil.PIECE_NAMES.stream()
-                            .forEach(type -> {
-                                board.getBoardFacts().getCoordinates(colour, type).stream()
-                                        .forEach(coordinate -> pieceSet.add(new PromotedPiece(coordinate)));
-                            });
-        }
-
-        return false;
+        return true;
     }
 
-    public Map<Coordinate, PromotedPiece> getPromotedPieces() {
-        return this.promotedPieces;
-    }
+//    public Map<Coordinate, PromotedPiece> getPromotedPieces() {
+//        return this.promotedPieces;
+//    }
 
-    public PromotedPieceSet getAndSet() {
-        return this.andSet;
+    public List<PromotedPiece> getPromotedPieces() {
+        return andSet.getPieces();
     }
 
 

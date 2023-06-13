@@ -17,4 +17,6 @@ public interface Deduction {
     List<Deduction> orList();
 
     List<Deduction> orList(List<Deduction> list);
+
+    public Boolean getState();
 }

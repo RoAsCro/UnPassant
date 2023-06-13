@@ -1,14 +1,15 @@
 package Heuristics.Deductions;
 
 import Heuristics.Deduction;
-import StandardChess.Coordinate;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class AbstractDedcution implements Deduction {
+public abstract class AbstractDeduction implements Deduction {
 
     protected static final int MAX_PAWNS = 8;
+
+    protected Boolean state = null;
 
     Deduction or;
     Deduction xor;
@@ -44,6 +45,11 @@ public abstract class AbstractDedcution implements Deduction {
             this.or.orList(list);
         }
         return list;
+    }
+
+    @Override
+    public Boolean getState() {
+        return this.state;
     }
 
 }

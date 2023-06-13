@@ -11,9 +11,10 @@ public class PromotedPieceSet extends PromotedPiece {
 
     private final String type;
 
-    PromotedPieceSet(String type) {
+    PromotedPieceSet(String type, Boolean state) {
         super(new Coordinate(0, 0));
         this.type = type;
+        this.state = state;
     }
 
     public void add(PromotedPiece p) {

@@ -6,7 +6,7 @@ import StandardChess.Coordinate;
 
 import java.util.List;
 
-public class PromotedPiece extends AbstractDedcution {
+public class PromotedPiece extends AbstractDeduction {
 
     Coordinate location;
 

@@ -1,15 +1,10 @@
 import Heuristics.BoardInterface;
-import Heuristics.Deduction;
-import Heuristics.Deductions.PromotedPiece;
 import Heuristics.Deductions.PromotedPieces;
 import Heuristics.Deductions.WhitePromotedPieces;
-import Heuristics.Observation;
 import StandardChess.BoardBuilder;
-import StandardChess.Coordinate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class PromotionNumbersTest {
@@ -26,15 +21,24 @@ public class PromotionNumbersTest {
     @Test
     void testNumbersCertainPromotions() {
         String fen = "rnbqkbnr/p2ppppp/8/4B1R1/2BB2R1/3RBB2/4PPPP/4K3 w kq - 0 1";
-        Assertions.assertEquals(4, testHelper(fen).getAndSet().getPieces().size());
+        Assertions.assertEquals(4, testHelper(fen).getPromotedPieces().size());
     }
 
     @Test
     void testNumbersUncertainPromotions() {
         String fen = "rnbqkbnr/p2ppppp/8/4B1R1/2BB2R1/3RBB2/2N2PPP/4K3 w kq - 0 1";
-        System.out.println(testHelper(fen).getAndSet());
-        Assertions.assertEquals(5, testHelper(fen).getAndSet().getPieces().size());
+        System.out.println(testHelper(fen).getPromotedPieces());
+
+        Assertions.assertEquals(5, testHelper(fen).getPromotedPieces().size());
     }
+
+    @Test
+    void testNumbersQueen() {
+        String fen = "rnbqkbnr/p2ppppp/8/8/8/1Q6/PQPPPPPP/4K3 w kq - 0 1";
+        System.out.println(testHelper(fen).getPromotedPieces());
+        Assertions.assertEquals(1, testHelper(fen).getPromotedPieces().size());
+    }
+
 
 
 }
