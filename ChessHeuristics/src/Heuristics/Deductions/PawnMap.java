@@ -13,6 +13,7 @@ public abstract class PawnMap extends AbstractDeduction{
 
     private Map<Coordinate, List<Path>> paths;
     private final Map<Coordinate, Path> pawnOrigins = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
+    private final Map<Coordinate, Path> uncertainOrigins = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
     private final Map<Coordinate, Path> certainOrigins = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
 
 
@@ -47,8 +48,10 @@ public abstract class PawnMap extends AbstractDeduction{
                             continue;
                         }
                         Coordinate origin = new Coordinate(x, start);
+//                        System.out.println(pawn + " : " + origin);
                         if (this.certainOrigins.entrySet().stream()
                                 .noneMatch(e -> e.getValue().contains(origin))) {
+//                            System.out.println("Success");
                             starts.add(origin);
                         }
                     }
@@ -64,7 +67,10 @@ public abstract class PawnMap extends AbstractDeduction{
                         if (entryOptional.isPresent()) {
                             Map.Entry<Coordinate, Path> entry = entryOptional.get();
                             this.certainOrigins.put(entry.getKey(), entry.getValue());
+                            this.uncertainOrigins.remove(entry.getKey());
                         }
+                    } else {
+                        this.uncertainOrigins.put(pawn, starts);
                     }
 
 //                            .forEach(e -> {
@@ -74,9 +80,50 @@ public abstract class PawnMap extends AbstractDeduction{
 //                                }
 //                            })
                     ;
+                    System.out.println("-------" + pawn + "--------");
                     this.pawnOrigins.put(pawn, starts);
+
                 }
             });
+            for (int i = 0 ; i < 8 ; i++) {
+                System.out.println("-------------" + i + "-------------------");
+                List<Map.Entry<Coordinate, Path>> newlyCertain = new LinkedList<>();
+                this.uncertainOrigins.entrySet()
+                        .stream()
+                        .forEach(entry -> {
+                            System.out.println(entry.getKey() + ":");
+
+//                                System.out.println(":::" + );
+                            List<Coordinate> forRemoval = new LinkedList<>();
+                            entry.getValue()
+                                    .stream()
+                                    .forEach(coordinate -> {
+                                        System.out.println(coordinate);
+                                        if (this.certainOrigins.entrySet()
+                                                .stream()
+                                                .anyMatch(e -> e.getValue().contains(coordinate))) {
+                                            System.out.println("Matches");
+                                            forRemoval.add(coordinate);
+                                        }
+                                    });
+                            entry.getValue().removeAll(forRemoval);
+
+                            List<Map.Entry<Coordinate, Path>> list = this.pawnOrigins.entrySet().stream()
+                                    .filter(e -> e.getValue().equals(entry.getValue()))
+                                    .toList();
+
+                            if (list.size() > 1 || entry.getValue().size() == 1) {
+                                list.stream()
+                                        .forEach(otherEntry -> {
+                                            this.certainOrigins.put(otherEntry.getKey(), otherEntry.getValue());
+                                            newlyCertain.add(otherEntry);
+                                        });
+                            }
+                        });
+                newlyCertain.forEach(entry -> uncertainOrigins.remove(entry.getKey()));
+
+            }
+
         }
 
         return false;
