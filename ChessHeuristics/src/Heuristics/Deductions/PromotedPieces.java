@@ -1,9 +1,8 @@
 package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
-import Heuristics.Deduction;
+import Heuristics.HeuristicsUtil;
 import Heuristics.Observation;
-import Heuristics.Observations.AbstractObservation;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import StandardChess.Coordinate;
@@ -11,7 +10,7 @@ import StandardChess.Coordinate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class PromotedPieces extends AbstractDedcution {
+public abstract class PromotedPieces extends AbstractDedcution {
 
     private static final Map<String, Integer> PIECE_NUMBERS = Map.of(
             "rook", 2,
@@ -19,21 +18,17 @@ public class PromotedPieces extends AbstractDedcution {
             "queen", 1,
             "knight", 2
     );
-    List<Observation> observations = new ArrayList<Observation>();
-    Map<Coordinate, PromotedPiece> promotedPieces = new TreeMap<>(new Comparator<Coordinate>() {
-        @Override
-        public int compare(Coordinate o1, Coordinate o2) {
-            return o1.hashCode() - o2.hashCode();
-        }
-    });
+    List<Observation> observations = new ArrayList<>();
+
+    // The Pieces that MAY have been promoted based on the number of pieces
+    Map<Coordinate, PromotedPiece> promotedPieces = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
+    PromotedPieceSet andSet = new PromotedPieceSet("any");
 
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;
 
-    int possibleWhitePromotedPieces = 0;
-    int possibleBlackPromotedPieces = 0;
-    int whitePromotedPieceCount = 0;
-    int blackPromotedPieceCount = 0;
+    int possiblePromotedPieces = 0;
+    int promotedPieceCount = 0;
 
 
 
@@ -50,29 +45,25 @@ public class PromotedPieces extends AbstractDedcution {
         return this.observations;
     }
 
-    @Override
-    public boolean deduce(BoardInterface board) {
-        this.possibleWhitePromotedPieces = MAX_PAWNS - pawnNumber.getWhitePawns();
-        this.possibleBlackPromotedPieces = MAX_PAWNS - pawnNumber.getBlackPawns();
-
-        String colour = "white";
+    public boolean deduce(BoardInterface board, String colour) {
+        this.possiblePromotedPieces = MAX_PAWNS - (colour.equals("white")
+                ? pawnNumber.getWhitePawns()
+                : pawnNumber.getBlackPawns());
 
         PIECE_NUMBERS.keySet().stream().forEach(s -> {
             List<Coordinate> currentPieceCoords = board.getBoardFacts().getCoordinates(colour, s);
             int pieceCountDifference = currentPieceCoords.size() - PIECE_NUMBERS.get(s);
-            if (pieceCountDifference > 0){
-                PromotedPiece piece = new PromotedPiece(currentPieceCoords.get(0));
-                this.promotedPieces.put(piece.location, piece);
-                currentPieceCoords.stream().forEach(c -> {
-                    piece.addOr(new PromotedPiece(c));
-                });
+            if (pieceCountDifference > 0) {
+                for (int i = 0; i < pieceCountDifference; i++) {
+                    PromotedPieceSet xorSet = new PromotedPieceSet(s);
+                    andSet.add(xorSet);
+                    currentPieceCoords.stream()
+                            .forEach(c -> {
+                                xorSet.add(new PromotedPiece(c));
+                            });
+                }
             }
-            this.whitePromotedPieceCount += pieceCountDifference;
-
         });
-        if (this.whitePromotedPieceCount > this.possibleWhitePromotedPieces) {
-            return false;
-        }
 
         List<Coordinate> bishops = board.getBoardFacts().getCoordinates(colour, "bishop");
         int bishopNumber = bishops.size();
@@ -83,19 +74,31 @@ public class PromotedPieces extends AbstractDedcution {
             for (Integer i : lightAndDarkSquares.keySet()) {
                 List<Coordinate> currentSet = lightAndDarkSquares.get(i);
                 if (currentSet.size() >= 2) {
-                    this.whitePromotedPieceCount++;
-                    Coordinate location = currentSet.get(0);
-                    PromotedPiece piece = new PromotedPiece(location);
-                    this.promotedPieces.put(location, piece);
-                    currentSet.stream().forEach(c -> {
-                                piece.addOr(new PromotedPiece(c));
-                            });
-//                    piece.addOr(new PromotedPiece(lightAndDarkSquares.get(0).get(1)));
+                    for (int j = 0; j < currentSet.size() - 1; j++) {
+                        PromotedPieceSet xorSet = new PromotedPieceSet("bishop");
+                        andSet.add(xorSet);
+                        currentSet.stream()
+                                .forEach(c -> {
+                                    xorSet.add(new PromotedPiece(c));
+                                });
+                    }
                 }
             }
         }
+        int promotedPieceCount = this.andSet.getPieces().size();
+        if (promotedPieceCount > this.possiblePromotedPieces) {
+            return false;
+        }
 
-
+        for (int i = 0 ; i < this.possiblePromotedPieces - promotedPieceCount; i++) {
+            PromotedPieceSet pieceSet = new PromotedPieceSet("any");
+            this.andSet.add(pieceSet);
+            HeuristicsUtil.PIECE_NAMES.stream()
+                            .forEach(type -> {
+                                board.getBoardFacts().getCoordinates(colour, type).stream()
+                                        .forEach(coordinate -> pieceSet.add(new PromotedPiece(coordinate)));
+                            });
+        }
 
         return false;
     }
@@ -104,28 +107,9 @@ public class PromotedPieces extends AbstractDedcution {
         return this.promotedPieces;
     }
 
-    public class PromotedPiece extends AbstractDedcution {
-
-        Coordinate location;
-
-        public PromotedPiece(Coordinate location) {
-            this.location = location;
-        }
-
-        @Override
-        public List<Observation> getObservations() {
-            return null;
-        }
-
-        @Override
-        public boolean deduce(BoardInterface board) {
-            return false;
-        }
-
-        public Coordinate getLocation() {
-            return this.location;
-        }
-
+    public PromotedPieceSet getAndSet() {
+        return this.andSet;
     }
+
 
 }
