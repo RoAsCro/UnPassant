@@ -85,6 +85,7 @@ public abstract class PromotedPieces extends AbstractDeduction {
         }
         int promotedPieceCount = this.andSet.size();
         if (promotedPieceCount > this.possiblePromotedPieces) {
+            this.state = false;
             return false;
         }
 //        for (int i = 0 ; i < this.possiblePromotedPieces - promotedPieceCount; i++) {

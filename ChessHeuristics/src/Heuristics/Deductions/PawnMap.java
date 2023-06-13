@@ -47,7 +47,14 @@ public abstract class PawnMap extends AbstractDeduction{
                             j = j + finalY - 1;
                             continue;
                         }
-                        starts.add(new Coordinate(x, start));
+                        Coordinate origin = new Coordinate(x, start);
+                        if (!this.pawnOrigins.entrySet().stream()
+                                .anyMatch(e -> e.getValue().size() == 1 && e.getValue().contains(origin))) {
+                            starts.add(origin);
+                        }
+                    }
+                    if (starts.size() == 0) {
+                        this.state = false;
                     }
                     this.pawnOrigins.put(pawn, starts);
                 }
