@@ -67,13 +67,21 @@ public class PawnMapTest {
         Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(5, 1)).size());
         Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(7, 1)).size());
         Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(6, 1)).size());
+    }
 
+    @Test
+    void testPawnMapFour() {
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/p4p2/3ppp2/1p6/1p6/1PPPP3/2P2PPP/4K3 w - - 0 1"));
         PawnMapBlack blackMap = new PawnMapBlack();
         blackMap.deduce(board);
         System.out.println(blackMap.getPawnOrigins());
-        Assertions.assertEquals(2, blackMap.getPawnOrigins().get(new Coordinate(0, 5)).size());
+        Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(0, 6)).size());
         Assertions.assertEquals(3, blackMap.getPawnOrigins().get(new Coordinate(1, 4)).size());
-        Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(1, 3)).size());
+        Assertions.assertEquals(4, blackMap.getPawnOrigins().get(new Coordinate(1, 3)).size());
+        Assertions.assertEquals(3, blackMap.getPawnOrigins().get(new Coordinate(3, 5)).size());
+        Assertions.assertEquals(2, blackMap.getPawnOrigins().get(new Coordinate(4, 5)).size());
+        Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(5, 5)).size());
+
     }
 
     @Test
