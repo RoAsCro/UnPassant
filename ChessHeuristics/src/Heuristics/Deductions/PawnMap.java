@@ -37,7 +37,6 @@ public abstract class PawnMap extends AbstractDeduction{
 
     public boolean deduce(BoardInterface board, String colour) {
         rawMap(board, colour);
-//        captures(colour);
         reduce(colour);
         return false;
     }
@@ -114,13 +113,17 @@ public abstract class PawnMap extends AbstractDeduction{
             while (current != previous){
                 captures(colour);
                 previous = current;
-                current = reduceIter(new HashSet<>(), originsTwo);
+                reduceIter(new HashSet<>(), originsTwo);
+                current = this.pawnOrigins.entrySet()
+                        .stream()
+                        .map(entry -> entry.getValue().size())
+                        .reduce(Integer::sum)
+                        .orElse(0);
             }
         }
     }
 
-    private int reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
-        // TODO The current way of breaking the Iter could very well occur coincidentally!
+    private void reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
         if (!set.isEmpty()) {
             AtomicBoolean supersets = new AtomicBoolean(false);
             List<Coordinate> subsets = this.pawnOrigins.entrySet().stream()
@@ -134,21 +137,19 @@ public abstract class PawnMap extends AbstractDeduction{
                     .toList();
             if (subsets.size() == set.size()) {
                 removeCoords(set, subsets);
-                return 1;
+                return;
             }
             if (!supersets.get()) {
-                return 0;
+                return;
             }
         }
-        int change = 0;
         for (Coordinate currentCoord : origins) {
             Set<Coordinate> newSet = new HashSet<>(set);
             newSet.add(currentCoord);
             List<Coordinate> newOrigins = new LinkedList<>(origins);
             newOrigins.remove(currentCoord);
-            change += reduceIter(newSet, newOrigins);
+            reduceIter(newSet, newOrigins);
         }
-        return change;
     }
 
     private void removeCoords(Set<Coordinate> forRemoval, List<Coordinate> ignore) {
