@@ -62,91 +62,54 @@ public abstract class PawnMap extends AbstractDeduction{
                             .filter(e -> e.getValue().equals(starts))
                             .findAny();
                     if (entryOptional.isPresent() || starts.size() == 1) {
-
                         this.certainOrigins.put(pawn, starts);
                         if (entryOptional.isPresent()) {
                             Map.Entry<Coordinate, Path> entry = entryOptional.get();
                             this.certainOrigins.put(entry.getKey(), entry.getValue());
-                            this.uncertainOrigins.remove(entry.getKey());
+//                            this.uncertainOrigins.remove(entry.getKey());
                         }
-                    } else {
-                        this.uncertainOrigins.put(pawn, starts);
                     }
-
-//                            .forEach(e -> {
-//                                if (e.getValue().equals(starts)) {
-//                                    this.certainOrigins.put(pawn, starts);
-//                                    this.certainOrigins.put(e.getKey(), e.getValue());
-//                                }
-//                            })
-                    ;
+//                    else {
+//                        this.uncertainOrigins.put(pawn, starts);
+//                    }
                     this.pawnOrigins.put(pawn, starts);
 
                 }
             });
 
-            for (int i = 0 ; i < 8 ; i++) {
-                List<Map.Entry<Coordinate, Path>> newlyCertain = new LinkedList<>();
-                this.uncertainOrigins.entrySet()
-                        .stream()
-                        .forEach(entry -> {
-                            List<Coordinate> forRemoval = new LinkedList<>();
-                            entry.getValue()
-                                    .stream()
-                                    .forEach(coordinate -> {
-                                        if (this.certainOrigins.entrySet()
-                                                .stream()
-                                                .anyMatch(e -> e.getValue().contains(coordinate))) {
-                                            forRemoval.add(coordinate);
-                                        }
-                                    });
-                            entry.getValue().removeAll(forRemoval);
-
-                            List<Map.Entry<Coordinate, Path>> list = this.pawnOrigins.entrySet().stream()
-                                    .filter(e -> e.getValue().equals(entry.getValue()))
-                                    .toList();
-
-                            if (list.size() > 1 || entry.getValue().size() == 1) {
-                                list.stream()
-                                        .forEach(otherEntry -> {
-                                            this.certainOrigins.put(otherEntry.getKey(), otherEntry.getValue());
-                                            newlyCertain.add(otherEntry);
-                                        });
-                            }
-                        });
-                newlyCertain.forEach(entry -> uncertainOrigins.remove(entry.getKey()));
-
-            }
-            findMapTwo();
-//            this.uncertainOrigins.entrySet()
-//                    .stream()
-//                    .forEach(entry -> {
-//                                List<Coordinate> forRemoval = entry.getValue().stream()
-//                                        .filter(coordinate ->
-//                                                this.certainOrigins.entrySet()
-//                                                        .stream()
-//                                                        .anyMatch(entryTwo -> entryTwo.getValue().contains(coordinate)))
-//                                        .toList();
-//                                entry.getValue().removeAll(forRemoval);
-//                            });
+//            for (int i = 0 ; i < 8 ; i++) {
+//                List<Map.Entry<Coordinate, Path>> newlyCertain = new LinkedList<>();
+//                this.uncertainOrigins.entrySet()
+//                        .stream()
+//                        .forEach(entry -> {
+//                            List<Coordinate> forRemoval = new LinkedList<>();
+//                            entry.getValue()
+//                                    .stream()
+//                                    .forEach(coordinate -> {
+//                                        if (this.certainOrigins.entrySet()
+//                                                .stream()
+//                                                .anyMatch(e -> e.getValue().contains(coordinate))) {
+//                                            forRemoval.add(coordinate);
+//                                        }
+//                                    });
+//                            entry.getValue().removeAll(forRemoval);
 //
-//            List<Coordinate> newlyCertain = new LinkedList<>();
-//            this.uncertainOrigins.entrySet()
-//                    .stream()
-//                    .forEach(entry -> {
-//                        List<Coordinate> subsets = this.uncertainOrigins.entrySet()
-//                                .stream()
-//                                .filter(secondEntry -> entry.getValue().containsAll(secondEntry.getValue()))
-//                                .map(Map.Entry::getKey)
-//                                .toList();
-//                        if (subsets.size() == entry.getValue().size()) {
-//                            newlyCertain.addAll(subsets);
-//                        }
-//                    });
-//            newlyCertain.forEach(coordinate -> {
-//                        this.certainOrigins.put(coordinate, uncertainOrigins.get(coordinate));
-//                        this.uncertainOrigins.remove(coordinate);
-//                    });
+//                            List<Map.Entry<Coordinate, Path>> list = this.pawnOrigins.entrySet().stream()
+//                                    .filter(e -> e.getValue().equals(entry.getValue()))
+//                                    .toList();
+//
+//                            if (list.size() > 1 || entry.getValue().size() == 1) {
+//                                list.stream()
+//                                        .forEach(otherEntry -> {
+//                                            this.certainOrigins.put(otherEntry.getKey(), otherEntry.getValue());
+//                                            newlyCertain.add(otherEntry);
+//                                        });
+//                            }
+//                        });
+//                newlyCertain.forEach(entry -> uncertainOrigins.remove(entry.getKey()));
+//
+//            }
+            findMapTwo();
         }
 
         return false;
