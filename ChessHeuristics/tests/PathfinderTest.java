@@ -7,6 +7,9 @@ import StandardChess.StandardPieceFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class PathfinderTest {
 
     @Test
@@ -31,5 +34,18 @@ public class PathfinderTest {
                 (b, c) -> c.equals(target),
                 board);
         System.out.println(path);
+    }
+
+    @Test
+    void findEveryTileTest() {
+        // Tests that no duplicates are found
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
+        List<Coordinate> list = new LinkedList<>();
+        Path path = Pathfinder.findFirstPath(StandardPieceFactory.getInstance().getPiece("k"),
+                new Coordinate(0,0),
+                (b, c) -> {list.add(c);
+                            return list.size() == 64;},
+                board);
+        Assertions.assertEquals(path.size(), path.stream().distinct().toList().size());
     }
 }

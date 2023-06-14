@@ -67,12 +67,12 @@ public class KingStrategy extends AbstractStrategy{
     public Coordinate[] getMoves(Coordinate origin) {
         return new Coordinate[] {
                 Coordinates.add(origin, Coordinates.UP),
-                Coordinates.add(origin, Coordinates.UP_RIGHT),
                 Coordinates.add(origin, Coordinates.RIGHT),
-                Coordinates.add(origin, Coordinates.DOWN_RIGHT),
                 Coordinates.add(origin, Coordinates.DOWN),
-                Coordinates.add(origin, Coordinates.DOWN_LEFT),
                 Coordinates.add(origin, Coordinates.LEFT),
+                Coordinates.add(origin, Coordinates.UP_RIGHT),
+                Coordinates.add(origin, Coordinates.DOWN_RIGHT),
+                Coordinates.add(origin, Coordinates.DOWN_LEFT),
                 Coordinates.add(origin, Coordinates.UP_LEFT),
         };
     }

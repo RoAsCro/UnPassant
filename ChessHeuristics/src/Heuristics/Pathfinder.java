@@ -15,14 +15,24 @@ public class Pathfinder {
                                         BiPredicate<BoardInterface, Coordinate> endCondition,
                                         BoardInterface board) {
         Path shortestPath = new Path();
-        shortestPath = shortestPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH);
+        shortestPath = shortestPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, true);
+        return shortestPath;
+    }
+
+    public static Path findFirstPath(Piece piece, Coordinate origin,
+                                     BiPredicate<BoardInterface, Coordinate> endCondition,
+                                     BoardInterface board) {
+
+        Path shortestPath = new Path();
+        shortestPath = shortestPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, false);
         return shortestPath;
     }
 
     private static Path shortestPathIter(Piece piece, Coordinate origin,
                                          BiPredicate<BoardInterface, Coordinate> endCondition, Path path,
-                                         BoardInterface board, int depth) {
-        System.out.println(path);
+                                         BoardInterface board, int depth,
+                                         boolean shortest) {
+            System.out.println(path);
         path.add(origin);
         if (endCondition.test(board, origin)) {
             return path;
@@ -41,9 +51,15 @@ public class Pathfinder {
             }
             Path currentPath = new Path();
             currentPath.addAll(path);
-            Path testPath = shortestPathIter(piece, target, endCondition, currentPath, board, depth);
+            Path testPath = shortestPathIter(piece, target, endCondition, currentPath, board, depth, shortest);
             if (shortestPath.isEmpty() || testPath.size() < shortestPath.size()) {
-                depth = testPath.size() == 0 ? MAX_DEPTH : testPath.size();
+                depth = MAX_DEPTH;
+                if (testPath.size() != 0) {
+                    depth = testPath.size();
+                    if (!shortest) {
+                        return testPath;
+                    }
+                }
                 shortestPath = testPath;
             }
         }
