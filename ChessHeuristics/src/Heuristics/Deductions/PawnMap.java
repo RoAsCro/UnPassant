@@ -38,6 +38,7 @@ public abstract class PawnMap extends AbstractDeduction{
     public boolean deduce(BoardInterface board, String colour) {
         rawMap(board, colour);
         reduce(colour);
+
         return false;
     }
 
@@ -114,9 +115,9 @@ public abstract class PawnMap extends AbstractDeduction{
                 captures(colour);
                 previous = current;
                 reduceIter(new HashSet<>(), originsTwo);
-                current = this.pawnOrigins.entrySet()
+                current = this.pawnOrigins.values()
                         .stream()
-                        .map(entry -> entry.getValue().size())
+                        .map(LinkedList::size)
                         .reduce(Integer::sum)
                         .orElse(0);
             }

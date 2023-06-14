@@ -17,9 +17,16 @@ public class Coordinates {
     public static final Coordinate DOWN_LEFT = new Coordinate(-1, -1);
     public static final Coordinate UP_LEFT = new Coordinate(-1, 1);
 
+    public static final int MAX_SIZE = 8;
+    public static final int MIN_SIZE = 0;
 
 
 
+
+    public static boolean inBounds(Coordinate coordinate) {
+        return coordinate.getX() < MAX_SIZE && coordinate.getX() >= MIN_SIZE
+                && coordinate.getY() < MAX_SIZE && coordinate.getY() >= MIN_SIZE;
+    }
 
 
 
