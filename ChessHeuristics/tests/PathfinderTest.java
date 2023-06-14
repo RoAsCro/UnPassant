@@ -21,4 +21,15 @@ public class PathfinderTest {
         Assertions.assertEquals(5, path.size());
         Assertions.assertEquals(target, path.get(4));
     }
+
+    @Test
+    void findBishopFail() {
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
+        Coordinate target = new Coordinate(4, 3);
+        Path path = Pathfinder.findShortestPath(StandardPieceFactory.getInstance().getPiece("b"),
+                new Coordinate(0,0),
+                (b, c) -> c.equals(target),
+                board);
+        System.out.println(path);
+    }
 }

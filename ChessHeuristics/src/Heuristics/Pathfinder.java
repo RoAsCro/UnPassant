@@ -8,17 +8,21 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 public class Pathfinder {
+
+    private static int MAX_DEPTH = 64;
+
     public static Path findShortestPath(Piece piece, Coordinate origin,
                                         BiPredicate<BoardInterface, Coordinate> endCondition,
                                         BoardInterface board) {
         Path shortestPath = new Path();
-        shortestPath = shortestPathIter(piece, origin, endCondition, shortestPath, board, -1);
+        shortestPath = shortestPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH);
         return shortestPath;
     }
 
     private static Path shortestPathIter(Piece piece, Coordinate origin,
                                          BiPredicate<BoardInterface, Coordinate> endCondition, Path path,
                                          BoardInterface board, int depth) {
+        System.out.println(path);
         path.add(origin);
         if (endCondition.test(board, origin)) {
             return path;
@@ -27,7 +31,7 @@ public class Pathfinder {
 
         Coordinate[] moves = piece.getMoves(origin);
         for (Coordinate target : moves) {
-            if (depth != -1 && path.size() + 1 > depth) {
+            if (depth != 0 && path.size() + 1 > depth) {
                 shortestPath.addAll(path);
                 shortestPath.add(target);
                 break;
@@ -39,7 +43,7 @@ public class Pathfinder {
             currentPath.addAll(path);
             Path testPath = shortestPathIter(piece, target, endCondition, currentPath, board, depth);
             if (shortestPath.isEmpty() || testPath.size() < shortestPath.size()) {
-                depth = testPath.size();
+                depth = testPath.size() == 0 ? MAX_DEPTH : testPath.size();
                 shortestPath = testPath;
             }
         }
