@@ -49,26 +49,26 @@ public abstract class PawnMap extends AbstractDeduction{
                             continue;
                         }
                         Coordinate origin = new Coordinate(x, start);
-                        if (this.certainOrigins.entrySet().stream()
-                                .noneMatch(e -> e.getValue().contains(origin))) {
+//                        if (this.certainOrigins.entrySet().stream()
+//                                .noneMatch(e -> e.getValue().contains(origin))) {
                             starts.add(origin);
-                        }
+//                        }
                     }
 
-                    if (starts.size() == 0) {
-                        this.state = false;
-                    }
-                    Optional<Map.Entry<Coordinate, Path>> entryOptional = this.pawnOrigins.entrySet().stream()
-                            .filter(e -> e.getValue().equals(starts))
-                            .findAny();
-                    if (entryOptional.isPresent() || starts.size() == 1) {
-                        this.certainOrigins.put(pawn, starts);
-                        if (entryOptional.isPresent()) {
-                            Map.Entry<Coordinate, Path> entry = entryOptional.get();
-                            this.certainOrigins.put(entry.getKey(), entry.getValue());
-//                            this.uncertainOrigins.remove(entry.getKey());
-                        }
-                    }
+//                    if (starts.size() == 0) {
+//                        this.state = false;
+//                    }
+//                    Optional<Map.Entry<Coordinate, Path>> entryOptional = this.pawnOrigins.entrySet().stream()
+//                            .filter(e -> e.getValue().equals(starts))
+//                            .findAny();
+//                    if (entryOptional.isPresent() || starts.size() == 1) {
+//                        this.certainOrigins.put(pawn, starts);
+//                        if (entryOptional.isPresent()) {
+//                            Map.Entry<Coordinate, Path> entry = entryOptional.get();
+//                            this.certainOrigins.put(entry.getKey(), entry.getValue());
+////                            this.uncertainOrigins.remove(entry.getKey());
+//                        }
+//                    }
 //                    else {
 //                        this.uncertainOrigins.put(pawn, starts);
 //                    }
@@ -109,9 +109,8 @@ public abstract class PawnMap extends AbstractDeduction{
 //                newlyCertain.forEach(entry -> uncertainOrigins.remove(entry.getKey()));
 //
 //            }
-            findMapTwo();
         }
-
+        findMapTwo();
         return false;
     }
 
@@ -122,11 +121,7 @@ public abstract class PawnMap extends AbstractDeduction{
                 .collect(Collectors.toSet())
                 .stream().toList();
         if (!origins.isEmpty()) {
-            Coordinate firstCoord = origins.get(0);
-//            Set<Coordinate> toSearch = new HashSet<>();
-//            toSearch.add(firstCoord);
             List<Coordinate> originsTwo = new LinkedList<>(origins);
-            originsTwo.remove(firstCoord);
             int previous = 0;
             int current = -1;
             while (current != previous){
@@ -138,7 +133,6 @@ public abstract class PawnMap extends AbstractDeduction{
 
     private int findMapTwoIter(Set<Coordinate> set, List<Coordinate> origins) {
         if (!set.isEmpty()) {
-            System.out.println(set);
             AtomicBoolean supersets = new AtomicBoolean(false);
             List<Coordinate> subsets = this.pawnOrigins.entrySet().stream()
                     .filter(entry -> {
@@ -151,17 +145,14 @@ public abstract class PawnMap extends AbstractDeduction{
                     .toList();
             if (subsets.size() == set.size()) {
                 removeCoords(set, subsets);
-                System.out.println("A");
                 return 1;
             }
             if (!supersets.get()) {
-                System.out.println("B");
                 return 0;
             }
         }
         int change = 0;
         for (Coordinate currentCoord : origins) {
-            System.out.println(currentCoord);
             Set<Coordinate> newSet = new HashSet<>();
             newSet.addAll(set);
             newSet.add(currentCoord);
