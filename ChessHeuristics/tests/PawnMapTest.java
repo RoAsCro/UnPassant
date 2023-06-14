@@ -23,7 +23,7 @@ public class PawnMapTest {
 
     @Test
     void testPawnMapsPawnPositions() {
-        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r3k2r/P6p/P6p/P6p/P6p/P6p/P6p/4K3 w kq - 0 1"));
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/7p/P6p/P6p/P6p/P6p/P7/4K3 w - - 0 1"));
         PawnMapWhite map = new PawnMapWhite();
         map.deduce(board);
         System.out.println(map.getPawnOrigins());
@@ -108,6 +108,37 @@ public class PawnMapTest {
         Assertions.assertEquals(new Coordinate(1, 1), whiteMap.getPawnOrigins().get(new Coordinate(1, 2)).get(0));
 
     }
+
+    @Test
+    void testCapturesTwo() {
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/5P2/2P5/P3P3/1P1P2PP/8/RNBQKBNR w KQkq - 0 1"));
+        PawnMapWhite whiteMap = new PawnMapWhite();
+        for (Observation o : whiteMap.getObservations()) {
+            o.observe(board);
+        }
+        whiteMap.deduce(board);
+        System.out.println(whiteMap.getPawnOrigins());
+        whiteMap.getPawnOrigins().entrySet().stream().forEach(entry ->{
+            Assertions.assertEquals(1, entry.getValue().size());
+            Assertions.assertEquals(new Coordinate(entry.getKey().getX(), 1), entry.getValue().get(0));
+        });
+
+    }
+
+    @Test
+    void testContradictoryCaptures() {
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppp2pp/8/8/P7/5P2/1P1PPP1P/RNBQKBNR w KQkq - 0 1"));
+        PawnMapWhite whiteMap = new PawnMapWhite();
+        for (Observation o : whiteMap.getObservations()) {
+            o.observe(board);
+        }
+        whiteMap.deduce(board);
+
+        System.out.println(whiteMap.getPawnOrigins());
+        Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(0, 3)).size());
+        Assertions.assertEquals(new Coordinate(0, 1), whiteMap.getPawnOrigins().get(new Coordinate(0, 3)).get(0));
+    }
+
 
     @Test
     void p() {

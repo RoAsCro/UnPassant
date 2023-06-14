@@ -17,8 +17,6 @@ public abstract class PawnMap extends AbstractDeduction{
 
     private Map<Coordinate, List<Path>> paths;
     private final Map<Coordinate, Path> pawnOrigins = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
-    private final Map<Coordinate, Path> uncertainOrigins = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
-    private final Map<Coordinate, Path> certainOrigins = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
     List<Observation> observations = new ArrayList<>();
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;
@@ -39,8 +37,8 @@ public abstract class PawnMap extends AbstractDeduction{
 
     public boolean deduce(BoardInterface board, String colour) {
         rawMap(board, colour);
-        captures(colour);
-        reduce();
+//        captures(colour);
+        reduce(colour);
         return false;
     }
 
@@ -76,16 +74,35 @@ public abstract class PawnMap extends AbstractDeduction{
         int maxOffset = 16 - (colour.equals("white")
                 ? this.pieceNumber.getBlackPieces()
                 : this.pieceNumber.getWhitePieces());
+        maxOffset -= this.pawnOrigins.entrySet().stream()
+                .map(entry -> {
+                    int x = entry.getKey().getX();
+                    return entry.getValue().stream()
+                            .map(coordinate -> Math.abs(x - coordinate.getX()))
+                            .reduce((i, j) -> {
+                                System.out.println(entry.getKey().getX());
+                                System.out.println(i + ", " + j);
+                                if (i < j) {
+                                    return i;
+                                }
+                                return j;
+                            })
+                            .orElse(0);
+                })
+                .reduce(Integer::sum)
+                .orElse(0);
         System.out.println(maxOffset);
+
+        int offSet = maxOffset;
         this.pawnOrigins.entrySet().stream()
                 .forEach(entry -> {
                     int x = entry.getKey().getX();
                     entry.getValue().removeAll(entry.getValue().stream()
-                            .filter(coordinate -> Math.abs(x - coordinate.getX()) > maxOffset)
+                            .filter(coordinate -> Math.abs(x - coordinate.getX()) > offSet)
                             .toList());
                 });
     }
-    private void reduce() {
+    private void reduce(String colour) {
         List<Coordinate> origins = this.pawnOrigins.entrySet().stream()
                 .flatMap(f -> f.getValue().stream())
                 .collect(Collectors.toSet())
@@ -95,6 +112,7 @@ public abstract class PawnMap extends AbstractDeduction{
             int previous = 0;
             int current = -1;
             while (current != previous){
+                captures(colour);
                 previous = current;
                 current = reduceIter(new HashSet<>(), originsTwo);
             }
