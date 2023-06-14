@@ -20,4 +20,12 @@ public class PieceNumber extends AbstractObservation{
                 .size();
 
     }
+
+    public int getBlackPieces() {
+        return blackPieces;
+    }
+
+    public int getWhitePieces() {
+        return whitePieces;
+    }
 }

@@ -2,6 +2,7 @@ import Heuristics.BoardInterface;
 import Heuristics.Deductions.PawnMap;
 import Heuristics.Deductions.PawnMapBlack;
 import Heuristics.Deductions.PawnMapWhite;
+import Heuristics.Observation;
 import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
 import org.junit.jupiter.api.Assertions;
@@ -92,6 +93,19 @@ public class PawnMapTest {
         System.out.println(whiteMap.getPawnOrigins());
         Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(2, 2)).size());
         Assertions.assertEquals(new Coordinate(1, 1), whiteMap.getPawnOrigins().get(new Coordinate(2, 2)).get(0));
+
+    }
+
+    @Test
+    void testCaptures() {
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/1P6/3PPPPP/RNBQKBNR w KQkq - 0 1"));
+        PawnMapWhite whiteMap = new PawnMapWhite();
+        for (Observation o : whiteMap.getObservations()) {
+            o.observe(board);
+        }
+        whiteMap.deduce(board);
+        Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(1, 2)).size());
+        Assertions.assertEquals(new Coordinate(1, 1), whiteMap.getPawnOrigins().get(new Coordinate(1, 2)).get(0));
 
     }
 

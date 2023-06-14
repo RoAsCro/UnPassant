@@ -2,6 +2,8 @@ package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
 import Heuristics.Observation;
+import Heuristics.Observations.PawnNumber;
+import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
 import StandardChess.BoardReader;
 import StandardChess.Coordinate;
@@ -17,15 +19,27 @@ public abstract class PawnMap extends AbstractDeduction{
     private final Map<Coordinate, Path> pawnOrigins = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
     private final Map<Coordinate, Path> uncertainOrigins = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
     private final Map<Coordinate, Path> certainOrigins = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
+    List<Observation> observations = new ArrayList<>();
+    PawnNumber pawnNumber;
+    PieceNumber pieceNumber;
 
+    public PawnMap() {
+        PawnNumber pawnNumber = new PawnNumber();
+        this.observations.add(pawnNumber);
+        this.pawnNumber = pawnNumber;
+        PieceNumber pieceNumber = new PieceNumber();
+        this.observations.add(pieceNumber);
+        this.pieceNumber = pieceNumber;
+    }
 
     @Override
     public List<Observation> getObservations() {
-        return null;
+        return this.observations;
     }
 
     public boolean deduce(BoardInterface board, String colour) {
         rawMap(board, colour);
+        captures(colour);
         reduce();
         return false;
     }
@@ -53,12 +67,24 @@ public abstract class PawnMap extends AbstractDeduction{
                         starts.add(new Coordinate(x, start));
                     }
                     this.pawnOrigins.put(pawn, starts);
-
                 }
             });
         }
     }
 
+    private void captures(String colour) {
+        int maxOffset = 16 - (colour.equals("white")
+                ? this.pieceNumber.getBlackPieces()
+                : this.pieceNumber.getWhitePieces());
+        System.out.println(maxOffset);
+        this.pawnOrigins.entrySet().stream()
+                .forEach(entry -> {
+                    int x = entry.getKey().getX();
+                    entry.getValue().removeAll(entry.getValue().stream()
+                            .filter(coordinate -> Math.abs(x - coordinate.getX()) > maxOffset)
+                            .toList());
+                });
+    }
     private void reduce() {
         List<Coordinate> origins = this.pawnOrigins.entrySet().stream()
                 .flatMap(f -> f.getValue().stream())
@@ -76,6 +102,7 @@ public abstract class PawnMap extends AbstractDeduction{
     }
 
     private int reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
+        // TODO The current way of breaking the Iter could very well occur coincidentally!
         if (!set.isEmpty()) {
             AtomicBoolean supersets = new AtomicBoolean(false);
             List<Coordinate> subsets = this.pawnOrigins.entrySet().stream()
