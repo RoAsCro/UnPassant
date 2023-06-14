@@ -85,6 +85,17 @@ public class PawnMapTest {
     }
 
     @Test
+    void testPawnMapFive() {
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/p4p2/3ppp2/1p6/1p6/2PPPPP1/2P4P/4K3 w - - 0 1"));
+        PawnMapWhite whiteMap = new PawnMapWhite();
+        whiteMap.deduce(board);
+        System.out.println(whiteMap.getPawnOrigins());
+        Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(2, 2)).size());
+        Assertions.assertEquals(new Coordinate(1, 1), whiteMap.getPawnOrigins().get(new Coordinate(2, 2)).get(0));
+
+    }
+
+    @Test
     void p() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r3k2r/p2p4/1pp5/2p5/2P5/1PP5/P2P4/4K3 w kq - 0 1"));
 //        board = new BoardInterface(BoardBuilder.buildBoard("r3k2r/p7/1pp5/2p5/2P5/1PP5/P7/4K3 w kq - 0 1"));

@@ -25,22 +25,24 @@ public abstract class PawnMap extends AbstractDeduction{
     }
 
     public boolean deduce(BoardInterface board, String colour) {
+        rawMap(board, colour);
+        reduce();
+        return false;
+    }
+
+    private void rawMap(BoardInterface board, String colour) {
         int start = colour.equals("white") ? 1 : 6;
         int increment = colour.equals("white") ? 1 : -1;
         BoardReader reader = board.getReader();
-
-
         for (int y = 0 ; y < 6; y++) {
             reader.to(new Coordinate(0, start + y * increment));
             int finalY = y;
             reader.nextWhile(Coordinates.RIGHT, coordinate -> coordinate.getX() < 8, piece -> {
                 if (piece.getType().equals("pawn") && piece.getColour().equals(colour)) {
-
                     Coordinate pawn = reader.getCoord();
                     int potentialPaths = finalY * 2 + 1;
                     Path starts = new Path();
                     for (int j = 0 ; j < potentialPaths ; j++) {
-
                         int x = (pawn.getX() - finalY) + j;
                         if (x > 7) {
                             break;
@@ -48,74 +50,16 @@ public abstract class PawnMap extends AbstractDeduction{
                         if (x < 0) {
                             continue;
                         }
-                        Coordinate origin = new Coordinate(x, start);
-//                        if (this.certainOrigins.entrySet().stream()
-//                                .noneMatch(e -> e.getValue().contains(origin))) {
-                            starts.add(origin);
-//                        }
+                        starts.add(new Coordinate(x, start));
                     }
-
-//                    if (starts.size() == 0) {
-//                        this.state = false;
-//                    }
-//                    Optional<Map.Entry<Coordinate, Path>> entryOptional = this.pawnOrigins.entrySet().stream()
-//                            .filter(e -> e.getValue().equals(starts))
-//                            .findAny();
-//                    if (entryOptional.isPresent() || starts.size() == 1) {
-//                        this.certainOrigins.put(pawn, starts);
-//                        if (entryOptional.isPresent()) {
-//                            Map.Entry<Coordinate, Path> entry = entryOptional.get();
-//                            this.certainOrigins.put(entry.getKey(), entry.getValue());
-////                            this.uncertainOrigins.remove(entry.getKey());
-//                        }
-//                    }
-//                    else {
-//                        this.uncertainOrigins.put(pawn, starts);
-//                    }
                     this.pawnOrigins.put(pawn, starts);
 
                 }
             });
-
-//            for (int i = 0 ; i < 8 ; i++) {
-//                List<Map.Entry<Coordinate, Path>> newlyCertain = new LinkedList<>();
-//                this.uncertainOrigins.entrySet()
-//                        .stream()
-//                        .forEach(entry -> {
-//                            List<Coordinate> forRemoval = new LinkedList<>();
-//                            entry.getValue()
-//                                    .stream()
-//                                    .forEach(coordinate -> {
-//                                        if (this.certainOrigins.entrySet()
-//                                                .stream()
-//                                                .anyMatch(e -> e.getValue().contains(coordinate))) {
-//                                            forRemoval.add(coordinate);
-//                                        }
-//                                    });
-//                            entry.getValue().removeAll(forRemoval);
-//
-//                            List<Map.Entry<Coordinate, Path>> list = this.pawnOrigins.entrySet().stream()
-//                                    .filter(e -> e.getValue().equals(entry.getValue()))
-//                                    .toList();
-//
-//                            if (list.size() > 1 || entry.getValue().size() == 1) {
-//                                list.stream()
-//                                        .forEach(otherEntry -> {
-//                                            this.certainOrigins.put(otherEntry.getKey(), otherEntry.getValue());
-//                                            newlyCertain.add(otherEntry);
-//                                        });
-//                            }
-//                        });
-//                newlyCertain.forEach(entry -> uncertainOrigins.remove(entry.getKey()));
-//
-//            }
         }
-        findMapTwo();
-        return false;
     }
 
-    private void findMapTwo() {
-        System.out.println("ITERSTART");
+    private void reduce() {
         List<Coordinate> origins = this.pawnOrigins.entrySet().stream()
                 .flatMap(f -> f.getValue().stream())
                 .collect(Collectors.toSet())
@@ -126,12 +70,12 @@ public abstract class PawnMap extends AbstractDeduction{
             int current = -1;
             while (current != previous){
                 previous = current;
-                current = findMapTwoIter(new HashSet<>(), originsTwo);
+                current = reduceIter(new HashSet<>(), originsTwo);
             }
         }
     }
 
-    private int findMapTwoIter(Set<Coordinate> set, List<Coordinate> origins) {
+    private int reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
         if (!set.isEmpty()) {
             AtomicBoolean supersets = new AtomicBoolean(false);
             List<Coordinate> subsets = this.pawnOrigins.entrySet().stream()
@@ -153,13 +97,11 @@ public abstract class PawnMap extends AbstractDeduction{
         }
         int change = 0;
         for (Coordinate currentCoord : origins) {
-            Set<Coordinate> newSet = new HashSet<>();
-            newSet.addAll(set);
+            Set<Coordinate> newSet = new HashSet<>(set);
             newSet.add(currentCoord);
-            List<Coordinate> newOrigins = new LinkedList<>();
-            newOrigins.addAll(origins);
+            List<Coordinate> newOrigins = new LinkedList<>(origins);
             newOrigins.remove(currentCoord);
-            change += findMapTwoIter(newSet, newOrigins);
+            change += reduceIter(newSet, newOrigins);
         }
         return change;
     }
@@ -170,34 +112,6 @@ public abstract class PawnMap extends AbstractDeduction{
                 .filter(entry -> !ignore.contains(entry.getKey()))
                 .forEach(entry -> entry.getValue().removeAll(forRemoval));
     }
-
-//    private void findMap(Map.Entry<Coordinate, Path> mainEntry, List<Coordinate> toSearch) {
-//
-//        List<Coordinate> toSearchNext = new LinkedList<>();
-//        List<Coordinate> newlyCertain = new LinkedList<>();
-//        List<Coordinate> intersections = new LinkedList<>();
-//        List<Coordinate> subsets = this.uncertainOrigins.entrySet()
-//                .stream()
-//                .filter(secondEntry -> toSearch.contains(secondEntry.getKey()))
-//                .filter(secondEntry -> {
-//                    if (secondEntry.getValue().stream().anyMatch(c -> {mainEntry.getValue().})){
-//                        intersections.add(secondEntry.getKey());
-//                    }
-//                    boolean subset = mainEntry.getValue().containsAll(secondEntry.getValue());
-//                    if (!subset) {
-//                        toSearchNext.add(secondEntry.getKey());
-//                    }
-//                    return subset;})
-//                .map(Map.Entry::getKey)
-//                .toList();
-//        if (subsets.size() == mainEntry.getValue().size()) {
-//            newlyCertain.addAll(subsets);
-//        } else
-//        newlyCertain.forEach(coordinate -> {
-//            this.certainOrigins.put(coordinate, uncertainOrigins.get(coordinate));
-//            this.uncertainOrigins.remove(coordinate);
-//        });
-//    }
 
     public Map<Coordinate, Path> getPawnOrigins() {
         return this.pawnOrigins;
