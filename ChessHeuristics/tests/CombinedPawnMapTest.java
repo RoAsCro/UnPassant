@@ -25,4 +25,21 @@ public class CombinedPawnMapTest {
         System.out.println(map.getPawnOrigins());
         System.out.println(combinedPawnMap.getWhitePaths());
     }
+
+    @Test
+    void testWhitePawnPathsTwo(){
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/7p/7p/7p/2P4p/8/PP1P4/4K3 w - - 0 1"));
+        PawnMapWhite map = new PawnMapWhite();
+        PawnMapBlack blackMap = new PawnMapBlack();
+        for (Observation o : map.getObservations()) {
+            o.observe(board);
+        }
+        for (Observation o : blackMap.getObservations()) {
+            o.observe(board);
+        }
+        CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
+        combinedPawnMap.deduce(board);
+        System.out.println(map.getPawnOrigins());
+        System.out.println(combinedPawnMap.getWhitePaths());
+    }
 }

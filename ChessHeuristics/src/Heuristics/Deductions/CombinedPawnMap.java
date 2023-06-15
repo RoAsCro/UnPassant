@@ -61,8 +61,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                                         coordinate,
                                         (b, c) -> c.equals(entry.getKey()),
                                         board,
-                                        p -> PATH_DEVIATION.apply(p) < whiteCaptures
-                                        ,
+                                        p -> PATH_DEVIATION.apply(p) < whiteCaptures,
                                         (p1, p2) -> PATH_DEVIATION.apply(p1) < PATH_DEVIATION.apply(p2)
                                 );
                                 paths.add(path);

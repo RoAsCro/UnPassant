@@ -3,7 +3,9 @@ import Heuristics.Path;
 import Heuristics.Pathfinder;
 import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
+import StandardChess.Coordinates;
 import StandardChess.StandardPieceFactory;
+import StandardChess.StandardPieces.StandardPiece;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -138,5 +140,90 @@ public class PathfinderTest {
                             return list.size() == 64;},
                 board);
         Assertions.assertEquals(path.size(), path.stream().distinct().toList().size());
+    }
+
+    @Test
+    void testPathExclusivity() {
+        Path path1 = new Path();
+        for (int i = 1 ; i < 6 ; i++) {
+            path1.add(new Coordinate(0, i));
+        }
+
+        Path path2 = new Path();
+        for (int i = 6 ; i > 1 ; i--) {
+            path2.add(new Coordinate(0, i));
+        }
+        Assertions.assertTrue(Pathfinder.pathsExclusive(path1, path2));
+    }
+
+    @Test
+    void testPathExclusivityTwo() {
+        Path path1 = new Path();
+        for (int i = 1 ; i < 4 ; i++) {
+            path1.add(new Coordinate(0, i));
+        }
+        path1.add(new Coordinate(1, 4));
+        path1.add(new Coordinate(0, 5));
+
+        Path path2 = new Path();
+        for (int i = 6 ; i > 1 ; i--) {
+            path2.add(new Coordinate(0, i));
+        }
+        Assertions.assertFalse(Pathfinder.pathsExclusive(path1, path2));
+    }
+
+    @Test
+    void testPathExclusivityThree() {
+        Path path1 = new Path();
+        for (int i = 1 ; i < 6 ; i++) {
+            path1.add(new Coordinate(0, i));
+        }
+
+        Path path2 = new Path();
+        for (int i = 4 ; i > 1 ; i--) {
+            path2.add(new Coordinate(0, i));
+        }
+        Assertions.assertTrue(Pathfinder.pathsExclusive(path1, path2));
+    }
+
+    @Test
+    void testReductionCondition() {
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
+        Coordinate target = new Coordinate(4, 3);
+        Path path1 = Pathfinder.findShortestPath(new FakeWhitePawn(),
+                new Coordinate(4,1),
+                (b, c) -> c.equals(target),
+                board,
+                p -> PATH_DEVIATION.apply(p) < 4
+        );
+        Path path2 = Pathfinder.findShortestPath(StandardPieceFactory.getInstance().getPiece("P"),
+                new Coordinate(4,1),
+                (b, c) -> c.equals(target),
+                board,
+                p -> PATH_DEVIATION.apply(p) < 4,
+                (p1, p2) -> PATH_DEVIATION.apply(p1) < PATH_DEVIATION.apply(p2)
+        );
+        Assertions.assertNotEquals(path1, path2);
+        Assertions.assertTrue(PATH_DEVIATION.apply(path1) > 0);
+        Assertions.assertEquals(0, (int) PATH_DEVIATION.apply(path2));
+
+    }
+
+
+    /**
+     * FakeWhitePawn returns moves in a different order to a PawnStrategy, meaning that the paths
+     * formed using it will prioritise diagonals. This allows the testing of reduction conditions.
+     */
+    private static class FakeWhitePawn extends StandardPiece {
+
+        public FakeWhitePawn() {
+            super("white", null);
+        }
+        @Override
+        public Coordinate[] getMoves(Coordinate origin) {
+            return new Coordinate[] {
+            Coordinates.add(origin, Coordinates.UP_RIGHT), Coordinates.add(origin, Coordinates.UP_LEFT),
+            Coordinates.add(origin, Coordinates.UP)};
+        }
     }
 }

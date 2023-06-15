@@ -4,8 +4,6 @@ import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 import StandardChess.Piece;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -90,5 +88,35 @@ public class Pathfinder {
             }
         }
         return shortestPath;
+    }
+
+    public static boolean pathsExclusive(Path pathOne, Path pathTwo) {
+        System.out.println(pathsNotExclusiveHelper(pathOne, pathTwo) || pathsNotExclusiveHelper(pathTwo, pathOne));
+        return pathsNotExclusiveHelper(pathOne, pathTwo) || pathsNotExclusiveHelper(pathTwo, pathOne);
+    }
+
+    /**
+     *
+     * @param containedPath
+     * @param containingPath
+     * @return true if the length of containedPath from its head
+     * up to the head of containingPath is inside containingPath
+     */
+    private static boolean pathsNotExclusiveHelper(Path containedPath, Path containingPath) {
+        Path currentPath = new Path();
+        currentPath.addAll(containedPath);
+        Coordinate current;
+        Coordinate target = containingPath.getLast();
+        boolean exclusive = true;
+        do {
+            current = currentPath.pollLast();
+            if (!containingPath.contains(current)) {
+                System.out.println(current);
+                exclusive = false;
+                break;
+            }
+
+        } while(!current.equals(target) && !currentPath.isEmpty());
+        return exclusive;
     }
 }
