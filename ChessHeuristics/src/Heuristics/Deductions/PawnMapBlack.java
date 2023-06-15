@@ -7,4 +7,9 @@ public class PawnMapBlack extends PawnMap{
     public boolean deduce(BoardInterface board) {
         return super.deduce(board, "black");
     }
+
+    @Override
+    public int capturedPieces() {
+        return super.capturedPieces("black");
+    }
 }

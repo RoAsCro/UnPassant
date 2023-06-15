@@ -4,6 +4,8 @@ import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 import StandardChess.Piece;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -15,15 +17,25 @@ public class Pathfinder {
                                         BiPredicate<BoardInterface, Coordinate> endCondition,
                                         BoardInterface board) {
         Path shortestPath = new Path();
-        shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, true, p -> true);
+        shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, true, p -> true, (c, d) -> true);
         return shortestPath;
     }
+
 
     public static Path findShortestPath(Piece piece, Coordinate origin,
                                         BiPredicate<BoardInterface, Coordinate> endCondition,
                                         BoardInterface board, Predicate<Path> pathCondition) {
         Path shortestPath = new Path();
-        shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, true, pathCondition);
+        shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, true, pathCondition, (c, d) -> true);
+        return shortestPath;
+    }
+
+    public static Path findShortestPath(Piece piece, Coordinate origin,
+                                        BiPredicate<BoardInterface, Coordinate> endCondition,
+                                        BoardInterface board, Predicate<Path> pathCondition,
+                                        BiPredicate<Path, Path> reductionCondition) {
+        Path shortestPath = new Path();
+        shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, true, pathCondition, reductionCondition);
         return shortestPath;
     }
 
@@ -32,14 +44,15 @@ public class Pathfinder {
                                      BoardInterface board) {
 
         Path shortestPath = new Path();
-        shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, false, p -> true);
+        shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, false, p -> true, (c, d) -> true);
         return shortestPath;
     }
 
     private static Path findPathIter(Piece piece, Coordinate origin,
                                      BiPredicate<BoardInterface, Coordinate> endCondition, Path path,
                                      BoardInterface board, int depth,
-                                     boolean shortest, Predicate<Path> pathCondition) {
+                                     boolean shortest, Predicate<Path> pathCondition,
+                                     BiPredicate<Path, Path> reductionCondition) {
         path.add(origin);
         if (endCondition.test(board, origin)) {
             return path;
@@ -63,14 +76,17 @@ public class Pathfinder {
             }
             Path currentPath = new Path();
             currentPath.addAll(path);
-            Path testPath = findPathIter(piece, target, endCondition, currentPath, board, depth, shortest, pathCondition);
+            Path testPath = findPathIter(piece, target, endCondition, currentPath, board, depth, shortest, pathCondition, reductionCondition);
             if (testPath.size() != 0 && (shortestPath.isEmpty() || testPath.size() < shortestPath.size())) {
                 depth = testPath.size();
                 if (!shortest) {
                     return testPath;
                 }
 //                System.out.println(testPath);
-                shortestPath = testPath;
+                if (shortestPath.isEmpty() || reductionCondition.test(testPath, shortestPath)) {
+                    shortestPath = testPath;
+                }
+
             }
         }
         return shortestPath;

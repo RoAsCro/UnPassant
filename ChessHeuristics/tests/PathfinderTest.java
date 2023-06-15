@@ -9,8 +9,17 @@ import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 
 public class PathfinderTest {
+
+    private static final Function<Path, Integer> PATH_DEVIATION = p -> p.stream()
+            .reduce(new Coordinate(p.get(0).getX(), 0), (c, d) -> {
+                if (c.getX() != d.getX()) {
+                    return new Coordinate(d.getX(), c.getY() + 1);
+                }
+                return c;
+            }).getY();
 
     @Test
     void findBishop() {
@@ -95,19 +104,27 @@ public class PathfinderTest {
         Path path = Pathfinder.findShortestPath(StandardPieceFactory.getInstance().getPiece("P"),
                 new Coordinate(x,1),
                 (b, c) -> c.equals(target),
-                board
-                ,
-                p -> p.stream()
-                        .reduce(new Coordinate(x, 0), (c, d) -> {
-                            if (c.getX() != d.getX()) {
-                                return new Coordinate(d.getX(), c.getY() + 1);
-                            }
-                            return c;
-                        })
-                        .getY() < 2
+                board,
+                p -> PATH_DEVIATION.apply(p) < 2
         );
         System.out.println(path);
         Assertions.assertEquals(0, path.size());
+    }
+
+    @Test
+    void findPawnTakeConditionSucceed() {
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
+        Coordinate target = new Coordinate(2, 5);
+//        List<Integer>  =
+        int x = 4;
+        Path path = Pathfinder.findShortestPath(StandardPieceFactory.getInstance().getPiece("P"),
+                new Coordinate(x,1),
+                (b, c) -> c.equals(target),
+                board,
+                p -> PATH_DEVIATION.apply(p) < 4
+        );
+        System.out.println(path);
+//        Assertions.assertEquals(0, path.size());
     }
 
     @Test

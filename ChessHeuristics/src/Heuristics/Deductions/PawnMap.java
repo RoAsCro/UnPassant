@@ -42,6 +42,14 @@ public abstract class PawnMap extends AbstractDeduction{
         return false;
     }
 
+    protected int capturedPieces(String colour) {
+        return 16 - (colour.equals("white")
+                ? this.pieceNumber.getBlackPieces()
+                : this.pieceNumber.getWhitePieces());
+    }
+
+    public abstract int capturedPieces();
+
     private void rawMap(BoardInterface board, String colour) {
         int start = colour.equals("white") ? 1 : 6;
         int increment = colour.equals("white") ? 1 : -1;
@@ -71,34 +79,28 @@ public abstract class PawnMap extends AbstractDeduction{
     }
 
     private void captures(String colour) {
-        int maxOffset = 16 - (colour.equals("white")
-                ? this.pieceNumber.getBlackPieces()
-                : this.pieceNumber.getWhitePieces());
-        maxOffset -= this.pawnOrigins.entrySet().stream()
-                .map(entry -> {
-                    int x = entry.getKey().getX();
-                    return entry.getValue().stream()
-                            .map(coordinate -> Math.abs(x - coordinate.getX()))
-                            .reduce((i, j) -> {
-                                System.out.println(entry.getKey().getX());
-                                System.out.println(i + ", " + j);
-                                if (i < j) {
-                                    return i;
-                                }
-                                return j;
-                            })
-                            .orElse(0);
-                })
-                .reduce(Integer::sum)
-                .orElse(0);
-        System.out.println(maxOffset);
-
-        int offSet = maxOffset;
+        int maxOffset = capturedPieces(colour) -
+                this.pawnOrigins.entrySet().stream()
+                    .map(entry -> {
+                        int x = entry.getKey().getX();
+                        return entry.getValue().stream()
+                                .map(coordinate -> Math.abs(x - coordinate.getX()))
+                                .reduce((i, j) -> {
+                                    if (i < j) {
+                                        return i;
+                                    }
+                                    return j;
+                                })
+                                .orElse(0);
+                    })
+                    .reduce(Integer::sum)
+                    .orElse(0);
+//        int offSet = maxOffset;
         this.pawnOrigins.entrySet().stream()
                 .forEach(entry -> {
                     int x = entry.getKey().getX();
                     entry.getValue().removeAll(entry.getValue().stream()
-                            .filter(coordinate -> Math.abs(x - coordinate.getX()) > offSet)
+                            .filter(coordinate -> Math.abs(x - coordinate.getX()) > maxOffset)
                             .toList());
                 });
     }
