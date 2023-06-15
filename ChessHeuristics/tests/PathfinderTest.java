@@ -50,7 +50,7 @@ public class PathfinderTest {
     }
 
     @Test
-    void findPawn() {
+    void findPawnWhite() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
         Coordinate target = new Coordinate(2, 5);
         Path path = Pathfinder.findShortestPath(StandardPieceFactory.getInstance().getPiece("P"),
@@ -58,6 +58,56 @@ public class PathfinderTest {
                 (b, c) -> c.equals(target),
                 board);
         System.out.println(path);
+        Assertions.assertEquals(5, path.size());
+
+    }
+
+    @Test
+    void findPawnBlackWrongWay() {
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
+        Coordinate target = new Coordinate(2, 5);
+        Path path = Pathfinder.findShortestPath(StandardPieceFactory.getInstance().getPiece("p"),
+                new Coordinate(1,1),
+                (b, c) -> c.equals(target),
+                board);
+        System.out.println(path);
+        Assertions.assertTrue(path.isEmpty());
+    }
+
+    @Test
+    void findPawnBlack() {
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
+        Coordinate target = new Coordinate(1, 1);
+        Path path = Pathfinder.findShortestPath(StandardPieceFactory.getInstance().getPiece("p"),
+                new Coordinate(5,6),
+                (b, c) -> c.equals(target),
+                board);
+        System.out.println(path);
+        Assertions.assertEquals(6, path.size());
+    }
+
+    @Test
+    void findPawnTakeCondition() {
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
+        Coordinate target = new Coordinate(2, 5);
+//        List<Integer>  =
+        int x = 4;
+        Path path = Pathfinder.findShortestPath(StandardPieceFactory.getInstance().getPiece("P"),
+                new Coordinate(x,1),
+                (b, c) -> c.equals(target),
+                board
+                ,
+                p -> p.stream()
+                        .reduce(new Coordinate(x, 0), (c, d) -> {
+                            if (c.getX() != d.getX()) {
+                                return new Coordinate(d.getX(), c.getY() + 1);
+                            }
+                            return c;
+                        })
+                        .getY() < 2
+        );
+        System.out.println(path);
+        Assertions.assertEquals(0, path.size());
     }
 
     @Test
