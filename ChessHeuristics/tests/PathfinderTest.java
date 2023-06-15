@@ -26,6 +26,19 @@ public class PathfinderTest {
     }
 
     @Test
+    void findBishopTwo() {
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
+        Coordinate target = new Coordinate(6, 1);
+        Path path = Pathfinder.findShortestPath(StandardPieceFactory.getInstance().getPiece("b"),
+                new Coordinate(1,2),
+                (b, c) -> c.equals(target),
+                board);
+        System.out.println(path);
+        Assertions.assertEquals(6, path.size());
+        Assertions.assertEquals(target, path.get(5));
+    }
+
+    @Test
     void findBishopFail() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
         Coordinate target = new Coordinate(4, 3);
@@ -38,7 +51,13 @@ public class PathfinderTest {
 
     @Test
     void findPawn() {
-        
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
+        Coordinate target = new Coordinate(2, 5);
+        Path path = Pathfinder.findShortestPath(StandardPieceFactory.getInstance().getPiece("P"),
+                new Coordinate(1,1),
+                (b, c) -> c.equals(target),
+                board);
+        System.out.println(path);
     }
 
     @Test

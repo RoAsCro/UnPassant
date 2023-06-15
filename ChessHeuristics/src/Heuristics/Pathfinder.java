@@ -39,6 +39,7 @@ public class Pathfinder {
 
         Coordinate[] moves = piece.getMoves(origin);
         for (Coordinate target : moves) {
+//            System.out.println(path);
             if (depth != 0 && path.size() + 1 > depth) {
                 shortestPath.addAll(path);
                 shortestPath.add(target);
@@ -50,14 +51,12 @@ public class Pathfinder {
             Path currentPath = new Path();
             currentPath.addAll(path);
             Path testPath = findPathIter(piece, target, endCondition, currentPath, board, depth, shortest);
-            if (shortestPath.isEmpty() || testPath.size() < shortestPath.size()) {
-                depth = MAX_DEPTH;
-                if (testPath.size() != 0) {
-                    depth = testPath.size();
-                    if (!shortest) {
-                        return testPath;
-                    }
+            if (testPath.size() != 0 && (shortestPath.isEmpty() || testPath.size() < shortestPath.size())) {
+                depth = testPath.size();
+                if (!shortest) {
+                    return testPath;
                 }
+                System.out.println(testPath);
                 shortestPath = testPath;
             }
         }

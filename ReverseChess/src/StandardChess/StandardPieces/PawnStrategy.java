@@ -27,7 +27,7 @@ public class PawnStrategy extends AbstractStrategy {
                         Coordinates.add(origin, Coordinates.UP), Coordinates.add(origin, Coordinates.UP_RIGHT),
                 Coordinates.add(origin, Coordinates.UP_LEFT)}
                 : new Coordinate[] {
-                Coordinates.add(origin, Coordinates.DOWN), Coordinates.add(origin, Coordinates.DOWN_RIGHT),
+                        Coordinates.add(origin, Coordinates.DOWN), Coordinates.add(origin, Coordinates.DOWN_RIGHT),
                 Coordinates.add(origin, Coordinates.DOWN_LEFT)
         };
     }
