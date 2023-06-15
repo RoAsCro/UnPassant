@@ -2,6 +2,7 @@ package StandardChess.StandardPieces;
 
 import StandardChess.*;
 
+import java.util.Arrays;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -14,10 +15,20 @@ public abstract class AbstractStrategy implements PieceStrategy{
     protected final static BiPredicate<Coordinate, Coordinate> PERPENDICULAR =
             (c, d) -> c.getX() == d.getX() || c.getY() == d.getY();
 
-    private String name;
+    private final Coordinate[] moves;
 
-    public AbstractStrategy(String name) {
+    private final String name;
+
+    public AbstractStrategy(String name, Coordinate[] moves) {
+        this.moves = moves;
         this.name = name;
+    }
+
+    @Override
+    public Coordinate[] getMoves(Coordinate origin, String colour) {
+        return Arrays.stream(this.moves)
+                .map(coordinate -> Coordinates.add(origin, coordinate))
+                .toArray(Coordinate[]::new);
     }
 
     @Override

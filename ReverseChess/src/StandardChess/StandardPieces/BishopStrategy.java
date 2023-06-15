@@ -2,12 +2,18 @@ package StandardChess.StandardPieces;
 
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
+import StandardChess.Coordinates;
 
 public class BishopStrategy extends AbstractStrategy{
 
 
     public BishopStrategy() {
-        super("bishop");
+        super("bishop", new Coordinate[]{
+                Coordinates.UP_LEFT,
+                Coordinates.UP_RIGHT,
+                Coordinates.DOWN_RIGHT,
+                Coordinates.UP_LEFT
+        });
     }
 
 
@@ -21,16 +27,16 @@ public class BishopStrategy extends AbstractStrategy{
         return DIAGONAL.test(origin, target) && super.tryUnMove(origin, target, board);
     }
 
-    @Override
-    public Coordinate[] getMoves(Coordinate origin) {
-        int xPlus = origin.getX() + 1;
-        int xMinus = origin.getX() - 1;
-        int yPlus = origin.getY() + 1;
-        int yMinus = origin.getY() - 1;
-        return new Coordinate[]{new Coordinate(xPlus, yPlus),
-                new Coordinate(xMinus, yMinus),
-                new Coordinate(xMinus, yPlus),
-                new Coordinate(xPlus, yMinus)};
-    }
+//    @Override
+//    public Coordinate[] getMoves(Coordinate origin) {
+//        int xPlus = origin.getX() + 1;
+//        int xMinus = origin.getX() - 1;
+//        int yPlus = origin.getY() + 1;
+//        int yMinus = origin.getY() - 1;
+//        return new Coordinate[]{new Coordinate(xPlus, yPlus),
+//                new Coordinate(xMinus, yMinus),
+//                new Coordinate(xMinus, yPlus),
+//                new Coordinate(xPlus, yMinus)};
+//    }
 
 }

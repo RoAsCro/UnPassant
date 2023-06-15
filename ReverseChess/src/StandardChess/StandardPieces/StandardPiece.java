@@ -39,7 +39,7 @@ public class StandardPiece implements Piece {
     }
 
     public Coordinate[] getMoves(Coordinate origin){
-        return this.strategy.getMoves(origin);
+        return this.strategy.getMoves(origin, this.colour);
     }
 
 }

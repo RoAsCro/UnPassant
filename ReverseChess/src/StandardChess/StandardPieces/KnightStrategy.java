@@ -2,11 +2,13 @@ package StandardChess.StandardPieces;
 
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
+import StandardChess.Coordinates;
 
 public class KnightStrategy extends AbstractStrategy{
 
     public KnightStrategy() {
-        super("knight");
+        super("knight",
+                Coordinates.KNIGHT_DIRECTIONS);
     }
 
     @Override
@@ -25,10 +27,5 @@ public class KnightStrategy extends AbstractStrategy{
 
         return ((xDiff == 2 && yDiff == 1) || (xDiff == 1 && yDiff == 2))
                 && super.tryUnMove(origin, target, board);
-    }
-
-    @Override
-    public Coordinate[] getMoves(Coordinate origin) {
-        return new Coordinate[0];
     }
 }

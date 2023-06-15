@@ -10,7 +10,16 @@ public class KingStrategy extends AbstractStrategy{
             {Coordinates.BLACK_KING, Coordinates.BLACK_KING_ROOK, Coordinates.BLACK_QUEEN_ROOK};
 
     public KingStrategy() {
-        super("king");
+        super("king",
+        new Coordinate[]{
+                Coordinates.UP,
+                Coordinates.RIGHT,
+                Coordinates.DOWN,
+                Coordinates.LEFT,
+                Coordinates.UP_RIGHT,
+                Coordinates.DOWN_RIGHT,
+                Coordinates.DOWN_LEFT,
+                Coordinates.UP_LEFT});
     }
 
     private Coordinate[] getCoordinateSet(String colour) {
@@ -63,19 +72,19 @@ public class KingStrategy extends AbstractStrategy{
         }
     }
 
-    @Override
-    public Coordinate[] getMoves(Coordinate origin) {
-        return new Coordinate[] {
-                Coordinates.add(origin, Coordinates.UP),
-                Coordinates.add(origin, Coordinates.RIGHT),
-                Coordinates.add(origin, Coordinates.DOWN),
-                Coordinates.add(origin, Coordinates.LEFT),
-                Coordinates.add(origin, Coordinates.UP_RIGHT),
-                Coordinates.add(origin, Coordinates.DOWN_RIGHT),
-                Coordinates.add(origin, Coordinates.DOWN_LEFT),
-                Coordinates.add(origin, Coordinates.UP_LEFT),
-        };
-    }
+//    @Override
+//    public Coordinate[] getMoves(Coordinate origin) {
+//        return new Coordinate[] {
+//                Coordinates.add(origin, Coordinates.UP),
+//                Coordinates.add(origin, Coordinates.RIGHT),
+//                Coordinates.add(origin, Coordinates.DOWN),
+//                Coordinates.add(origin, Coordinates.LEFT),
+//                Coordinates.add(origin, Coordinates.UP_RIGHT),
+//                Coordinates.add(origin, Coordinates.DOWN_RIGHT),
+//                Coordinates.add(origin, Coordinates.DOWN_LEFT),
+//                Coordinates.add(origin, Coordinates.UP_LEFT),
+//        };
+//    }
 
     private boolean castleCheck(Coordinate origin, Coordinate target, ChessBoard board) {
         String colour = board.at(origin).getColour();

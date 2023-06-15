@@ -1,5 +1,7 @@
 package StandardChess;
 
+import java.util.List;
+
 public class Coordinates {
 
     public static final Coordinate BLACK_KING = new Coordinate(4, 7);
@@ -16,6 +18,10 @@ public class Coordinates {
     public static final Coordinate DOWN_RIGHT = new Coordinate(1, -1);
     public static final Coordinate DOWN_LEFT = new Coordinate(-1, -1);
     public static final Coordinate UP_LEFT = new Coordinate(-1, 1);
+    public static final Coordinate[] KNIGHT_DIRECTIONS = new Coordinate[] {new Coordinate(1, 2),
+            new Coordinate(1, -2), new Coordinate(-1, 2), new Coordinate(-1, -2),
+            new Coordinate(2, 1), new Coordinate(-2, 1), new Coordinate(2, -1),
+            new Coordinate(-2, -1)};
 
     public static final int MAX_SIZE = 8;
     public static final int MIN_SIZE = 0;

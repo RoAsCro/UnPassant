@@ -5,7 +5,6 @@ import StandardChess.Coordinates;
 import StandardChess.Piece;
 
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 public class Pathfinder {
 
@@ -15,7 +14,7 @@ public class Pathfinder {
                                         BiPredicate<BoardInterface, Coordinate> endCondition,
                                         BoardInterface board) {
         Path shortestPath = new Path();
-        shortestPath = shortestPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, true);
+        shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, true);
         return shortestPath;
     }
 
@@ -24,15 +23,14 @@ public class Pathfinder {
                                      BoardInterface board) {
 
         Path shortestPath = new Path();
-        shortestPath = shortestPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, false);
+        shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, false);
         return shortestPath;
     }
 
-    private static Path shortestPathIter(Piece piece, Coordinate origin,
-                                         BiPredicate<BoardInterface, Coordinate> endCondition, Path path,
-                                         BoardInterface board, int depth,
-                                         boolean shortest) {
-            System.out.println(path);
+    private static Path findPathIter(Piece piece, Coordinate origin,
+                                     BiPredicate<BoardInterface, Coordinate> endCondition, Path path,
+                                     BoardInterface board, int depth,
+                                     boolean shortest) {
         path.add(origin);
         if (endCondition.test(board, origin)) {
             return path;
@@ -51,7 +49,7 @@ public class Pathfinder {
             }
             Path currentPath = new Path();
             currentPath.addAll(path);
-            Path testPath = shortestPathIter(piece, target, endCondition, currentPath, board, depth, shortest);
+            Path testPath = findPathIter(piece, target, endCondition, currentPath, board, depth, shortest);
             if (shortestPath.isEmpty() || testPath.size() < shortestPath.size()) {
                 depth = MAX_DEPTH;
                 if (testPath.size() != 0) {

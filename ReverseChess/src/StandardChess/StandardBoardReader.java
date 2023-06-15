@@ -18,10 +18,7 @@ public class StandardBoardReader implements BoardReader {
             Coordinates.UP, Coordinates.DOWN, Coordinates.LEFT,
             Coordinates.RIGHT, Coordinates.UP_RIGHT, Coordinates.UP_LEFT,
             Coordinates.DOWN_LEFT, Coordinates.DOWN_RIGHT);
-    private static final List<Coordinate> KNIGHT_DIRECTIONS = List.of( new Coordinate(1, 2),
-            new Coordinate(1, -2), new Coordinate(-1, 2), new Coordinate(-1, -2),
-            new Coordinate(2, 1), new Coordinate(-2, 1), new Coordinate(2, -1),
-            new Coordinate(-2, -1));
+    private static final List<Coordinate> KNIGHT_DIRECTIONS = List.of(Coordinates.KNIGHT_DIRECTIONS);
 
     private final StandardBoard board;
 

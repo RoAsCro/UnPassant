@@ -33,7 +33,12 @@ public class PathfinderTest {
                 new Coordinate(0,0),
                 (b, c) -> c.equals(target),
                 board);
-        System.out.println(path);
+        Assertions.assertTrue(path.isEmpty());
+    }
+
+    @Test
+    void findPawn() {
+        
     }
 
     @Test

@@ -2,17 +2,34 @@ package StandardChess.StandardPieces;
 
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
+import StandardChess.Coordinates;
 import StandardChess.Piece;
 
 public class PawnStrategy extends AbstractStrategy {
 
     public PawnStrategy() {
-        super("pawn");
+        super("pawn",
+                new Coordinate[]{
+                        Coordinates.UP,
+                        Coordinates.RIGHT,
+                        Coordinates.DOWN,
+                        Coordinates.LEFT,
+                        Coordinates.UP_RIGHT,
+                        Coordinates.DOWN_RIGHT,
+                        Coordinates.DOWN_LEFT,
+                        Coordinates.UP_LEFT});
     }
 
     @Override
-    public Coordinate[] getMoves(Coordinate origin) {
-        return new Coordinate[0];
+    public Coordinate[] getMoves(Coordinate origin, String colour) {
+        return colour.equals("white")
+                ? new Coordinate[] {
+                        Coordinates.add(origin, Coordinates.UP), Coordinates.add(origin, Coordinates.UP_RIGHT),
+                Coordinates.add(origin, Coordinates.UP_LEFT)}
+                : new Coordinate[] {
+                Coordinates.add(origin, Coordinates.DOWN), Coordinates.add(origin, Coordinates.DOWN_RIGHT),
+                Coordinates.add(origin, Coordinates.DOWN_LEFT)
+        };
     }
 
 

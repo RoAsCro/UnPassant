@@ -2,10 +2,20 @@ package StandardChess.StandardPieces;
 
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
+import StandardChess.Coordinates;
 
 public class QueenStrategy extends AbstractStrategy{
     public QueenStrategy() {
-        super("queen");
+        super("queen",
+                new Coordinate[]{
+                        Coordinates.UP,
+                        Coordinates.RIGHT,
+                        Coordinates.DOWN,
+                        Coordinates.LEFT,
+                        Coordinates.UP_RIGHT,
+                        Coordinates.DOWN_RIGHT,
+                        Coordinates.DOWN_LEFT,
+                        Coordinates.UP_LEFT});
     }
 
     @Override
@@ -20,8 +30,4 @@ public class QueenStrategy extends AbstractStrategy{
                 && super.tryUnMove(origin, target, board);
     }
 
-    @Override
-    public Coordinate[] getMoves(Coordinate origin) {
-        return new Coordinate[0];
-    }
 }
