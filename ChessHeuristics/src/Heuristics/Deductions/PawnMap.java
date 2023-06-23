@@ -87,6 +87,13 @@ public abstract class PawnMap extends AbstractDeduction{
         }
     }
 
+    /**
+     * Finds the number of opposing pieces missing x, the minimum number of pieces a given pawn can have taken y,
+     * and the sum of all y's z,
+     * then removes any origins from the sets of origins of a given pawn which require taking a minimum of
+     * greater than (x - z) + y captures
+     * @param colour
+     */
     private void captures(String colour) {
         System.out.println(pawnOrigins);
 
