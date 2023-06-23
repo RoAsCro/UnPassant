@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public abstract class PawnMap extends AbstractDeduction{
 
     private Map<Coordinate, List<Path>> paths;
-    private final Map<Coordinate, Path> pawnOrigins = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
+    private final Map<Coordinate, Path> pawnOrigins = new TreeMap<>();
     List<Observation> observations = new ArrayList<>();
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;

@@ -91,8 +91,7 @@ public class Pathfinder {
     }
 
     public static boolean pathsExclusive(Path pathOne, Path pathTwo) {
-        System.out.println(pathsNotExclusiveHelper(pathOne, pathTwo) || pathsNotExclusiveHelper(pathTwo, pathOne));
-        return pathsNotExclusiveHelper(pathOne, pathTwo) || pathsNotExclusiveHelper(pathTwo, pathOne);
+        return pathsExclusiveHelper(pathOne, pathTwo) || pathsExclusiveHelper(pathTwo, pathOne);
     }
 
     /**
@@ -102,7 +101,9 @@ public class Pathfinder {
      * @return true if the length of containedPath from its head
      * up to the head of containingPath is inside containingPath
      */
-    private static boolean pathsNotExclusiveHelper(Path containedPath, Path containingPath) {
+    private static boolean pathsExclusiveHelper(Path containedPath, Path containingPath) {
+        // todo THIS WON'T WORK WITH MORE FREE MOVE SETS!
+        // It will return true for only one piece being up to the head of the other
         Path currentPath = new Path();
         currentPath.addAll(containedPath);
         Coordinate current;

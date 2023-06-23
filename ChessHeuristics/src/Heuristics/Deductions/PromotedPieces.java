@@ -21,7 +21,7 @@ public abstract class PromotedPieces extends AbstractDeduction {
     List<Observation> observations = new ArrayList<>();
 
     // The Pieces that MAY have been promoted based on the number of pieces
-    Map<Coordinate, PromotedPiece> promotedPieces = new TreeMap<>(Comparator.comparingInt(Coordinate::hashCode));
+    Map<Coordinate, PromotedPiece> promotedPieces = new TreeMap<>();
     private List<PromotedPieceSet> andSet = new LinkedList<>();
 
     PawnNumber pawnNumber;

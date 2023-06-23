@@ -1,6 +1,8 @@
 package StandardChess;
 
-public class Coordinate {
+import java.util.Comparator;
+
+public class Coordinate implements Comparable<Coordinate> {
 
     private final static int BOARD_LENGTH = 8;
     private final int x;
@@ -37,4 +39,8 @@ public class Coordinate {
         return "(" + this.x + ", " + this.y + ")";
     }
 
+    @Override
+    public int compareTo(Coordinate o) {
+        return Comparator.comparingInt(Coordinate::hashCode).compare(this, o);
+    }
 }
