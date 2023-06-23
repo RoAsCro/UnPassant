@@ -12,7 +12,7 @@ public class BishopStrategy extends AbstractStrategy{
                 Coordinates.UP_LEFT,
                 Coordinates.UP_RIGHT,
                 Coordinates.DOWN_RIGHT,
-                Coordinates.UP_LEFT
+                Coordinates.DOWN_LEFT
         });
     }
 
