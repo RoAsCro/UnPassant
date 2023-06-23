@@ -113,13 +113,36 @@ public class CombinedPawnMap extends AbstractDeduction {
                 (b, c) -> c.equals(path.getLast()),
                 board,
                 p -> PATH_DEVIATION.apply(p) <= captures,
-                (p1, p2) ->
-                        (p2.equals(path)
-                                || PATH_DEVIATION.apply(p1) < PATH_DEVIATION.apply(p2))
-                        && forbiddenPaths
+                (p1, p2) -> {
+                    boolean p1NotExclusive;
+                    if (p1.isEmpty()) {
+                        p1NotExclusive = true;
+                    } else {
+                        p1NotExclusive = forbiddenPaths
                                 .stream()
-                                .noneMatch(entry -> p2.contains(entry.getKey())
-                                        && Pathfinder.pathsExclusive(p2, entry.getValue().get(0)))
+                                .noneMatch(entry -> p1.contains(entry.getKey())
+                                        && Pathfinder.pathsExclusive(p1, entry.getValue().get(0)));
+                    }
+                    System.out.println(p1NotExclusive);
+                    boolean p2NotExclusive = forbiddenPaths
+                            .stream()
+                            .noneMatch(entry -> p2.contains(entry.getKey())
+                                    && Pathfinder.pathsExclusive(p2, entry.getValue().get(0)));
+                    if (!p1NotExclusive && !p2NotExclusive) {
+                        return new Path();
+                    }
+                    if (!p1NotExclusive) {
+                        return p2;
+                    }
+                    if (!p2NotExclusive) {
+                        return p1;
+                    }
+
+                    if (!p1.isEmpty() && PATH_DEVIATION.apply(p1) < PATH_DEVIATION.apply(p2)) {
+                        return p1;
+                    }
+                    return p2;
+                }
                 );
         System.out.println(path);
         System.out.println(newPath);

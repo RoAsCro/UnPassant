@@ -81,7 +81,7 @@ public class CombinedPawnMapTest {
     }
 
     @Test
-    void testWhiteExclusive(){
+    void testExclusive(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/P7/p7/8/1PPPPPPP/R1BQKB1R w KQkq - 0 1"));
         PawnMapWhite map = new PawnMapWhite();
         PawnMapBlack blackMap = new PawnMapBlack();
@@ -102,8 +102,8 @@ public class CombinedPawnMapTest {
     }
 
     @Test
-    void testWhiteExclusive(){
-        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/P7/p7/8/1PPPPPPP/R1BQKB1R w KQkq - 0 1"));
+    void testExclusiveTwo(){
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/2pppppp/8/P7/p7/8/1PPPPPPP/R1BQKBNR w KQkq - 0 1"));
         PawnMapWhite map = new PawnMapWhite();
         PawnMapBlack blackMap = new PawnMapBlack();
 

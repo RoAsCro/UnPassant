@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiPredicate;
+import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
 public class Pathfinder {
@@ -109,7 +110,7 @@ public class Pathfinder {
     public static Path findShortestPawnPath(Piece piece, Coordinate origin,
                                         BiPredicate<BoardInterface, Coordinate> endCondition,
                                         BoardInterface board, Predicate<Path> pathCondition,
-                                        BiPredicate<Path, Path> reductionCondition) {
+                                        BinaryOperator<Path> reductionCondition) {
 
         Path shortestPath = new Path();
         List<Path> possiblePaths = new LinkedList<>();
@@ -118,13 +119,7 @@ public class Pathfinder {
 
 
         return possiblePaths.stream()
-                .reduce((path1, path2) -> {
-                    if (reductionCondition.test(path1, path2)) {
-                        return path1;
-                    } else {
-                        return path2;
-                    }
-                })
+                .reduce(reductionCondition)
                 .orElse(new Path());
     }
 
