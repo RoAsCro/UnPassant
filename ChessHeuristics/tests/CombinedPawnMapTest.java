@@ -115,7 +115,6 @@ public class CombinedPawnMapTest {
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
         combinedPawnMap.deduce(board);
-        System.out.println(Pathfinder.pathsExclusive(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).get(0), combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)).get(0)));
         System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 3)));
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
         System.out.println(map.getPawnOrigins().get(new Coordinate(0, 4)));

@@ -115,12 +115,11 @@ public class Pathfinder {
         Path shortestPath = new Path();
         List<Path> possiblePaths = new LinkedList<>();
         findPawnPathIter(piece, origin, endCondition, shortestPath, board, possiblePaths, pathCondition);
-        System.out.println(possiblePaths);
+        System.out.println("PP" + possiblePaths);
 
 
         return possiblePaths.stream()
-                .reduce(reductionCondition)
-                .orElse(new Path());
+                .reduce(new Path(), reductionCondition);
     }
 
     public static List<Path> findAllPawnPaths(Piece piece, Coordinate origin,

@@ -42,6 +42,15 @@ public abstract class PawnMap extends AbstractDeduction{
         return false;
     }
 
+    public void update(String colour) {
+        System.out.println(this.pawnOrigins);
+        reduce(colour);
+    }
+
+    public void removeOrigins(Coordinate piece, Coordinate origin) {
+        this.pawnOrigins.get(piece).remove(origin);
+    }
+
     protected int capturedPieces(String colour) {
         return 16 - (colour.equals("white")
                 ? this.pieceNumber.getBlackPieces()
@@ -79,30 +88,50 @@ public abstract class PawnMap extends AbstractDeduction{
     }
 
     private void captures(String colour) {
+        System.out.println(pawnOrigins);
+
+        Map<Coordinate, Integer> ignoreSet = new TreeMap<>();
         int maxOffset = capturedPieces(colour) -
                 this.pawnOrigins.entrySet().stream()
                     .map(entry -> {
                         int x = entry.getKey().getX();
-                        return entry.getValue().stream()
-                                .map(coordinate -> Math.abs(x - coordinate.getX()))
-                                .reduce((i, j) -> {
-                                    if (i < j) {
-                                        return i;
+                        Coordinate coordinate = entry.getValue().stream()
+                                .reduce((c1, c2) -> {
+                                    int x1 = Math.abs(x - c1.getX());
+                                    int x2 = Math.abs(x - c2.getX());
+                                    if (x1 < x2) {
+                                        return c1;
                                     }
-                                    return j;
+                                    return c2;
                                 })
-                                .orElse(0);
+                                .orElse(new Coordinate(0, 0));
+
+                        int minCaptures = Math.abs(x - coordinate.getX());
+                        ignoreSet.put(entry.getKey(), minCaptures);
+                        return minCaptures;
+//                                .map(coordinate -> Math.abs(x - coordinate.getX()))
+//                                .orElse(0);
                     })
                     .reduce(Integer::sum)
                     .orElse(0);
 //        int offSet = maxOffset;
+        System.out.println("Offset " + maxOffset);
+        if (maxOffset < 0) {
+            this.state = false;
+        }
+
         this.pawnOrigins.entrySet().stream()
                 .forEach(entry -> {
                     int x = entry.getKey().getX();
                     entry.getValue().removeAll(entry.getValue().stream()
-                            .filter(coordinate -> Math.abs(x - coordinate.getX()) > maxOffset)
+                            .filter(coordinate -> Math.abs(x - coordinate.getX()) > maxOffset + ignoreSet.get(entry.getKey())
+//                                    &&
+//                                    !(ignoreSet.containsKey(entry.getKey())
+//                                            && Math.abs(x - coordinate.getX()) <= ignoreSet.get(entry.getKey()))
+                            )
                             .toList());
                 });
+        System.out.println(pawnOrigins);
     }
     private void reduce(String colour) {
         List<Coordinate> origins = this.pawnOrigins.entrySet().stream()
@@ -126,22 +155,33 @@ public abstract class PawnMap extends AbstractDeduction{
         }
     }
 
+    /**
+     * Iterates through every combination of origins looking for set for which
+     * there exists an equal number of pieces whose origin sets are a subset of it.
+     * If such exists, no other piece may have any origin in that set as one of its possible origins.
+     * @param set
+     * @param origins
+     */
     private void reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
         if (!set.isEmpty()) {
             AtomicBoolean supersets = new AtomicBoolean(false);
             List<Coordinate> subsets = this.pawnOrigins.entrySet().stream()
                     .filter(entry -> {
                         if (entry.getValue().containsAll(set)) {
+                            // True if the piece being examined contains every origin in the current set
                             supersets.set(true);
                         }
+                        // True if the current set of origins contains every origin in the piece being examined has
                         return set.containsAll(entry.getValue());
                     })
                     .map(Map.Entry::getKey)
                     .toList();
+            // If the number of subsets of the current set is the same as the number of origins in the set
             if (subsets.size() == set.size()) {
                 removeCoords(set, subsets);
                 return;
             }
+            // If there does not exist a set that contains this set
             if (!supersets.get()) {
                 return;
             }

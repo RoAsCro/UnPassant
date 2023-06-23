@@ -59,11 +59,8 @@ public class CombinedPawnMap extends AbstractDeduction {
                         p -> PATH_DEVIATION.apply(p) <= whiteCaptures)
                         .size() == 1)
                 .toList();
-//        List<Map.Entry<Coordinate, List<Path>>> singlePathPawns = singleOriginPawns
-//                .stream()
-//                .filter(entry -> entry.getValue().get(0).size() == 1)
-//                .toList();
-        List<Path> newPaths = new LinkedList<>();
+
+        Map<Coordinate, Path> newPaths = new TreeMap<>();
         singleOriginPawns
                 .stream()
                 .forEach(entry -> {
@@ -76,21 +73,35 @@ public class CombinedPawnMap extends AbstractDeduction {
                                         .stream().filter(path -> Pathfinder.pathsExclusive(entry.getValue().get(0), path))
                                         .forEach(path -> {
                                             System.out.println("HERE");
-                                            newPaths.add(makeExclusiveMaps(board, path, true, singleOriginPawns));
+                                            Path toPut = makeExclusiveMaps(board, path, true, singleOriginPawns);
+                                            if (toPut.isEmpty()) {
+                                                toPut.add(path.getFirst());
+                                                toPut.add(new Coordinate(-1, -1));
+                                            }
+                                            newPaths.put(innerEntry.getKey(), toPut);
                                         });
                             });
                 });
 
-        newPaths.stream().forEach(path -> {
-            List<Path> pathList = this.blackPaths.get(path.getLast());
+        System.out.println(newPaths);
+        List<Coordinate[]> forRemoval = new LinkedList<>();
+        newPaths.entrySet().stream().forEach(entry -> {
+            List<Path> pathList = this.blackPaths.get(entry.getKey());
+            System.out.println(pathList);
             Path toRemove = pathList
-                    .stream().filter(path2 -> path2.getFirst() == path.getFirst())
+                    .stream().filter(path2 -> path2.getFirst() == entry.getValue().getFirst())
                     .findFirst()
                     .orElse(null);
             pathList.remove(toRemove);
-            pathList.add(path);
+            if (!(entry.getValue().getLast().getY() == -1)) {
+                pathList.add(entry.getValue());
+            } else {
+                forRemoval.add(new Coordinate[]{entry.getKey(), entry.getValue().getFirst()});
+            }
         });
-
+        forRemoval.forEach(coordinates -> black.removeOrigins(coordinates[0], coordinates[1]));
+        System.out.println("Updadting...");
+        black.update("black");
         int freeCaptures = whiteCaptures - singleOriginPawns.stream()
                 .map(entry -> PATH_DEVIATION.apply(entry.getValue().get(0)))
                 .reduce(Integer::sum)
