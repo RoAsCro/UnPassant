@@ -1,6 +1,9 @@
 package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
+import StandardChess.Coordinate;
+
+import java.util.Map;
 
 public class PawnMapWhite extends PawnMap{
     @Override
@@ -11,5 +14,10 @@ public class PawnMapWhite extends PawnMap{
     @Override
     public int capturedPieces() {
         return super.capturedPieces("white");
+    }
+
+    @Override
+    public Map<Coordinate, Integer> getCaptureSet() {
+        return super.getCaptureSet("white");
     }
 }

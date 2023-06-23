@@ -15,8 +15,11 @@ import java.util.stream.Collectors;
 
 public abstract class PawnMap extends AbstractDeduction{
 
-    private Map<Coordinate, List<Path>> paths;
     private final Map<Coordinate, Path> pawnOrigins = new TreeMap<>();
+    private final Map<Coordinate, Integer> captureSet = new TreeMap<>();
+
+    private int capturedPieces = 0;
+
     List<Observation> observations = new ArrayList<>();
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;
@@ -59,6 +62,16 @@ public abstract class PawnMap extends AbstractDeduction{
 
     public abstract int capturedPieces();
 
+    public int getMaxCaptures(Coordinate coordinate) {
+        return this.capturedPieces + this.captureSet.get(coordinate);
+    }
+
+    protected Map<Coordinate, Integer> getCaptureSet(String colour) {
+        return this.captureSet;
+    }
+
+    public abstract Map<Coordinate, Integer> getCaptureSet();
+
     private void rawMap(BoardInterface board, String colour) {
         int start = colour.equals("white") ? 1 : 6;
         int increment = colour.equals("white") ? 1 : -1;
@@ -95,50 +108,44 @@ public abstract class PawnMap extends AbstractDeduction{
      * @param colour
      */
     private void captures(String colour) {
-        System.out.println(pawnOrigins);
-
-        Map<Coordinate, Integer> ignoreSet = new TreeMap<>();
-        int maxOffset = capturedPieces(colour) -
-                this.pawnOrigins.entrySet().stream()
-                    .map(entry -> {
-                        int x = entry.getKey().getX();
-                        Coordinate coordinate = entry.getValue().stream()
-                                .reduce((c1, c2) -> {
-                                    int x1 = Math.abs(x - c1.getX());
-                                    int x2 = Math.abs(x - c2.getX());
-                                    if (x1 < x2) {
-                                        return c1;
-                                    }
-                                    return c2;
-                                })
-                                .orElse(new Coordinate(0, 0));
-
-                        int minCaptures = Math.abs(x - coordinate.getX());
-                        ignoreSet.put(entry.getKey(), minCaptures);
-                        return minCaptures;
-//                                .map(coordinate -> Math.abs(x - coordinate.getX()))
-//                                .orElse(0);
-                    })
-                    .reduce(Integer::sum)
-                    .orElse(0);
-//        int offSet = maxOffset;
-        System.out.println("Offset " + maxOffset);
-        if (maxOffset < 0) {
-            this.state = false;
-        }
-
+        updateCaptureSet(colour);
         this.pawnOrigins.entrySet().stream()
                 .forEach(entry -> {
                     int x = entry.getKey().getX();
                     entry.getValue().removeAll(entry.getValue().stream()
-                            .filter(coordinate -> Math.abs(x - coordinate.getX()) > maxOffset + ignoreSet.get(entry.getKey())
-//                                    &&
-//                                    !(ignoreSet.containsKey(entry.getKey())
-//                                            && Math.abs(x - coordinate.getX()) <= ignoreSet.get(entry.getKey()))
-                            )
+                            .filter(coordinate -> Math.abs(x - coordinate.getX()) > this.capturedPieces + this.captureSet.get(entry.getKey()))
                             .toList());
                 });
         System.out.println(pawnOrigins);
+    }
+
+    private void updateCaptureSet(String colour) {
+//        Map<Coordinate, Integer> ignoreSet = new TreeMap<>();
+        int maxOffset = capturedPieces(colour) -
+                this.pawnOrigins.entrySet().stream()
+                        .map(entry -> {
+                            int x = entry.getKey().getX();
+                            Coordinate coordinate = entry.getValue().stream()
+                                    .reduce((c1, c2) -> {
+                                        int x1 = Math.abs(x - c1.getX());
+                                        int x2 = Math.abs(x - c2.getX());
+                                        if (x1 < x2) {
+                                            return c1;
+                                        }
+                                        return c2;
+                                    })
+                                    .orElse(new Coordinate(0, 0));
+
+                            int minCaptures = Math.abs(x - coordinate.getX());
+                            captureSet.put(entry.getKey(), minCaptures);
+                            return minCaptures;})
+                        .reduce(Integer::sum)
+                        .orElse(0);
+        System.out.println("Offset " + maxOffset);
+        if (maxOffset < 0) {
+            this.state = false;
+        }
+        this.capturedPieces = maxOffset;
     }
     private void reduce(String colour) {
         List<Coordinate> origins = this.pawnOrigins.entrySet().stream()

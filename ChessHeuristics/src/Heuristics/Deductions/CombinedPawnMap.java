@@ -47,7 +47,9 @@ public class CombinedPawnMap extends AbstractDeduction {
         int whiteCaptures = this.white.capturedPieces();
         makeMaps(board, false);
         makeMaps(board, true);
-        System.out.println(this.whitePaths.values());
+//        System.out.println(this.whitePaths.values());
+
+//        System.out.println("FFFF" + this.white.getMaxCaptures(new Coordinate(3, 4)));
         List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = this.whitePaths.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() == 1 && !(entry.getValue().get(0).size() == 1))
@@ -56,10 +58,11 @@ public class CombinedPawnMap extends AbstractDeduction {
                         entry.getValue().get(0).getFirst(),
                         (b, c) -> c.equals(entry.getKey()),
                         board,
-                        p -> PATH_DEVIATION.apply(p) <= whiteCaptures)
+                        p -> PATH_DEVIATION.apply(p) <= this.white.getMaxCaptures(entry.getKey()))
                         .size() == 1)
                 .toList();
-
+        System.out.println("AOFIHWOFOAFWH");
+        System.out.println(singleOriginPawns);
         Map<Coordinate, Path> newPaths = new TreeMap<>();
         singleOriginPawns
                 .stream()
@@ -102,10 +105,6 @@ public class CombinedPawnMap extends AbstractDeduction {
         forRemoval.forEach(coordinates -> black.removeOrigins(coordinates[0], coordinates[1]));
         System.out.println("Updadting...");
         black.update("black");
-        int freeCaptures = whiteCaptures - singleOriginPawns.stream()
-                .map(entry -> PATH_DEVIATION.apply(entry.getValue().get(0)))
-                .reduce(Integer::sum)
-                .orElse(0);
 
         return false;
     }
@@ -123,7 +122,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 path.getFirst(),
                 (b, c) -> c.equals(path.getLast()),
                 board,
-                p -> PATH_DEVIATION.apply(p) <= captures,
+                p -> PATH_DEVIATION.apply(p) <= player.getMaxCaptures(path.getLast()),
                 (p1, p2) -> {
                     boolean p1NotExclusive;
                     if (p1.isEmpty()) {
@@ -187,7 +186,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                                         coordinate,
                                         (b, c) -> c.equals(entry.getKey()),
                                         board,
-                                        p -> PATH_DEVIATION.apply(p) <= captures,
+                                        p -> PATH_DEVIATION.apply(p) <= player.getMaxCaptures(entry.getKey()),
                                         (p1, p2) -> PATH_DEVIATION.apply(p1) < PATH_DEVIATION.apply(p2)
                                 );
                                 paths.add(path);
