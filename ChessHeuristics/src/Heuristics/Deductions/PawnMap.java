@@ -45,10 +45,12 @@ public abstract class PawnMap extends AbstractDeduction{
         return false;
     }
 
-    public void update(String colour) {
-        System.out.println(this.pawnOrigins);
+
+    protected void update(String colour) {
         reduce(colour);
     }
+
+    public abstract void update();
 
     public void removeOrigins(Coordinate piece, Coordinate origin) {
         this.pawnOrigins.get(piece).remove(origin);
@@ -63,6 +65,8 @@ public abstract class PawnMap extends AbstractDeduction{
     public abstract int capturedPieces();
 
     public int getMaxCaptures(Coordinate coordinate) {
+//        System.out.println(this.captureSet);
+//        System.out.println(coordinate);
         return this.capturedPieces + this.captureSet.get(coordinate);
     }
 
@@ -116,11 +120,9 @@ public abstract class PawnMap extends AbstractDeduction{
                             .filter(coordinate -> Math.abs(x - coordinate.getX()) > this.capturedPieces + this.captureSet.get(entry.getKey()))
                             .toList());
                 });
-        System.out.println(pawnOrigins);
     }
 
     private void updateCaptureSet(String colour) {
-//        Map<Coordinate, Integer> ignoreSet = new TreeMap<>();
         int maxOffset = capturedPieces(colour) -
                 this.pawnOrigins.entrySet().stream()
                         .map(entry -> {
@@ -141,7 +143,6 @@ public abstract class PawnMap extends AbstractDeduction{
                             return minCaptures;})
                         .reduce(Integer::sum)
                         .orElse(0);
-        System.out.println("Offset " + maxOffset);
         if (maxOffset < 0) {
             this.state = false;
         }

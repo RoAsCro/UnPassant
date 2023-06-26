@@ -9,7 +9,6 @@ import StandardChess.StandardPieceFactory;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class CombinedPawnMap extends AbstractDeduction {
     PawnMapWhite white;
@@ -47,36 +46,50 @@ public class CombinedPawnMap extends AbstractDeduction {
         int whiteCaptures = this.white.capturedPieces();
         makeMaps(board, false);
         makeMaps(board, true);
-//        System.out.println(this.whitePaths.values());
+        exclude(board, true);
+        exclude(board, false);
 
-//        System.out.println("FFFF" + this.white.getMaxCaptures(new Coordinate(3, 4)));
-        List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = this.whitePaths.entrySet()
+        return false;
+    }
+    private void exclude(BoardInterface board, boolean white) {
+        PawnMap checkedPlayer = white
+                ? this.white
+                : this.black;
+        PawnMap opposingPlayer = white
+                ? this.black
+                : this.white;
+        Map<Coordinate, List<Path>> checkedPlayerPaths = white
+                ? this.whitePaths
+                : this.blackPaths;
+
+        Map<Coordinate, List<Path>> opposingPlayerPaths = white
+                ? this.blackPaths
+                : this.whitePaths;
+        // Find every pawn of the opposing player with one origin and one possible path
+        List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = opposingPlayerPaths.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() == 1 && !(entry.getValue().get(0).size() == 1))
                 .filter(entry -> Pathfinder.findAllPawnPaths(
-                        StandardPieceFactory.getInstance().getPiece("P"),
-                        entry.getValue().get(0).getFirst(),
-                        (b, c) -> c.equals(entry.getKey()),
-                        board,
-                        p -> PATH_DEVIATION.apply(p) <= this.white.getMaxCaptures(entry.getKey()))
+                                StandardPieceFactory.getInstance().getPiece(white ? "p" : "P"),
+                                entry.getValue().get(0).getFirst(),
+                                (b, c) -> c.equals(entry.getKey()),
+                                board,
+                                p -> PATH_DEVIATION.apply(p) <= opposingPlayer.getMaxCaptures(entry.getKey()))
                         .size() == 1)
                 .toList();
-        System.out.println("AOFIHWOFOAFWH");
-        System.out.println(singleOriginPawns);
+
         Map<Coordinate, Path> newPaths = new TreeMap<>();
         singleOriginPawns
                 .stream()
                 .forEach(entry -> {
-                    this.blackPaths.entrySet()
+                    checkedPlayerPaths.entrySet()
                             .stream()
                             .filter(innerEntry -> entry.getValue().get(0).contains(innerEntry.getKey()))
                             .forEach(innerEntry -> {
-                                System.out.println("here");
                                 innerEntry.getValue()
                                         .stream().filter(path -> Pathfinder.pathsExclusive(entry.getValue().get(0), path))
                                         .forEach(path -> {
-                                            System.out.println("HERE");
-                                            Path toPut = makeExclusiveMaps(board, path, true, singleOriginPawns);
+                                            Path toPut = makeExclusiveMaps(board, path, white, singleOriginPawns);
                                             if (toPut.isEmpty()) {
                                                 toPut.add(path.getFirst());
                                                 toPut.add(new Coordinate(-1, -1));
@@ -86,11 +99,9 @@ public class CombinedPawnMap extends AbstractDeduction {
                             });
                 });
 
-        System.out.println(newPaths);
         List<Coordinate[]> forRemoval = new LinkedList<>();
         newPaths.entrySet().stream().forEach(entry -> {
-            List<Path> pathList = this.blackPaths.get(entry.getKey());
-            System.out.println(pathList);
+            List<Path> pathList = checkedPlayerPaths.get(entry.getKey());
             Path toRemove = pathList
                     .stream().filter(path2 -> path2.getFirst() == entry.getValue().getFirst())
                     .findFirst()
@@ -102,23 +113,18 @@ public class CombinedPawnMap extends AbstractDeduction {
                 forRemoval.add(new Coordinate[]{entry.getKey(), entry.getValue().getFirst()});
             }
         });
-        forRemoval.forEach(coordinates -> black.removeOrigins(coordinates[0], coordinates[1]));
+        forRemoval.forEach(coordinates -> checkedPlayer.removeOrigins(coordinates[0], coordinates[1]));
         System.out.println("Updadting...");
-        black.update("black");
-
-        return false;
+        checkedPlayer.update();
     }
 
-    private Path makeExclusiveMaps(BoardInterface board, Path path, boolean black, List<Map.Entry<Coordinate, List<Path>>> forbiddenPaths) {
+    private Path makeExclusiveMaps(BoardInterface board, Path path, boolean white, List<Map.Entry<Coordinate, List<Path>>> forbiddenPaths) {
 //        System.out.println(path);
-        PawnMap player = black
+        PawnMap player = !white
                 ? this.black
                 : this.white;
-        int captures = player.capturedPieces();
-        System.out.println("captures" + captures);
 
-        System.out.println(captures);
-        Path newPath = Pathfinder.findShortestPawnPath(StandardPieceFactory.getInstance().getPiece(black ? "p" : "P"),
+        Path newPath = Pathfinder.findShortestPawnPath(StandardPieceFactory.getInstance().getPiece(!white ? "p" : "P"),
                 path.getFirst(),
                 (b, c) -> c.equals(path.getLast()),
                 board,
@@ -133,7 +139,6 @@ public class CombinedPawnMap extends AbstractDeduction {
                                 .noneMatch(entry -> p1.contains(entry.getKey())
                                         && Pathfinder.pathsExclusive(p1, entry.getValue().get(0)));
                     }
-                    System.out.println(p1NotExclusive);
                     boolean p2NotExclusive = forbiddenPaths
                             .stream()
                             .noneMatch(entry -> p2.contains(entry.getKey())
@@ -154,19 +159,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                     return p2;
                 }
                 );
-        System.out.println(path);
-        System.out.println(newPath);
-//        if (colour) {
-//            this.whitePaths.get(newPath.getLast())
-//                    .remove(path);
-//            this.whitePaths.get(newPath.getLast())
-//                    .add(newPath);
-//        } else {
-//            this.blackPaths.get(newPath.getLast())
-//                    .remove(path);
-//            this.blackPaths.get(newPath.getLast())
-//                    .add(newPath);
-//        }
+
         return newPath;
     }
 
@@ -174,7 +167,6 @@ public class CombinedPawnMap extends AbstractDeduction {
         PawnMap player = white
                 ? this.white
                 : this.black;
-        int captures = player.capturedPieces();
         player.getPawnOrigins().entrySet()
                 .stream()
                 .forEach(entry -> {

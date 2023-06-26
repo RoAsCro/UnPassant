@@ -12,6 +12,11 @@ public class PawnMapBlack extends PawnMap{
     }
 
     @Override
+    public void update() {
+        super.update("black");
+    }
+
+    @Override
     public int capturedPieces() {
         return super.capturedPieces("black");
     }
