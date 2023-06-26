@@ -42,16 +42,27 @@ public class CombinedPawnMap extends AbstractDeduction {
     public boolean deduce(BoardInterface board) {
         this.black.deduce(board);
         this.white.deduce(board);
+        boolean changed = true;
+        while (changed) {
+            System.out.println("change");
+            makeMaps(board, false);
+            makeMaps(board, true);
+            if (!exclude(board, true) & !exclude(board, false)) {
+                changed = false;
+            }
 
-        int whiteCaptures = this.white.capturedPieces();
-        makeMaps(board, false);
-        makeMaps(board, true);
-        exclude(board, true);
-        exclude(board, false);
-
+        }
         return false;
     }
-    private void exclude(BoardInterface board, boolean white) {
+
+    /**
+     *
+     *
+     * @param board
+     * @param white
+     * @return whether or not there was a change
+     */
+    private boolean exclude(BoardInterface board, boolean white) {
         PawnMap checkedPlayer = white
                 ? this.white
                 : this.black;
@@ -116,6 +127,7 @@ public class CombinedPawnMap extends AbstractDeduction {
         forRemoval.forEach(coordinates -> checkedPlayer.removeOrigins(coordinates[0], coordinates[1]));
         System.out.println("Updadting...");
         checkedPlayer.update();
+        return !forRemoval.isEmpty();
     }
 
     private Path makeExclusiveMaps(BoardInterface board, Path path, boolean white, List<Map.Entry<Coordinate, List<Path>>> forbiddenPaths) {
