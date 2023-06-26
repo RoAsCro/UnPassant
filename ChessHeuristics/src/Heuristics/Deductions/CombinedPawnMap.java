@@ -89,7 +89,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                         .size() == 1)
                 .toList();
 
-        Map<Coordinate, Path> newPaths = new TreeMap<>();
+        List<Path> newPaths = new LinkedList<>();
         singleOriginPawns
                 .stream()
                 .forEach(entry -> {
@@ -100,30 +100,41 @@ public class CombinedPawnMap extends AbstractDeduction {
                                 innerEntry.getValue()
                                         .stream().filter(path -> Pathfinder.pathsExclusive(entry.getValue().get(0), path))
                                         .forEach(path -> {
+                                            System.out.println(path);
                                             Path toPut = makeExclusiveMaps(board, path, white, singleOriginPawns);
                                             if (toPut.isEmpty()) {
+                                                System.out.println("path");
                                                 toPut.add(path.getFirst());
                                                 toPut.add(new Coordinate(-1, -1));
+                                                toPut.add(innerEntry.getKey());
+                                            } else {
+                                                System.out.println(toPut);
                                             }
-                                            newPaths.put(innerEntry.getKey(), toPut);
+                                            System.out.println(toPut);
+                                            newPaths.add(toPut);
+                                            System.out.println(newPaths);
                                         });
                             });
                 });
-
         List<Coordinate[]> forRemoval = new LinkedList<>();
-        newPaths.entrySet().stream().forEach(entry -> {
-            List<Path> pathList = checkedPlayerPaths.get(entry.getKey());
+        System.out.println("paths " + newPaths);
+
+        newPaths.stream().forEach(path -> {
+            List<Path> pathList = checkedPlayerPaths.get(path.getLast());
             Path toRemove = pathList
-                    .stream().filter(path2 -> path2.getFirst() == entry.getValue().getFirst())
+                    .stream().filter(path2 -> path2.getFirst() == path.getFirst())
                     .findFirst()
                     .orElse(null);
             pathList.remove(toRemove);
-            if (!(entry.getValue().getLast().getY() == -1)) {
-                pathList.add(entry.getValue());
+            if (!(path.contains(new Coordinate(-1, -1)))) {
+                pathList.add(path);
             } else {
-                forRemoval.add(new Coordinate[]{entry.getKey(), entry.getValue().getFirst()});
+                System.out.println("remove:" + path);
+
+                forRemoval.add(new Coordinate[]{path.getLast(), path.getFirst()});
             }
         });
+        System.out.println(forRemoval);
         forRemoval.forEach(coordinates -> checkedPlayer.removeOrigins(coordinates[0], coordinates[1]));
         System.out.println("Updadting...");
         checkedPlayer.update();
