@@ -175,7 +175,8 @@ public class Pathfinder {
     }
 
     public static boolean pathsExclusive(Path pathOne, Path pathTwo) {
-        return pathsExclusiveHelper(pathOne, pathTwo) || pathsExclusiveHelper(pathTwo, pathOne);
+        return (pathsExclusiveHelper(pathOne, pathTwo) && pathsExclusiveHelper(pathTwo, pathOne))
+                || pathOne.containsAll(pathTwo) || pathTwo.containsAll(pathOne);
     }
 
     /**
@@ -195,17 +196,6 @@ public class Pathfinder {
         if (containedPath.contains(target)) {
             return containingPath.containsAll(containedPath.subList(containedPath.indexOf(target), containedPath.size()));
         }
-        return containingPath.containsAll(containedPath);
-//        boolean exclusive = true;
-//        do {
-//            current = currentPath.pollLast();
-//            if (!containingPath.contains(current)) {
-//                System.out.println(current);
-//                exclusive = false;
-//                break;
-//            }
-//
-//        } while(!current.equals(target) && !currentPath.isEmpty());
-//        return exclusive;
+        return false;
     }
 }
