@@ -33,7 +33,7 @@ public class PieceMap extends AbstractDeduction{
                             path.getLast().getY() == 2
                             && pawnMap.getWhitePaths().containsKey(path.getLast())
                             && this.pawnMap.getSinglePath("white", path.getLast()) != null
-                            && Pathfinder.pathsExclusive(this.pawnMap.getSinglePath("white", path.getLast()), path)
+                            && Pathfinder.pathsExclusive(this.pawnMap.getSinglePath("white", path.getLast()), Path.of(path, new Coordinate(-1, -1)))
                     )
     );
 
