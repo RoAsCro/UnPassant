@@ -267,6 +267,7 @@ public abstract class PawnMap extends AbstractDeduction{
                     forRemoval.add(currentOrigin);
                 }
             }
+//            map.get(currentPawn).removeAll(forRemoval);
             removalMap.put(currentPawn, forRemoval);
             if (!forRemoval.isEmpty()) {
                 originsRemoved = true;

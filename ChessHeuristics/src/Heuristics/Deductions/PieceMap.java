@@ -25,22 +25,37 @@ public class PieceMap extends AbstractDeduction{
             "king", 5, "bishop", 6, "knight", 7, "rook"
     );
 
-    Predicate<Coordinate> pawnCollision = coordinate -> !(coordinate.getY() == 1 && this.pawnMap.getWhitePaths().containsKey(coordinate));
+    Predicate<Coordinate> secondRankCollision = coordinate -> !(coordinate.getY() == 1 && this.pawnMap.getWhitePaths().containsKey(coordinate));
     Predicate<Path> thirdRankCollision = path -> !(
                     path.getLast().getY() == 2
                     && pawnMap.getWhitePaths().containsKey(path.getLast())
                     && this.pawnMap.getSinglePath("white", path.getLast()) != null
                     && Pathfinder.pathsExclusive(this.pawnMap.getSinglePath("white", path.getLast()), Path.of(path, new Coordinate(-1, -1)))
     );
+    Predicate<Path> firstRankCollision = path -> (path.getLast().getY() == 0
+            && this.startLocations.containsKey(path.getLast())
+            && Pathfinder.pathsExclusive(
+            this.startLocations.get(path.getLast()).stream()
+                    .filter(path1 -> path1.size() == 1)
+                    .findAny().orElse(new Path()),
+            path));
 
     private final Map<String, Predicate<Path>> pathConditions = Map.of(
             //
             "bishop", path ->
-                    pawnCollision.test(path.getLast())
+                    secondRankCollision.test(path.getLast())
                     && thirdRankCollision.test(path),
             "rook", path ->
-                    pawnCollision.test(path.getLast())
+                    secondRankCollision.test(path.getLast())
                             && thirdRankCollision.test(path)
+                            && firstRankCollision.test(path),
+            "queen", path -> secondRankCollision.test(path.getLast())
+                    && thirdRankCollision.test(path)
+                    && firstRankCollision.test(path),
+            "king", path -> secondRankCollision.test(path.getLast())
+                    && thirdRankCollision.test(path)
+                    && firstRankCollision.test(path)
+
     );
 
     public PieceMap(CombinedPawnMap pawnMap) {
@@ -60,8 +75,13 @@ public class PieceMap extends AbstractDeduction{
     public boolean deduce(BoardInterface board) {
         pawnMap.deduce(board);
 //
+        // Bishops
         findFromOrigin(board, 2, true);
         findFromOrigin(board, 5, true);
+        // Royalty
+        findFromOrigin(board, 3, true);
+        findFromOrigin(board, 4, true);
+        // Rooks
         findFromOrigin(board, 0, true);
         findFromOrigin(board, 7, true);
 
