@@ -89,4 +89,26 @@ public class PieceMapTest {
         Assertions.assertEquals(Path.of(start1, new Coordinate(1, 1), new Coordinate(2, 2)), map.get(start1).get(0));
         Assertions.assertEquals(Path.of(start2, new Coordinate(6, 1), new Coordinate(5, 2)), map.get(start2).get(0));
     }
+
+    @Test
+    void testBishopMultiple() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("3qkb2/2pppp2/8/2B5/4B1B1/8/1B4B1/RN1QK1NR w KQ - 0 1"));
+        this.pieceMap.deduce(boardInterface);
+        Map<Coordinate, List<Path>> map = this.pieceMap.getStartLocations();
+        Coordinate start1 = new Coordinate(2, 0);
+        Coordinate start2 = new Coordinate(5, 0);
+
+        System.out.println(this.pieceMap.getStartLocations());
+
+        Assertions.assertEquals(2, map.get(start1).size());
+        Assertions.assertEquals(3, map.get(start2).size());
+        Path minimumPath1 = Path.of(start1, new Coordinate(1, 1));
+        Path minimumPath2 = Path.of(start2, new Coordinate(6, 1));
+
+        Assertions.assertTrue(map.get(start1).contains(minimumPath1));
+        Assertions.assertTrue(map.get(start2).contains(minimumPath2));
+        Assertions.assertTrue(!map.get(start1).get(0).equals(minimumPath1) || !map.get(start1).get(1).equals(minimumPath1));
+        Assertions.assertTrue(!map.get(start2).get(0).equals(minimumPath2) || !map.get(start2).get(1).equals(minimumPath2));
+
+    }
 }

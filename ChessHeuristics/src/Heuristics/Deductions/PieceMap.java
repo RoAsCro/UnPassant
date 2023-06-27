@@ -84,7 +84,7 @@ public class PieceMap extends AbstractDeduction{
             }
             System.out.println(start + " - " + target);
             candidatePaths.add(
-                    Pathfinder.findFirstPath(
+                    Pathfinder.findShortestPath(
                             StandardPieceFactory.getInstance().getPiece(pieceCode),
                             start,
                             (b, c) -> c.equals(target) || c.getY() == escapeLocation,
