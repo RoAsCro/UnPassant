@@ -29,9 +29,12 @@ public class PieceMap extends AbstractDeduction{
             //
             "bishop", path ->
                     !(path.getLast().getY() == 1 && pawnMap.getWhitePaths().containsKey(path.getLast()))
-                    && !(path.getLast().getY() == 2 && pawnMap.getWhitePaths().containsKey(path.getLast())
-                    && this.pawnMap.getSinglePath("white", path.getLast()) != null
-                    && Pathfinder.pathsExclusive(this.pawnMap.getSinglePath("white", path.getLast()), path))
+                    && !(
+                            path.getLast().getY() == 2
+                            && pawnMap.getWhitePaths().containsKey(path.getLast())
+                            && this.pawnMap.getSinglePath("white", path.getLast()) != null
+                            && Pathfinder.pathsExclusive(this.pawnMap.getSinglePath("white", path.getLast()), path)
+                    )
     );
 
     public PieceMap(CombinedPawnMap pawnMap) {
@@ -79,6 +82,7 @@ public class PieceMap extends AbstractDeduction{
             if (pieceName.equals("bishop") && (start.getX() + start.getY()) % 2 != (target.getX() + target.getY()) % 2) {
                 continue;
             }
+            System.out.println(start + " - " + target);
             candidatePaths.add(
                     Pathfinder.findFirstPath(
                             StandardPieceFactory.getInstance().getPiece(pieceCode),

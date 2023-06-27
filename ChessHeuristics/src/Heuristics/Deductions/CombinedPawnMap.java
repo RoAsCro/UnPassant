@@ -59,6 +59,9 @@ public class CombinedPawnMap extends AbstractDeduction {
     }
 
     public Path getSinglePath(String colour, Coordinate coordinate) {
+        if (coordinate.equals(new Coordinate(0, 2))) {
+            System.out.println(this.singleWhitePaths);
+        }
         return (colour.equals("white") ? this.singleWhitePaths : this.singleBlackPaths).get(coordinate);
     }
 
@@ -96,7 +99,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                                 p -> PATH_DEVIATION.apply(p) <= opposingPlayer.getMaxCaptures(entry.getKey()))
                         .size() == 1)
                 .toList();
-        singleOriginPawns.forEach(entry -> (white ? singleWhitePaths : singleBlackPaths).put(entry.getKey(), entry.getValue().get(0)));
+        singleOriginPawns.forEach(entry -> (white ? singleBlackPaths : singleWhitePaths).put(entry.getKey(), entry.getValue().get(0)));
 
         List<Path> newPaths = new LinkedList<>();
         singleOriginPawns

@@ -175,6 +175,7 @@ public class Pathfinder {
     }
 
     public static boolean pathsExclusive(Path pathOne, Path pathTwo) {
+        System.out.println(pathOne + " & " + pathTwo);
         return pathsExclusiveHelper(pathOne, pathTwo) || pathsExclusiveHelper(pathTwo, pathOne);
     }
 
