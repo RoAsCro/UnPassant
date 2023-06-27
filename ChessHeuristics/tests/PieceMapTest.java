@@ -75,4 +75,18 @@ public class PieceMapTest {
         Assertions.assertEquals(Path.of(start1, new Coordinate(1, 1), new Coordinate(2, 2)), map.get(start1).get(0));
         Assertions.assertEquals(Path.of(start2, new Coordinate(6, 1), new Coordinate(5, 2)), map.get(start2).get(0));
     }
+
+    @Test
+    void testBishopNotCollidingWithPawnsTwo() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/2B2B2/8/P1P2P1P/P2PP2P/RN1QK1NR w KQkq - 0 1"));
+        this.pieceMap.deduce(boardInterface);
+        Map<Coordinate, List<Path>> map = this.pieceMap.getStartLocations();
+        Coordinate start1 = new Coordinate(2, 0);
+        Coordinate start2 = new Coordinate(5, 0);
+
+        System.out.println(this.pieceMap.getStartLocations());
+
+        Assertions.assertEquals(Path.of(start1, new Coordinate(1, 1), new Coordinate(2, 2)), map.get(start1).get(0));
+        Assertions.assertEquals(Path.of(start2, new Coordinate(6, 1), new Coordinate(5, 2)), map.get(start2).get(0));
+    }
 }

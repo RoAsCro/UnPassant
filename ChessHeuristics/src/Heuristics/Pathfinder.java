@@ -175,7 +175,6 @@ public class Pathfinder {
     }
 
     public static boolean pathsExclusive(Path pathOne, Path pathTwo) {
-        System.out.println(pathOne + " & " + pathTwo);
         return pathsExclusiveHelper(pathOne, pathTwo) || pathsExclusiveHelper(pathTwo, pathOne);
     }
 
@@ -193,16 +192,20 @@ public class Pathfinder {
         currentPath.addAll(containedPath);
         Coordinate current;
         Coordinate target = containingPath.getLast();
-        boolean exclusive = true;
-        do {
-            current = currentPath.pollLast();
-            if (!containingPath.contains(current)) {
-                System.out.println(current);
-                exclusive = false;
-                break;
-            }
-
-        } while(!current.equals(target) && !currentPath.isEmpty());
-        return exclusive;
+        if (containedPath.contains(target)) {
+            return containingPath.containsAll(containedPath.subList(containedPath.indexOf(target), containedPath.size()));
+        }
+        return containingPath.containsAll(containedPath);
+//        boolean exclusive = true;
+//        do {
+//            current = currentPath.pollLast();
+//            if (!containingPath.contains(current)) {
+//                System.out.println(current);
+//                exclusive = false;
+//                break;
+//            }
+//
+//        } while(!current.equals(target) && !currentPath.isEmpty());
+//        return exclusive;
     }
 }
