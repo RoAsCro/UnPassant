@@ -183,18 +183,20 @@ public abstract class PawnMap extends AbstractDeduction{
      */
     private boolean reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
         boolean change = false;
-//        System.out.println(set);
+//        System.out.println("set" + set);
+//        System.out.println("origins" + origins);
         if (!set.isEmpty()) {
 //            System.out.println(set);
 
             AtomicBoolean supersets = new AtomicBoolean(false);
             List<Coordinate> subsets = this.pawnOrigins.entrySet().stream()
                     .filter(entry -> {
-                        if (entry.getValue().containsAll(set)) {
+                        if (entry.getValue().stream().anyMatch(set::contains)) {
                             // True if the piece being examined contains every origin in the current set
                             supersets.set(true);
                         }
                         // True if the current set of origins contains every origin in the piece being examined has
+//                        System.out.println(entry.getValue());
                         return set.containsAll(entry.getValue());
                     })
                     .map(Map.Entry::getKey)
