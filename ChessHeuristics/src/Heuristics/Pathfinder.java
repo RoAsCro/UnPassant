@@ -63,6 +63,17 @@ public class Pathfinder {
         return shortestPath;
     }
 
+    public static Path findFirstPath(Piece piece, Coordinate origin,
+                                     BiPredicate<BoardInterface, Coordinate> endCondition,
+                                     BoardInterface board, Predicate<Path> pathCondition) {
+
+        Path shortestPath = new Path();
+        shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, false, pathCondition, (c, d) -> true);
+//        System.out.println(possibles);
+        possibles.clear();
+        return shortestPath;
+    }
+
     private static Path findPathIter(Piece piece, Coordinate origin,
                                      BiPredicate<BoardInterface, Coordinate> endCondition, Path path,
                                      BoardInterface board, int depth,

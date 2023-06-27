@@ -187,6 +187,25 @@ public class PathfinderTest {
     }
 
     @Test
+    void testPathExclusivityNonPawn() {
+        // Heads are inside one another
+        // path1 from piece 1 to piece two is inside path2
+        // path2 leaves path1
+        Path path1 = new Path();
+        for (int i = 2 ; i < 5 ; i++) {
+            path1.add(new Coordinate(3, i));
+        }
+
+        Path path2 = new Path();
+        path2.add(new Coordinate(3, 5));
+        path2.add(new Coordinate(3, 4));
+        path2.add(new Coordinate(2, 4));
+        path2.add(new Coordinate(2, 3));
+        path2.add(new Coordinate(3, 3));
+        Assertions.assertFalse(Pathfinder.pathsExclusive(path1, path2));
+    }
+
+    @Test
     void testReductionCondition() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
         Coordinate target = new Coordinate(4, 3);

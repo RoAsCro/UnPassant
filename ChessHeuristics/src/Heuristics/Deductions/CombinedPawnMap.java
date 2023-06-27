@@ -17,6 +17,9 @@ public class CombinedPawnMap extends AbstractDeduction {
     private final Map<Coordinate, List<Path>> whitePaths = new TreeMap<>();
     private final Map<Coordinate, List<Path>> blackPaths = new TreeMap<>();
 
+    private final Map<Coordinate, Path> singleWhitePaths = new TreeMap<>();
+    private final Map<Coordinate, Path> singleBlackPaths = new TreeMap<>();
+
     private static final Function<Path, Integer> PATH_DEVIATION = p -> p.stream()
             .reduce(new Coordinate(p.get(0).getX(), 0), (c, d) -> {
                 if (c.getX() != d.getX()) {
@@ -55,6 +58,10 @@ public class CombinedPawnMap extends AbstractDeduction {
         return false;
     }
 
+    public Path getSinglePath(String colour, Coordinate coordinate) {
+        return (colour.equals("white") ? this.singleWhitePaths : this.singleBlackPaths).get(coordinate);
+    }
+
     /**
      *
      *
@@ -76,6 +83,7 @@ public class CombinedPawnMap extends AbstractDeduction {
         Map<Coordinate, List<Path>> opposingPlayerPaths = white
                 ? this.blackPaths
                 : this.whitePaths;
+        System.out.println("All paths: " + checkedPlayerPaths);
         // Find every pawn of the opposing player with one origin and one possible path
         List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = opposingPlayerPaths.entrySet()
                 .stream()
@@ -88,6 +96,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                                 p -> PATH_DEVIATION.apply(p) <= opposingPlayer.getMaxCaptures(entry.getKey()))
                         .size() == 1)
                 .toList();
+        singleOriginPawns.forEach(entry -> (white ? singleWhitePaths : singleBlackPaths).put(entry.getKey(), entry.getValue().get(0)));
 
         List<Path> newPaths = new LinkedList<>();
         singleOriginPawns
@@ -100,7 +109,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                                 innerEntry.getValue()
                                         .stream().filter(path -> Pathfinder.pathsExclusive(entry.getValue().get(0), path))
                                         .forEach(path -> {
-                                            System.out.println(path);
+                                            System.out.println("checking..." + path);
                                             Path toPut = makeExclusiveMaps(board, path, white, singleOriginPawns);
                                             if (toPut.isEmpty()) {
                                                 System.out.println("path");
@@ -118,6 +127,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 });
         List<Coordinate[]> forRemoval = new LinkedList<>();
         System.out.println("paths " + newPaths);
+
 
         newPaths.stream().forEach(path -> {
             List<Path> pathList = checkedPlayerPaths.get(path.getLast());
@@ -138,6 +148,8 @@ public class CombinedPawnMap extends AbstractDeduction {
         forRemoval.forEach(coordinates -> checkedPlayer.removeOrigins(coordinates[0], coordinates[1]));
         System.out.println("Updadting...");
         checkedPlayer.update();
+        System.out.println("All paths 2: " + checkedPlayerPaths);
+
         return !forRemoval.isEmpty();
     }
 
@@ -147,16 +159,22 @@ public class CombinedPawnMap extends AbstractDeduction {
                 ? this.black
                 : this.white;
 
+        //TODO current forbidden paths won't contain paths that are one coordinate long
+        System.out.println("forbidden:" + forbiddenPaths);
         Path newPath = Pathfinder.findShortestPawnPath(StandardPieceFactory.getInstance().getPiece(!white ? "p" : "P"),
                 path.getFirst(),
                 (b, c) -> c.equals(path.getLast()),
                 board,
                 p -> PATH_DEVIATION.apply(p) <= player.getMaxCaptures(path.getLast()),
                 (p1, p2) -> {
+                    System.out.println(
+                            p1 + " vs " + p2
+                    );
                     boolean p1NotExclusive;
                     if (p1.isEmpty()) {
                         p1NotExclusive = true;
                     } else {
+
                         p1NotExclusive = forbiddenPaths
                                 .stream()
                                 .noneMatch(entry -> p1.contains(entry.getKey())
@@ -173,6 +191,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                         return p2;
                     }
                     if (!p2NotExclusive) {
+                        System.out.println("Confirmed");
                         return p1;
                     }
 
