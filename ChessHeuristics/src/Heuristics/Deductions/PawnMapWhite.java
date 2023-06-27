@@ -6,6 +6,10 @@ import StandardChess.Coordinate;
 import java.util.Map;
 
 public class PawnMapWhite extends PawnMap{
+    public PawnMapWhite() {
+        super("white");
+    }
+
     @Override
     public boolean deduce(BoardInterface board) {
         return super.deduce(board, "white");

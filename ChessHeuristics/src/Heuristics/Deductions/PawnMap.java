@@ -19,12 +19,14 @@ public abstract class PawnMap extends AbstractDeduction{
     private final Map<Coordinate, Integer> captureSet = new TreeMap<>();
 
     private int capturedPieces = 0;
+    private String colour;
 
     List<Observation> observations = new ArrayList<>();
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;
 
-    public PawnMap() {
+    public PawnMap(String colour) {
+        this.colour = colour;
         PawnNumber pawnNumber = new PawnNumber();
         this.observations.add(pawnNumber);
         this.pawnNumber = pawnNumber;
@@ -39,6 +41,7 @@ public abstract class PawnMap extends AbstractDeduction{
     }
 
     public boolean deduce(BoardInterface board, String colour) {
+        this.observations.forEach(observation -> observation.observe(board));
         rawMap(board, colour);
         reduce(colour);
 
@@ -111,9 +114,9 @@ public abstract class PawnMap extends AbstractDeduction{
      * greater than (x - z) + y captures
      * @param colour
      */
-    private void captures(String colour) {
+    private void captures(Map<Coordinate, Path> origins, String colour) {
         updateCaptureSet(colour);
-        this.pawnOrigins.entrySet().stream()
+        origins.entrySet().stream()
                 .forEach(entry -> {
                     int x = entry.getKey().getX();
                     entry.getValue().removeAll(entry.getValue().stream()
@@ -158,7 +161,7 @@ public abstract class PawnMap extends AbstractDeduction{
             int previous = 0;
             int current = -1;
             while (current != previous){
-                captures(colour);
+                captures(this.pawnOrigins, colour);
                 previous = current;
                 reduceIter(new HashSet<>(), originsTwo);
                 current = this.pawnOrigins.values()
@@ -193,6 +196,15 @@ public abstract class PawnMap extends AbstractDeduction{
                     .toList();
             // If the number of subsets of the current set is the same as the number of origins in the set
             if (subsets.size() == set.size()) {
+                // Check the total number of captures
+
+                Map<Coordinate, Path> map = new TreeMap<>();
+                subsets.forEach(coordinate -> map.put(coordinate, Path.of(this.pawnOrigins.get(coordinate))));
+//                System.out.println(map);
+                if (reduceIterHelperStart(map)) {
+//                    System.out.println(map);
+                }
+//                System.out.println("removing");
                 removeCoords(set, subsets);
                 return;
             }
@@ -208,6 +220,90 @@ public abstract class PawnMap extends AbstractDeduction{
             newOrigins.remove(currentCoord);
             reduceIter(newSet, newOrigins);
         }
+    }
+    private boolean reduceIterHelperStart(Map<Coordinate, Path> map) {
+        boolean originsRemoved = false;
+        Map<Coordinate, Path> removalMap = new TreeMap<>();
+        List<Coordinate> remainingPawns = new LinkedList<>(map.keySet());
+
+        int maxCaptures = capturedPieces(this.colour);
+
+        for (Coordinate currentPawn : remainingPawns) {
+
+//        Coordinate  = remainingPawns.get(remainingPawns.size()-1);
+            List<Coordinate> newRemainingPawns = new LinkedList<>(remainingPawns);
+            newRemainingPawns.remove(currentPawn);
+            Path forRemoval = new Path();
+            if (map.get(currentPawn) == null) {
+                System.out.println(currentPawn);
+            }
+            for (Coordinate currentOrigin : map.get(currentPawn)) {
+                List<Coordinate> usedOrigins = new LinkedList<>();
+
+                int totalCaptures = Math.abs(currentPawn.getX() - currentOrigin.getX());
+                if (totalCaptures > maxCaptures) {
+                    forRemoval.add(currentOrigin);
+                    continue;
+                }
+                if (newRemainingPawns.isEmpty()) {
+                    continue;
+                }
+                usedOrigins.add(currentOrigin);
+
+                if (!reduceIterHelper(usedOrigins, newRemainingPawns, map, totalCaptures)) {
+                    forRemoval.add(currentOrigin);
+                }
+            }
+            removalMap.put(currentPawn, forRemoval);
+            if (!forRemoval.isEmpty()) {
+                originsRemoved = true;
+            }
+        }
+
+        removalMap.entrySet().stream().forEach(entry -> {
+            this.pawnOrigins.get(entry.getKey()).removeAll(entry.getValue());
+        });
+
+        return originsRemoved;
+    }
+
+    /**
+     * Checks there aren't mutually required capture amounts that exceed the maximum capture amount
+     * @param map
+     * @return
+     */
+    private boolean reduceIterHelper(List<Coordinate> usedOrigins, List<Coordinate> remainingPawns,
+                                     Map<Coordinate, Path> map, int totalCaptures) {
+        int maxCaptures = capturedPieces(this.colour);
+
+        Coordinate currentPawn = remainingPawns.get(remainingPawns.size()-1);
+        remainingPawns = new LinkedList<>(remainingPawns);
+        remainingPawns.remove(currentPawn);
+        for (Coordinate currentOrigin : map.get(currentPawn)) {
+
+            int newTotalCaptures = Math.abs(currentPawn.getX() - currentOrigin.getX()) + totalCaptures;
+            if (usedOrigins.contains(currentOrigin) ||
+                    newTotalCaptures
+                            > maxCaptures) {
+                continue;
+            }
+            if (remainingPawns.isEmpty()) {
+                System.out.println("empty" + currentPawn);
+
+                return true;
+            }
+            List<Coordinate> usedOriginsTwo = new LinkedList<>(usedOrigins);
+            usedOriginsTwo.add(currentOrigin);
+
+            if (reduceIterHelper(usedOriginsTwo, remainingPawns, map, newTotalCaptures)) {
+                return true;
+            }
+
+        }
+        System.out.println(totalCaptures);
+        System.out.println(remainingPawns);
+        System.out.println(usedOrigins);
+        return false;
     }
 
     private void removeCoords(Set<Coordinate> forRemoval, List<Coordinate> ignore) {

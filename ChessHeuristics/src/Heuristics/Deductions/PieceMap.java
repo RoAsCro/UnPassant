@@ -25,16 +25,22 @@ public class PieceMap extends AbstractDeduction{
             "king", 5, "bishop", 6, "knight", 7, "rook"
     );
 
+    Predicate<Coordinate> pawnCollision = coordinate -> !(coordinate.getY() == 1 && this.pawnMap.getWhitePaths().containsKey(coordinate));
+    Predicate<Path> thirdRankCollision = path -> !(
+                    path.getLast().getY() == 2
+                    && pawnMap.getWhitePaths().containsKey(path.getLast())
+                    && this.pawnMap.getSinglePath("white", path.getLast()) != null
+                    && Pathfinder.pathsExclusive(this.pawnMap.getSinglePath("white", path.getLast()), Path.of(path, new Coordinate(-1, -1)))
+    );
+
     private final Map<String, Predicate<Path>> pathConditions = Map.of(
             //
             "bishop", path ->
-                    !(path.getLast().getY() == 1 && pawnMap.getWhitePaths().containsKey(path.getLast()))
-                    && !(
-                            path.getLast().getY() == 2
-                            && pawnMap.getWhitePaths().containsKey(path.getLast())
-                            && this.pawnMap.getSinglePath("white", path.getLast()) != null
-                            && Pathfinder.pathsExclusive(this.pawnMap.getSinglePath("white", path.getLast()), Path.of(path, new Coordinate(-1, -1)))
-                    )
+                    pawnCollision.test(path.getLast())
+                    && thirdRankCollision.test(path),
+            "rook", path ->
+                    pawnCollision.test(path.getLast())
+                            && thirdRankCollision.test(path)
     );
 
     public PieceMap(CombinedPawnMap pawnMap) {
@@ -47,7 +53,7 @@ public class PieceMap extends AbstractDeduction{
     }
     @Override
     public List<Observation> getObservations() {
-        return null;
+        return this.pawnMap.getObservations();
     }
 
     @Override
@@ -56,6 +62,8 @@ public class PieceMap extends AbstractDeduction{
 //
         findFromOrigin(board, 2, true);
         findFromOrigin(board, 5, true);
+        findFromOrigin(board, 0, true);
+        findFromOrigin(board, 7, true);
 
         String colour = "white";
         for (int x = 0; x < 8 ; x++) {
@@ -83,15 +91,15 @@ public class PieceMap extends AbstractDeduction{
                 continue;
             }
             System.out.println(start + " - " + target);
-            candidatePaths.add(
-                    Pathfinder.findShortestPath(
-                            StandardPieceFactory.getInstance().getPiece(pieceCode),
-                            start,
-                            (b, c) -> c.equals(target) || c.getY() == escapeLocation,
-                            board,
-                            this.pathConditions.get(pieceName)
-                    )
-            );
+            Path foundPath = Pathfinder.findShortestPath(
+                    StandardPieceFactory.getInstance().getPiece(pieceCode),
+                    start,
+                    (b, c) -> c.equals(target) || c.getY() == escapeLocation,
+                    board,
+                    this.pathConditions.get(pieceName));
+            if (!foundPath.isEmpty()) {
+                candidatePaths.add(foundPath);
+            }
         }
         this.startLocations.put(start, candidatePaths);
     }

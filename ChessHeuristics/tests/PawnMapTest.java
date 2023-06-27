@@ -210,6 +210,21 @@ public class PawnMapTest {
 //        Assertions.assertEquals(new Coordinate(0, 1), whiteMap.getPawnOrigins().get(new Coordinate(0, 3)).get(0));
     }
 
+    @Test
+    void testCapturesEight() {
+        //TODO Groupings need to account for mutually required capture quantities
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkb1r/pppppppp/8/8/8/6PP/PPPPPP2/RNBQKBNR w KQkq - 0 1"));
+        PawnMapWhite whiteMap = new PawnMapWhite();
+        for (Observation o : whiteMap.getObservations()) {
+            o.observe(board);
+        }
+        whiteMap.deduce(board);
+
+        System.out.println(whiteMap.getPawnOrigins());
+        Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(6, 2)).size());
+        Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(7, 2)).size());
+    }
+
 
     @Test
     void p() {
