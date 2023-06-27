@@ -212,7 +212,6 @@ public class PawnMapTest {
 
     @Test
     void testCapturesEight() {
-        //TODO Groupings need to account for mutually required capture quantities
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkb1r/pppppppp/8/8/8/6PP/PPPPPP2/RNBQKBNR w KQkq - 0 1"));
         PawnMapWhite whiteMap = new PawnMapWhite();
         for (Observation o : whiteMap.getObservations()) {
@@ -223,6 +222,22 @@ public class PawnMapTest {
         System.out.println(whiteMap.getPawnOrigins());
         Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(6, 2)).size());
         Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(7, 2)).size());
+    }
+
+    @Test
+    void testCapturesNine() {
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/pppppppp/8/8/8/2PPPPPP/P1P5/RNBQKBNR w KQkq - 0 1"));
+        PawnMapWhite whiteMap = new PawnMapWhite();
+        for (Observation o : whiteMap.getObservations()) {
+            o.observe(board);
+        }
+        whiteMap.deduce(board);
+
+        System.out.println(whiteMap.getPawnOrigins());
+//        for (int i = 0 ; i < 7 ; i++) {
+//            System.out.println(i);
+//            Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(i, 2)).size());
+//        }
     }
 
 

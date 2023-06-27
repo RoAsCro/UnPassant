@@ -160,10 +160,11 @@ public abstract class PawnMap extends AbstractDeduction{
             List<Coordinate> originsTwo = new LinkedList<>(origins);
             int previous = 0;
             int current = -1;
-            while (current != previous){
+            boolean change = true;
+            while (change){
                 captures(this.pawnOrigins, colour);
                 previous = current;
-                reduceIter(new HashSet<>(), originsTwo);
+                change = reduceIter(new HashSet<>(), originsTwo);
                 current = this.pawnOrigins.values()
                         .stream()
                         .map(LinkedList::size)
@@ -180,8 +181,12 @@ public abstract class PawnMap extends AbstractDeduction{
      * @param set
      * @param origins
      */
-    private void reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
+    private boolean reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
+        boolean change = false;
+//        System.out.println(set);
         if (!set.isEmpty()) {
+//            System.out.println(set);
+
             AtomicBoolean supersets = new AtomicBoolean(false);
             List<Coordinate> subsets = this.pawnOrigins.entrySet().stream()
                     .filter(entry -> {
@@ -195,7 +200,10 @@ public abstract class PawnMap extends AbstractDeduction{
                     .map(Map.Entry::getKey)
                     .toList();
             // If the number of subsets of the current set is the same as the number of origins in the set
+//            System.out.println(subsets);
+
             if (subsets.size() == set.size()) {
+//                System.out.println(subsets);
                 // Check the total number of captures
 
                 Map<Coordinate, Path> map = new TreeMap<>();
@@ -205,12 +213,12 @@ public abstract class PawnMap extends AbstractDeduction{
 //                    System.out.println(map);
                 }
 //                System.out.println("removing");
-                removeCoords(set, subsets);
-                return;
+                return removeCoords(set, subsets);
             }
             // If there does not exist a set that contains this set
             if (!supersets.get()) {
-                return;
+//                System.out.println("super");
+                return false;
             }
         }
         for (Coordinate currentCoord : origins) {
@@ -218,8 +226,11 @@ public abstract class PawnMap extends AbstractDeduction{
             newSet.add(currentCoord);
             List<Coordinate> newOrigins = new LinkedList<>(origins);
             newOrigins.remove(currentCoord);
-            reduceIter(newSet, newOrigins);
+            if (reduceIter(newSet, newOrigins)) {
+                change = true;
+            }
         }
+        return change;
     }
     private boolean reduceIterHelperStart(Map<Coordinate, Path> map) {
         boolean originsRemoved = false;
@@ -288,7 +299,7 @@ public abstract class PawnMap extends AbstractDeduction{
                 continue;
             }
             if (remainingPawns.isEmpty()) {
-                System.out.println("empty" + currentPawn);
+//                System.out.println("empty" + currentPawn);
 
                 return true;
             }
@@ -300,17 +311,25 @@ public abstract class PawnMap extends AbstractDeduction{
             }
 
         }
-        System.out.println(totalCaptures);
-        System.out.println(remainingPawns);
-        System.out.println(usedOrigins);
+//        System.out.println(totalCaptures);
+//        System.out.println(remainingPawns);
+//        System.out.println(usedOrigins);
         return false;
     }
 
-    private void removeCoords(Set<Coordinate> forRemoval, List<Coordinate> ignore) {
-        this.pawnOrigins.entrySet()
+    /**
+     *
+     * @param forRemoval
+     * @param ignore
+     * @return true if something is removed
+     */
+    private boolean removeCoords(Set<Coordinate> forRemoval, List<Coordinate> ignore) {
+        return !this.pawnOrigins.entrySet()
                 .stream()
                 .filter(entry -> !ignore.contains(entry.getKey()))
-                .forEach(entry -> entry.getValue().removeAll(forRemoval));
+                .filter(entry -> entry.getValue().removeAll(forRemoval))
+                .toList()
+                .isEmpty();
     }
 
     public Map<Coordinate, Path> getPawnOrigins() {
