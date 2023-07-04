@@ -406,26 +406,26 @@ public class CombinedPawnMapTest {
         Assertions.assertTrue(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)).get(0).contains(new Coordinate(1, 3)));
     }
 
-//    @Test
-//    void testExclusiveThirteen(){
-//        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/ppppp2p/8/8/2P5/1p4P1/1p1PP1KP/8 w kq - 0 1"));
-//        PawnMapWhite map = new PawnMapWhite();
-//        PawnMapBlack blackMap = new PawnMapBlack();
-//
-//        for (Observation o : map.getObservations()) {
-//            o.observe(board);
-//        }
-//        for (Observation o : blackMap.getObservations()) {
-//            o.observe(board);
-//        }
-//        CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-//        combinedPawnMap.deduce(board);
-//        System.out.println(combinedPawnMap.getBlackPaths());
-//        System.out.println(combinedPawnMap.getWhitePaths());
-//
+    @Test
+    void testExclusiveThirteen(){
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("2bqkb1r/1ppppppp/8/P3q3/p3Q3/8/1PPPPPPP/2BQKB1R w Kk - 0 1"));
+        PawnMapWhite map = new PawnMapWhite();
+        PawnMapBlack blackMap = new PawnMapBlack();
+
+        for (Observation o : map.getObservations()) {
+            o.observe(board);
+        }
+        for (Observation o : blackMap.getObservations()) {
+            o.observe(board);
+        }
+        CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
+        combinedPawnMap.deduce(board);
+        System.out.println(combinedPawnMap.getBlackPaths());
+        System.out.println(combinedPawnMap.getWhitePaths());
+
 //        Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(2, 3)).size());
 //        Assertions.assertEquals(new Coordinate(2, 1), map.getPawnOrigins().get(new Coordinate(2, 3)).get(0));
-//    }
+    }
 
 
 }

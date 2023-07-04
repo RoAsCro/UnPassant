@@ -247,9 +247,9 @@ public abstract class PawnMap extends AbstractDeduction{
             List<Coordinate> newRemainingPawns = new LinkedList<>(remainingPawns);
             newRemainingPawns.remove(currentPawn);
             Path forRemoval = new Path();
-            if (map.get(currentPawn) == null) {
-                System.out.println(currentPawn);
-            }
+//            if (map.get(currentPawn) == null) {
+//                System.out.println(currentPawn);
+//            }
             for (Coordinate currentOrigin : map.get(currentPawn)) {
                 List<Coordinate> usedOrigins = new LinkedList<>();
 

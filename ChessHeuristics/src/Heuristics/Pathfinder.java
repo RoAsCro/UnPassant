@@ -126,7 +126,7 @@ public class Pathfinder {
         Path shortestPath = new Path();
         List<Path> possiblePaths = new LinkedList<>();
         findPawnPathIter(piece, origin, endCondition, shortestPath, board, possiblePaths, pathCondition);
-        System.out.println("PP" + possiblePaths);
+//        System.out.println("PP" + possiblePaths);
 
 
         return possiblePaths.stream()
