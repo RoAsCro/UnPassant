@@ -1,5 +1,4 @@
 import Heuristics.BoardInterface;
-import Heuristics.Deductions.PawnMap;
 import Heuristics.Deductions.PawnMapBlack;
 import Heuristics.Deductions.PawnMapWhite;
 import Heuristics.Observation;

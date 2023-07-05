@@ -9,6 +9,7 @@ import StandardChess.StandardPieceFactory;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class PieceMap extends AbstractDeduction{
     private CombinedPawnMap pawnMap;
@@ -17,8 +18,10 @@ public class PieceMap extends AbstractDeduction{
 
     private final Map<Coordinate, Map<Coordinate, Path>> startLocations = new TreeMap<>();
     public final Map<Coordinate, Path> startPiecePairs = new TreeMap<>();
-    public final Map<Coordinate, List<Path>> pieceMap = new TreeMap<>();
+    private final Map<Coordinate, List<Path>> pieceMap = new TreeMap<>();
     private final Map<Coordinate, Boolean> caged = new TreeMap<>();
+
+    private final Map<Coordinate, Path> promotedPieceMap;
 
 
     private final static Coordinate NULL_COORDINATE = new Coordinate(-1, -1);
@@ -71,12 +74,24 @@ public class PieceMap extends AbstractDeduction{
                     && firstRankCollision.test(path),
             "king", path -> secondRankCollision.test(path.getLast())
                     && thirdRankCollision.test(path)
-                    && firstRankCollision.test(path)
+                    && firstRankCollision.test(path),
+            "knight", path -> true
 
     );
 
     public PieceMap(CombinedPawnMap pawnMap) {
         this.pawnMap = pawnMap;
+        this.promotedPieceMap = new TreeMap<>();
+        for (int y  = 0 ; y < 8 ; y = y + 7) {
+            for (int x = 0; x < 8; x++) {
+                this.promotedPieceMap.put(new Coordinate(x, y), new Path());
+            }
+        }
+//        this.caged.put(new Coordinate(1, 0), false);
+//        this.caged.put(new Coordinate(1, 7), false);
+//        this.caged.put(new Coordinate(6, 0), false);
+//        this.caged.put(new Coordinate(6, 7), false);
+
     }
 
 
@@ -102,8 +117,6 @@ public class PieceMap extends AbstractDeduction{
             findFromOrigin(board, x, false, true);
         });
 
-        String colour = "white";
-        List<Coordinate> foundPieces = this.startPiecePairs.values().stream().flatMap(Collection::stream).toList();
         // For each start location, have each piece associated with it attempt to path to that start
         this.startLocations.entrySet().stream().forEach(entry -> {
             Path coordinatesToRemove = new Path();
@@ -116,12 +129,73 @@ public class PieceMap extends AbstractDeduction{
             });
             coordinatesToRemove.forEach(coordinate -> entry.getValue().remove(coordinate));
         });
-        this.startLocations.entrySet().stream()
-                .forEach(entry -> {
-                    String piece = STANDARD_STARTS.get(entry.getKey().getX());
 
-                });
-        board.getBoardFacts().getCoordinates("white", "bishop");
+        // Every piece for which there are more of the type associated with a start location than there are by default
+        System.out.println("HERERE");
+        Map<String, Path> pieces = new TreeMap<>();
+        Map<String, Integer> pieceNumber = new TreeMap<>();
+        int rookNumber = 0;
+//        Map<String, Integer> quantities = new TreeMap<>();
+        for (int y  = 0 ; y < 8 ; y = y + 7) {
+            for (int x = 0; x < 8; x++) {
+                Coordinate origin = new Coordinate(x, y);
+                if (x == 1 || x == 6) {
+                    continue;
+                }
+                if (!this.caged.get(origin)) {
+                    Set<Coordinate> pieceLocations = this.startLocations.get(origin).keySet();
+                    String name = STANDARD_STARTS.get(x);
+                    if (name.equals("bishop")) {
+                        name = name + x;
+                    }
+                    if (y == 0) {
+                        name = name + "w";
+                    } else {
+                        name = name + "b";
+                    }
+
+                    if (pieces.containsKey(name)) {
+                        pieces.get(name).addAll(pieceLocations);
+                        pieceNumber.put(name, pieceNumber.get(name) + 1);
+                    } else {
+                        pieces.put(name, Path.of(pieceLocations));
+                        pieceNumber.put(name, 1);
+                    }
+                }
+            }
+        }
+        Map<String, Path> piecesTwo = new TreeMap<>();
+        pieces.forEach((key, value) -> piecesTwo.put(key,
+                Path.of(value.stream().distinct().toList())));
+        piecesTwo.put("knightw", board.getBoardFacts().getCoordinates("white", "knight"));
+        pieceNumber.put("knightw", 2);
+        piecesTwo.put("knightb", board.getBoardFacts().getCoordinates("black", "knight"));
+        pieceNumber.put("knightb", 2);
+
+        Map<String, Path> potentialPromotions = piecesTwo.entrySet().stream()
+                .filter((entry) -> entry.getValue().size() > pieceNumber.get(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        this.promotedPieceMap.entrySet().stream().forEach(outerEntry -> {
+            potentialPromotions.entrySet().stream().forEach(entry -> {
+                if ((outerEntry.getKey().getY() == 0 && entry.getKey().charAt(entry.getKey().length() - 1) == 'w') ||
+                        (outerEntry.getKey().getY() == 7 && entry.getKey().charAt(entry.getKey().length() - 1) == 'b')) {
+                    return;
+                }
+                String pieceName = entry.getKey().substring(0, entry.getKey().length() -
+                        (entry.getKey().charAt(0) == 'b' ? 2 : 1));
+                System.out.println(pieceName);
+                String pieceCodeTemp = entry.getKey().charAt(1) == 'n' ? "n" : pieceName.substring(0, 1);
+                String pieceCode = entry.getKey().charAt(entry.getKey().length() - 1) == 'w'
+                        ? pieceCodeTemp.toUpperCase() :
+                        pieceCodeTemp.toLowerCase();
+                entry.getValue().stream()
+                        .filter(coordinate -> !findPath(board, pieceName, pieceCode, outerEntry.getKey(), coordinate, 0).isEmpty())
+                        .forEach(coordinate -> this.promotedPieceMap.get(outerEntry.getKey()).add(coordinate));
+
+            });
+        });
+
         return false;
     }
     private void findFromOrigin(BoardInterface board, int originX, boolean white, boolean cage) {
@@ -170,6 +244,10 @@ public class PieceMap extends AbstractDeduction{
                 (b, c) -> c.equals(target) || (c.getY() >= 2 && c.getY() <= 5),
                 board,
                 this.pathConditions.get(pieceName));
+    }
+
+    public Map<Coordinate, Path> getPromotedPieceMap(){
+        return this.promotedPieceMap;
     }
 
 }

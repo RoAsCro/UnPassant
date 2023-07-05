@@ -632,10 +632,36 @@ public class PieceMapTest {
     }
 
     @Test
+    void testPromotionMap() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/p1pppppp/8/1p6/5R1P/8/PPPPPPP1/RNBQKBNR w KQkq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
+        Coordinate start1 = new Coordinate(3, 0);
+
+        System.out.println(this.pieceMap.getStartLocations());
+        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.pieceMap.startPiecePairs);
+        System.out.println(pieceMap.getPromotedPieceMap());
+        for (int i = 0 ; i < 5 ; i++) {
+            Assertions.assertEquals(2, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+        for (int i = 5 ; i < 7 ; i++) {
+            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+//        System.out.println(pieceMap.promotedPieceMap);
+
+//        Assertions.assertEquals(0, map.get(start1).size());
+//        Assertions.assertEquals(0, map.get(start2).size());
+
+    }
+
+    @Test
     void testMultiple() {
 
         //NOT A TEST
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("3qk3/2pppp2/8/2P3B1/R4B2/5N1P/3PPPP1/1N1QKB1R w K - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/p1pppppp/8/Pp4R1/1B1R1R1P/1P4P1/2PPPP2/RNBQKBNR w KQkq - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pieceMap.deduce(boardInterface);
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
@@ -645,6 +671,7 @@ public class PieceMapTest {
         System.out.println(this.pieceMap.getStartLocations());
         System.out.println(this.pawnMapWhite.getPawnOrigins());
         System.out.println(this.pieceMap.startPiecePairs);
+//        System.out.println(pieceMap.promotedPieceMap);
 
 //        Assertions.assertEquals(0, map.get(start1).size());
 //        Assertions.assertEquals(0, map.get(start2).size());

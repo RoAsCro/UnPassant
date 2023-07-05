@@ -10,7 +10,7 @@ import java.util.List;
 public interface Observer {
 
     public void put(String colour, String piece, Coordinate coordinate);
-    public List<Coordinate> getCoordinates(String colour, String piece);
+    public Path getCoordinates(String colour, String piece);
 
     public void runObservations(BoardInterface boardInterface);
 
