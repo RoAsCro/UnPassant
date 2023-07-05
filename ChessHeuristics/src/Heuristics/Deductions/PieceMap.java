@@ -27,15 +27,30 @@ public class PieceMap extends AbstractDeduction{
             "king", 5, "bishop", 6, "knight", 7, "rook"
     );
 
-    Predicate<Coordinate> secondRankCollision = coordinate -> !(coordinate.getY() == 1 && this.pawnMap.getWhitePaths().containsKey(coordinate));
-    Predicate<Path> thirdRankCollision = path -> !(
-                    path.getLast().getY() == 2
-                    && pawnMap.getWhitePaths().containsKey(path.getLast())
-                    && this.pawnMap.getSinglePath("white", path.getLast()) != null
-                    && Pathfinder.pathsExclusive(this.pawnMap.getSinglePath("white", path.getLast()), Path.of(path, new Coordinate(-1, -1)))
-    );
+    Predicate<Coordinate> secondRankCollision = coordinate -> {
+        int y = coordinate.getY();
+        if ((y == 1 || y == 6)) {
+            Map<Coordinate, List<Path>> map = y == 1 ? this.pawnMap.getWhitePaths() : this.pawnMap.getBlackPaths();
+            return !(map.containsKey(coordinate));
+        }
+        return true;
+    };
+
+    Predicate<Path> thirdRankCollision = path -> {
+        int y = path.getLast().getY();
+        if (y == 2 || y == 5) {
+            String colour = y == 2 ? "white" : "black";
+            Path toCheck = this.pawnMap.getSinglePath(colour, path.getLast());
+            Map<Coordinate, List<Path>> map = y == 2 ? this.pawnMap.getWhitePaths() : this.pawnMap.getBlackPaths();
+            return !(
+                    map.containsKey(path.getLast())
+                    && toCheck != null
+                    && Pathfinder.pathsExclusive(toCheck, Path.of(path, NULL_COORDINATE)));
+        }
+        return true;
+    };
     Predicate<Path> firstRankCollision = path -> !(
-            path.getLast().getY() == 0
+            (path.getLast().getY() == 0 || path.getLast().getY() == 7)
             && !STANDARD_STARTS.get(path.getLast().getX()).equals("rook")
             && this.startLocations.containsKey(path.getLast())
             && !this.startLocations.get(path.getLast()).isEmpty()
@@ -95,6 +110,22 @@ public class PieceMap extends AbstractDeduction{
         findFromOrigin(board, 0, true, true);
         findFromOrigin(board, 7, true, false);
         findFromOrigin(board, 0, true, true);
+
+        // Bishops
+        findFromOrigin(board, 2, false, false);
+        findFromOrigin(board, 2, false, true);
+        findFromOrigin(board, 5, false, false);
+        findFromOrigin(board, 5, false, true);
+        // Royalty
+        findFromOrigin(board, 3, false, false);
+        findFromOrigin(board, 3, false, true);
+        findFromOrigin(board, 4, false, false);
+        findFromOrigin(board, 4, false, true);
+        // Rooks
+        findFromOrigin(board, 0, false, false);
+        findFromOrigin(board, 0, false, true);
+        findFromOrigin(board, 7, false, false);
+        findFromOrigin(board, 0, false, true);
 
 
         String colour = "white";
