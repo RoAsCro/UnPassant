@@ -596,7 +596,6 @@ public class PieceMapTest {
 
     @Test
     void testRookOpposingCage() {
-        // WHY DOES THIS WORK
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rRbqk2r/pp1ppp1p/6p1/2p5/P6P/5N2/1PPPPPP1/RNBQKB2 w - - 0 1"));
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
@@ -605,7 +604,37 @@ public class PieceMapTest {
     }
 
     @Test
+    void testRookOpposingCageBlack() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqk3/1pp1ppp1/8/p6p/7P/2P5/PP1PPPP1/RrB1KB1R w - - 0 1"));
+        Coordinate start1 = new Coordinate(0, 7);
+        Coordinate start2 = new Coordinate(7, 7);
+        test(boardInterface, start1, start2, 1, 1);
+
+    }
+
+    @Test
+    void testBishopOpposingCageBoth() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rn1qkbBr/p2ppp1p/1p4p1/8/8/1P4P1/P1PPP2P/RbBQK1NR w KQkq - 0 1"));
+        Coordinate start1 = new Coordinate(2, 7);
+        Coordinate start2 = new Coordinate(5, 0);
+        test(boardInterface, start1, start2, 0, 0);
+
+    }
+
+    @Test
+    void testRoyaltyOpposingCageBoth() {
+        // IMPOSSIBLE BOARD STATE - may cause problems
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rn2kbQr/p2ppppp/1p6/8/8/6P1/PPPPP2P/RqB1K1NR w KQkq - 0 1"));
+        Coordinate start1 = new Coordinate(3, 7);
+        Coordinate start2 = new Coordinate(3, 0);
+        test(boardInterface, start1, start2, 0, 0);
+
+    }
+
+    @Test
     void testMultiple() {
+
+        //NOT A TEST
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("3qk3/2pppp2/8/2P3B1/R4B2/5N1P/3PPPP1/1N1QKB1R w K - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pieceMap.deduce(boardInterface);

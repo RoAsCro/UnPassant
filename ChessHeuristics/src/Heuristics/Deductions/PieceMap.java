@@ -94,50 +94,23 @@ public class PieceMap extends AbstractDeduction{
     @Override
     public boolean deduce(BoardInterface board) {
         pawnMap.deduce(board);
-//
-        // Bishops
-        findFromOrigin(board, 2, true, false);
-        findFromOrigin(board, 2, true, true);
-        findFromOrigin(board, 5, true, false);
-        findFromOrigin(board, 5, true, true);
-        // Royalty
-        findFromOrigin(board, 3, true, false);
-        findFromOrigin(board, 3, true, true);
-        findFromOrigin(board, 4, true, false);
-        findFromOrigin(board, 4, true, true);
-        // Rooks
-        findFromOrigin(board, 0, true, false);
-        findFromOrigin(board, 0, true, true);
-        findFromOrigin(board, 7, true, false);
-        findFromOrigin(board, 0, true, true);
-
-        // Bishops
-        findFromOrigin(board, 2, false, false);
-        findFromOrigin(board, 2, false, true);
-        findFromOrigin(board, 5, false, false);
-        findFromOrigin(board, 5, false, true);
-        // Royalty
-        findFromOrigin(board, 3, false, false);
-        findFromOrigin(board, 3, false, true);
-        findFromOrigin(board, 4, false, false);
-        findFromOrigin(board, 4, false, true);
-        // Rooks
-        findFromOrigin(board, 0, false, false);
-        findFromOrigin(board, 0, false, true);
-        findFromOrigin(board, 7, false, false);
-        findFromOrigin(board, 0, false, true);
-
+        // bishops -> royalty -> rooks
+        Arrays.stream(new int[]{2, 5, 3, 4, 0, 7}).forEach(x -> {
+            findFromOrigin(board, x, true, false);
+            findFromOrigin(board, x, true, true);
+            findFromOrigin(board, x, false, false);
+            findFromOrigin(board, x, false, true);
+        });
 
         String colour = "white";
         List<Coordinate> foundPieces = this.startPiecePairs.values().stream().flatMap(Collection::stream).toList();
+        // For each start location, have each piece associated with it attempt to path to that start
         this.startLocations.entrySet().stream().forEach(entry -> {
             Path coordinatesToRemove = new Path();
             entry.getValue().keySet().stream().forEach(origin -> {
                 String pieceName = STANDARD_STARTS.get(entry.getKey().getX());
                 String pieceCode = pieceName.substring(0, 1).toUpperCase();
                 if (findPath(board, pieceName, pieceCode, origin, entry.getKey(), 0).isEmpty()){
-                    System.out.println("Key" + entry.getKey());
-                    System.out.println("Or" + origin);
                     coordinatesToRemove.add(origin);
                 }
             });
@@ -149,12 +122,6 @@ public class PieceMap extends AbstractDeduction{
 
                 });
         board.getBoardFacts().getCoordinates("white", "bishop");
-
-        for (int x = 0; x < 8 ; x++) {
-
-        }
-
-
         return false;
     }
     private void findFromOrigin(BoardInterface board, int originX, boolean white, boolean cage) {
