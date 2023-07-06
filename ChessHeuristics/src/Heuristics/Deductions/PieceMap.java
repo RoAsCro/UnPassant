@@ -190,9 +190,20 @@ public class PieceMap extends AbstractDeduction{
                         ? pieceCodeTemp.toUpperCase() :
                         pieceCodeTemp.toLowerCase();
                 entry.getValue().stream()
-                        .filter(coordinate -> !findPath(board, pieceName, pieceCode, outerEntry.getKey(), coordinate, 0).isEmpty())
+                        .filter(coordinate -> {
+                            Coordinate origin = outerEntry.getKey();
+                            if (pieceCode.equalsIgnoreCase("b")
+                                && (origin.getX() + origin.getY()) % 2 != (coordinate.getX() + coordinate.getY()) % 2){
+                                return false;
+                            }
+                            Path path = findPath(board, pieceName, pieceCode, origin, coordinate, 0);
+                            if (path.isEmpty()) {
+                                return false;
+                            }
+                            // First coordinate is never tested normally
+                            return this.firstRankCollision.test(Path.of(path.getFirst()));
+                        })
                         .forEach(coordinate -> this.promotedPieceMap.get(outerEntry.getKey()).add(coordinate));
-
             });
         });
 
@@ -238,6 +249,7 @@ public class PieceMap extends AbstractDeduction{
     private Path findPath(BoardInterface board, String pieceName,
                           String pieceCode, Coordinate start,
                           Coordinate target, int escapeLocation){
+
         return Pathfinder.findShortestPath(
                 StandardPieceFactory.getInstance().getPiece(pieceCode),
                 start,
