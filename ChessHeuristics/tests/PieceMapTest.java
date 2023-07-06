@@ -665,6 +665,50 @@ public class PieceMapTest {
     }
 
     @Test
+    void testPromotionMapRookThree() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb2/pppppppR/7p/8/8/7P/PPPPPP2/RNBQKBNR w KQq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
+        System.out.println(this.pieceMap.getStartLocations());
+        System.out.println(this.pawnMapBlack.getPawnOrigins());
+        System.out.println(this.pawnMapWhite.getPawnOrigins());
+
+        System.out.println(this.pieceMap.startPiecePairs);
+        System.out.println(pieceMap.getPromotedPieceMap());
+        for (int i = 0 ; i < 6 ; i++) {
+            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+        for (int i = 6 ; i < 8 ; i++) {
+            Assertions.assertEquals(1, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+
+    }
+
+    @Test
+    void testPromotionMapRookFour() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/pp2pppp/1p6/3p1R2/8/8/PP1PPPPP/R1BQKB1R w KQkq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
+        System.out.println(this.pieceMap.getStartLocations());
+        System.out.println(this.pawnMapBlack.getPawnOrigins());
+        System.out.println(this.pawnMapWhite.getPawnOrigins());
+
+        System.out.println(this.pieceMap.startPiecePairs);
+        System.out.println(pieceMap.getPromotedPieceMap());
+        for (int i = 0 ; i < 5 ; i++) {
+            Assertions.assertEquals(1, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+        for (int i = 5 ; i < 8 ; i++) {
+            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+
+    }
+
+    @Test
     void testPromotionMapBishop() {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/p1pppppp/1p6/6B1/3B4/3P4/PP2PPPP/RN1QKBNR w KQkq - 0 1"));
@@ -729,6 +773,34 @@ public class PieceMapTest {
         }
         for (int i = 0; i < 8 ; i++) {
             Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+
+    }
+
+    @Test
+    void testPromotionMapBishopFour() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1b1kbnr/pp1ppppp/1p6/8/5B2/8/PP1PPPPP/R1BQKB1R w KQkq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
+
+        System.out.println(this.pieceMap.getStartLocations());
+        System.out.println(this.pawnMapBlack.getPawnOrigins());
+        System.out.println(this.pawnMapWhite.getPawnOrigins());
+
+        System.out.println(this.pieceMap.startPiecePairs);
+        System.out.println(pieceMap.getPromotedPieceMap());
+        for (int i = 0 ; i < 0 ; i++) {
+            Assertions.assertEquals(2, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+        for (int i = 0; i < 8 ; i++) {
+            if (i == 1 || i == 3) {
+                Assertions.assertEquals(1, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+
+            } else {
+                Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            }
         }
 
     }

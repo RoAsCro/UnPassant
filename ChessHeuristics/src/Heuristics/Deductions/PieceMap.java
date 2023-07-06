@@ -176,6 +176,63 @@ public class PieceMap extends AbstractDeduction{
                 .filter((entry) -> entry.getValue().size() > pieceNumber.get(entry.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+        findPromotionPaths(board, potentialPromotions);
+
+        Map<String, Path> certainPromotions = new TreeMap<>();
+        Path foundPieces = Path.of(this.startPiecePairs.values().stream().distinct().flatMap(Collection::stream).toList());
+        Arrays.stream(new int[]{0, 2, 3}).forEach(x -> {
+            String pieceName = STANDARD_STARTS.get(x);
+            String bishopAddition = pieceName.charAt(0) == 'b' ? "b" : "";
+            Path promotions = Path.of(board.getBoardFacts().getCoordinates("white", pieceName)
+                    .stream()
+                    .filter(coordinate -> !foundPieces.contains(coordinate))
+                    .toList());
+            certainPromotions.put(pieceName + bishopAddition + "w", promotions);
+            promotions = Path.of(board.getBoardFacts().getCoordinates("black", pieceName)
+                    .stream()
+                    .filter(coordinate -> !foundPieces.contains(coordinate))
+                    .toList());
+            certainPromotions.put(pieceName + bishopAddition + "b", promotions);
+        });
+        System.out.println("THISONE" + this.startPiecePairs);
+        System.out.println("THISONE" + certainPromotions);
+        findPromotionPaths(board, certainPromotions);
+
+//        this.promotedPieceMap.entrySet().stream().forEach(outerEntry -> {
+//            potentialPromotions.entrySet().stream().forEach(entry -> {
+//                if ((outerEntry.getKey().getY() == 0 && entry.getKey().charAt(entry.getKey().length() - 1) == 'w') ||
+//                        (outerEntry.getKey().getY() == 7 && entry.getKey().charAt(entry.getKey().length() - 1) == 'b')) {
+//                    return;
+//                }
+//                String pieceName = entry.getKey().substring(0, entry.getKey().length() -
+//                        (entry.getKey().charAt(0) == 'b' ? 2 : 1));
+//                System.out.println(pieceName);
+//                String pieceCodeTemp = entry.getKey().charAt(1) == 'n' ? "n" : pieceName.substring(0, 1);
+//                String pieceCode = entry.getKey().charAt(entry.getKey().length() - 1) == 'w'
+//                        ? pieceCodeTemp.toUpperCase() :
+//                        pieceCodeTemp.toLowerCase();
+//                entry.getValue().stream()
+//                        .filter(coordinate -> {
+//                            Coordinate origin = outerEntry.getKey();
+//                            if (pieceCode.equalsIgnoreCase("b")
+//                                && (origin.getX() + origin.getY()) % 2 != (coordinate.getX() + coordinate.getY()) % 2){
+//                                return false;
+//                            }
+//                            Path path = findPath(board, pieceName, pieceCode, origin, coordinate, 0);
+//                            if (path.isEmpty()) {
+//                                return false;
+//                            }
+//                            // First coordinate is never tested normally
+//                            return this.firstRankCollision.test(Path.of(path.getFirst()));
+//                        })
+//                        .forEach(coordinate -> this.promotedPieceMap.get(outerEntry.getKey()).add(coordinate));
+//            });
+//        });
+
+        return false;
+    }
+
+    private void findPromotionPaths(BoardInterface board, Map<String, Path> potentialPromotions) {
         this.promotedPieceMap.entrySet().stream().forEach(outerEntry -> {
             potentialPromotions.entrySet().stream().forEach(entry -> {
                 if ((outerEntry.getKey().getY() == 0 && entry.getKey().charAt(entry.getKey().length() - 1) == 'w') ||
@@ -184,7 +241,6 @@ public class PieceMap extends AbstractDeduction{
                 }
                 String pieceName = entry.getKey().substring(0, entry.getKey().length() -
                         (entry.getKey().charAt(0) == 'b' ? 2 : 1));
-                System.out.println(pieceName);
                 String pieceCodeTemp = entry.getKey().charAt(1) == 'n' ? "n" : pieceName.substring(0, 1);
                 String pieceCode = entry.getKey().charAt(entry.getKey().length() - 1) == 'w'
                         ? pieceCodeTemp.toUpperCase() :
@@ -193,7 +249,7 @@ public class PieceMap extends AbstractDeduction{
                         .filter(coordinate -> {
                             Coordinate origin = outerEntry.getKey();
                             if (pieceCode.equalsIgnoreCase("b")
-                                && (origin.getX() + origin.getY()) % 2 != (coordinate.getX() + coordinate.getY()) % 2){
+                                    && (origin.getX() + origin.getY()) % 2 != (coordinate.getX() + coordinate.getY()) % 2){
                                 return false;
                             }
                             Path path = findPath(board, pieceName, pieceCode, origin, coordinate, 0);
@@ -206,8 +262,6 @@ public class PieceMap extends AbstractDeduction{
                         .forEach(coordinate -> this.promotedPieceMap.get(outerEntry.getKey()).add(coordinate));
             });
         });
-
-        return false;
     }
     private void findFromOrigin(BoardInterface board, int originX, boolean white, boolean cage) {
 
@@ -227,14 +281,10 @@ public class PieceMap extends AbstractDeduction{
 
         } else {
             for (Coordinate target : candidatePieces) {
-                System.out.println(originX);
-
-                System.out.println(target);
                 if (pieceName.equals("bishop") && (start.getX() + start.getY()) % 2 != (target.getX() + target.getY()) % 2) {
                     continue;
                 }
                 Path foundPath = findPath(board, pieceName, pieceCode, start, target, escapeLocation);
-                System.out.println(foundPath);
                 if (!foundPath.isEmpty()) {
                     candidatePaths.put(target, foundPath);
                     pieces.add(target);
