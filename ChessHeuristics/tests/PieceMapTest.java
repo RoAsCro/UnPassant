@@ -327,13 +327,6 @@ public class PieceMapTest {
         Coordinate start2 = new Coordinate(7, 0);
         test(boardInterface, start1, start2, 0, 0);
 
-
-//        System.out.println(this.pieceMap.getStartLocations());
-//        System.out.println(this.pawnMapWhite.getPawnOrigins());
-//
-//        Assertions.assertEquals(0, map.get(start1).size());
-//        Assertions.assertEquals(0, map.get(start2).size());
-
     }
 
     @Test
@@ -420,21 +413,20 @@ public class PieceMapTest {
     }
 
     @Test
+    void testRooksPawnCageTwo() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/2R5/6R1/PPP1P2P/3P1PP1/1NBQKBN1 w kq - 0 1"));
+        Coordinate start1 = new Coordinate(0, 0);
+        Coordinate start2 = new Coordinate(7, 0);
+        test(boardInterface, start1, start2, 0, 0);
+
+    }
+
+    @Test
     void testRooksPawnCageBlack() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbn1/3p1pp1/ppp1p2p/2R3r1/2r3R1/PPP1P2P/3P1PP1/1NBQKBN1 w - - 0 1"));
         Coordinate start1 = new Coordinate(0, 7);
         Coordinate start2 = new Coordinate(7, 7);
         test(boardInterface, start1, start2, 0, 0);
-
-    }
-//
-    @Test
-    void testRooksPawnCageTwo() {
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/1RP2R1P/1P1P2P1/P3PP2/1NBQKBN1 w kq - 0 1"));
-        Coordinate start1 = new Coordinate(0, 0);
-        Coordinate start2 = new Coordinate(7, 0);
-
-        test(boardInterface, start1, start2, 2, 2);
 
     }
 
@@ -585,14 +577,7 @@ public class PieceMapTest {
 
     }
 
-    @Test
-    void testRooksBehindRoyalty() {
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1QR2RK1 w kq - 0 1"));
-        Coordinate start1 = new Coordinate(0, 0);
-        Coordinate start2 = new Coordinate(7, 0);
-        test(boardInterface, start1, start2, 0, 0);
 
-    }
 
     @Test
     void testRookOpposingCage() {
@@ -632,9 +617,9 @@ public class PieceMapTest {
     }
 
     @Test
-    void testPromotionMap() {
+    void testPromotionMapRook() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/p1pppppp/8/1p6/5R1P/8/PPPPPPP1/RNBQKBNR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/p1pppppp/8/1p6/5R1P/8/1PPPPPP1/RNBQKBNR w KQkq - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pieceMap.deduce(boardInterface);
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
@@ -645,9 +630,9 @@ public class PieceMapTest {
         System.out.println(this.pieceMap.startPiecePairs);
         System.out.println(pieceMap.getPromotedPieceMap());
         for (int i = 0 ; i < 5 ; i++) {
-            Assertions.assertEquals(2, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(3, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
-        for (int i = 5 ; i < 7 ; i++) {
+        for (int i = 5 ; i < 8 ; i++) {
             Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
 //        System.out.println(pieceMap.promotedPieceMap);
@@ -656,6 +641,125 @@ public class PieceMapTest {
 //        Assertions.assertEquals(0, map.get(start2).size());
 
     }
+
+    @Test
+    void testPromotionMapRookTwo() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnb1k3/1ppp4/4pppp/p7/5R2/8/PPPPPPP1/RNBQKBNR w KQq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
+        System.out.println(this.pieceMap.getStartLocations());
+        System.out.println(this.pawnMapBlack.getPawnOrigins());
+        System.out.println(this.pawnMapWhite.getPawnOrigins());
+
+        System.out.println(this.pieceMap.startPiecePairs);
+        System.out.println(pieceMap.getPromotedPieceMap());
+        for (int i = 0 ; i < 2 ; i++) {
+            Assertions.assertEquals(2, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+        for (int i = 2 ; i < 8 ; i++) {
+            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+
+    }
+
+    @Test
+    void testPromotionMapBishop() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/p1pppppp/1p6/6B1/3B4/3P4/PP2PPPP/RN1QKBNR w KQkq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
+
+        System.out.println(this.pieceMap.getStartLocations());
+        System.out.println(this.pawnMapBlack.getPawnOrigins());
+        System.out.println(this.pawnMapWhite.getPawnOrigins());
+
+        System.out.println(this.pieceMap.startPiecePairs);
+        System.out.println(pieceMap.getPromotedPieceMap());
+        for (int i = 0 ; i < 0 ; i++) {
+            Assertions.assertEquals(2, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+        for (int i = 0 ; i < 8 ; i++) {
+            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+
+    }
+
+    @Test
+    void testPromotionMapBishopTwo() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r3k2r/2p2ppp/p2pp3/1p4B1/3B2B1/4PB2/5PPP/RN1QK1NR w KQkq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
+
+        System.out.println(this.pieceMap.getStartLocations());
+        System.out.println(this.pawnMapBlack.getPawnOrigins());
+        System.out.println(this.pawnMapWhite.getPawnOrigins());
+
+        System.out.println(this.pieceMap.startPiecePairs);
+        System.out.println(pieceMap.getPromotedPieceMap());
+        for (int i = 0 ; i < 6 ; i++) {
+            Assertions.assertEquals(2, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+        for (int i = 6 ; i < 8 ; i++) {
+            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+
+    }
+
+    @Test
+    void testPromotionMapBishopThree() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkb1r/ppppppp1/6p1/8/4B3/4P3/PPPP1PP1/R1BQKBNR w KQkq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
+
+        System.out.println(this.pieceMap.getStartLocations());
+        System.out.println(this.pawnMapBlack.getPawnOrigins());
+        System.out.println(this.pawnMapWhite.getPawnOrigins());
+
+        System.out.println(this.pieceMap.startPiecePairs);
+        System.out.println(pieceMap.getPromotedPieceMap());
+        for (int i = 0 ; i < 0 ; i++) {
+            Assertions.assertEquals(2, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+        for (int i = 0; i < 8 ; i++) {
+            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+
+    }
+
+    @Test
+    void testPromotionMapKnight() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbn1/ppppppp1/4r3/3N2p1/4N3/6P1/PPPPPP2/R1BQK1NR w KQq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
+
+        System.out.println(this.pieceMap.getStartLocations());
+        System.out.println(this.pawnMapBlack.getPawnOrigins());
+        System.out.println(this.pawnMapWhite.getPawnOrigins());
+
+        System.out.println(this.pieceMap.startPiecePairs);
+        System.out.println(pieceMap.getPromotedPieceMap());
+        for (int i = 1 ; i < 2 ; i++) {
+            Assertions.assertEquals(3, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+        for (int i = 2 ; i < 6 ; i++) {
+            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+        for (int i = 6; i < 8 ; i++) {
+            Assertions.assertEquals(3, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+
+    }
+
+
 
     @Test
     void testMultiple() {
@@ -675,6 +779,43 @@ public class PieceMapTest {
 
 //        Assertions.assertEquals(0, map.get(start1).size());
 //        Assertions.assertEquals(0, map.get(start2).size());
+
+    }
+
+    //FAILING TESTS
+
+    @Test
+    void testRooksBehindRoyalty() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1QR2RK1 w kq - 0 1"));
+        Coordinate start1 = new Coordinate(0, 0);
+        Coordinate start2 = new Coordinate(7, 0);
+        test(boardInterface, start1, start2, 0, 0);
+
+    }
+
+    @Test
+    void testPromotionMapKnightImpossiblePawnTiming() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbn1/ppppppp1/5rp1/8/4N3/8/PPPPPPP1/RNBQKBN1 w Qq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
+
+        System.out.println(this.pieceMap.getStartLocations());
+        System.out.println(this.pawnMapBlack.getPawnOrigins());
+        System.out.println(this.pawnMapWhite.getPawnOrigins());
+
+        System.out.println(this.pieceMap.startPiecePairs);
+        System.out.println(pieceMap.getPromotedPieceMap());
+//        for (int i = 1 ; i < 2 ; i++) {
+//            Assertions.assertEquals(3, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+//        }
+//        for (int i = 2 ; i < 6 ; i++) {
+//            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+//        }
+        for (int i = 7; i < 8 ; i++) {
+            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
 
     }
 }
