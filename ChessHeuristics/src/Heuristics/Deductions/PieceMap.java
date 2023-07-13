@@ -17,11 +17,14 @@ public class PieceMap extends AbstractDeduction{
 //    private PieceNumber = new PieceNumber
 
     private final Map<Coordinate, Map<Coordinate, Path>> startLocations = new TreeMap<>();
+    // Consider deleting
     public final Map<Coordinate, Path> startPiecePairs = new TreeMap<>();
     private final Map<Coordinate, List<Path>> pieceMap = new TreeMap<>();
     private final Map<Coordinate, Boolean> caged = new TreeMap<>();
 
     private final Map<Coordinate, Path> promotedPieceMap;
+
+    private final Map<String, Map<Path, Integer>> promotionNumbers = new TreeMap<>();
 
 
     private final static Coordinate NULL_COORDINATE = new Coordinate(-1, -1);
@@ -134,7 +137,6 @@ public class PieceMap extends AbstractDeduction{
         System.out.println("HERERE");
         Map<String, Path> pieces = new TreeMap<>();
         Map<String, Integer> pieceNumber = new TreeMap<>();
-        int rookNumber = 0;
 //        Map<String, Integer> quantities = new TreeMap<>();
         for (int y  = 0 ; y < 8 ; y = y + 7) {
             for (int x = 0; x < 8; x++) {
@@ -177,9 +179,14 @@ public class PieceMap extends AbstractDeduction{
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         findPromotionPaths(board, potentialPromotions);
+        potentialPromotions.forEach((key, value) -> {
+            Map<Path, Integer> toPut = new HashMap<Path, Integer>();
+            toPut.put(value, pieceNumber.get(key));
+            this.promotionNumbers.put(key, toPut);
+        });
 
         Map<String, Path> certainPromotions = new TreeMap<>();
-        Path foundPieces = Path.of(this.startPiecePairs.values().stream().distinct().flatMap(Collection::stream).toList());
+        Path foundPieces = Path.of(this.startLocations.values().stream().map(Map::keySet).flatMap(Collection::stream).toList());
         Arrays.stream(new int[]{0, 2, 3}).forEach(x -> {
             String pieceName = STANDARD_STARTS.get(x);
             String bishopAddition = pieceName.charAt(0) == 'b' ? "b" : "";
@@ -197,42 +204,22 @@ public class PieceMap extends AbstractDeduction{
         System.out.println("THISONE" + this.startPiecePairs);
         System.out.println("THISONE" + certainPromotions);
         findPromotionPaths(board, certainPromotions);
-
-//        this.promotedPieceMap.entrySet().stream().forEach(outerEntry -> {
-//            potentialPromotions.entrySet().stream().forEach(entry -> {
-//                if ((outerEntry.getKey().getY() == 0 && entry.getKey().charAt(entry.getKey().length() - 1) == 'w') ||
-//                        (outerEntry.getKey().getY() == 7 && entry.getKey().charAt(entry.getKey().length() - 1) == 'b')) {
-//                    return;
-//                }
-//                String pieceName = entry.getKey().substring(0, entry.getKey().length() -
-//                        (entry.getKey().charAt(0) == 'b' ? 2 : 1));
-//                System.out.println(pieceName);
-//                String pieceCodeTemp = entry.getKey().charAt(1) == 'n' ? "n" : pieceName.substring(0, 1);
-//                String pieceCode = entry.getKey().charAt(entry.getKey().length() - 1) == 'w'
-//                        ? pieceCodeTemp.toUpperCase() :
-//                        pieceCodeTemp.toLowerCase();
-//                entry.getValue().stream()
-//                        .filter(coordinate -> {
-//                            Coordinate origin = outerEntry.getKey();
-//                            if (pieceCode.equalsIgnoreCase("b")
-//                                && (origin.getX() + origin.getY()) % 2 != (coordinate.getX() + coordinate.getY()) % 2){
-//                                return false;
-//                            }
-//                            Path path = findPath(board, pieceName, pieceCode, origin, coordinate, 0);
-//                            if (path.isEmpty()) {
-//                                return false;
-//                            }
-//                            // First coordinate is never tested normally
-//                            return this.firstRankCollision.test(Path.of(path.getFirst()));
-//                        })
-//                        .forEach(coordinate -> this.promotedPieceMap.get(outerEntry.getKey()).add(coordinate));
-//            });
-//        });
+        System.out.println("THISONE" + certainPromotions);
+        certainPromotions.forEach((key, value) -> {
+            Map<Path, Integer> toPut = new HashMap<>();
+            toPut.put(value, 1);
+            Map<Path, Integer> map = this.promotionNumbers.putIfAbsent(key, toPut);
+            if (!(map == null)) {
+                map.put(value, 1);
+            }
+        });
+        // TODO link up the pieces to their new origins - make sure they can reach the third rank / the new origin
 
         return false;
     }
 
     private void findPromotionPaths(BoardInterface board, Map<String, Path> potentialPromotions) {
+        Map<String, Path> updatedPromotions = new TreeMap<>();
         this.promotedPieceMap.entrySet().stream().forEach(outerEntry -> {
             potentialPromotions.entrySet().stream().forEach(entry -> {
                 if ((outerEntry.getKey().getY() == 0 && entry.getKey().charAt(entry.getKey().length() - 1) == 'w') ||
@@ -259,9 +246,18 @@ public class PieceMap extends AbstractDeduction{
                             // First coordinate is never tested normally
                             return this.firstRankCollision.test(Path.of(path.getFirst()));
                         })
-                        .forEach(coordinate -> this.promotedPieceMap.get(outerEntry.getKey()).add(coordinate));
+                        .forEach(coordinate -> {
+                            if (!updatedPromotions.containsKey(entry.getKey())) {
+                                updatedPromotions.put(entry.getKey(), Path.of());
+                            }
+                            if (!updatedPromotions.get(entry.getKey()).contains(coordinate)){
+                                updatedPromotions.get(entry.getKey()).add(coordinate);
+                            }
+                            this.promotedPieceMap.get(outerEntry.getKey()).add(coordinate);
+                        });
             });
         });
+        potentialPromotions.keySet().forEach(name -> potentialPromotions.put(name, updatedPromotions.get(name)));
     }
     private void findFromOrigin(BoardInterface board, int originX, boolean white, boolean cage) {
 

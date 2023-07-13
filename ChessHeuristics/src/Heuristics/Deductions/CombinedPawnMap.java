@@ -34,6 +34,18 @@ public class CombinedPawnMap extends AbstractDeduction {
         this.white = white;
     }
 
+    public int captures(String colour) {
+        Map<Coordinate, List<Path>> player = colour.equals("white") ? this.whitePaths : this.blackPaths;
+
+        return player.values().stream().map(paths -> paths.stream().map(PATH_DEVIATION)
+                        .reduce((integer, integer2) -> integer > integer2 ? integer : integer2)
+                        .orElse(0)
+                )
+                .reduce(Integer::sum)
+                .orElse(0);
+//    PATH_DEVIATION
+    }
+
     @Override
     public List<Observation> getObservations() {
         List<Observation> observations = new LinkedList<>(this.black.getObservations());
@@ -86,7 +98,6 @@ public class CombinedPawnMap extends AbstractDeduction {
         Map<Coordinate, List<Path>> opposingPlayerPaths = white
                 ? this.blackPaths
                 : this.whitePaths;
-//        System.out.println("All paths: " + checkedPlayerPaths);
         // Find every pawn of the opposing player with one origin and one possible path
         List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = opposingPlayerPaths.entrySet()
                 .stream()

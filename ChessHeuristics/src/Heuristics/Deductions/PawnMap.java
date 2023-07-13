@@ -17,8 +17,11 @@ public abstract class PawnMap extends AbstractDeduction{
 
     private final Map<Coordinate, Path> pawnOrigins = new TreeMap<>();
     private final Map<Coordinate, Integer> captureSet = new TreeMap<>();
+    private final Map<Coordinate, Boolean> originFree = new TreeMap<>();
 
     private int capturedPieces = 0;
+
+    private int maxPieces = 16;
     private String colour;
 
     List<Observation> observations = new ArrayList<>();
@@ -33,6 +36,9 @@ public abstract class PawnMap extends AbstractDeduction{
         PieceNumber pieceNumber = new PieceNumber();
         this.observations.add(pieceNumber);
         this.pieceNumber = pieceNumber;
+        for (int i = 0; i < 8 ; i++ ) {
+            this.originFree.put(new Coordinate(i, this.colour.equals("white") ? 1 : 6), true);
+        }
     }
 
     @Override
@@ -60,9 +66,21 @@ public abstract class PawnMap extends AbstractDeduction{
     }
 
     protected int capturedPieces(String colour) {
-        return 16 - (colour.equals("white")
+        return this.maxPieces - (colour.equals("white")
                 ? this.pieceNumber.getBlackPieces()
                 : this.pieceNumber.getWhitePieces());
+    }
+
+    public Map<Coordinate, Boolean> getOriginFree() {
+        return this.originFree;
+    }
+
+    /**
+     * When pieces are accounted for elsewhere, the maxPieces needs to be updated
+     * @param subtrahend
+     */
+    public void updateMaxCapturedPieces(int subtrahend) {
+        this.maxPieces -= subtrahend;
     }
 
     public abstract int capturedPieces();
@@ -211,6 +229,7 @@ public abstract class PawnMap extends AbstractDeduction{
                 Map<Coordinate, Path> map = new TreeMap<>();
                 subsets.forEach(coordinate -> map.put(coordinate, Path.of(this.pawnOrigins.get(coordinate))));
 //                System.out.println(map);
+                set.forEach(coordinate -> this.originFree.put(coordinate, false));
                 if (reduceIterHelperStart(map)) {
 //                    System.out.println(map);
                 }

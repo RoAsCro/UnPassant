@@ -1,4 +1,5 @@
 import Heuristics.BoardInterface;
+import Heuristics.Deductions.CombinedPawnMap;
 import Heuristics.Deductions.PawnMapBlack;
 import Heuristics.Deductions.PawnMapWhite;
 import Heuristics.Observation;
@@ -242,13 +243,13 @@ public class PawnMapTest {
 
     @Test
     void p() {
-        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r3k2r/p2p4/1pp5/2p5/2P5/1PP5/P2P4/4K3 w kq - 0 1"));
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/pppppppp/8/P1P5/1P2P3/8/3PPP2/RNBQKBNR w KQkq - 0 1"));
 //        board = new BoardInterface(BoardBuilder.buildBoard("r3k2r/p7/1pp5/2p5/2P5/1PP5/P7/4K3 w kq - 0 1"));
         PawnMapWhite map = new PawnMapWhite();
         map.deduce(board);
 
-        System.out.println(map.getPawnOrigins().get(new Coordinate(1, 2)).hashCode());
-        System.out.println(map.getPawnOrigins().get(new Coordinate(2, 2)).equals(map.getPawnOrigins().get(new Coordinate(1, 2))));
+//        System.out.println(map.getPawnOrigins().get(new Coordinate(1, 2)).hashCode());
+//        System.out.println(map.getPawnOrigins().get(new Coordinate(2, 2)).equals(map.getPawnOrigins().get(new Coordinate(1, 2))));
 
         PawnMapWhite map2 = new PawnMapWhite();
         map2.deduce(board);
@@ -258,6 +259,26 @@ public class PawnMapTest {
         PawnMapBlack blackMap = new PawnMapBlack();
         blackMap.deduce(board);
         System.out.println(blackMap.getPawnOrigins());
+//        System.out.println(map.getMaxCaptures(new Coordinate(2, 3)));
+
+        System.out.println(map.getCaptureSet());
+        CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
+        combinedPawnMap.deduce(board);
+        System.out.println(combinedPawnMap.getWhitePaths());
+//        combinedPawnMap.getWhitePaths().entrySet().stream().forEach(entry -> {
+//            entry.getValue().stream().reduce((path, path2) ->
+//                    path.stream()
+//                            .reduce(path.get(0), ((coordinate, coordinate2) -> {coordinate.})))
+//        });
+        System.out.println(combinedPawnMap.captures("white"));
+        System.out.println(combinedPawnMap.captures("black"));
+        System.out.println(map.getPawnOrigins());
+        System.out.println(blackMap.getPawnOrigins());
+        System.out.println(map.getOriginFree());
+        System.out.println(blackMap.getOriginFree());
+
+
+
     }
 
 }
