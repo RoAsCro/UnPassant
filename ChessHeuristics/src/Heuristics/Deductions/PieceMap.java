@@ -24,7 +24,7 @@ public class PieceMap extends AbstractDeduction{
 
     private final Map<Coordinate, Path> promotedPieceMap;
 
-    // <Type of piece, <potentially promoted pieces, how many are not promoted>
+    // <Type of piece, <potentially promoted pieces, how many are may not be promoted>
     private final Map<String, Map<Path, Integer>> promotionNumbers = new TreeMap<>();
 
 
@@ -306,9 +306,15 @@ public class PieceMap extends AbstractDeduction{
 
     }
 
-    private Path findPath(BoardInterface board, String pieceName,
+    public Path findPath(BoardInterface board, String pieceName,
                           String pieceCode, Coordinate start,
                           Coordinate target, int escapeLocation){
+        System.out.println(Pathfinder.findShortestPath(
+                StandardPieceFactory.getInstance().getPiece(pieceCode),
+                start,
+                (b, c) -> c.equals(target) || (c.getY() >= 2 && c.getY() <= 5),
+                board,
+                this.pathConditions.get(pieceName)));
 
         return Pathfinder.findShortestPath(
                 StandardPieceFactory.getInstance().getPiece(pieceCode),
