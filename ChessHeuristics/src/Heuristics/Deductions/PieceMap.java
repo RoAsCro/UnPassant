@@ -24,6 +24,7 @@ public class PieceMap extends AbstractDeduction{
 
     private final Map<Coordinate, Path> promotedPieceMap;
 
+    // <Type of piece, <potentially promoted pieces, how many are not promoted>
     private final Map<String, Map<Path, Integer>> promotionNumbers = new TreeMap<>();
 
 
@@ -95,6 +96,10 @@ public class PieceMap extends AbstractDeduction{
 //        this.caged.put(new Coordinate(6, 0), false);
 //        this.caged.put(new Coordinate(6, 7), false);
 
+    }
+
+    public Map<String, Map<Path, Integer>> getPromotionNumbers() {
+        return this.promotionNumbers;
     }
 
 
@@ -179,11 +184,15 @@ public class PieceMap extends AbstractDeduction{
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         findPromotionPaths(board, potentialPromotions);
+        System.out.println("PP" + potentialPromotions);
         potentialPromotions.forEach((key, value) -> {
             Map<Path, Integer> toPut = new HashMap<Path, Integer>();
             toPut.put(value, pieceNumber.get(key));
-            this.promotionNumbers.put(key, toPut);
+//            if (value != null) {
+                this.promotionNumbers.put(key, toPut);
+//            }
         });
+        System.out.println(this.promotionNumbers);
 
         Map<String, Path> certainPromotions = new TreeMap<>();
         Path foundPieces = Path.of(this.startLocations.values().stream().map(Map::keySet).flatMap(Collection::stream).toList());
@@ -207,11 +216,16 @@ public class PieceMap extends AbstractDeduction{
         System.out.println("THISONE" + certainPromotions);
         certainPromotions.forEach((key, value) -> {
             Map<Path, Integer> toPut = new HashMap<>();
-            toPut.put(value, 1);
-            Map<Path, Integer> map = this.promotionNumbers.putIfAbsent(key, toPut);
-            if (!(map == null)) {
-                map.put(value, 1);
+            toPut.put(value, 0);
+            if (!this.promotionNumbers.containsKey(key)) {
+                this.promotionNumbers.put(key, toPut);
+            } else {
+                this.promotionNumbers.get(key).put(value, 0);
             }
+//            Map<Path, Integer> map =
+//            if (!(map == null)) {
+//                map.put(value, 1);
+//            }
         });
         // TODO link up the pieces to their new origins - make sure they can reach the third rank / the new origin
 

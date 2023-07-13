@@ -2,11 +2,13 @@ package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
 import Heuristics.Observation;
+import Heuristics.Pathfinder;
 import StandardChess.Coordinate;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class PromotionMap extends AbstractDeduction {
 
@@ -25,9 +27,15 @@ public class PromotionMap extends AbstractDeduction {
         this.pieceMap.deduce(board);
 
         this.pawnMap.captures("white");
-        Map<Integer, Integer> startLocations = new HashMap<>(Map.of(0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0));
-        this.pawnMapWhite.getPawnOrigins().forEach((key, value) -> value.forEach(
-                coordinate -> startLocations.replace(coordinate.getX(), startLocations.get(coordinate.getX() + 1))));
+        List<Coordinate> origins = this.pawnMapWhite.getOriginFree().entrySet()
+                .stream().filter(Map.Entry::getValue)
+                .map(Map.Entry::getKey)
+                .toList();
+        List<Coordinate> targets = this.pieceMap.getPromotedPieceMap().entrySet()
+                .stream().filter(entry -> !entry.getValue().isEmpty())
+                .map(Map.Entry::getKey)
+                .toList();
+//        origins.forEach(origin -> targets.forEach(target -> Pathfinder.));
 //        this.pawnMapWhite.getPawnOrigins()
         //        this.pieceMap.getPromotedPieceMap().
 //        this.pawnMap.getMaxCaptures()

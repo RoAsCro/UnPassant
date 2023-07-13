@@ -709,6 +709,28 @@ public class PieceMapTest {
     }
 
     @Test
+    void testPromotionMapRookFive() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/pRpppppp/1p6/2R5/8/8/PP1PPPPP/R1BQKB1R w KQkq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
+        System.out.println(this.pieceMap.getStartLocations());
+        System.out.println(this.pawnMapBlack.getPawnOrigins());
+        System.out.println(this.pawnMapWhite.getPawnOrigins());
+
+        System.out.println(this.pieceMap.startPiecePairs);
+        System.out.println(pieceMap.getPromotedPieceMap());
+        for (int i = 0 ; i < 4 ; i++) {
+            Assertions.assertEquals(1, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+        for (int i = 5 ; i < 8 ; i++) {
+            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+        }
+
+    }
+
+    @Test
     void testPromotionMapBishop() {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/p1pppppp/1p6/6B1/3B4/3P4/PP2PPPP/RN1QKBNR w KQkq - 0 1"));
@@ -837,7 +859,7 @@ public class PieceMapTest {
     void testMultiple() {
 
         //NOT A TEST
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/p1pppppp/8/Pp4R1/1B1R1R1P/1P4P1/2PPPP2/RNBQKBNR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("4kb2/pRppppp1/1p6/P7/8/8/B1R1P3/RNBQKBNR w KQ - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pieceMap.deduce(boardInterface);
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
@@ -846,7 +868,8 @@ public class PieceMapTest {
 
         System.out.println(this.pieceMap.getStartLocations());
         System.out.println(this.pawnMapWhite.getPawnOrigins());
-        System.out.println(this.pieceMap.startPiecePairs);
+        System.out.println(this.pieceMap.getPromotedPieceMap());
+        System.out.println(pieceMap.getPromotionNumbers());
 //        System.out.println(pieceMap.promotedPieceMap);
 
 //        Assertions.assertEquals(0, map.get(start1).size());
