@@ -74,4 +74,32 @@ public class CaptureLocationTest {
         Assertions.assertEquals(1, pawnMapWhite.getPawnOrigins().get(new Coordinate(6, 6)).size());
 
     }
+
+    @Test
+    void testBishopColoursOne() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rn1qkb1r/ppp1pppp/3p4/8/3P4/8/P1PPPPPP/RNBQKBNR w KQkq - 0 1"));
+
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+
+        this.captureLocations.deduce(boardInterface);
+        System.out.println(pawnMapWhite.getPawnOrigins());
+        System.out.println(combinedPawnMap.getWhitePaths());
+        Assertions.assertEquals(0, pawnMapWhite.getPawnOrigins().get(new Coordinate(3, 3)).size());
+
+    }
+
+    @Test
+    void testBishopColoursTwo() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqk2r/pppppp1p/6p1/8/4P3/8/PPPPPP1P/RNBQKBNR w KQkq - 0 1"));
+
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+
+        this.captureLocations.deduce(boardInterface);
+        System.out.println(pawnMapWhite.getPawnOrigins());
+        System.out.println(combinedPawnMap.getWhitePaths());
+        Assertions.assertEquals(0, pawnMapWhite.getPawnOrigins().get(new Coordinate(4, 3)).size());
+
+    }
 }

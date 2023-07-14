@@ -8,10 +8,9 @@ import Heuristics.Path;
 import Heuristics.Pathfinder;
 import StandardChess.Coordinate;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 
 public class CaptureLocations extends AbstractDeduction {
 
@@ -21,6 +20,12 @@ public class CaptureLocations extends AbstractDeduction {
     PawnMapWhite pawnMapWhite;
     PawnMapBlack pawnMapBlack;
     CombinedPawnMap combinedPawnMap;
+    private static final BiPredicate<Coordinate, Coordinate> DARK_TEST =
+            (c1, c2) -> c2.getX() != c1.getX() && (c1.getX() + c1.getY()) % 2 == 0;
+    private static final BiPredicate<Coordinate, Coordinate> LIGHT_TEST =
+            (c1, c2) -> c2.getX() != c1.getX() && (c1.getX() + c1.getY()) % 2 != 0;
+
+
 
 
     public CaptureLocations(PawnMapWhite pawnMapWhite, PawnMapBlack pawnMapBlack, PieceMap pieceMap, CombinedPawnMap combinedPawnMap) {
@@ -39,6 +44,7 @@ public class CaptureLocations extends AbstractDeduction {
 
     @Override
     public boolean deduce(BoardInterface board) {
+        int capturesToRemove = 0;
         this.pieceMap.deduce(board);
         System.out.println("STARTING" + this.pawnMapWhite.getPawnOrigins());
 
@@ -73,7 +79,6 @@ public class CaptureLocations extends AbstractDeduction {
                             }
                     });
             });
-//        ofWhichRook.forEach(coordinate -> );
         }
         int maxCaptures = this.pawnMapWhite.capturedPieces() - this.combinedPawnMap.captures("white");
 
@@ -92,16 +97,59 @@ public class CaptureLocations extends AbstractDeduction {
             }
         }
 
-        if (ofWhichQueen + ofWhichBishop + innaccessibleTakenRooks != 0) {
-            this.pawnMapWhite.updateMaxCapturedPieces(ofWhichQueen + ofWhichBishop + innaccessibleTakenRooks);
+
+
+
+        // Account for bishops being taken on the correct colour
+        // this is only done in situations where all captures are made by certain pawn paths
+        List<BiPredicate<Coordinate, Coordinate>> predicates = new LinkedList<>(this.pieceMap.getStartLocations().entrySet().stream()
+                .filter(entry -> entry.getKey().getX() == 2 || entry.getKey().getX() == 5) //Is a Bishop
+                .filter(entry -> !(this.pieceMap.getCaged().get(entry.getKey()))) //Is not Caged
+                .filter(entry -> entry.getValue().isEmpty()) //Is missing
+                .map(entry -> entry.getKey().getX() == 2 ? LIGHT_TEST : DARK_TEST)
+                .toList());
+        System.out.println(predicates.size());
+
+        int otherValue = this.combinedPawnMap.getWhitePaths().entrySet().stream()
+                .filter(entry -> this.combinedPawnMap.getSinglePath("white",  entry.getKey()) != null) //Every path that's a single path
+                .map(entry -> entry.getValue()
+                        .stream().map(CombinedPawnMap.PATH_DEVIATION)
+                        .reduce((i, j) -> i < j ? i : j)
+                        .orElse(0))
+                .reduce(0, Integer::sum);
+        System.out.println(otherValue);
+
+        if (otherValue == this.combinedPawnMap.captures("white")) {
+
+
+            for (List<Path> paths : this.combinedPawnMap.getWhitePaths().values()) {
+                Path path = paths.get(0);
+                Iterator<BiPredicate<Coordinate, Coordinate>> predicateIterator = predicates.iterator();
+                while (predicateIterator.hasNext()) {
+                    BiPredicate<Coordinate, Coordinate> predicate = predicateIterator.next();
+                    for (int j = 0; j < path.size() - 1; j++) {
+                        if (predicate.test(path.get(j), path.get(j + 1))) {
+                            System.out.println(path);
+                            predicateIterator.remove();
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!predicates.isEmpty()) {
+                capturesToRemove += predicates.size();
+            }
+        }
+
+
+        // Updates the pawn map
+        if (ofWhichQueen + ofWhichBishop + innaccessibleTakenRooks + capturesToRemove != 0) {
+            System.out.println("Rerunning...");
+            this.pawnMapWhite.updateMaxCapturedPieces(ofWhichQueen + ofWhichBishop + innaccessibleTakenRooks + capturesToRemove);
             this.pieceMap.deduce(board);
         }
 
-        //TODO Update pawn maps, making it so that only pawns on the enemy pawn rank account for caged rooks
 
-
-
-
-        return false;
+        return true ;
     }
 }

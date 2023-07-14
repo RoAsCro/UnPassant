@@ -8,7 +8,9 @@ import StandardChess.Coordinate;
 import StandardChess.StandardPieceFactory;
 
 import java.util.*;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class CombinedPawnMap extends AbstractDeduction {
     PawnMapWhite white;
@@ -19,8 +21,7 @@ public class CombinedPawnMap extends AbstractDeduction {
 
     private final Map<Coordinate, Path> singleWhitePaths = new TreeMap<>();
     private final Map<Coordinate, Path> singleBlackPaths = new TreeMap<>();
-
-    private static final Function<Path, Integer> PATH_DEVIATION = p -> p.stream()
+    public static final Function<Path, Integer> PATH_DEVIATION = p -> p.stream()
             .reduce(new Coordinate(p.get(0).getX(), 0), (c, d) -> {
                 if (c.getX() != d.getX()) {
                     return new Coordinate(d.getX(), c.getY() + 1);
