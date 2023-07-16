@@ -63,6 +63,10 @@ public class PromotionMap extends AbstractDeduction {
         int maxCaptures = this.pawnMapWhite.capturedPieces() - this.pawnMap.captures("white");
 
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
+        combinedPawnMap.deduce(board);
+        System.out.println(combinedPawnMap.getWhitePaths());
+        System.out.println(combinedPawnMap.getBlackPaths());
+
 //        this.promotionPawnMapWhite.deduce(board);
 
 //        origins.forEach(origin -> targets.forEach(target -> Pathfinder.));
@@ -81,6 +85,10 @@ public class PromotionMap extends AbstractDeduction {
         public PromotionPawnMap(String colour) {
             super(colour);
         }
+//        @Override
+//        public boolean deduce(BoardInterface board) {
+////            super.deduce(board)
+//        }
         @Override
         protected void rawMap(BoardInterface board, String colour) {
             getPawnOrigins().putAll(pawnMapWhite.getPawnOrigins());
@@ -89,8 +97,6 @@ public class PromotionMap extends AbstractDeduction {
                     .filter(cTwo -> Math.abs(c.getX() - cTwo.getX()) < 7).toList())));
             toAdd.entrySet().stream().filter(entry -> !entry.getValue().isEmpty())
                     .forEach(entry -> getPawnOrigins().put(entry.getKey(), entry.getValue()));
-
-            System.out.println(getPawnOrigins());
         }
 
         @Override
@@ -119,10 +125,6 @@ public class PromotionMap extends AbstractDeduction {
             super("white");
         }
 
-        @Override
-        public boolean deduce(BoardInterface board) {
-            return super.deduce(board, "white");
-        }
 
         @Override
         public void update() {
@@ -143,27 +145,22 @@ public class PromotionMap extends AbstractDeduction {
 
     private class PromotionPawnMapBlack extends PromotionPawnMap {
         public PromotionPawnMapBlack() {
-            super("white");
-        }
-
-        @Override
-        public boolean deduce(BoardInterface board) {
-            return super.deduce(board, "white");
+            super("black");
         }
 
         @Override
         public void update() {
-            super.update("white");
+            super.update("black");
         }
 
         @Override
         public int capturedPieces() {
-            return super.capturedPieces("white");
+            return super.capturedPieces("black");
         }
 
         @Override
         public Map<Coordinate, Integer> getCaptureSet() {
-            return super.getCaptureSet("white");
+            return super.getCaptureSet("black");
         }
 
     }

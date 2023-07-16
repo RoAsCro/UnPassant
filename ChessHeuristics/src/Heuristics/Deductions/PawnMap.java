@@ -46,10 +46,11 @@ public abstract class PawnMap extends AbstractDeduction{
         return this.observations;
     }
 
-    protected boolean deduce(BoardInterface board, String colour) {
+    @Override
+    public boolean deduce(BoardInterface board) {
         this.observations.forEach(observation -> observation.observe(board));
-        rawMap(board, colour);
-        reduce(colour);
+        rawMap(board, this.colour);
+        reduce(this.colour);
 
         return false;
     }

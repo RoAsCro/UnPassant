@@ -10,10 +10,6 @@ public class PawnMapWhite extends PawnMap{
         super("white");
     }
 
-    @Override
-    public boolean deduce(BoardInterface board) {
-        return super.deduce(board, "white");
-    }
 
     @Override
     public void update() {
