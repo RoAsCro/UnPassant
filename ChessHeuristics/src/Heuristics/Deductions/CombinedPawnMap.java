@@ -60,9 +60,14 @@ public class CombinedPawnMap extends AbstractDeduction {
         this.white.deduce(board);
         boolean changed = true;
         while (changed) {
-//            System.out.println("change");
             makeMaps(board, false);
+
             makeMaps(board, true);
+            System.out.println("change");
+
+            System.out.println(this.getWhitePaths());
+            System.out.println(this.getBlackPaths());
+
             if (!exclude(board, true) & !exclude(board, false)) {
                 changed = false;
             }
@@ -100,6 +105,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 ? this.blackPaths
                 : this.whitePaths;
         // Find every pawn of the opposing player with one origin and one possible path
+        System.out.println(opposingPlayerPaths);
         List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = opposingPlayerPaths.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() == 1 && !(entry.getValue().get(0).size() == 1))

@@ -180,7 +180,6 @@ public abstract class PawnMap extends AbstractDeduction{
                 .stream().toList();
         if (!origins.isEmpty()) {
             List<Coordinate> originsTwo = new LinkedList<>(origins);
-            int current = -1;
             boolean change = true;
             while (change){
                 System.out.println(this.pawnOrigins);
@@ -189,13 +188,6 @@ public abstract class PawnMap extends AbstractDeduction{
                 System.out.println("breaks" + this.pawnOrigins);
 
                 change = reduceIter(new HashSet<>(), originsTwo);
-
-
-                current = this.pawnOrigins.values()
-                        .stream()
-                        .map(LinkedList::size)
-                        .reduce(Integer::sum)
-                        .orElse(0);
 
             }
         }
