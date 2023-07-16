@@ -46,7 +46,7 @@ public abstract class PawnMap extends AbstractDeduction{
         return this.observations;
     }
 
-    public boolean deduce(BoardInterface board, String colour) {
+    protected boolean deduce(BoardInterface board, String colour) {
         this.observations.forEach(observation -> observation.observe(board));
         rawMap(board, colour);
         reduce(colour);
@@ -97,7 +97,7 @@ public abstract class PawnMap extends AbstractDeduction{
 
     public abstract Map<Coordinate, Integer> getCaptureSet();
 
-    private void rawMap(BoardInterface board, String colour) {
+    protected void rawMap(BoardInterface board, String colour) {
         int start = colour.equals("white") ? 1 : 6;
         int increment = colour.equals("white") ? 1 : -1;
         BoardReader reader = board.getReader();
@@ -132,8 +132,10 @@ public abstract class PawnMap extends AbstractDeduction{
      * greater than (x - z) + y captures
      * @param colour
      */
-    private void captures(Map<Coordinate, Path> origins, String colour) {
+    protected void captures(Map<Coordinate, Path> origins, String colour) {
         updateCaptureSet(colour);
+        System.out.println("breaks" + this.pawnOrigins);
+
         origins.entrySet().stream()
                 .forEach(entry -> {
                     int x = entry.getKey().getX();
@@ -165,6 +167,7 @@ public abstract class PawnMap extends AbstractDeduction{
                         .reduce(Integer::sum)
                         .orElse(0);
         if (maxOffset < 0) {
+            System.out.println("BROKEN");
             this.state = false;
         }
         this.capturedPieces = maxOffset;
@@ -176,18 +179,23 @@ public abstract class PawnMap extends AbstractDeduction{
                 .stream().toList();
         if (!origins.isEmpty()) {
             List<Coordinate> originsTwo = new LinkedList<>(origins);
-            int previous = 0;
             int current = -1;
             boolean change = true;
             while (change){
+                System.out.println(this.pawnOrigins);
+
                 captures(this.pawnOrigins, colour);
-                previous = current;
+                System.out.println("breaks" + this.pawnOrigins);
+
                 change = reduceIter(new HashSet<>(), originsTwo);
+
+
                 current = this.pawnOrigins.values()
                         .stream()
                         .map(LinkedList::size)
                         .reduce(Integer::sum)
                         .orElse(0);
+
             }
         }
     }
@@ -223,6 +231,7 @@ public abstract class PawnMap extends AbstractDeduction{
 //            System.out.println(subsets);
 
             if (subsets.size() == set.size()) {
+
 //                System.out.println(subsets);
                 // Check the total number of captures
 
@@ -346,6 +355,7 @@ public abstract class PawnMap extends AbstractDeduction{
      * @return true if something is removed
      */
     private boolean removeCoords(Set<Coordinate> forRemoval, List<Coordinate> ignore) {
+
         return !this.pawnOrigins.entrySet()
                 .stream()
                 .filter(entry -> !ignore.contains(entry.getKey()))

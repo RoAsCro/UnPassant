@@ -247,6 +247,9 @@ public class CaptureLocations extends AbstractDeduction {
 
 
             for (List<Path> pathList : paths.values()) {
+//                if (pathList.isEmpty()) {
+//                    continue;
+//                }
                 Path path = pathList.get(0);
                 Iterator<BiPredicate<Coordinate, Coordinate>> predicateIterator = predicates.iterator();
                 while (predicateIterator.hasNext()) {
