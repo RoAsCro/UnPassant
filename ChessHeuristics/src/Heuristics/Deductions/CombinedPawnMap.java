@@ -13,8 +13,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class CombinedPawnMap extends AbstractDeduction {
-    PawnMapWhite white;
-    PawnMapBlack black;
+    PawnMap white;
+    PawnMap black;
 
     private final Map<Coordinate, List<Path>> whitePaths = new TreeMap<>();
     private final Map<Coordinate, List<Path>> blackPaths = new TreeMap<>();
@@ -30,7 +30,7 @@ public class CombinedPawnMap extends AbstractDeduction {
             }).getY();
 
 
-    public CombinedPawnMap(PawnMapWhite white, PawnMapBlack black) {
+    public CombinedPawnMap(PawnMap white, PawnMap black) {
         this.black = black;
         this.white = white;
     }

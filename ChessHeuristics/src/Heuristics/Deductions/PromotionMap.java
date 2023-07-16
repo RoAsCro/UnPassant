@@ -4,15 +4,11 @@ import Heuristics.BoardInterface;
 import Heuristics.Observation;
 import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
-import Heuristics.Pathfinder;
-import StandardChess.BoardReader;
 import StandardChess.Coordinate;
-import StandardChess.Coordinates;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class PromotionMap extends AbstractDeduction {
 
@@ -29,7 +25,9 @@ public class PromotionMap extends AbstractDeduction {
     private Path origins;
     private Path targets;
 
-    private PawnMapWhiteTwo promotionPawnMap = new PawnMapWhiteTwo();
+    private final PromotionPawnMapWhite promotionPawnMapWhite = new PromotionPawnMapWhite();
+    private final PromotionPawnMapWhite promotionPawnMapBlack = new PromotionPawnMapWhite();
+
 
 
     public PromotionMap(PieceMap pieceMap, CombinedPawnMap pawnMap, PawnMapWhite pawnMapWhite, PawnMapBlack pawnMapBlack, CaptureLocations captureLocations) {
@@ -63,8 +61,9 @@ public class PromotionMap extends AbstractDeduction {
                 .toList());
 
         int maxCaptures = this.pawnMapWhite.capturedPieces() - this.pawnMap.captures("white");
-        this.promotionPawnMap.deduce(board);
-        System.out.println(promotionPawnMap.getPawnOrigins());
+
+        CombinedPawnMap combinedPawnMap = new CombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
+//        this.promotionPawnMapWhite.deduce(board);
 
 //        origins.forEach(origin -> targets.forEach(target -> Pathfinder.));
 //        this.pawnMapWhite.getPawnOrigins()
@@ -75,35 +74,13 @@ public class PromotionMap extends AbstractDeduction {
     }
 
     public Map<Coordinate, Path> getPawnOrigins(String colour) {
-        return this.promotionPawnMap.getPawnOrigins();
+        return colour.equals("white") ? this.promotionPawnMapWhite.getPawnOrigins() : this.pawnMapBlack.getPawnOrigins();
     }
 
-    private class PawnMapWhiteTwo extends PawnMap {
-
-        public PawnMapWhiteTwo() {
-            super("white");
+    private abstract class PromotionPawnMap extends PawnMap {
+        public PromotionPawnMap(String colour) {
+            super(colour);
         }
-
-        @Override
-        public boolean deduce(BoardInterface board) {
-            return super.deduce(board, "white");
-        }
-
-        @Override
-        public void update() {
-            super.update("white");
-        }
-
-        @Override
-        public int capturedPieces() {
-            return super.capturedPieces("white");
-        }
-
-        @Override
-        public Map<Coordinate, Integer> getCaptureSet() {
-            return super.getCaptureSet("white");
-        }
-
         @Override
         protected void rawMap(BoardInterface board, String colour) {
             getPawnOrigins().putAll(pawnMapWhite.getPawnOrigins());
@@ -135,6 +112,58 @@ public class PromotionMap extends AbstractDeduction {
             remove.forEach(coordinate -> getPawnOrigins().remove(coordinate));
             getPawnOrigins().putAll(newOrigins);
 
+        }
+    }
+    private class PromotionPawnMapWhite extends PromotionPawnMap {
+        public PromotionPawnMapWhite() {
+            super("white");
+        }
+
+        @Override
+        public boolean deduce(BoardInterface board) {
+            return super.deduce(board, "white");
+        }
+
+        @Override
+        public void update() {
+            super.update("white");
+        }
+
+        @Override
+        public int capturedPieces() {
+            return super.capturedPieces("white");
+        }
+
+        @Override
+        public Map<Coordinate, Integer> getCaptureSet() {
+            return super.getCaptureSet("white");
+        }
+
+    }
+
+    private class PromotionPawnMapBlack extends PromotionPawnMap {
+        public PromotionPawnMapBlack() {
+            super("white");
+        }
+
+        @Override
+        public boolean deduce(BoardInterface board) {
+            return super.deduce(board, "white");
+        }
+
+        @Override
+        public void update() {
+            super.update("white");
+        }
+
+        @Override
+        public int capturedPieces() {
+            return super.capturedPieces("white");
+        }
+
+        @Override
+        public Map<Coordinate, Integer> getCaptureSet() {
+            return super.getCaptureSet("white");
         }
 
     }
