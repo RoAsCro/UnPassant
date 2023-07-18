@@ -193,6 +193,20 @@ public class Pathfinder {
         if (containedPath.contains(target)) {
             return containingPath.containsAll(containedPath.subList(containedPath.indexOf(target), containedPath.size()));
         }
+        int y = target.getY();
+        if (y == 0 || y == 7 && containingPath.size() > 2 && containedPath.size() > 2) {
+            Coordinate secondTarget = containingPath.get(containingPath.size() - 2);
+            if (containedPath.contains(secondTarget)) {
+                System.out.println(containedPath);
+                System.out.println(containingPath);
+
+                System.out.println(containedPath.subList(containedPath.indexOf(secondTarget), containedPath.size() - 1));
+
+                System.out.println("GETHERE");
+
+                return containingPath.containsAll(containedPath.subList(containedPath.indexOf(secondTarget), containedPath.size() - 1));
+            }
+        }
         return false;
     }
 }

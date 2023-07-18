@@ -6,10 +6,7 @@ import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
 import StandardChess.Coordinate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class PromotionMap extends AbstractDeduction {
 
@@ -69,7 +66,7 @@ public class PromotionMap extends AbstractDeduction {
         int maxCaptures = this.pawnMapWhite.capturedPieces() - this.pawnMap.captures("white");
 //        this.promotionPawnMapWhite.deduce(board);
 //        System.out.println(promotionPawnMapWhite.getPawnOrigins());
-        CombinedPawnMap combinedPawnMap = new CombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
+        CombinedPawnMap combinedPawnMap = new PromotionCombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
         combinedPawnMap.deduce(board);
         System.out.println(combinedPawnMap.getWhitePaths());
         System.out.println(combinedPawnMap.getBlackPaths());
@@ -88,22 +85,72 @@ public class PromotionMap extends AbstractDeduction {
         return colour.equals("white") ? this.promotionPawnMapWhite.getPawnOrigins() : this.pawnMapBlack.getPawnOrigins();
     }
 
-//    private abstract class PromotionCombinedPawnMap extends CombinedPawnMap {
-//
-//        private PromotionPawnMap whitePawnMap;
-//        private PromotionPawnMap blackPawnMap;
-//        public PromotionCombinedPawnMap(PromotionPawnMap white, PromotionPawnMap black) {
-//            super(white, black);
-//            this.blackPawnMap = black;
-//            this.whitePawnMap = white;
-//
-//        }
+    private class PromotionCombinedPawnMap extends CombinedPawnMap {
+
+        Map<Coordinate, List<Path>> savedPaths = new HashMap<>();
+
+        public PromotionCombinedPawnMap(PromotionPawnMap white, PromotionPawnMap black) {
+            super(white, black);
+
+        }
 //        @Override
 //        protected boolean exclude(BoardInterface board, boolean white) {
-//            this.whitePawnMap.fl
+//            System.out.println("FLIP 1" + getWhitePaths());
+//            flip(getWhitePaths(), true);
+//            flip(getBlackPaths(), true);
+//            System.out.println("FLIP 2" + getWhitePaths());
+//
+//
 //            boolean returnValue = super.exclude(board, white);
+//            System.out.println("FLIP 3" + getWhitePaths());
+//
+//            flip(getWhitePaths(), false);
+//            flip(getBlackPaths(), false);
+//            System.out.println("FLIP 4" + getWhitePaths());
+//
+//            return returnValue;
 //        }
-//    }
+
+        private void flip(Map<Coordinate, List<Path>> paths, boolean direction) {
+            if (direction) {
+                this.savedPaths.clear();
+                Map<Coordinate, List<Path>> newPaths = new HashMap<>();
+                paths.entrySet().stream()
+                        .filter(entry -> !entry.getValue().isEmpty())
+                        .filter(entry -> {
+                            int testInt = (entry.getKey().getY());
+                            return (testInt == 7 || testInt == 0);
+                        })
+                        .forEach(entry -> {
+                            if (!newPaths.containsKey(entry.getKey())) {
+                                newPaths.put(entry.getKey(), new LinkedList<>());
+                            }
+                            Path newPath = Path.of(entry.getValue().get(0));
+                            newPath.removeLast();
+                            newPaths.get(entry.getKey()).add(newPath);
+                        });
+
+                newPaths.entrySet().forEach(entry -> {
+                    this.savedPaths.put(entry.getKey(), paths.get(entry.getKey()));
+                    paths.remove(entry.getKey());
+                    paths.put(entry.getKey(), entry.getValue());
+                });
+            } else {
+                this.savedPaths.forEach((key, value) -> {
+                    List<Path> pathList = paths.get(key);
+                    value.forEach(path -> {
+                        for (int i = 0 ; i < pathList.size() ; i++) {
+                            Path current = pathList.get(0);
+                            if (new HashSet<>(path).containsAll(current)) {
+                                current.add(path.getLast());
+                                break;
+                            }
+                        }
+                    });
+                });
+            }
+        }
+    }
 
     private abstract class PromotionPawnMap extends PawnMap {
         public PromotionPawnMap(String colour) {
@@ -123,7 +170,7 @@ public class PromotionMap extends AbstractDeduction {
          * @param direction
          * @param colour
          */
-        public void flip(boolean direction, String colour) {
+        private void flip(boolean direction, String colour) {
 //            System.out.println("Flipping..." + getPawnOrigins());
             Map<Coordinate, Path> newOrigins = new HashMap<>();
             Path remove = new Path();

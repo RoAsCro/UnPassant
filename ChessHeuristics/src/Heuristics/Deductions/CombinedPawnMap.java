@@ -125,8 +125,22 @@ public class CombinedPawnMap extends AbstractDeduction {
                     checkedPlayerPaths.entrySet()
                             .stream()
                             .filter(innerEntry -> !innerEntry.getValue().isEmpty())
-                            .filter(innerEntry -> entry.getValue().get(0).contains(innerEntry.getKey())
-                                    || innerEntry.getValue().get(0).contains(entry.getKey()))
+                            .filter(innerEntry -> {
+                                Coordinate entryKey = entry.getKey();
+                                Coordinate innerEntryKey = innerEntry.getKey();
+                                if (entry.getValue().get(0).contains(innerEntryKey)
+                                        || innerEntry.getValue().get(0).contains(entryKey)) {
+                                    return true;
+                                }
+                                int y2 = innerEntryKey.getY();
+                                if (y2 == 7 || y2 == 0) {
+                                    System.out.println(innerEntryKey);
+
+                                    System.out.println(innerEntry.getValue().get(0));
+                                    return entry.getValue().get(0).contains(innerEntry.getValue().get(0).get(innerEntry.getValue().get(0).size() - 2));
+                                }
+                                return false;
+                            })
                             .forEach(innerEntry -> {
                                 System.out.println("inner entry" + innerEntry);
                                 innerEntry.getValue()
@@ -197,20 +211,27 @@ public class CombinedPawnMap extends AbstractDeduction {
                     System.out.println(
                             p1 + " vs " + p2
                     );
+                    System.out.println(forbiddenPaths);
+
                     boolean p1NotExclusive;
                     if (p1.isEmpty()) {
                         p1NotExclusive = true;
                     } else {
-
                         p1NotExclusive = forbiddenPaths
                                 .stream()
-                                .noneMatch(entry -> p1.contains(entry.getKey())
-                                        && Pathfinder.pathsExclusive(p1, entry.getValue().get(0)));
+                                .noneMatch(entry ->
+                                        // What is commented out below may greatly affect performance
+                                        // now that it is commented out - however, it allows theoretical collision
+                                        // Before reinstating, create new checks
+//                                        p1.contains(entry.getKey()) &&
+                                                Pathfinder.pathsExclusive(p1, entry.getValue().get(0)));
                     }
                     boolean p2NotExclusive = forbiddenPaths
                             .stream()
-                            .noneMatch(entry -> (p2.contains(entry.getKey()) || entry.getValue().get(0).contains(p2.getLast()))
-                                    && Pathfinder.pathsExclusive(p2, entry.getValue().get(0)));
+                            .noneMatch(entry ->
+                                    // See above before deleting
+//                                    (p2.contains(entry.getKey()) || entry.getValue().get(0).contains(p2.getLast())) &&
+                                            Pathfinder.pathsExclusive(p2, entry.getValue().get(0)));
                     if (!p1NotExclusive && !p2NotExclusive) {
                         return new Path();
                     }
@@ -225,7 +246,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                     if (!p1.isEmpty() && PATH_DEVIATION.apply(p1) < PATH_DEVIATION.apply(p2)) {
                         return p1;
                     }
-                    System.out.println("both exclusive");
+                    System.out.println("both not exclusive");
                     return p2;
                 }
                 );
