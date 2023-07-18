@@ -170,7 +170,8 @@ public abstract class PawnMap extends AbstractDeduction{
                         .reduce(Integer::sum)
                         .orElse(0);
         if (maxOffset < 0) {
-            System.out.println("BROKEN");
+            System.out.println("BROKEN" + maxOffset);
+            System.out.println(getPawnOrigins());
             this.state = false;
         }
         this.capturedPieces = maxOffset;

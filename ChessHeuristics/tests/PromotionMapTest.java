@@ -69,7 +69,7 @@ public class PromotionMapTest {
     }
 
     @Test
-    void testCaptureQuantitiesCollision() {
+    void testCollision() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/8/p2Q4/8/1PPPPPPP/RNBQKBNR"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
@@ -77,7 +77,66 @@ public class PromotionMapTest {
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        Assertions.assertTrue(promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).isEmpty());
+        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
+
+//        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
+//        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));
+    }
+
+    @Test
+    void testCollisionWithCapture() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/2pppppp/8/8/p2Q4/8/1PPPPPPP/RNBQKBNR w - - 0 1"));
+
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        promotionMap.deduce(boardInterface);
+//        promotionMap.getPawnOrigins()
+//        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
+        System.out.println(promotionMap.getPawnOrigins("white"));
+        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
+        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));
+
+
+//        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
+//        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));
+    }
+
+    @Test
+    void testCollisionWithTwoCaptures() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkbnr/2pppppp/8/8/p2Q4/8/1PPPPPPP/RNBQKBNR w - - 0 1"));
+
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        promotionMap.deduce(boardInterface);
+//        promotionMap.getPawnOrigins()
+//        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
+        System.out.println(promotionMap.getPawnOrigins("white"));
+        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
+        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));
+        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(2, 7)));
+
+
+
+//        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
+//        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));
+    }
+
+    @Test
+    void testCollisionBothPawnsTheoretical() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/3q4/3Q4/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1"));
+
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+        promotionMap.deduce(boardInterface);
+//        promotionMap.getPawnOrigins()
+//        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
+        System.out.println(promotionMap.getPawnOrigins("white"));
+        for (int x = 0 ; x < 8 ; x++) {
+            Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(x, 7)), "" + x);
+        }
+        for (int x = 0 ; x < 8 ; x++) {
+            Assertions.assertFalse(promotionMap.getPawnOrigins("black").containsKey(new Coordinate(x, 7)), "" + x);
+        }
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
 //        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));

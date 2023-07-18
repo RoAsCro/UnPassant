@@ -169,8 +169,10 @@ public class CombinedPawnMap extends AbstractDeduction {
                 forRemoval.add(new Coordinate[]{path.getLast(), path.getFirst()});
             }
         });
-//        System.out.println(forRemoval);
+        System.out.println("removing" + forRemoval);
+        System.out.println(checkedPlayer.getPawnOrigins());
         forRemoval.forEach(coordinates -> checkedPlayer.removeOrigins(coordinates[0], coordinates[1]));
+        System.out.println(checkedPlayer.getPawnOrigins());
 //        System.out.println("Updadting...");
         checkedPlayer.update();
 //        System.out.println("All paths 2: " + checkedPlayerPaths);

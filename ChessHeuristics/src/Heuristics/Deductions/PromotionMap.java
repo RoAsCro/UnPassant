@@ -96,27 +96,45 @@ public class PromotionMap extends AbstractDeduction {
         public boolean deduce(BoardInterface board) {
             super.deduce(board);
 //            flip(false);
+
+            System.out.println("Boop:"+getPawnOrigins());
             return false;
         }
 
+        /**
+         * Flips the theoretical pawns in the pawn / origin map, deleting those without an origin
+         * @param direction
+         * @param colour
+         */
         private void flip(boolean direction, String colour) {
 //            System.out.println("Flipping..." + getPawnOrigins());
             Map<Coordinate, Path> newOrigins = new HashMap<>();
             Path remove = new Path();
             getPawnOrigins().entrySet().stream()
-                    .filter(entry -> !entry.getValue().isEmpty())
-                    .filter(entry ->
-                    (direction ? entry.getValue().getFirst().getY() : entry.getKey().getY())
-                            == (colour.equals("white") ? 7 : 0))
-                    .forEach(entry -> {
-                        entry.getValue().forEach(coordinate -> {
-                            if (!newOrigins.containsKey(coordinate)) {
-                                newOrigins.put(coordinate, new Path());
-                            }
-                            newOrigins.get(coordinate).add(entry.getKey());;
+//                    .filter(entry -> !entry.getValue().isEmpty())
 
-                        });
-                        remove.add(entry.getKey());
+//                    .filter(entry -> !entry.getValue().isEmpty())
+                    .filter(entry -> {
+                        if (entry.getValue().isEmpty()) {
+                            return true;
+                        }
+                        return (direction ? entry.getValue().getFirst().getY() : entry.getKey().getY())
+                                == (colour.equals("white") ? 7 : 0);
+                    })
+                    .forEach(entry -> {
+                        if (entry.getValue().isEmpty()) {
+                            remove.add(entry.getKey());
+                        } else {
+                            entry.getValue().forEach(coordinate -> {
+                                if (!newOrigins.containsKey(coordinate)) {
+                                    newOrigins.put(coordinate, new Path());
+                                }
+                                newOrigins.get(coordinate).add(entry.getKey());
+                                ;
+
+                            });
+                            remove.add(entry.getKey());
+                        }
                     });
             remove.forEach(coordinate -> getPawnOrigins().remove(coordinate));
             getPawnOrigins().putAll(newOrigins);
