@@ -189,9 +189,6 @@ public class Pathfinder {
     private static boolean pathsExclusiveHelper(Path containedPath, Path containingPath) {
         // todo THIS WON'T WORK WITH MORE FREE MOVE SETS!
         // It will return true for only one piece being up to the head of the other
-        Path currentPath = new Path();
-        currentPath.addAll(containedPath);
-        Coordinate current;
         Coordinate target = containingPath.getLast();
         if (containedPath.contains(target)) {
             return containingPath.containsAll(containedPath.subList(containedPath.indexOf(target), containedPath.size()));

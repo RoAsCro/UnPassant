@@ -87,7 +87,7 @@ public class CombinedPawnMap extends AbstractDeduction {
      * @param white
      * @return whether or not there was a change
      */
-    private boolean exclude(BoardInterface board, boolean white) {
+    protected boolean exclude(BoardInterface board, boolean white) {
         PawnMap checkedPlayer = white
                 ? this.white
                 : this.black;

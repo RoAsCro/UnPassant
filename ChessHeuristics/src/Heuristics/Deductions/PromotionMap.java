@@ -88,6 +88,23 @@ public class PromotionMap extends AbstractDeduction {
         return colour.equals("white") ? this.promotionPawnMapWhite.getPawnOrigins() : this.pawnMapBlack.getPawnOrigins();
     }
 
+//    private abstract class PromotionCombinedPawnMap extends CombinedPawnMap {
+//
+//        private PromotionPawnMap whitePawnMap;
+//        private PromotionPawnMap blackPawnMap;
+//        public PromotionCombinedPawnMap(PromotionPawnMap white, PromotionPawnMap black) {
+//            super(white, black);
+//            this.blackPawnMap = black;
+//            this.whitePawnMap = white;
+//
+//        }
+//        @Override
+//        protected boolean exclude(BoardInterface board, boolean white) {
+//            this.whitePawnMap.fl
+//            boolean returnValue = super.exclude(board, white);
+//        }
+//    }
+
     private abstract class PromotionPawnMap extends PawnMap {
         public PromotionPawnMap(String colour) {
             super(colour);
@@ -106,7 +123,7 @@ public class PromotionMap extends AbstractDeduction {
          * @param direction
          * @param colour
          */
-        private void flip(boolean direction, String colour) {
+        public void flip(boolean direction, String colour) {
 //            System.out.println("Flipping..." + getPawnOrigins());
             Map<Coordinate, Path> newOrigins = new HashMap<>();
             Path remove = new Path();
