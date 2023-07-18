@@ -427,5 +427,26 @@ public class CombinedPawnMapTest {
 //        Assertions.assertEquals(new Coordinate(2, 1), map.getPawnOrigins().get(new Coordinate(2, 3)).get(0));
     }
 
+    @Test
+    void testExclusiveFourteen(){
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("1nbqkbnr/Pppppppp/1r6/8/p7/8/1PPPPPPP/RNBQKBNR w - - 0 1"));
+        PawnMapWhite map = new PawnMapWhite();
+        PawnMapBlack blackMap = new PawnMapBlack();
+
+        for (Observation o : map.getObservations()) {
+            o.observe(board);
+        }
+        for (Observation o : blackMap.getObservations()) {
+            o.observe(board);
+        }
+        CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
+        combinedPawnMap.deduce(board);
+        System.out.println(combinedPawnMap.getBlackPaths());
+        System.out.println(combinedPawnMap.getWhitePaths());
+
+//        Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(2, 3)).size());
+//        Assertions.assertEquals(new Coordinate(2, 1), map.getPawnOrigins().get(new Coordinate(2, 3)).get(0));
+    }
+
 
 }

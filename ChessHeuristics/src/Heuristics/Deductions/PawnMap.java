@@ -19,10 +19,10 @@ public abstract class PawnMap extends AbstractDeduction{
     private final Map<Coordinate, Integer> captureSet = new TreeMap<>();
     private final Map<Coordinate, Boolean> originFree = new TreeMap<>();
 
-    private int capturedPieces = 0;
+    protected int capturedPieces = 0;
 
     private int maxPieces = 16;
-    private String colour;
+    protected String colour;
 
     List<Observation> observations = new ArrayList<>();
     PawnNumber pawnNumber;
@@ -144,9 +144,11 @@ public abstract class PawnMap extends AbstractDeduction{
                             .filter(coordinate -> Math.abs(x - coordinate.getX()) > this.capturedPieces + this.captureSet.get(entry.getKey()))
                             .toList());
                 });
+        System.out.println("breaks2" + this.pawnOrigins);
+
     }
 
-    private void updateCaptureSet(String colour) {
+    protected void updateCaptureSet(String colour) {
         int maxOffset = capturedPieces(colour) -
                 this.pawnOrigins.entrySet().stream()
                         .map(entry -> {
@@ -172,6 +174,7 @@ public abstract class PawnMap extends AbstractDeduction{
             this.state = false;
         }
         this.capturedPieces = maxOffset;
+
     }
     private void reduce(String colour) {
         List<Coordinate> origins = this.pawnOrigins.entrySet().stream()
@@ -185,7 +188,7 @@ public abstract class PawnMap extends AbstractDeduction{
                 System.out.println(this.pawnOrigins);
 
                 captures(this.pawnOrigins, colour);
-                System.out.println("breaks" + this.pawnOrigins);
+                System.out.println("reduce" + this.pawnOrigins);
 
                 change = reduceIter(new HashSet<>(), originsTwo);
 
@@ -200,7 +203,7 @@ public abstract class PawnMap extends AbstractDeduction{
      * @param set
      * @param origins
      */
-    private boolean reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
+    protected boolean reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
         boolean change = false;
 //        System.out.println("set" + set);
 //        System.out.println("origins" + origins);
