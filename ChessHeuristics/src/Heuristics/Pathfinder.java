@@ -86,10 +86,8 @@ public class Pathfinder {
         Path shortestPath = new Path();
 
         Coordinate[] moves = piece.getMoves(origin);
-//        System.out.println(Arrays.toString(moves));
         for (Coordinate target : moves) {
 //            System.out.println(path);
-//            System.out.println(target);
             if (depth != 0 && path.size() + 1 > depth) {
                 shortestPath.addAll(path);
                 shortestPath.add(target);
@@ -153,7 +151,7 @@ public class Pathfinder {
                                          Predicate<Path> pathCondition) {
         path.add(origin);
         if (endCondition.test(board, origin)) {
-//            System.out.println("g: " + path);
+            System.out.println("g: " + path);
             possiblePaths.add(path);
             return;
         }

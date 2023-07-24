@@ -5,12 +5,9 @@ import Heuristics.Observation;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
-import Heuristics.Pathfinder;
-import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
 
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 public class CaptureLocations extends AbstractDeduction {
@@ -194,7 +191,7 @@ public class CaptureLocations extends AbstractDeduction {
                 board.getBoardFacts().getCoordinates(colour, "pawn")
                         .stream().filter(coordinate -> white ? (coordinate.getY() > 5)  : (coordinate.getY() < 2))
                         .forEach(coordinate -> {
-                            if (!this.pieceMap.findPath(board, "rook", white ? "r" : "R", coordinate2, coordinate, 5).isEmpty()) {
+                            if (!this.pieceMap.findPath(board, "rook", white ? "r" : "R", coordinate2, coordinate).isEmpty()) {
                                 reachable.get(coordinate2.getX()).add(coordinate);
                             }
                         });

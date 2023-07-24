@@ -182,5 +182,4 @@ public class CaptureLocationTest {
         Assertions.assertEquals(0, pawnMapBlack.getPawnOrigins().get(new Coordinate(4, 4)).size());
 
     }
-
 }

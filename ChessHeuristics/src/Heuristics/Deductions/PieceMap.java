@@ -38,6 +38,9 @@ public class PieceMap extends AbstractDeduction{
         int y = coordinate.getY();
         if ((y == 1 || y == 6)) {
             Map<Coordinate, List<Path>> map = y == 1 ? this.pawnMap.getWhitePaths() : this.pawnMap.getBlackPaths();
+            if ((map.containsKey(coordinate))) {
+                System.out.println("OGG" + coordinate);
+            }
             return !(map.containsKey(coordinate));
         }
         return true;
@@ -56,7 +59,7 @@ public class PieceMap extends AbstractDeduction{
         }
         return true;
     };
-    Predicate<Path> firstRankCollision = path -> !(
+    Predicate<Path> firstRankCollision = path ->!(
             (path.getLast().getY() == 0 || path.getLast().getY() == 7)
             && !STANDARD_STARTS.get(path.getLast().getX()).equals("rook")
             && this.startLocations.containsKey(path.getLast())
@@ -126,17 +129,19 @@ public class PieceMap extends AbstractDeduction{
         });
 
         // For each start location, have each piece associated with it attempt to path to that start
-        this.startLocations.entrySet().stream().forEach(entry -> {
-            Path coordinatesToRemove = new Path();
-            entry.getValue().keySet().stream().forEach(origin -> {
-                String pieceName = STANDARD_STARTS.get(entry.getKey().getX());
-                String pieceCode = pieceName.substring(0, 1).toUpperCase();
-                if (findPath(board, pieceName, pieceCode, origin, entry.getKey(), 0).isEmpty()){
-                    coordinatesToRemove.add(origin);
-                }
-            });
-            coordinatesToRemove.forEach(coordinate -> entry.getValue().remove(coordinate));
-        });
+        pathFromOtherDirection(board, this.startLocations);
+//        this.startLocations.entrySet().stream().forEach(entry -> {
+//            Path coordinatesToRemove = new Path();
+//            entry.getValue().keySet().stream().forEach(origin -> {
+//                String pieceName = STANDARD_STARTS.get(entry.getKey().getX());
+//                String pieceCode = pieceName.substring(0, 1).toUpperCase();
+//                if (findPath(board, pieceName, pieceCode, origin, entry.getKey(), 0).isEmpty()){
+//                    coordinatesToRemove.add(origin);
+//                }
+//            });
+//            System.out.println("c" +coordinatesToRemove);
+//            coordinatesToRemove.forEach(coordinate -> entry.getValue().remove(coordinate));
+//        });
 
         // Every piece for which there are more of the type associated with a start location than there are by default
         System.out.println("HERERE");
@@ -227,9 +232,66 @@ public class PieceMap extends AbstractDeduction{
 //                map.put(value, 1);
 //            }
         });
-        // TODO link up the pieces to their new origins - make sure they can reach the third rank / the new origin
+//        pathFromOtherDirection(board, this.promotedPieceMap);
+        Path certainPromotionsPath = Path.of(certainPromotions.values().stream()
+                        .filter(value -> !(value == null))
+                .flatMap(Collection::stream).toList());
+        this.promotedPieceMap.entrySet().stream().forEach(entry -> {
+            Path coordinatesToRemove = new Path();
+            entry.getValue().stream().forEach(origin -> {
+                String pieceName;
+                Map<String, Path> stringOrigin;
+                if (certainPromotionsPath.contains(origin)) {
+                    stringOrigin = certainPromotions;
+                } else if (foundPieces.contains(origin)) {
+                    stringOrigin = potentialPromotions;
+                } else {
+                    stringOrigin = Map.of("knightw", Path.of(origin));
+                }
+                pieceName = stringOrigin.entrySet()
+                        .stream()
+                        .filter(innerEntry -> !(innerEntry.getValue() == null))
+                        .filter(innerEntry -> innerEntry.getValue().contains(origin))
+                        .map(Map.Entry::getKey)
+                        .findAny()
+                        .orElse("");
+                System.out.println(pieceName);
+
+                pieceName = pieceName.substring(0, pieceName.length() - (pieceName.charAt(0) == 'b' ? 2 : 1));
+                String pieceCode = entry.getKey().getY() == 0
+                        ? pieceName.substring(0, 1).toUpperCase()
+                        : pieceName.substring(0, 1).toLowerCase();
+                System.out.println("FINDING PATH" + pieceName);
+                if (findPath(board, pieceName, pieceCode, origin, entry.getKey()).isEmpty()){
+                    System.out.println("or" + origin);
+                    System.out.println("t" + entry.getKey());
+
+                    coordinatesToRemove.add(origin);
+                }
+            });
+            coordinatesToRemove.forEach(coordinate -> entry.getValue().remove(coordinate));
+        });
+        // TODO Check certainPromotions and potentialPromotions VS this.promotedPieceMap and this.promotionNumbers
 
         return false;
+    }
+
+    private void pathFromOtherDirection(BoardInterface board, Map<Coordinate, Map<Coordinate, Path>> paths) {
+        paths.entrySet().stream().forEach(entry -> {
+            Path coordinatesToRemove = new Path();
+            String pieceName = STANDARD_STARTS.get(entry.getKey().getX());
+            String pieceCode = entry.getKey().getY() == 0
+                    ? pieceName.substring(0, 1).toUpperCase()
+                    : pieceName.substring(0, 1).toLowerCase();
+            entry.getValue().keySet().stream().forEach(origin -> {
+
+                if (findPath(board, pieceName, pieceCode, origin, entry.getKey()).isEmpty()){
+                    coordinatesToRemove.add(origin);
+                }
+            });
+            System.out.println("c" +coordinatesToRemove);
+            coordinatesToRemove.forEach(coordinate -> entry.getValue().remove(coordinate));
+        });
     }
 
     private void findPromotionPaths(BoardInterface board, Map<String, Path> potentialPromotions) {
@@ -253,7 +315,7 @@ public class PieceMap extends AbstractDeduction{
                                     && (origin.getX() + origin.getY()) % 2 != (coordinate.getX() + coordinate.getY()) % 2){
                                 return false;
                             }
-                            Path path = findPath(board, pieceName, pieceCode, origin, coordinate, 0);
+                            Path path = findPath(board, pieceName, pieceCode, origin, coordinate);
                             if (path.isEmpty()) {
                                 return false;
                             }
@@ -287,14 +349,14 @@ public class PieceMap extends AbstractDeduction{
         Map<Coordinate, Path> candidatePaths = new TreeMap<>();
         Path pieces = new Path();
         if (cage) {
-            this.caged.put(start, findPath(board, pieceName, pieceCode, start, new Coordinate(4, 4), escapeLocation).isEmpty());
+            this.caged.put(start, findPath(board, pieceName, pieceCode, start, new Coordinate(4, 4)).isEmpty());
 
         } else {
             for (Coordinate target : candidatePieces) {
                 if (pieceName.equals("bishop") && (start.getX() + start.getY()) % 2 != (target.getX() + target.getY()) % 2) {
                     continue;
                 }
-                Path foundPath = findPath(board, pieceName, pieceCode, start, target, escapeLocation);
+                Path foundPath = findPath(board, pieceName, pieceCode, start, target);
                 if (!foundPath.isEmpty()) {
                     candidatePaths.put(target, foundPath);
                     pieces.add(target);
@@ -308,7 +370,7 @@ public class PieceMap extends AbstractDeduction{
 
     public Path findPath(BoardInterface board, String pieceName,
                           String pieceCode, Coordinate start,
-                          Coordinate target, int escapeLocation){
+                          Coordinate target){
         System.out.println(Pathfinder.findShortestPath(
                 StandardPieceFactory.getInstance().getPiece(pieceCode),
                 start,
