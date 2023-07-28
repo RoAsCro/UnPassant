@@ -21,6 +21,7 @@ public class ImpossibleStates {
         PawnMapBlack pmb = new PawnMapBlack(this.pawnNumber, this.pieceNumber);
         CombinedPawnMap cpm = new CombinedPawnMap(pmw, pmb);
         PieceMap pm = new PieceMap(cpm);
+        
         this.detector = new ImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,
                 pmb,
@@ -199,5 +200,30 @@ public class ImpossibleStates {
         Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/3QK3/7P/PPPPPPP1/RNB2BNR w - - 0 1"));
     }
 
+    @Test
+    void promotionOne() {
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/3P4/2P2PB1/PP2P1P1/RNBQKBNR w KQkq - 0 1"));
+    }
+
+    @Test
+    void promotionTwo() {
+        Assertions.assertFalse(test("r1bqkb2/ppppppp1/7p/8/4R3/8/1PPPPP1P/RNBQKBNR w KQq - 0 1"));
+    }
+
+
+    @Test
+    void test() {
+        Assertions.assertFalse(test("rnbqkbn1/pppppp2/8/3R4/P2P4/2P2PB1/1P2P3/RNBQKBNR w KQq - 0 1"));
+    }
+
+    @Test
+    void wrongPieceTypes() {
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/5P2/6P1/PPPPP2P/RNBQKBBR w KQkq - 0 1"));
+    }
+
+    @Test
+    void wrongPieceTypesKnight() {
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNNQKBNR w KQkq - 0 1"));
+    }
 
 }

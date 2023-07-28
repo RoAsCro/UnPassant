@@ -269,6 +269,7 @@ public class PieceMap extends AbstractDeduction{
         System.out.println(this.promotionNumbers);
 
         System.out.println(certainPromotions);
+        System.out.println(potentialPromotions);
         List<Coordinate> allPieces = new ArrayList<>(board.getBoardFacts().getAllCoordinates("white").entrySet().stream()
                 .filter(entry -> !entry.getKey().equals("pawn"))
                 .filter(entry -> !entry.getKey().equals("knight"))
@@ -281,9 +282,33 @@ public class PieceMap extends AbstractDeduction{
         accountedPieces.addAll(this.startLocations.values().stream().map(Map::keySet).flatMap(Set::stream).toList());
         System.out.println(allPieces);
         System.out.println(accountedPieces);
-        
+
         boolean certainPromotionCheck = new HashSet<>(accountedPieces).containsAll(allPieces);
-        if (!certainPromotionCheck){
+
+        int numberOfPotentialPromotions = potentialPromotions.size();
+
+        int accountedPromotions = potentialPromotions.entrySet().stream().filter(entry -> {
+            if (entry.getValue() != null) {
+                int promotions = this.promotionNumbers.get(entry.getKey()).get(entry.getValue());
+                int potentiallyPromoted = 0;
+                for (Coordinate coordinate : entry.getValue()) {
+                    this.promotedPieceMap.values().stream().flatMap(Path::stream).anyMatch(c -> c.equals(coordinate));
+                    potentiallyPromoted++;
+                }
+                if (potentiallyPromoted < entry.getValue().size() - promotions) {
+                    return false;
+                }
+                return true;
+            }
+            return false;})
+                .toList()
+                .size();
+
+        System.out.println("AP" + accountedPromotions);
+        System.out.println("NPP" + numberOfPotentialPromotions);
+
+
+        if (!certainPromotionCheck || accountedPromotions != numberOfPotentialPromotions){
             this.state = false;
         }
 

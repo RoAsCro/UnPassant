@@ -803,7 +803,7 @@ public class PieceMapTest {
         for (int i = 0 ; i < 8 ; i++) {
             Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
-        Assertions.assertTrue(pieceMap.getState());
+        Assertions.assertFalse(pieceMap.getState());
 
 
     }
@@ -853,7 +853,7 @@ public class PieceMapTest {
         for (int i = 0; i < 8 ; i++) {
             Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
-        Assertions.assertTrue(pieceMap.getState());
+        Assertions.assertFalse(pieceMap.getState());
 
 
     }
