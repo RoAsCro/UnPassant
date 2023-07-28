@@ -233,6 +233,7 @@ public class PieceMap extends AbstractDeduction{
 //            }
         });
 //        pathFromOtherDirection(board, this.promotedPieceMap);
+        // Map pieces to their promotion origins
         Path certainPromotionsPath = Path.of(certainPromotions.values().stream()
                         .filter(value -> !(value == null))
                 .flatMap(Collection::stream).toList());

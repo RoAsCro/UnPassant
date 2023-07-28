@@ -9,7 +9,7 @@ public abstract class AbstractDeduction implements Deduction {
 
     protected static final int MAX_PAWNS = 8;
 
-    protected Boolean state = null;
+    protected Boolean state = true;
 
     Deduction or;
     Deduction xor;

@@ -22,6 +22,7 @@ public abstract class PawnMap extends AbstractDeduction{
     protected int capturedPieces = 0;
 
     private int maxPieces = 16;
+
     protected String colour;
 
     List<Observation> observations = new ArrayList<>();
@@ -51,6 +52,10 @@ public abstract class PawnMap extends AbstractDeduction{
         this.observations.forEach(observation -> observation.observe(board));
         rawMap(board, this.colour);
         reduce(this.colour);
+        System.out.println(this.pawnOrigins);
+        System.out.println(this.originFree);
+        System.out.println(this.captureSet);
+
 
         return false;
     }
