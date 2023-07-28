@@ -1,8 +1,5 @@
 import Heuristics.BoardInterface;
-import Heuristics.Deductions.CombinedPawnMap;
-import Heuristics.Deductions.ImpossibleStateDetector;
-import Heuristics.Deductions.PawnMapBlack;
-import Heuristics.Deductions.PawnMapWhite;
+import Heuristics.Deductions.*;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import StandardChess.BoardBuilder;
@@ -23,10 +20,12 @@ public class ImpossibleStates {
         PawnMapWhite pmw = new PawnMapWhite(this.pawnNumber, this.pieceNumber);
         PawnMapBlack pmb = new PawnMapBlack(this.pawnNumber, this.pieceNumber);
         CombinedPawnMap cpm = new CombinedPawnMap(pmw, pmb);
+        PieceMap pm = new PieceMap(cpm);
         this.detector = new ImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,
                 pmb,
-                cpm);
+                cpm,
+                pm);
     }
 
     public boolean test(String fen) {
@@ -159,5 +158,11 @@ public class ImpossibleStates {
     void impossibleMapEight() {
         Assertions.assertFalse(test("rnbqkbnr/2pppppp/P7/p7/4p3/6P1/1PPPPP1P/2BQK2R w Kkq - 0 1"));
     }
+
+    @Test
+    void impossiblePieceMapBishop() {
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/2B5/8/2P1P3/PP1PBPPP/RN1QK1NR w KQkq - 0 1"));
+    }
+
 
 }

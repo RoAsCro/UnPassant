@@ -29,6 +29,11 @@ public class StandardObserver {
                 ? whitePieces.get(piece) : blackPieces.get(piece);
     }
 
+    public Map<String, Path> getAllCoordinates(String colour) {
+        return colour.equals("white")
+                ? Map.copyOf(whitePieces)
+                : Map.copyOf(blackPieces);
+    }
 
 
 }

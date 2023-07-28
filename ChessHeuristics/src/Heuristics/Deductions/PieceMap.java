@@ -4,6 +4,7 @@ import Heuristics.BoardInterface;
 import Heuristics.Observation;
 import Heuristics.Path;
 import Heuristics.Pathfinder;
+import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
 import StandardChess.StandardPieceFactory;
 
@@ -130,18 +131,6 @@ public class PieceMap extends AbstractDeduction{
 
         // For each start location, have each piece associated with it attempt to path to that start
         pathFromOtherDirection(board, this.startLocations);
-//        this.startLocations.entrySet().stream().forEach(entry -> {
-//            Path coordinatesToRemove = new Path();
-//            entry.getValue().keySet().stream().forEach(origin -> {
-//                String pieceName = STANDARD_STARTS.get(entry.getKey().getX());
-//                String pieceCode = pieceName.substring(0, 1).toUpperCase();
-//                if (findPath(board, pieceName, pieceCode, origin, entry.getKey(), 0).isEmpty()){
-//                    coordinatesToRemove.add(origin);
-//                }
-//            });
-//            System.out.println("c" +coordinatesToRemove);
-//            coordinatesToRemove.forEach(coordinate -> entry.getValue().remove(coordinate));
-//        });
 
         // Every piece for which there are more of the type associated with a start location than there are by default
         System.out.println("HERERE");
@@ -273,9 +262,38 @@ public class PieceMap extends AbstractDeduction{
             coordinatesToRemove.forEach(coordinate -> entry.getValue().remove(coordinate));
         });
         // TODO Check certainPromotions and potentialPromotions VS this.promotedPieceMap and this.promotionNumbers
+        System.out.println("PM INFO:");
+        System.out.println(this.startLocations);
+        System.out.println(this.caged);
+        System.out.println(this.promotedPieceMap);
+        System.out.println(this.promotionNumbers);
+
+        System.out.println(certainPromotions);
+        List<Coordinate> allPieces = new ArrayList<>(board.getBoardFacts().getAllCoordinates("white").entrySet().stream()
+                .filter(entry -> !entry.getKey().equals("pawn"))
+                .filter(entry -> !entry.getKey().equals("knight"))
+                .flatMap(entry -> entry.getValue().stream()).toList());
+        allPieces.addAll(board.getBoardFacts().getAllCoordinates("black").entrySet().stream()
+                .filter(entry -> !entry.getKey().equals("pawn"))
+                .filter(entry -> !entry.getKey().equals("knight"))
+                .flatMap(entry -> entry.getValue().stream()).toList());
+        List<Coordinate> accountedPieces = new ArrayList<>(this.promotedPieceMap.values().stream().flatMap(Path::stream).toList());
+        accountedPieces.addAll(this.startLocations.values().stream().map(Map::keySet).flatMap(Set::stream).toList());
+        System.out.println(allPieces);
+        System.out.println(accountedPieces);
+
+
+
+        boolean certainPromotionCheck = allPieces.stream().allMatch(piece ->
+                        this.promotedPieceMap.values().stream().flatMap(Path::stream).anyMatch(c -> c.equals(piece))
+                                ||  this.startLocations.values().stream().map(Map::keySet).flatMap(Set::stream).anyMatch(c -> c.equals(piece)));
+        if (!certainPromotionCheck){
+            this.state = false;
+        }
 
         return false;
     }
+
 
     private void pathFromOtherDirection(BoardInterface board, Map<Coordinate, Map<Coordinate, Path>> paths) {
         paths.entrySet().stream().forEach(entry -> {

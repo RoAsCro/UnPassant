@@ -36,7 +36,7 @@ public class PieceMapTest {
 
     }
 
-    void test(BoardInterface boardInterface, Coordinate start1, Coordinate start2, int size1, int size2) {
+    void test(BoardInterface boardInterface, Coordinate start1, Coordinate start2, int size1, int size2, boolean possibleState) {
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pieceMap.deduce(boardInterface);
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
@@ -44,6 +44,7 @@ public class PieceMapTest {
 
         Assertions.assertEquals(size1, map.get(start1).size());
         Assertions.assertEquals(size2, map.get(start2).size());
+        Assertions.assertEquals(possibleState, this.pieceMap.getState());
     }
 
     @Test
@@ -51,7 +52,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard());
         Coordinate start1 = new Coordinate(2, 0);
         Coordinate start2 = new Coordinate(5, 0);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 //        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
 //        this.pieceMap.deduce(boardInterface);
 //
@@ -73,7 +74,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard());
         Coordinate start1 = new Coordinate(2, 7);
         Coordinate start2 = new Coordinate(5, 7);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 //        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
 //        this.pieceMap.deduce(boardInterface);
 //
@@ -98,7 +99,7 @@ public class PieceMapTest {
 //        Map<Coordinate, List<Path>> map = this.pieceMap.getStartLocations();
         Coordinate start1 = new Coordinate(2, 0);
         Coordinate start2 = new Coordinate(5, 0);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 //        Assertions.assertEquals(1, map.get(start1).size());
 //        Assertions.assertEquals(1, map.get(start2).size());
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
@@ -115,7 +116,7 @@ public class PieceMapTest {
 //        Map<Coordinate, List<Path>> map = this.pieceMap.getStartLocations();
         Coordinate start1 = new Coordinate(2, 7);
         Coordinate start2 = new Coordinate(5, 7);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 //        Assertions.assertEquals(1, map.get(start1).size());
 //        Assertions.assertEquals(1, map.get(start2).size());
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
@@ -254,7 +255,7 @@ public class PieceMapTest {
 
         System.out.println(this.pieceMap.getStartLocations());
 
-        test(boardInterface, start1, start2, 2, 2);
+        test(boardInterface, start1, start2, 2, 2, true);
 //        Assertions.assertEquals(2, map.get(start1).size());
 //        Assertions.assertEquals(2, map.get(start2).size());
         Path minimumPath1A = Path.of(start1, new Coordinate(1, 1));
@@ -281,7 +282,7 @@ public class PieceMapTest {
 
         System.out.println(this.pieceMap.getStartLocations());
 
-        test(boardInterface, start1, start2, 2, 2);
+        test(boardInterface, start1, start2, 2, 2, true);
 //        Assertions.assertEquals(2, map.get(start1).size());
 //        Assertions.assertEquals(2, map.get(start2).size());
         Path minimumPath1A = Path.of(start1, new Coordinate(1, 6));
@@ -309,8 +310,8 @@ public class PieceMapTest {
         System.out.println(this.pieceMap.getStartLocations());
         System.out.println(this.pieceMap.getCaged());
 
-        test(boardInterface, start1, start2, 1, 1);
-        test(boardInterface, new Coordinate(0, 7), new Coordinate(7, 7), 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
+        test(boardInterface, new Coordinate(0, 7), new Coordinate(7, 7), 1, 1, true);
 
 
 //        Assertions.assertEquals(1, map.get(start1).size());
@@ -330,7 +331,7 @@ public class PieceMapTest {
 //        Map<Coordinate, List<Path>> map = this.pieceMap.getStartLocations();
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
-        test(boardInterface, start1, start2, 0, 0);
+        test(boardInterface, start1, start2, 0, 0, false);
 
     }
 
@@ -342,7 +343,7 @@ public class PieceMapTest {
 //        Map<Coordinate, List<Path>> map = this.pieceMap.getStartLocations();
         Coordinate start1 = new Coordinate(0, 7);
         Coordinate start2 = new Coordinate(7, 7);
-        test(boardInterface, start1, start2, 0, 0);
+        test(boardInterface, start1, start2, 0, 0, false);
 
 
 //        System.out.println(this.pieceMap.getStartLocations());
@@ -367,7 +368,7 @@ public class PieceMapTest {
 //
 //        Assertions.assertEquals(0, map.get(start1).size());
 //        Assertions.assertEquals(1, map.get(start2).size());
-        test(boardInterface, start1, start2, 0, 1);
+        test(boardInterface, start1, start2, 0, 1, true);
 
 
     }
@@ -386,7 +387,7 @@ public class PieceMapTest {
 //
 //        Assertions.assertEquals(0, map.get(start1).size());
 //        Assertions.assertEquals(1, map.get(start2).size());
-        test(boardInterface, start1, start2, 0, 1);
+        test(boardInterface, start1, start2, 0, 1, true);
 
 
     }
@@ -396,7 +397,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/2R5/1P4RP/P7/2PPPPP1/1NBQKBN1 w kq - 0 1"));
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
-        test(boardInterface, start1, start2, 2, 2);
+        test(boardInterface, start1, start2, 2, 2, true);
 
     }
 
@@ -405,33 +406,38 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbn1/2ppppp1/p7/1pR3rp/1Pr3RP/P7/2PPPPP1/1NBQKBN1 w - - 0 1"));
         Coordinate start1 = new Coordinate(0, 7);
         Coordinate start2 = new Coordinate(7, 7);
-        test(boardInterface, start1, start2, 2, 2);
+        test(boardInterface, start1, start2, 2, 2, true);
     }
 //
     @Test
     void testRooksPawnCage() {
+        // NOTE: Impossible board state
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/2R5/6R1/PPP1P2P/3P1PP1/1NBQKBN1 w kq - 0 1"));
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
-        test(boardInterface, start1, start2, 0, 0);
+        test(boardInterface, start1, start2, 0, 0, false);
 
     }
 
     @Test
     void testRooksPawnCageTwo() {
+        // NOTE: Impossible board state
+
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/2R5/6R1/PPP1P2P/3P1PP1/1NBQKBN1 w kq - 0 1"));
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
-        test(boardInterface, start1, start2, 0, 0);
+        test(boardInterface, start1, start2, 0, 0, false);
 
     }
 
     @Test
     void testRooksPawnCageBlack() {
+        // NOTE: Impossible board state
+
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbn1/3p1pp1/ppp1p2p/2R3r1/2r3R1/PPP1P2P/3P1PP1/1NBQKBN1 w - - 0 1"));
         Coordinate start1 = new Coordinate(0, 7);
         Coordinate start2 = new Coordinate(7, 7);
-        test(boardInterface, start1, start2, 0, 0);
+        test(boardInterface, start1, start2, 0, 0, false);
 
     }
 
@@ -440,7 +446,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbn1/p3pp2/1p1p2p1/1rp2r1p/1RP2R1P/1P1P2P1/P3PP2/1NBQKBN1 w - - 0 1"));
         Coordinate start1 = new Coordinate(0, 7);
         Coordinate start2 = new Coordinate(7, 7);
-        test(boardInterface, start1, start2, 2, 2);
+        test(boardInterface, start1, start2, 2, 2, true);
 
     }
 //
@@ -449,7 +455,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard());
         Coordinate start1 = new Coordinate(3, 0);
         Coordinate start2 = new Coordinate(4, 0);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 
 
     }
@@ -459,7 +465,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard());
         Coordinate start1 = new Coordinate(3, 7);
         Coordinate start2 = new Coordinate(4, 7);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 
 
     }
@@ -470,7 +476,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/4QK2/8/PPPPPPPP/RNB2BNR"));
         Coordinate start1 = new Coordinate(3, 0);
         Coordinate start2 = new Coordinate(4, 0);
-        test(boardInterface, start1, start2, 0, 0);
+        test(boardInterface, start1, start2, 0, 0, false);
 
 
     }
@@ -481,7 +487,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnb2bnr/pppppppp/8/4qk2/8/8/PPPPPPPP/RNBQKBNR"));
         Coordinate start1 = new Coordinate(3, 7);
         Coordinate start2 = new Coordinate(4, 7);
-        test(boardInterface, start1, start2, 0, 0);
+        test(boardInterface, start1, start2, 0, 0, false);
 
 
     }
@@ -491,7 +497,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/3QK3/2P5/PP1PPPPP/RNB2BNR"));
         Coordinate start1 = new Coordinate(3, 0);
         Coordinate start2 = new Coordinate(4, 0);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 
     }
 
@@ -500,7 +506,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnb2bnr/pp1ppppp/2p5/3qk3/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"));
         Coordinate start1 = new Coordinate(3, 7);
         Coordinate start2 = new Coordinate(4, 7);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 
     }
     @Test
@@ -508,7 +514,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/3QK3/6P1/PPPPPP1P/RNB2BNR"));
         Coordinate start1 = new Coordinate(3, 0);
         Coordinate start2 = new Coordinate(4, 0);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 
     }
 
@@ -517,7 +523,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnb2bnr/pppppp1p/6p1/3qk3/8/6P1/PPPPPP1P/RNBQKBNR w - - 0 1"));
         Coordinate start1 = new Coordinate(3, 7);
         Coordinate start2 = new Coordinate(4, 7);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 
     }
 
@@ -535,6 +541,7 @@ public class PieceMapTest {
 
         Assertions.assertEquals(0, map.get(start1).size());
         Assertions.assertEquals(0, map.get(start2).size());
+        Assertions.assertFalse(pieceMap.getState());
 
     }
 
@@ -552,6 +559,8 @@ public class PieceMapTest {
 
         Assertions.assertEquals(0, map.get(start1).size());
         Assertions.assertEquals(0, map.get(start2).size());
+        Assertions.assertFalse(pieceMap.getState());
+
 
     }
 
@@ -560,7 +569,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/P7/5N2/1PPPPPPP/RNBQKBR1 w - - 0 1"));
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 
     }
 
@@ -569,7 +578,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rBb1kbnr/p1pp1ppp/8/8/8/8/P1PPPPPP/R1BQKB1R w KQkq - 0 1"));
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 
     }
 
@@ -578,7 +587,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rRbqkbnr/p1pppppp/8/1p2n3/P6P/5N2/1PPPPPP1/RNBQKB2 w - - 0 1"));
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
-        test(boardInterface, start1, start2, 2, 2);
+        test(boardInterface, start1, start2, 2, 2, true);
 
     }
 
@@ -587,7 +596,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqk2r/pp1ppp1p/6p1/2p5/8/1P2P1P1/P1PPKP1P/R5R1 w - - 0 1"));
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
-        test(boardInterface, start1, start2, 2, 2);
+        test(boardInterface, start1, start2, 2, 2, true);
 
     }
 
@@ -598,7 +607,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rRbqk2r/pp1ppp1p/6p1/2p5/P6P/5N2/1PPPPPP1/RNBQKB2 w - - 0 1"));
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 
     }
 
@@ -607,7 +616,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqk3/1pp1ppp1/8/p6p/7P/2P5/PP1PPPP1/RrB1KB1R w - - 0 1"));
         Coordinate start1 = new Coordinate(0, 7);
         Coordinate start2 = new Coordinate(7, 7);
-        test(boardInterface, start1, start2, 1, 1);
+        test(boardInterface, start1, start2, 1, 1, true);
 
     }
 
@@ -616,7 +625,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rn1qkbBr/p2ppp1p/1p4p1/8/8/1P4P1/P1PPP2P/RbBQK1NR w KQkq - 0 1"));
         Coordinate start1 = new Coordinate(2, 7);
         Coordinate start2 = new Coordinate(5, 0);
-        test(boardInterface, start1, start2, 0, 0);
+        test(boardInterface, start1, start2, 0, 0, true);
 
     }
 
@@ -626,7 +635,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rn2kbQr/p2ppppp/1p6/8/8/6P1/PPPPP2P/RqB1K1NR w KQkq - 0 1"));
         Coordinate start1 = new Coordinate(3, 7);
         Coordinate start2 = new Coordinate(3, 0);
-        test(boardInterface, start1, start2, 0, 0);
+        test(boardInterface, start1, start2, 0, 0, true);
 
     }
 
@@ -649,6 +658,7 @@ public class PieceMapTest {
         for (int i = 5 ; i < 8 ; i++) {
             Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
+        Assertions.assertTrue(pieceMap.getState());
 //        System.out.println(pieceMap.promotedPieceMap);
 
 //        Assertions.assertEquals(0, map.get(start1).size());
@@ -675,6 +685,8 @@ public class PieceMapTest {
         for (int i = 2 ; i < 8 ; i++) {
             Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
+        Assertions.assertTrue(pieceMap.getState());
+
 
     }
 
@@ -697,6 +709,8 @@ public class PieceMapTest {
         for (int i = 6 ; i < 8 ; i++) {
             Assertions.assertEquals(1, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
+        Assertions.assertTrue(pieceMap.getState());
+
 
     }
 
@@ -719,6 +733,8 @@ public class PieceMapTest {
         for (int i = 5 ; i < 8 ; i++) {
             Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
+        Assertions.assertTrue(pieceMap.getState());
+
 
     }
 
@@ -741,6 +757,8 @@ public class PieceMapTest {
         for (int i = 5 ; i < 8 ; i++) {
             Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
+        Assertions.assertFalse(pieceMap.getState());
+
 
     }
 
@@ -764,6 +782,8 @@ public class PieceMapTest {
         for (int i = 0 ; i < 8 ; i++) {
             Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
+        Assertions.assertTrue(pieceMap.getState());
+
 
     }
 
@@ -787,6 +807,8 @@ public class PieceMapTest {
         for (int i = 6 ; i < 8 ; i++) {
             Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
+        Assertions.assertTrue(pieceMap.getState());
+
 
     }
 
@@ -810,6 +832,8 @@ public class PieceMapTest {
         for (int i = 0; i < 8 ; i++) {
             Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
+        Assertions.assertTrue(pieceMap.getState());
+
 
     }
 
@@ -838,6 +862,8 @@ public class PieceMapTest {
                 Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
             }
         }
+        Assertions.assertTrue(pieceMap.getState());
+
 
     }
 
@@ -865,6 +891,8 @@ public class PieceMapTest {
         for (int i = 2 ; i < 8 ; i++) {
             Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
+        Assertions.assertTrue(pieceMap.getState());
+
 //        for (int i = 0; i < 8 ; i++) {
 //            if (i == 1 || i == 3) {
 //                Assertions.assertEquals(1, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
@@ -899,6 +927,8 @@ public class PieceMapTest {
         for (int i = 6; i < 8 ; i++) {
             Assertions.assertEquals(3, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
+        Assertions.assertTrue(pieceMap.getState());
+
 
     }
 
@@ -926,6 +956,8 @@ public class PieceMapTest {
 //            Assertions.assertEquals(3, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
 //        }
 
+        Assertions.assertFalse(pieceMap.getState());
+
     }
 
     @Test
@@ -952,6 +984,8 @@ public class PieceMapTest {
 //            Assertions.assertEquals(3, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
 //        }
 
+        Assertions.assertFalse(pieceMap.getState());
+
     }
 
     @Test
@@ -977,6 +1011,8 @@ public class PieceMapTest {
 //        for (int i = 6; i < 8 ; i++) {
 //            Assertions.assertEquals(3, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
 //        }
+
+        Assertions.assertTrue(pieceMap.getState());
 
     }
 
@@ -1006,6 +1042,8 @@ public class PieceMapTest {
 //        for (int i = 6; i < 8 ; i++) {
 //            Assertions.assertEquals(3, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
 //        }
+        Assertions.assertTrue(pieceMap.getState());
+
 
     }
 
@@ -1039,7 +1077,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1QR2RK1 w kq - 0 1"));
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
-        test(boardInterface, start1, start2, 0, 0);
+        test(boardInterface, start1, start2, 0, 0, true);
 
     }
 
