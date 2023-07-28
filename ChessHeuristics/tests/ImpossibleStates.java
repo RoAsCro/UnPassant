@@ -105,4 +105,59 @@ public class ImpossibleStates {
         Assertions.assertFalse(test("rnbqkbnr/1ppppppp/8/P7/p7/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1"));
     }
 
+    @Test
+    void impossibleMapTwo() {
+        Assertions.assertFalse(test("rnbqkbnr/2pppppp/8/P7/p7/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1"));
+    }
+
+    @Test
+    void possibleMap() {
+        Assertions.assertTrue(test("r1bqkb1r/1ppppppp/8/P7/p7/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1"));
+    }
+
+    @Test
+    void impossibleMapThree() {
+        Assertions.assertFalse(test("r1b1kb1r/pp1ppppp/8/4P3/P4p2/8/1PPPPPP1/2BQKB1R w Kkq - 0 1"));
+    }
+
+    @Test
+    void possibleMapTwo() {
+        Assertions.assertTrue(test("r1b1kb1r/pp1pp1pp/8/4P3/P4p2/8/1PPPPPP1/2BQKB1R w Kkq - 0 1"));
+    }
+
+    @Test
+    void impossibleMapFour() {
+        Assertions.assertFalse(test("4k2r/2Pppp1p/1p1p2p1/p7/8/1P6/PP1PPPP1/RNBQKB1R w KQk - 0 1"));
+    }
+
+    @Test
+    void impossibleMapFive() {
+        Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/8/3P4/3p4/8/PPP1PP1P/RNBQKBNR w KQkq - 0 1"));
+    }
+
+//    @Test
+//    void impossibleMapSix() {
+//        Assertions.assertFalse(test("rnbqkbnr/pp2pppp/8/3P4/3p4/8/PPP1PP1P/RNBQKBNR w KQkq - 0 1"));
+//    }
+
+    @Test
+    void impossibleMapSeven() {
+        Assertions.assertFalse(test("rnbqkbnr/2p1pppp/P3p3/p7/8/8/1PPPPPPP/RNBQKB1R w KQkq - 0 1"));
+    }
+
+    @Test
+    void possibleMapThree() {
+        Assertions.assertTrue(test("rnbqkbnr/2p1pppp/4p3/p7/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1"));
+    }
+
+    @Test
+    void possibleMapFour() {
+        Assertions.assertTrue(test("rnbqkbnr/2p1pppp/P3p3/p7/8/8/1PPPPPPP/R1BQKB1R w KQkq - 0 1"));
+    }
+
+    @Test
+    void impossibleMapEight() {
+        Assertions.assertFalse(test("rnbqkbnr/2pppppp/P7/p7/4p3/6P1/1PPPPP1P/2BQK2R w Kkq - 0 1"));
+    }
+
 }

@@ -30,6 +30,7 @@ public class CombinedPawnMapTest {
         System.out.println(map.getPawnOrigins());
         System.out.println(combinedPawnMap.getWhitePaths());
         System.out.println(combinedPawnMap.getBlackPaths());
+//        Assertions
         Assertions.assertTrue(combinedPawnMap.getState());
     }
 
@@ -48,6 +49,8 @@ public class CombinedPawnMapTest {
         combinedPawnMap.deduce(board);
         System.out.println(map.getPawnOrigins());
         System.out.println(combinedPawnMap.getWhitePaths());
+        Assertions.assertTrue(combinedPawnMap.getState());
+
     }
 
     @Test
@@ -68,6 +71,8 @@ public class CombinedPawnMapTest {
         System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 3)));
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
         Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(0, 3)).size());
+        Assertions.assertTrue(combinedPawnMap.getState());
+
     }
 
     @Test
@@ -85,6 +90,9 @@ public class CombinedPawnMapTest {
         combinedPawnMap.deduce(board);
         System.out.println(map.getPawnOrigins().get(new Coordinate(0, 2)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 2)));
+        Assertions.assertEquals(2, combinedPawnMap.getWhitePaths().get(new Coordinate(0, 2)).size());
+        Assertions.assertTrue(combinedPawnMap.getState());
+
     }
 
     @Test
@@ -107,6 +115,8 @@ public class CombinedPawnMapTest {
         System.out.println(map.getPawnOrigins().get(new Coordinate(0, 4)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)));
         Assertions.assertTrue(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).get(0).contains(new Coordinate(1, 4)));
+        Assertions.assertTrue(combinedPawnMap.getState());
+
     }
 
     @Test
@@ -128,6 +138,8 @@ public class CombinedPawnMapTest {
         System.out.println(map.getPawnOrigins().get(new Coordinate(0, 4)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)));
         Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(0, 3)).size());
+        Assertions.assertTrue(combinedPawnMap.getState());
+
     }
 
     @Test
@@ -147,6 +159,8 @@ public class CombinedPawnMapTest {
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(5, 3)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(4, 4)));
         Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(5, 3)).size());
+        Assertions.assertTrue(combinedPawnMap.getState());
+
     }
 
     @Test
@@ -172,6 +186,8 @@ public class CombinedPawnMapTest {
             path.add(new Coordinate(0, i));
         }
         Assertions.assertFalse(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).contains(path));
+        Assertions.assertTrue(combinedPawnMap.getState());
+
     }
 
     @Test
@@ -199,6 +215,8 @@ public class CombinedPawnMapTest {
         System.out.println(path);
         // If this fails, it may be due to implementations changing
         Assertions.assertTrue(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).contains(path));
+        Assertions.assertTrue(combinedPawnMap.getState());
+
     }
 
     @Test
@@ -219,6 +237,8 @@ public class CombinedPawnMapTest {
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(4, 4)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(3, 4)));
         Assertions.assertTrue(combinedPawnMap.getBlackPaths().get(new Coordinate(3, 3)).get(0).contains(new Coordinate(2, 4)));
+        Assertions.assertTrue(combinedPawnMap.getState());
+
     }
 
     @Test
@@ -238,6 +258,8 @@ public class CombinedPawnMapTest {
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(3, 3)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(3, 4)));
         Assertions.assertFalse(combinedPawnMap.getBlackPaths().get(new Coordinate(3, 3)).get(0).contains(new Coordinate(3, 4)));
+        Assertions.assertTrue(combinedPawnMap.getState());
+
     }
 
     @Test
@@ -261,6 +283,8 @@ public class CombinedPawnMapTest {
         Path path = new Path();
         Assertions.assertTrue(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).get(0).contains(new Coordinate(0, 4)));
 //        Assertions.assertTrue(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).get(0).contains(new Coordinate(0, 4)));
+        Assertions.assertTrue(combinedPawnMap.getState());
+
 
     }
 
@@ -282,6 +306,8 @@ public class CombinedPawnMapTest {
         System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 4)));
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 4)));
         Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(0, 4)).size());
+        Assertions.assertTrue(combinedPawnMap.getState());
+
 
     }
 
@@ -309,6 +335,8 @@ public class CombinedPawnMapTest {
         Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(0, 4)).size());
         Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(4, 3)).size());
         Assertions.assertEquals(1, combinedPawnMap.getBlackPaths().get(new Coordinate(4, 3)).size());
+        Assertions.assertTrue(combinedPawnMap.getState());
+
 
     }
 
@@ -344,6 +372,8 @@ public class CombinedPawnMapTest {
         Assertions.assertEquals(2, map.getPawnOrigins().get(new Coordinate(5, 4)).size());
         Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(3, 2)).size());
         Assertions.assertEquals(2, map.getPawnOrigins().get(new Coordinate(5, 2)).size());
+        Assertions.assertTrue(combinedPawnMap.getState());
+
 
 
 //        Assertions.assertEquals(1, combinedPawnMap.getBlackPaths().get(new Coordinate(4, 3)).size());
@@ -384,6 +414,8 @@ public class CombinedPawnMapTest {
 
 
 //        Assertions.assertEquals(1, combinedPawnMap.getBlackPaths().get(new Coordinate(4, 3)).size());
+        Assertions.assertTrue(combinedPawnMap.getState());
+
 
     }
 
@@ -407,6 +439,8 @@ public class CombinedPawnMapTest {
         System.out.println(map.getPawnOrigins().get(new Coordinate(0, 4)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)));
         Assertions.assertTrue(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)).get(0).contains(new Coordinate(1, 3)));
+        Assertions.assertTrue(combinedPawnMap.getState());
+
     }
 
     @Test
@@ -428,6 +462,8 @@ public class CombinedPawnMapTest {
 
 //        Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(2, 3)).size());
 //        Assertions.assertEquals(new Coordinate(2, 1), map.getPawnOrigins().get(new Coordinate(2, 3)).get(0));
+        Assertions.assertTrue(combinedPawnMap.getState());
+
     }
 
     @Test
@@ -449,6 +485,8 @@ public class CombinedPawnMapTest {
 
 //        Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(2, 3)).size());
 //        Assertions.assertEquals(new Coordinate(2, 1), map.getPawnOrigins().get(new Coordinate(2, 3)).get(0));
+        Assertions.assertFalse(combinedPawnMap.getState());
+
     }
 
 
