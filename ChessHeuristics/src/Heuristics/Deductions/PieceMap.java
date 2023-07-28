@@ -281,12 +281,8 @@ public class PieceMap extends AbstractDeduction{
         accountedPieces.addAll(this.startLocations.values().stream().map(Map::keySet).flatMap(Set::stream).toList());
         System.out.println(allPieces);
         System.out.println(accountedPieces);
-
-
-
-        boolean certainPromotionCheck = allPieces.stream().allMatch(piece ->
-                        this.promotedPieceMap.values().stream().flatMap(Path::stream).anyMatch(c -> c.equals(piece))
-                                ||  this.startLocations.values().stream().map(Map::keySet).flatMap(Set::stream).anyMatch(c -> c.equals(piece)));
+        
+        boolean certainPromotionCheck = new HashSet<>(accountedPieces).containsAll(allPieces);
         if (!certainPromotionCheck){
             this.state = false;
         }

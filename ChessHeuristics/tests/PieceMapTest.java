@@ -106,6 +106,7 @@ public class PieceMapTest {
 
         Assertions.assertTrue(map.get(start1).get(new Coordinate(2, 4)).contains(new Coordinate(3, 1)));
         Assertions.assertEquals(Path.of(start2, new Coordinate(4, 1)), map.get(start2).get(new Coordinate(4, 1)));
+        Assertions.assertTrue(pieceMap.getState());
     }
 
     @Test
@@ -123,6 +124,8 @@ public class PieceMapTest {
 
         Assertions.assertTrue(map.get(start1).get(new Coordinate(2, 3)).contains(new Coordinate(3, 6)));
         Assertions.assertEquals(Path.of(start2, new Coordinate(4, 6)), map.get(start2).get(new Coordinate(4, 6)));
+        Assertions.assertTrue(pieceMap.getState());
+
     }
 //
     @Test
@@ -143,6 +146,8 @@ public class PieceMapTest {
 
         Assertions.assertEquals(Path.of(start1, new Coordinate(1, 1), new Coordinate(2, 2)), map.get(start1).get(new Coordinate(2, 4)));
         Assertions.assertEquals(Path.of(start2, new Coordinate(6, 1), new Coordinate(5, 2)), map.get(start2).get(new Coordinate(5, 4)));
+        Assertions.assertTrue(pieceMap.getState());
+
     }
 
     @Test
@@ -163,6 +168,8 @@ public class PieceMapTest {
 
         Assertions.assertEquals(Path.of(start1, new Coordinate(1, 6), new Coordinate(2, 5)), map.get(start1).get(new Coordinate(2, 3)));
         Assertions.assertEquals(Path.of(start2, new Coordinate(6, 6), new Coordinate(5, 5)), map.get(start2).get(new Coordinate(5, 3)));
+        Assertions.assertTrue(pieceMap.getState());
+
     }
 //
     @Test
@@ -179,6 +186,8 @@ public class PieceMapTest {
 
         Assertions.assertEquals(Path.of(start1, new Coordinate(1, 1), new Coordinate(2, 2)), map.get(start1).get(new Coordinate(2, 4)));
         Assertions.assertEquals(Path.of(start2, new Coordinate(6, 1), new Coordinate(5, 2)), map.get(start2).get(new Coordinate(5, 4)));
+        Assertions.assertTrue(pieceMap.getState());
+
     }
 
     @Test
@@ -195,6 +204,8 @@ public class PieceMapTest {
 
         Assertions.assertEquals(Path.of(start1, new Coordinate(1, 6), new Coordinate(2, 5)), map.get(start1).get(new Coordinate(2, 3)));
         Assertions.assertEquals(Path.of(start2, new Coordinate(6, 6), new Coordinate(5, 5)), map.get(start2).get(new Coordinate(5, 3)));
+        Assertions.assertTrue(pieceMap.getState());
+
     }
 
     @Test
@@ -217,6 +228,8 @@ public class PieceMapTest {
         Assertions.assertTrue(map.get(start2).containsValue(minimumPath2));
         Assertions.assertTrue(map.get(start1).containsKey(new Coordinate(2, 4)));
         Assertions.assertTrue(map.get(start2).containsKey(new Coordinate(4, 3)));
+        Assertions.assertTrue(pieceMap.getState());
+
 
     }
 
@@ -240,6 +253,8 @@ public class PieceMapTest {
         Assertions.assertTrue(map.get(start2).containsValue(minimumPath2));
         Assertions.assertTrue(map.get(start1).containsKey(new Coordinate(2, 3)));
         Assertions.assertTrue(map.get(start2).containsKey(new Coordinate(4, 4)));
+        Assertions.assertTrue(pieceMap.getState());
+
 
     }
 //
@@ -269,6 +284,8 @@ public class PieceMapTest {
         Assertions.assertTrue(map.get(start1).containsValue(minimumPath1B));
         Assertions.assertTrue(map.get(start2).containsValue(minimumPath2A));
         Assertions.assertTrue(map.get(start2).containsValue(minimumPath2B));
+        Assertions.assertTrue(pieceMap.getState());
+
     }
 
     @Test
@@ -296,6 +313,8 @@ public class PieceMapTest {
         Assertions.assertTrue(map.get(start1).containsValue(minimumPath1B));
         Assertions.assertTrue(map.get(start2).containsValue(minimumPath2A));
         Assertions.assertTrue(map.get(start2).containsValue(minimumPath2B));
+        Assertions.assertTrue(pieceMap.getState());
+
     }
 //
     @Test
@@ -321,6 +340,8 @@ public class PieceMapTest {
         Assertions.assertEquals(Path.of(start2), map.get(start2).get(start2));
         Assertions.assertEquals(Path.of(new Coordinate(0, 7)), map.get(new Coordinate(0, 7)).get(new Coordinate(0, 7)));
         Assertions.assertEquals(Path.of(new Coordinate(7, 7)), map.get(new Coordinate(7, 7)).get(new Coordinate(7, 7)));
+        Assertions.assertTrue(pieceMap.getState());
+
     }
 //
     @Test

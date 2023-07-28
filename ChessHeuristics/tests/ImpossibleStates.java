@@ -164,5 +164,40 @@ public class ImpossibleStates {
         Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/2B5/8/2P1P3/PP1PBPPP/RN1QK1NR w KQkq - 0 1"));
     }
 
+    @Test
+    void impossiblePieceMapBishopTwo() {
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/5B2/8/8/PPPPPPPP/RNBQK1NR w KQkq - 0 1"));
+    }
+
+    @Test
+    void impossiblePieceMapBishopThree() {
+        Assertions.assertFalse(test("rn1qk1nr/1p1pp1p1/2p2b1p/2b5/p4p2/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
+    }
+
+    @Test
+    void impossiblePieceMapRook() {
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/R6R/1P4PP/P1PPPP2/1NBQKBN1 w kq - 0 1"));
+    }
+
+    @Test
+    void impossiblePieceMapRookTwo() {
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/2P2PR1/8/PP1PP1PP/1NBQKBN1 w kq - 0 1"));
+    }
+
+    @Test
+    void impossiblePieceMapRookThree() {
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/P1N5/5N2/1PPPPPPP/RRBQKB2 w - - 0 1"));
+    }
+
+    @Test
+    void impossiblePieceMapRoyalty() {
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/4QK2/8/PPPPPPPP/RNB2BNR w - - 0 1"));
+    }
+
+    @Test
+    void impossiblePieceMapRoyaltyTwo() {
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/3QK3/7P/PPPPPPP1/RNB2BNR w - - 0 1"));
+    }
+
 
 }
