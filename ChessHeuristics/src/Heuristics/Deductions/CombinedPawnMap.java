@@ -53,21 +53,56 @@ public class CombinedPawnMap extends AbstractDeduction {
 
     @Override
     public boolean deduce(BoardInterface board) {
+
         this.black.deduce(board);
         this.white.deduce(board);
+
         boolean changed = true;
         while (changed) {
+            Map<Coordinate, List<Path>> startingWhite = Map.copyOf(this.whitePaths);
+            Map<Coordinate, List<Path>> startingBlack = Map.copyOf(this.blackPaths);
+            Map<Coordinate, Path> startingPawnOriginsWhite = Map.copyOf(this.white.getPawnOrigins());
+            Map<Coordinate, Path> startingPawnOriginsBlack = Map.copyOf(this.black.getPawnOrigins());
+
+
+//            System.out.println("1A" + black.getMaxCaptures(new Coordinate(0, 4)));
+            System.out.println("change");
+            System.out.println(startingPawnOriginsWhite);
+            System.out.println(startingPawnOriginsBlack);
             makeMaps(board, false);
 
             makeMaps(board, true);
-            System.out.println("change");
+
+
+
 
             System.out.println(this.getWhitePaths());
             System.out.println(this.getBlackPaths());
 
-            if (!exclude(board, true) & !exclude(board, false)) {
+            if ((!exclude(board, true) & !exclude(board, false))
+                    || (startingWhite.values().containsAll(this.whitePaths.values())
+                    && startingBlack.values().containsAll(this.blackPaths.values())
+                    && startingPawnOriginsWhite.values().containsAll(this.white.getPawnOrigins().values())
+                    && startingPawnOriginsBlack.values().containsAll(this.black.getPawnOrigins().values()))
+            ) {
                 changed = false;
             }
+
+            System.out.println("CHANGES HERE: ");
+            System.out.println(startingWhite);
+            System.out.println(this.whitePaths);
+            System.out.println(startingWhite.values().equals(this.whitePaths));
+            System.out.println(startingBlack);
+            System.out.println(this.blackPaths);
+            System.out.println(startingBlack.values().equals(this.blackPaths));
+            System.out.println(startingPawnOriginsWhite);
+            System.out.println(this.white.getPawnOrigins());
+            System.out.println(startingPawnOriginsBlack);
+            System.out.println(this.black.getPawnOrigins());
+
+
+
+
 
         }
         System.out.println("CPM INFO:");
@@ -75,6 +110,8 @@ public class CombinedPawnMap extends AbstractDeduction {
         System.out.println(white.getPawnOrigins());
         System.out.println(black.getPawnOrigins());
         System.out.println(black.getCaptureSet());
+//        System.out.println(black.getMaxCaptures(new Coordinate(0, 4)));
+
 
         System.out.println(whitePaths);
         System.out.println(blackPaths);
@@ -205,7 +242,9 @@ public class CombinedPawnMap extends AbstractDeduction {
         checkedPlayer.update();
 //        System.out.println("All paths 2: " + checkedPlayerPaths);
 
-        return !forRemoval.isEmpty();
+        return !forRemoval.isEmpty()
+                || !newPaths.isEmpty()
+                ;
     }
 
     private Path makeExclusiveMaps(BoardInterface board, Path path, boolean white, List<Map.Entry<Coordinate, List<Path>>> forbiddenPaths) {
@@ -264,7 +303,11 @@ public class CombinedPawnMap extends AbstractDeduction {
                     return p2;
                 }
                 );
-        System.out.println(newPath);
+        System.out.println("new path = " + newPath);
+//        System.out.println(PATH_DEVIATION.apply(newPath));
+//        System.out.println(player.getMaxCaptures(newPath.getLast()));
+
+
         return newPath;
     }
 
