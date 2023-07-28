@@ -2,6 +2,7 @@ package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
 import Heuristics.Observation;
+import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
 import StandardChess.Coordinate;
@@ -16,31 +17,39 @@ public class PromotionMap extends AbstractDeduction {
 
     PawnMapBlack pawnMapBlack;
 
-    PieceNumber pieceNumber;
+    private PieceNumber pieceNumber;
+    private PawnNumber pawnNumber;
+
 
     CaptureLocations captureLocations;
 
     private Path origins;
     private Path targets;
 
-    private final PromotionPawnMapWhite promotionPawnMapWhite = new PromotionPawnMapWhite();
-    private final PromotionPawnMapBlack promotionPawnMapBlack = new PromotionPawnMapBlack();
+    private final PromotionPawnMapWhite promotionPawnMapWhite;
+    private final PromotionPawnMapBlack promotionPawnMapBlack;
 
 
 
-    public PromotionMap(PieceMap pieceMap, CombinedPawnMap pawnMap, PawnMapWhite pawnMapWhite, PawnMapBlack pawnMapBlack, CaptureLocations captureLocations) {
+    public PromotionMap(PieceMap pieceMap, CombinedPawnMap pawnMap, PawnMapWhite pawnMapWhite, PawnMapBlack pawnMapBlack, CaptureLocations captureLocations, PieceNumber pieceNumber, PawnNumber pawnNumber) {
+
+        this.pieceNumber = pieceNumber;
+        this.pawnNumber = pawnNumber;
         this.pieceMap = pieceMap;
         this.pawnMap = pawnMap;
         this.pawnMapWhite = pawnMapWhite;
         this.pawnMapBlack = pawnMapBlack;
         this.captureLocations = captureLocations;
+        this.promotionPawnMapWhite = new PromotionPawnMapWhite();
+        this.promotionPawnMapBlack = new PromotionPawnMapBlack();
+
 
     }
 
 
     @Override
     public List<Observation> getObservations() {
-        return null;
+        return captureLocations.getObservations();
     }
 
     @Override
@@ -153,11 +162,12 @@ public class PromotionMap extends AbstractDeduction {
     }
 
     private abstract class PromotionPawnMap extends PawnMap {
-        public PromotionPawnMap(String colour) {
-            super(colour);
+        public PromotionPawnMap(String colour, PawnNumber pawnNumber, PieceNumber pieceNumber) {
+            super(colour, pawnNumber, pieceNumber);
         }
         @Override
         public boolean deduce(BoardInterface board) {
+
             super.deduce(board);
 //            flip(false);
 
@@ -269,7 +279,7 @@ public class PromotionMap extends AbstractDeduction {
         }
     private class PromotionPawnMapWhite extends PromotionPawnMap {
         public PromotionPawnMapWhite() {
-            super("white");
+            super("white", PromotionMap.this.pawnNumber, PromotionMap.this.pieceNumber);
         }
 
 
@@ -292,7 +302,8 @@ public class PromotionMap extends AbstractDeduction {
 
     private class PromotionPawnMapBlack extends PromotionPawnMap {
         public PromotionPawnMapBlack() {
-            super("black");
+            super("black", PromotionMap.this.pawnNumber, PromotionMap.this.pieceNumber);
+
         }
 
         @Override

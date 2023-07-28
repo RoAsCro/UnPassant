@@ -4,6 +4,8 @@ import Heuristics.Deductions.PawnMapBlack;
 import Heuristics.Deductions.PawnMapWhite;
 import Heuristics.Deductions.PieceMap;
 import Heuristics.Observation;
+import Heuristics.Observations.PawnNumber;
+import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
 import Heuristics.Pathfinder;
 import StandardChess.BoardBuilder;
@@ -24,8 +26,11 @@ public class PieceMapTest {
 
     @BeforeEach
     void setup() {
-        pawnMapWhite = new PawnMapWhite();
-        pawnMapBlack = new PawnMapBlack();
+        PawnNumber pawnNumber = new PawnNumber();
+        PieceNumber pieceNumber = new PieceNumber();
+
+        pawnMapWhite = new PawnMapWhite(pawnNumber, pieceNumber);
+        pawnMapBlack = new PawnMapBlack(pawnNumber, pieceNumber);
         combinedPawnMap = new CombinedPawnMap(pawnMapWhite, pawnMapBlack);
         pieceMap = new PieceMap(combinedPawnMap);
 

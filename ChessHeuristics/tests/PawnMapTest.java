@@ -3,6 +3,8 @@ import Heuristics.Deductions.CombinedPawnMap;
 import Heuristics.Deductions.PawnMapBlack;
 import Heuristics.Deductions.PawnMapWhite;
 import Heuristics.Observation;
+import Heuristics.Observations.PawnNumber;
+import Heuristics.Observations.PieceNumber;
 import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
 import org.junit.jupiter.api.Assertions;
@@ -13,25 +15,25 @@ public class PawnMapTest {
     @Test
     void testPawnMaps() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/p1Pp4/p3p1p1/5p1p/5P1P/P3P1P1/P1pP4/4K3 w - - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         map.deduce(board);
         System.out.println(map.getPawnOrigins());
 
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
         blackMap.deduce(board);
     }
 
     @Test
     void testPawnMapsPawnPositions() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/7p/P6p/P6p/P6p/P6p/P7/4K3 w - - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         map.deduce(board);
         System.out.println(map.getPawnOrigins());
         map.getPawnOrigins().entrySet().stream().forEach(entry ->{
             Assertions.assertEquals(1, entry.getValue().size());
         });
 
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
         blackMap.deduce(board);
         System.out.println(blackMap.getPawnOrigins());
         blackMap.getPawnOrigins().entrySet().stream().forEach(entry ->{
@@ -43,12 +45,12 @@ public class PawnMapTest {
     void testPawnMapsTwo() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r3k2r/p2p4/1pp5/2p5/2P5/1PP5/P2P4/4K3 w kq - 0 1"));
 //        board = new BoardInterface(BoardBuilder.buildBoard("r3k2r/p7/1pp5/2p5/2P5/1PP5/P7/4K3 w kq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         map.deduce(board);
         System.out.println(map.getPawnOrigins());
         Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(2, 3)).size());
 
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
         blackMap.deduce(board);
         System.out.println(blackMap.getPawnOrigins());
         Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(2, 4)).size());
@@ -57,7 +59,7 @@ public class PawnMapTest {
     @Test
     void testPawnMapsThree() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/5p2/p2pp3/1p6/1p6/1PPPP3/2P2PPP/4K3 w - - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         map.deduce(board);
         System.out.println(map.getPawnOrigins());
         Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(1, 2)).size());
@@ -73,7 +75,7 @@ public class PawnMapTest {
     @Test
     void testPawnMapFour() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/p4p2/3ppp2/1p6/1p6/1PPPP3/2P2PPP/4K3 w - - 0 1"));
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
         blackMap.deduce(board);
         System.out.println(blackMap.getPawnOrigins());
         Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(0, 6)).size());
@@ -88,7 +90,7 @@ public class PawnMapTest {
     @Test
     void testPawnMapFive() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/p4p2/3ppp2/1p6/1p6/2PPPPP1/2P4P/4K3 w - - 0 1"));
-        PawnMapWhite whiteMap = new PawnMapWhite();
+        PawnMapWhite whiteMap = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         whiteMap.deduce(board);
         System.out.println(whiteMap.getPawnOrigins());
         Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(2, 2)).size());
@@ -99,7 +101,7 @@ public class PawnMapTest {
     @Test
     void testCaptures() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/1P6/3PPPPP/RNBQKBNR w KQkq - 0 1"));
-        PawnMapWhite whiteMap = new PawnMapWhite();
+        PawnMapWhite whiteMap = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         for (Observation o : whiteMap.getObservations()) {
             o.observe(board);
         }
@@ -112,7 +114,7 @@ public class PawnMapTest {
     @Test
     void testCapturesTwo() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/5P2/2P5/P3P3/1P1P2PP/8/RNBQKBNR w KQkq - 0 1"));
-        PawnMapWhite whiteMap = new PawnMapWhite();
+        PawnMapWhite whiteMap = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         for (Observation o : whiteMap.getObservations()) {
             o.observe(board);
         }
@@ -128,7 +130,7 @@ public class PawnMapTest {
     @Test
     void testContradictoryCaptures() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppp2pp/8/8/P7/5P2/1P1PPP1P/RNBQKBNR w KQkq - 0 1"));
-        PawnMapWhite whiteMap = new PawnMapWhite();
+        PawnMapWhite whiteMap = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         for (Observation o : whiteMap.getObservations()) {
             o.observe(board);
         }
@@ -142,7 +144,7 @@ public class PawnMapTest {
     @Test
     void testCapturesThree() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r2qkb1r/p1pppppp/1p6/8/4P3/8/PP1PPPPP/RNBQKBNR w KQkq - 0 1"));
-        PawnMapWhite whiteMap = new PawnMapWhite();
+        PawnMapWhite whiteMap = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         for (Observation o : whiteMap.getObservations()) {
             o.observe(board);
         }
@@ -156,7 +158,7 @@ public class PawnMapTest {
     @Test
     void testCapturesFour() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r2qkb1r/p1pppppp/1p6/8/4P3/8/PP1PPP1P/RNBQKBNR w KQkq - 0 1"));
-        PawnMapWhite whiteMap = new PawnMapWhite();
+        PawnMapWhite whiteMap = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         for (Observation o : whiteMap.getObservations()) {
             o.observe(board);
         }
@@ -169,7 +171,7 @@ public class PawnMapTest {
     @Test
     void testCapturesFive() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r2qkb1r/p1pppppp/1p6/5P2/8/8/PP1PPP1P/RNBQKBNR w KQkq - 0 1"));
-        PawnMapWhite whiteMap = new PawnMapWhite();
+        PawnMapWhite whiteMap = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         for (Observation o : whiteMap.getObservations()) {
             o.observe(board);
         }
@@ -183,7 +185,7 @@ public class PawnMapTest {
     @Test
     void testCapturesSix() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r2qkb1r/p1pppppp/1p6/8/2P2P2/8/1P1PPPP1/RNBQKBNR w KQkq - 0 1"));
-        PawnMapWhite whiteMap = new PawnMapWhite();
+        PawnMapWhite whiteMap = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         for (Observation o : whiteMap.getObservations()) {
             o.observe(board);
         }
@@ -198,7 +200,7 @@ public class PawnMapTest {
     @Test
     void testCapturesSeven() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r2qkb1r/p1pppppp/1p6/8/2P2P2/8/1P1PP1P1/RNBQKBNR w KQkq - 0 1"));
-        PawnMapWhite whiteMap = new PawnMapWhite();
+        PawnMapWhite whiteMap = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         for (Observation o : whiteMap.getObservations()) {
             o.observe(board);
         }
@@ -213,7 +215,7 @@ public class PawnMapTest {
     @Test
     void testCapturesEight() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkb1r/pppppppp/8/8/8/6PP/PPPPPP2/RNBQKBNR w KQkq - 0 1"));
-        PawnMapWhite whiteMap = new PawnMapWhite();
+        PawnMapWhite whiteMap = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         for (Observation o : whiteMap.getObservations()) {
             o.observe(board);
         }
@@ -227,7 +229,7 @@ public class PawnMapTest {
     @Test
     void testCapturesNine() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkb1r/pppppppp/8/8/8/PPPPPPPP/8/RNBQKBNR w KQkq - 0 1"));
-        PawnMapWhite whiteMap = new PawnMapWhite();
+        PawnMapWhite whiteMap = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         for (Observation o : whiteMap.getObservations()) {
             o.observe(board);
         }
@@ -247,18 +249,18 @@ public class PawnMapTest {
         //NOT A TEST
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("3qk3/2pppp1p/8/P7/p7/5P2/1PPPPP1P/RNBQKBNR w KQ - 0 1"));
 //        board = new BoardInterface(BoardBuilder.buildBoard("r3k2r/p7/1pp5/2p5/2P5/1PP5/P7/4K3 w kq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         map.deduce(board);
 
 //        System.out.println(map.getPawnOrigins().get(new Coordinate(1, 2)).hashCode());
 //        System.out.println(map.getPawnOrigins().get(new Coordinate(2, 2)).equals(map.getPawnOrigins().get(new Coordinate(1, 2))));
 
-        PawnMapWhite map2 = new PawnMapWhite();
+        PawnMapWhite map2 = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         map2.deduce(board);
 
 
 
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
         blackMap.deduce(board);
         System.out.println(blackMap.getPawnOrigins());
 //        System.out.println(map.getMaxCaptures(new Coordinate(2, 3)));

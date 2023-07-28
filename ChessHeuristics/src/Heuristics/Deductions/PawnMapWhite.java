@@ -1,13 +1,15 @@
 package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
+import Heuristics.Observations.PawnNumber;
+import Heuristics.Observations.PieceNumber;
 import StandardChess.Coordinate;
 
 import java.util.Map;
 
 public class PawnMapWhite extends PawnMap{
-    public PawnMapWhite() {
-        super("white");
+    public PawnMapWhite(PawnNumber pawnNumber, PieceNumber pieceNumber) {
+        super("white", pawnNumber, pieceNumber);
     }
 
 

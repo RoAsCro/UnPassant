@@ -3,6 +3,8 @@ import Heuristics.Deductions.CombinedPawnMap;
 import Heuristics.Deductions.PawnMapBlack;
 import Heuristics.Deductions.PawnMapWhite;
 import Heuristics.Observation;
+import Heuristics.Observations.PawnNumber;
+import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
 import Heuristics.Pathfinder;
 import StandardChess.BoardBuilder;
@@ -15,8 +17,8 @@ public class CombinedPawnMapTest {
     @Test
     void testWhitePawnPaths(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/7p/7p/P6p/P6p/P7/P7/4K3 w - - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
         for (Observation o : map.getObservations()) {
             o.observe(board);
         }
@@ -33,8 +35,8 @@ public class CombinedPawnMapTest {
     @Test
     void testWhitePawnPathsTwo(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/7p/7p/7p/2P4p/8/PP1P4/4K3 w - - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
         for (Observation o : map.getObservations()) {
             o.observe(board);
         }
@@ -50,8 +52,8 @@ public class CombinedPawnMapTest {
     @Test
     void testWhiteExclusivePawnPaths(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/2pppppp/8/P7/p7/8/1PPPPPPP/RNBQKB1R w KQkq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
         for (Observation o : map.getObservations()) {
             o.observe(board);
         }
@@ -70,8 +72,8 @@ public class CombinedPawnMapTest {
     @Test
     void testWhiteMultiOrigin(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/8/8/8/8/P7/8/RNBQKB1R w KQkq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
         for (Observation o : map.getObservations()) {
             o.observe(board);
         }
@@ -87,8 +89,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusive(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/P7/p7/8/1PPPPPPP/R1BQKB1R w KQkq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -109,8 +111,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusiveTwo(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/2pppppp/8/P7/p7/8/1PPPPPPP/R1BQKBNR w KQkq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -130,8 +132,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusiveThree(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r1b1kb1r/pp1pp1pp/8/4P3/P4p2/8/1PPPPPP1/2BQKB1R w Kkq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -149,8 +151,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusiveFour(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/P7/p7/8/2PPPPPP/R1BQKBNR w KQkq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -174,8 +176,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusiveFive(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r1bqkbnr/1ppppppp/8/P7/p7/8/2PPPPPP/R1BQKBNR w KQkq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -201,8 +203,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusiveSix(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r1bqk2r/ppp1pppp/8/3PP3/3p4/8/PPP1PPP1/2B1K2R w Kkq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -221,8 +223,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusiveSeven(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/ppp1pppp/8/3P4/3p4/8/PPP1PPPP/R1BQKB1R w KQkq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -240,8 +242,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusiveEight(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/1ppppppp/8/P7/p7/8/1PPPPPPP/R1BQKBNR w KQkq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -265,8 +267,8 @@ public class CombinedPawnMapTest {
     void testExclusiveNine(){
         //Two captures, one has been claimed
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/2p1pppp/P3p3/p7/8/8/1PPPPPPP/R1BQKB1R w KQkq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -285,8 +287,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusiveTen(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/2ppppp1/P7/p7/4p3/6P1/1PPPPP1P/2BQK2R w Kkq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -312,8 +314,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusiveEleven(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("3qkb2/2ppppp1/8/5P2/4p3/P2P1P2/pP1P1P1P/R1BQK3 w - - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -350,8 +352,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusiveElevenTwo(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("2bqkb2/1pppppp1/8/5P2/4p3/P2P4/1P1P1PPP/R1BQK2R w - - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -387,8 +389,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusiveTwelve(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/1ppppppp/8/P7/p7/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -409,8 +411,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusiveThirteen(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("2bqkb1r/1ppppppp/8/P3q3/p3Q3/8/1PPPPPPP/2BQKB1R w Kk - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);
@@ -430,8 +432,8 @@ public class CombinedPawnMapTest {
     @Test
     void testExclusiveFourteen(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("1nbqkbnr/Pppppppp/1r6/8/p7/8/1PPPPPPP/RNBQKBNR w - - 0 1"));
-        PawnMapWhite map = new PawnMapWhite();
-        PawnMapBlack blackMap = new PawnMapBlack();
+        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
 
         for (Observation o : map.getObservations()) {
             o.observe(board);

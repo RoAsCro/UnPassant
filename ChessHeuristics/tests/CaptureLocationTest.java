@@ -1,5 +1,7 @@
 import Heuristics.BoardInterface;
 import Heuristics.Deductions.*;
+import Heuristics.Observations.PawnNumber;
+import Heuristics.Observations.PieceNumber;
 import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
 import org.junit.jupiter.api.Assertions;
@@ -15,8 +17,8 @@ public class CaptureLocationTest {
     CaptureLocations captureLocations;
     @BeforeEach
     void setup() {
-        pawnMapWhite = new PawnMapWhite();
-        pawnMapBlack = new PawnMapBlack();
+        pawnMapWhite = new PawnMapWhite(new PawnNumber(), new PieceNumber());
+        pawnMapBlack = new PawnMapBlack(new PawnNumber(), new PieceNumber());
         combinedPawnMap = new CombinedPawnMap(pawnMapWhite, pawnMapBlack);
         pieceMap = new PieceMap(combinedPawnMap);
         captureLocations = new CaptureLocations(pawnMapWhite, pawnMapBlack, pieceMap, combinedPawnMap);
