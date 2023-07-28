@@ -19,7 +19,7 @@ public class ImpossibleStates {
     public void setup() {
         this.pawnNumber = new PawnNumber();
         this.pieceNumber = new PieceNumber();
-        this.detector = new ImpossibleStateDetector(pawnNumber, pieceNumber, new PawnMapWhite(new PawnNumber(), new PieceNumber()), new PawnMapBlack(new PawnNumber(), new PieceNumber()));
+        this.detector = new ImpossibleStateDetector(pawnNumber, pieceNumber, new PawnMapWhite(this.pawnNumber, this.pieceNumber), new PawnMapBlack(this.pawnNumber, this.pieceNumber));
     }
 
     public boolean test(String fen) {

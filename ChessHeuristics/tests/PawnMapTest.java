@@ -21,6 +21,9 @@ public class PawnMapTest {
 
         PawnMapBlack blackMap = new PawnMapBlack(new PawnNumber(), new PieceNumber());
         blackMap.deduce(board);
+        Assertions.assertTrue(map.getState());
+        Assertions.assertTrue(blackMap.getState());
+
     }
 
     @Test
@@ -39,6 +42,8 @@ public class PawnMapTest {
         blackMap.getPawnOrigins().entrySet().stream().forEach(entry ->{
             Assertions.assertEquals(1, entry.getValue().size());
         });
+        Assertions.assertTrue(map.getState());
+        Assertions.assertTrue(blackMap.getState());
     }
 
     @Test
@@ -54,6 +59,8 @@ public class PawnMapTest {
         blackMap.deduce(board);
         System.out.println(blackMap.getPawnOrigins());
         Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(2, 4)).size());
+        Assertions.assertTrue(map.getState());
+        Assertions.assertTrue(blackMap.getState());
     }
 
     @Test
@@ -70,6 +77,7 @@ public class PawnMapTest {
         Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(5, 1)).size());
         Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(7, 1)).size());
         Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(6, 1)).size());
+        Assertions.assertTrue(map.getState());
     }
 
     @Test
@@ -84,6 +92,7 @@ public class PawnMapTest {
         Assertions.assertEquals(3, blackMap.getPawnOrigins().get(new Coordinate(3, 5)).size());
         Assertions.assertEquals(2, blackMap.getPawnOrigins().get(new Coordinate(4, 5)).size());
         Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(5, 5)).size());
+        Assertions.assertTrue(blackMap.getState());
 
     }
 
@@ -95,6 +104,7 @@ public class PawnMapTest {
         System.out.println(whiteMap.getPawnOrigins());
         Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(2, 2)).size());
         Assertions.assertEquals(new Coordinate(1, 1), whiteMap.getPawnOrigins().get(new Coordinate(2, 2)).get(0));
+        Assertions.assertTrue(whiteMap.getState());
 
     }
 
@@ -108,7 +118,7 @@ public class PawnMapTest {
         whiteMap.deduce(board);
         Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(1, 2)).size());
         Assertions.assertEquals(new Coordinate(1, 1), whiteMap.getPawnOrigins().get(new Coordinate(1, 2)).get(0));
-
+        Assertions.assertTrue(whiteMap.getState());
     }
 
     @Test
@@ -125,6 +135,9 @@ public class PawnMapTest {
             Assertions.assertEquals(new Coordinate(entry.getKey().getX(), 1), entry.getValue().get(0));
         });
 
+        Assertions.assertTrue(whiteMap.getState());
+
+
     }
 
     @Test
@@ -139,6 +152,8 @@ public class PawnMapTest {
         System.out.println(whiteMap.getPawnOrigins());
         Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(0, 3)).size());
         Assertions.assertEquals(new Coordinate(0, 1), whiteMap.getPawnOrigins().get(new Coordinate(0, 3)).get(0));
+        Assertions.assertTrue(whiteMap.getState());
+
     }
 
     @Test
@@ -153,6 +168,8 @@ public class PawnMapTest {
         System.out.println(whiteMap.getPawnOrigins());
         Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(4, 3)).size());
 //        Assertions.assertEquals(new Coordinate(0, 1), whiteMap.getPawnOrigins().get(new Coordinate(0, 3)).get(0));
+        Assertions.assertTrue(whiteMap.getState());
+
     }
 
     @Test
@@ -166,6 +183,8 @@ public class PawnMapTest {
 
         System.out.println(whiteMap.getPawnOrigins());
         Assertions.assertEquals(2, whiteMap.getPawnOrigins().get(new Coordinate(4, 3)).size());
+        Assertions.assertTrue(whiteMap.getState());
+
     }
 
     @Test
@@ -180,6 +199,8 @@ public class PawnMapTest {
         System.out.println(whiteMap.getPawnOrigins());
         Assertions.assertEquals(2, whiteMap.getPawnOrigins().get(new Coordinate(5, 4)).size());
 //        Assertions.assertEquals(new Coordinate(0, 1), whiteMap.getPawnOrigins().get(new Coordinate(0, 3)).get(0));
+        Assertions.assertTrue(whiteMap.getState());
+
     }
 
     @Test
@@ -195,6 +216,8 @@ public class PawnMapTest {
         Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(2, 3)).size());
         Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(5, 3)).size());
 //        Assertions.assertEquals(new Coordinate(0, 1), whiteMap.getPawnOrigins().get(new Coordinate(0, 3)).get(0));
+        Assertions.assertTrue(whiteMap.getState());
+
     }
 
     @Test
@@ -210,6 +233,8 @@ public class PawnMapTest {
         Assertions.assertEquals(2, whiteMap.getPawnOrigins().get(new Coordinate(2, 3)).size());
         Assertions.assertEquals(2, whiteMap.getPawnOrigins().get(new Coordinate(5, 3)).size());
 //        Assertions.assertEquals(new Coordinate(0, 1), whiteMap.getPawnOrigins().get(new Coordinate(0, 3)).get(0));
+        Assertions.assertTrue(whiteMap.getState());
+
     }
 
     @Test
@@ -224,6 +249,8 @@ public class PawnMapTest {
         System.out.println(whiteMap.getPawnOrigins());
         Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(6, 2)).size());
         Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(7, 2)).size());
+        Assertions.assertTrue(whiteMap.getState());
+
     }
 
     @Test
@@ -240,6 +267,8 @@ public class PawnMapTest {
             System.out.println(i);
             Assertions.assertEquals(1, whiteMap.getPawnOrigins().get(new Coordinate(i, 2)).size());
         }
+        Assertions.assertTrue(whiteMap.getState());
+
     }
 
 

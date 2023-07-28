@@ -51,6 +51,7 @@ public abstract class PawnMap extends AbstractDeduction{
     public boolean deduce(BoardInterface board) {
         this.observations.forEach(observation -> observation.observe(board));
         rawMap(board, this.colour);
+        System.out.println(this.pawnOrigins);
         reduce(this.colour);
         System.out.println(this.pawnOrigins);
         System.out.println(this.originFree);
@@ -211,6 +212,11 @@ public abstract class PawnMap extends AbstractDeduction{
      */
     protected boolean reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
         boolean change = false;
+//        if (set.equals(Set.of(new Coordinate(6, 1)))) {
+//            System.out.println("XXF");
+//        } else {
+//            System.out.println("No");
+//        }
 //        System.out.println("set" + set);
 //        System.out.println("origins" + origins);
         if (!set.isEmpty()) {
@@ -219,6 +225,11 @@ public abstract class PawnMap extends AbstractDeduction{
             AtomicBoolean supersets = new AtomicBoolean(false);
             List<Coordinate> subsets = this.pawnOrigins.entrySet().stream()
                     .filter(entry -> {
+//                        if (entry.getKey().equals(new Coordinate(6, 1))) {
+//                            System.out.println("XXG");
+//                            System.out.println( set.containsAll(entry.getValue()));
+//
+//                        }
                         if (entry.getValue().stream().anyMatch(set::contains)) {
                             // True if the piece being examined contains every origin in the current set
                             supersets.set(true);
@@ -231,6 +242,10 @@ public abstract class PawnMap extends AbstractDeduction{
                     .toList();
             // If the number of subsets of the current set is the same as the number of origins in the set
 //            System.out.println(subsets);
+
+            if (subsets.size() > set.size()) {
+                this.state = false;
+            }
 
             if (subsets.size() == set.size()) {
 
