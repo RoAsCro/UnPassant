@@ -30,6 +30,7 @@ public class CombinedPawnMapTest {
         System.out.println(map.getPawnOrigins());
         System.out.println(combinedPawnMap.getWhitePaths());
         System.out.println(combinedPawnMap.getBlackPaths());
+        Assertions.assertTrue(combinedPawnMap.getState());
     }
 
     @Test

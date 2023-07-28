@@ -70,6 +70,15 @@ public class CombinedPawnMap extends AbstractDeduction {
             }
 
         }
+        System.out.println("CPM INFO:");
+
+        System.out.println(whitePaths);
+        System.out.println(blackPaths);
+
+        if (this.whitePaths.values().stream().anyMatch(List::isEmpty) || this.blackPaths.values().stream().anyMatch(List::isEmpty)) {
+            this.state = false;
+        }
+
         return false;
     }
 

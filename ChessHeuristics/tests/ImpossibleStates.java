@@ -1,4 +1,5 @@
 import Heuristics.BoardInterface;
+import Heuristics.Deductions.CombinedPawnMap;
 import Heuristics.Deductions.ImpossibleStateDetector;
 import Heuristics.Deductions.PawnMapBlack;
 import Heuristics.Deductions.PawnMapWhite;
@@ -19,7 +20,13 @@ public class ImpossibleStates {
     public void setup() {
         this.pawnNumber = new PawnNumber();
         this.pieceNumber = new PieceNumber();
-        this.detector = new ImpossibleStateDetector(pawnNumber, pieceNumber, new PawnMapWhite(this.pawnNumber, this.pieceNumber), new PawnMapBlack(this.pawnNumber, this.pieceNumber));
+        PawnMapWhite pmw = new PawnMapWhite(this.pawnNumber, this.pieceNumber);
+        PawnMapBlack pmb = new PawnMapBlack(this.pawnNumber, this.pieceNumber);
+        CombinedPawnMap cpm = new CombinedPawnMap(pmw, pmb);
+        this.detector = new ImpossibleStateDetector(pawnNumber, pieceNumber,
+                pmw,
+                pmb,
+                cpm);
     }
 
     public boolean test(String fen) {
@@ -59,9 +66,43 @@ public class ImpossibleStates {
     }
 
     @Test
-    void tooImpossiblePawnPosition() {
+    void impossiblePawnPosition() {
         Assertions.assertFalse(test("r1bqkb2/ppppppp1/8/8/8/7P/PPPP1PPP/RNBQKBNR w KQq - 0 1"));
     }
 
+    @Test
+    void possiblePawnPosition() {
+        Assertions.assertTrue(test("r1bqkb2/ppppppp1/8/8/8/5P2/PPPP1PPP/RNBQKBNR w KQq - 0 1"));
+    }
+
+    @Test
+    void impossiblePawnPositionTwo() {
+        Assertions.assertFalse(test("3qkb2/3pppp1/8/8/8/P7/PP1PPPPP/RNBQKBNR w KQ - 0 1"));
+    }
+
+    @Test
+    void impossiblePawnPositionThree() {
+        Assertions.assertFalse(test("3qkb2/3pppp1/8/8/3P4/2P5/1P1PPPPP/RNBQKBNR w KQ - 0 1"));
+    }
+
+    @Test
+    void possiblePawnPositionTwo() {
+        Assertions.assertTrue(test("3qkb2/3pppp1/8/8/3P4/2P5/P2PPPPP/RNBQKBNR w KQ - 0 1"));
+    }
+
+    @Test
+    void impossiblePawnPositionCaptures() {
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/8/P7/P1PPPPPP/RNBQKBNR w KQkq - 0 1"));
+    }
+
+    @Test
+    void impossiblePawnPositionCapturesTwo() {
+        Assertions.assertFalse(test("r1bqkb1r/pppppppp/8/2P5/2P5/3P4/PP2P1PP/RNBQKBNR w KQkq - 0 1"));
+    }
+
+    @Test
+    void impossibleMap() {
+        Assertions.assertFalse(test("rnbqkbnr/1ppppppp/8/P7/p7/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1"));
+    }
 
 }
