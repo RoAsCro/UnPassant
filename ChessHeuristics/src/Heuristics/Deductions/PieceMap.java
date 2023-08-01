@@ -379,7 +379,6 @@ public class PieceMap extends AbstractDeduction{
 
         Coordinate start = new Coordinate(originX, white ? 0 : 7);
         String pieceName = STANDARD_STARTS.get(originX);
-        int escapeLocation = white ? 2 : 5;
         String pieceCode = pieceName.substring(0, 1);
         if (white){
             pieceCode = pieceCode.toUpperCase();
@@ -390,13 +389,6 @@ public class PieceMap extends AbstractDeduction{
         Path pieces = new Path();
         if (cage) {
             this.caged.put(start, findPath(board, pieceName, pieceCode, start, new Coordinate(4, 4)).isEmpty());
-//            Path p = findPath(board, pieceName, pieceCode, start, new Coordinate(4, 4));
-//            System.out.println("CTage" + p);
-//            System.out.println("CTage" + p.isEmpty());
-//
-//            System.out.println("start" + start);
-
-
         } else {
             for (Coordinate target : candidatePieces) {
                 if (pieceName.equals("bishop") && (start.getX() + start.getY()) % 2 != (target.getX() + target.getY()) % 2) {

@@ -232,6 +232,22 @@ public class ImpossibleStates {
         Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPPPPPP/4R3/1NBQKBN1 w kq - 0 1"));
     }
 
+    @Test
+    void promotionCaptureRookPossible() {
+        Assertions.assertTrue(test("2bqkbnr/pPpppppp/np6/8/8/8/PP1PPPPP/RNBQKBNR w KQk - 0 1"));
+    }
+
+    @Test
+    void badColourBishop() {
+        Assertions.assertFalse(test("rn1qkbnr/p1pppppp/1p6/8/8/2P5/P1PPPPPP/RNBQKBNR w KQkq - 0 1"));
+    }
+
+    @Test
+    void badColourBishopTwo() {
+        Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/4p3/8/8/3P4/PPP1PPPP/RN1QKBNR w KQkq - 0 1"));
+    }
+
+
 
     @Test
     void test() {
