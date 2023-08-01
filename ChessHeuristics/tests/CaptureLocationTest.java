@@ -35,6 +35,7 @@ public class CaptureLocationTest {
         this.captureLocations.deduce(boardInterface);
         System.out.println(pawnMapWhite.getPawnOrigins());
         Assertions.assertEquals(1, pawnMapWhite.getPawnOrigins().get(new Coordinate(2, 3)).size());
+        Assertions.assertTrue(this.captureLocations.getState());
 
     }
 
@@ -48,6 +49,8 @@ public class CaptureLocationTest {
         this.captureLocations.deduce(boardInterface);
         System.out.println(pawnMapBlack.getPawnOrigins());
         Assertions.assertEquals(1, pawnMapBlack.getPawnOrigins().get(new Coordinate(4, 4)).size());
+        Assertions.assertTrue(this.captureLocations.getState());
+
 
     }
 
@@ -61,6 +64,8 @@ public class CaptureLocationTest {
         this.captureLocations.deduce(boardInterface);
         System.out.println(pawnMapWhite.getPawnOrigins());
         Assertions.assertEquals(1, pawnMapWhite.getPawnOrigins().get(new Coordinate(2, 3)).size());
+        Assertions.assertTrue(this.captureLocations.getState());
+
 
     }
 

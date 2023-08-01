@@ -21,12 +21,13 @@ public class ImpossibleStates {
         PawnMapBlack pmb = new PawnMapBlack(this.pawnNumber, this.pieceNumber);
         CombinedPawnMap cpm = new CombinedPawnMap(pmw, pmb);
         PieceMap pm = new PieceMap(cpm);
-        
+        CaptureLocations cl = new CaptureLocations(pmw, pmb, pm, cpm);
         this.detector = new ImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,
                 pmb,
                 cpm,
-                pm);
+                pm,
+                cl);
     }
 
     public boolean test(String fen) {
@@ -208,6 +209,27 @@ public class ImpossibleStates {
     @Test
     void promotionTwo() {
         Assertions.assertFalse(test("r1bqkb2/ppppppp1/7p/8/4R3/8/1PPPPP1P/RNBQKBNR w KQq - 0 1"));
+    }
+
+    @Test
+    void promotionCaptureBishop() {
+        Assertions.assertFalse(test("rnbqk1nr/pppppppp/8/8/8/2P5/P1PPPPPP/RNBQKBNR w KQq - 0 1"));
+    }
+
+    @Test
+    void promotionCaptureRook() {
+//        Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPP4/4PPPP/1NBQKBNR w Kkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPPP3/5PPP/1NBQKBNR w Kkq - 0 1"));
+    }
+
+    @Test
+    void promotionCaptureRookTwo() {
+        Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPPP3/4RPPP/1NBQKBN1 w kq - 0 1"));
+    }
+
+    @Test
+    void promotionCaptureRookThree() {
+        Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPPPPPP/4R3/1NBQKBN1 w kq - 0 1"));
     }
 
 

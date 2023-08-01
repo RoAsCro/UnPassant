@@ -390,6 +390,12 @@ public class PieceMap extends AbstractDeduction{
         Path pieces = new Path();
         if (cage) {
             this.caged.put(start, findPath(board, pieceName, pieceCode, start, new Coordinate(4, 4)).isEmpty());
+//            Path p = findPath(board, pieceName, pieceCode, start, new Coordinate(4, 4));
+//            System.out.println("CTage" + p);
+//            System.out.println("CTage" + p.isEmpty());
+//
+//            System.out.println("start" + start);
+
 
         } else {
             for (Coordinate target : candidatePieces) {
