@@ -22,12 +22,14 @@ public class ImpossibleStates {
         CombinedPawnMap cpm = new CombinedPawnMap(pmw, pmb);
         PieceMap pm = new PieceMap(cpm);
         CaptureLocations cl = new CaptureLocations(pmw, pmb, pm, cpm);
+        PromotionMap prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
         this.detector = new ImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,
                 pmb,
                 cpm,
                 pm,
-                cl);
+                cl,
+                prm);
     }
 
     public boolean test(String fen) {
@@ -247,11 +249,116 @@ public class ImpossibleStates {
         Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/4p3/8/8/3P4/PPP1PPPP/RN1QKBNR w KQkq - 0 1"));
     }
 
+    @Test
+    void badPromotion() {
+        Assertions.assertFalse(test("rnbqkbnr/p1pppppp/8/1pQ5/8/8/1PPPPPPP/RNBQKBNR w KQk - 0 1"));
+    }
+
+    @Test
+    void badPromotionLocation() {
+        Assertions.assertFalse(test("rnbqkbn1/ppppppp1/6p1/2PB4/P2P4/5P2/1P2P1P1/R1BQKBNR w KQq - 0 1"));
+    }
+
 
 
     @Test
     void test() {
-        Assertions.assertFalse(test("rnbqkbn1/pppppp2/8/3R4/P2P4/2P2PB1/1P2P3/RNBQKBNR w KQq - 0 1"));
+        Assertions.assertTrue(test("rnbqkbn1/pppppp2/8/2PR4/P2P4/5PB1/1P2P3/RNBQKBNR w KQq - 0 1"));
+    }
+
+    @Test
+    void test2() {
+        Assertions.assertTrue(test("rnbqkbnr/1p2p3/2p2pb1/p2p4/3r4/8/PPPPPP2/RNBQKBN1 w Qq - 0 1"));
+    }
+
+    @Test
+    void test3() {
+        Assertions.assertTrue(test("rnbqkbnr/2pppppp/5P2/2P1P1P1/p2Q3P/1P1P4/8/RNBQKBNR w - - 0 1"));
+    }
+
+    @Test
+    void test4() {
+        Assertions.assertTrue(test("r1bqkbnr/2pppppp/8/8/p2Q4/8/1PPPPPPP/RNBQKBNR w - - 0 1"));
+    }
+
+    @Test
+    void test5() {
+        Assertions.assertTrue(test("r1bqkbnr/2pppppp/5P2/3P4/p1PQP1PP/1P6/8/RNBQKBNR w - - 0 1"));
+    }
+
+    @Test
+    void test6() {
+        Assertions.assertTrue(test("rnBqkb1r/pp1ppp2/8/5B1p/8/8/PP1PPP1P/RNBQKBNR w KQkq - 0 1"));
+    }
+
+    @Test
+    void test7() {
+        Assertions.assertTrue(test("3qkbnr/pp1ppppp/2p5/5P1P/3QP3/2P1Q1P1/8/RNBQKBNR w KQk - 0 1"));
+    }
+
+    @Test
+    void multiplePSquaresOneValidOrigin() {
+        Assertions.assertFalse(test("3qkbnr/p1pppppp/p7/3Q4/3Q4/5br1/P1PPPPP1/RNBQKB1R w KQk - 0 1"));
+    }
+
+    @Test
+    void promotionOnSameSquare() {
+        Assertions.assertTrue(test("r1bqkbnr/p1pppppp/p7/4Q3/4Q3/8/P2PPPPP/RNBQKB1R w KQkq - 0 1"));
+    }
+    @Test
+    void noEscapeFromPromotionSquare() {
+        Assertions.assertFalse(test("r1bqkbnr/p1pppppp/p7/4B3/8/8/P2PPPPP/RNBQKB1R w KQkq - 0 1"));
+    }
+
+    @Test
+    void promotionSquareUnreachable() {
+        Assertions.assertFalse(test("r1bqkbnr/pp1ppppp/2p5/4B3/8/8/P1PPPPPP/RNBQKB1R w KQkq - 0 1"));
+    }
+
+    @Test
+    void singleCaptureThatMustHaveTakenPlace() {
+        Assertions.assertFalse(test("rnb1kb1r/ppp2ppp/2p5/8/6Bq/4P3/PPP1pPPP/RNBQKB1R w KQkq - 0 1"));
+    }
+
+    @Test
+    void singleCaptureThatMustHaveTakenPlaceTwo() {
+        Assertions.assertFalse(test("rnb1kb1r/ppp2ppp/P1p4P/7B/6Bq/8/1PP1pPP1/RNBQKB1R w KQkq - 0 1"));
+    }
+
+    @Test
+    void singleCaptureThatMustHaveTakenPlaceTwoValid() {
+        Assertions.assertTrue(test("rnb1kb1r/ppp2ppp/P1p4P/7B/6Bq/8/1PP2PP1/RNBQKB1R w KQkq - 0 1"));
+    }
+
+
+    @Test
+    void oneValidOrigin() {
+        Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/2p5/6Q1/6Q1/8/1PP1PPPP/RNBQKB1R w KQkq - 0 1"));
+    }
+
+    @Test
+    void oneValidDifferentPieces() {
+        Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/2p5/6R1/6Q1/8/1PP1PPPP/RNBQKB1R w KQkq - 0 1"));
+    }
+
+    @Test
+    void multipleValidMultiplePiecesBadCombination() {
+        Assertions.assertFalse(test("2bqkbn1/1ppppp1r/1p3p1p/2r2B2/5Q2/6B1/2PPPP1P/R1BQKB1R w KQ - 0 1"));
+    }
+
+    @Test
+    void twoValidOrigins() {
+        Assertions.assertTrue(test("rnbqkb1r/ppp1pppp/2p5/6Q1/6Q1/8/1PP2PPP/RNBQKB1R w KQkq - 0 1"));
+    }
+
+    @Test
+    void impossiblePromotionNumbers() {
+        Assertions.assertFalse(test("2bqkbnr/1ppppppp/1pr5/2n5/1QQ5/8/2PPPPPP/RNBQKB1R w KQk - 0 1"));
+    }
+
+    @Test
+    void impossiblePromotion() {
+        Assertions.assertFalse(test("3qkbnQ/pp1ppppp/2p5/5P1P/3QP3/2P1Q1P1/8/RNBQKBNR w KQ - 0 1"));
     }
 
     @Test

@@ -17,8 +17,10 @@ public class CaptureLocationTest {
     CaptureLocations captureLocations;
     @BeforeEach
     void setup() {
-        pawnMapWhite = new PawnMapWhite(new PawnNumber(), new PieceNumber());
-        pawnMapBlack = new PawnMapBlack(new PawnNumber(), new PieceNumber());
+        PawnNumber pawnNumber = new PawnNumber();
+        PieceNumber pieceNumber = new PieceNumber();
+        pawnMapWhite = new PawnMapWhite(pawnNumber, pieceNumber);
+        pawnMapBlack = new PawnMapBlack(pawnNumber, pieceNumber);
         combinedPawnMap = new CombinedPawnMap(pawnMapWhite, pawnMapBlack);
         pieceMap = new PieceMap(combinedPawnMap);
         captureLocations = new CaptureLocations(pawnMapWhite, pawnMapBlack, pieceMap, combinedPawnMap);
@@ -177,6 +179,68 @@ public class CaptureLocationTest {
     }
 
     @Test
+    void testBishopColoursThree() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqk2r/pppppp1p/2P3p1/PP6/8/5P2/3PPP1P/RNBQKBNR w KQkq - 0 1"));
+
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+
+        this.captureLocations.deduce(boardInterface);
+        System.out.println(pawnMapWhite.getPawnOrigins());
+        System.out.println(combinedPawnMap.getWhitePaths());
+        Assertions.assertEquals(1, pawnMapWhite.getPawnOrigins().get(new Coordinate(5, 2)).size());
+
+    }
+
+    @Test
+    void testRookOnePawnBetweenTwo() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("2bqkb2/p5Pp/1pppppp1/2n2n2/8/5P2/PPPPPP2/RNBQKBNR w KQ - 0 1"));
+
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+
+        this.captureLocations.deduce(boardInterface);
+        System.out.println(pawnMapWhite.getPawnOrigins());
+        System.out.println(combinedPawnMap.getWhitePaths());
+        Assertions.assertEquals(0, pawnMapWhite.getPawnOrigins().get(new Coordinate(5, 2)).size());
+        Assertions.assertFalse(pawnMapWhite.getState());
+
+
+    }
+
+    @Test
+    void testRookOnePawnBetweenTwoTwo() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("2bqk3/p5Pp/1pppppp1/2n2n2/8/5P2/PPPPP3/RNBQKBNR w KQ - 0 1"));
+
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+
+        this.captureLocations.deduce(boardInterface);
+        System.out.println(pawnMapWhite.getPawnOrigins());
+        System.out.println(combinedPawnMap.getWhitePaths());
+        Assertions.assertEquals(1, pawnMapWhite.getPawnOrigins().get(new Coordinate(5, 2)).size());
+        Assertions.assertTrue(pawnMapWhite.getState());
+
+
+    }
+
+    @Test
+    void testRookBug() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("3qk1nr/pp1ppppp/2p5/8/5P2/8/2P1PP2/RNBQKBNR w KQk - 0 1"));
+
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pieceMap.deduce(boardInterface);
+
+        this.captureLocations.deduce(boardInterface);
+        System.out.println(pawnMapWhite.getPawnOrigins());
+        System.out.println(combinedPawnMap.getWhitePaths());
+        Assertions.assertEquals(1, pawnMapWhite.getPawnOrigins().get(new Coordinate(5, 3)).size());
+        Assertions.assertTrue(pawnMapWhite.getState());
+
+
+    }
+
+    @Test
     void testBishopColoursTwoBlack() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppp1p/8/4p3/8/6P1/PPPPPP1P/RNBQK2R w KQkq - 0 1"));
 
@@ -188,5 +252,19 @@ public class CaptureLocationTest {
         System.out.println(combinedPawnMap.getBlackPaths());
         Assertions.assertEquals(0, pawnMapBlack.getPawnOrigins().get(new Coordinate(4, 4)).size());
 
+    }
+
+    @Test
+    void test() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("3qkbnr/pp1ppppp/2p5/5P1P/3QP3/2P1Q1P1/8/RNBQKBNR w KQk - 0 1"));
+
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+//        this.pieceMap.deduce(boardInterface);
+        this.pawnMapWhite.deduce(boardInterface);
+
+        this.captureLocations.deduce(boardInterface);
+
+        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.pawnMapWhite.getState());
     }
 }

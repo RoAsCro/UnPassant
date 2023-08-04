@@ -18,6 +18,8 @@ public class CaptureLocations extends AbstractDeduction {
     PawnMapWhite pawnMapWhite;
     PawnMapBlack pawnMapBlack;
     CombinedPawnMap combinedPawnMap;
+    Path whiteCagedCaptures = new Path();
+    Path blackCagedCaptures = new Path();
     private static final BiPredicate<Coordinate, Coordinate> DARK_TEST =
             (c1, c2) -> c2.getX() != c1.getX() && (c1.getX() + c1.getY()) % 2 == 0;
     private static final BiPredicate<Coordinate, Coordinate> LIGHT_TEST =
@@ -38,6 +40,10 @@ public class CaptureLocations extends AbstractDeduction {
     @Override
     public List<Observation> getObservations() {
         return null;
+    }
+
+    public Path getCagedCaptures(boolean white) {
+        return white ? whiteCagedCaptures : blackCagedCaptures;
     }
 
     @Override
@@ -87,14 +93,26 @@ public class CaptureLocations extends AbstractDeduction {
                         System.out.println(entry.getKey());
                         return this.pieceMap.getStartLocations()
                                 .get(new Coordinate(Math.abs(7 - entry.getKey().getX()), entry.getKey().getY()))
-                                .containsKey(map.keySet().stream().findAny().orElse(new Coordinate(-1, -1)));
+                                .containsKey(map.keySet().stream().findAny().orElse(new Coordinate(-1, -1)))
+                                && entry.getKey().getX() == 0;
                     }
                     return false;
                 }) //Is missing
                 .map(Map.Entry::getKey)
                 .toList());
         int ofWhichBishop = (int) ofWhichCaged.stream()
-                .filter(coordinate -> coordinate.getX() == 2 || coordinate.getX() == 5) // Is a bishop
+                .filter(coordinate -> {
+                    boolean bishop = coordinate.getX() == 2 || coordinate.getX() == 5;
+                    if (bishop) {
+                        if (white) {
+                            this.whiteCagedCaptures.add(coordinate);
+
+                        } else {
+                            this.blackCagedCaptures.add(coordinate);
+                        }
+                    }
+                    return bishop;
+                }) // Is a bishop
                 .count();
 
         // Rooks are the only piece capable of being both caged and captured on the pawn rank
@@ -103,6 +121,13 @@ public class CaptureLocations extends AbstractDeduction {
                 .toList());
 
         int ofWhichQueen = ofWhichCaged.size() - ofWhichBishop - ofWhichRook.size();
+        if (ofWhichQueen > 0) {
+            if (white) {
+                this.whiteCagedCaptures.add(new Coordinate(3, 0));
+            } else {
+                this.blackCagedCaptures.add(new Coordinate(3, 7));
+            }
+        }
 
         System.out.println(colour);
         System.out.println("Caged" + ofWhichCaged);
@@ -112,6 +137,7 @@ public class CaptureLocations extends AbstractDeduction {
 
 
         Map<Integer, Path> reachable = Map.of(0, new Path(), 7, new Path());
+        // Check each rook can path to any opposing pawn
         if (!ofWhichRook.isEmpty()) {
             ofWhichRook.stream().forEach(coordinate2 -> {
 
@@ -133,18 +159,29 @@ public class CaptureLocations extends AbstractDeduction {
         System.out.println("Innacces" + reachable);
         System.out.println("rook" + ofWhichRook);
 
+        //Check each rook is only pathing to one pawn
         for (int i = 0 ; i < ofWhichRook.size() ; i++){
+            boolean increase = false;
             Coordinate coordinate = ofWhichRook.get(i);
             int size = reachable.get(coordinate.getX()).size();
 
             System.out.println(size);
             if (size == 0) {
                 System.out.println("ZERO");
+                increase = true;
                 innaccessibleTakenRooks += 1;
             } else if (!(ofWhichRook.size() == 1) && !(size > 1)) {
                 if (reachable.get(coordinate.getX() == 0 ? 7 : 0).size() == 1
                         && !reachable.get(coordinate.getX() == 0 ? 7 : 0).contains(coordinate)) {
+                    increase = true;
                     innaccessibleTakenRooks += 1;
+                }
+            }
+            if (increase) {
+                if (white) {
+                    this.whiteCagedCaptures.add(coordinate);
+                } else {
+                    this.blackCagedCaptures.add(coordinate);
                 }
             }
         }
