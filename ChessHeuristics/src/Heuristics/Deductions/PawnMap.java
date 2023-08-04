@@ -200,10 +200,7 @@ public abstract class PawnMap extends AbstractDeduction{
             boolean change = true;
             while (change){
                 System.out.println(this.pawnOrigins);
-
                 captures(this.pawnOrigins, colour);
-//                System.out.println("reduce" + this.pawnOrigins);
-
                 change = reduceIter(new HashSet<>(), originsTwo);
 
             }
@@ -243,6 +240,15 @@ public abstract class PawnMap extends AbstractDeduction{
                         }
                         // True if the current set of origins contains every origin in the piece being examined has
 //                        System.out.println(entry.getValue());
+//                        if (set.containsAll(entry.getValue())) {
+//                            System.out.println("ContainsAll");
+//
+//                            System.out.println(set);
+//
+//                            System.out.println(entry.getKey());
+//                            System.out.println(entry.getValue());
+//
+//                        }
                         return set.containsAll(entry.getValue());
                     })
                     .map(Map.Entry::getKey)
@@ -263,10 +269,15 @@ public abstract class PawnMap extends AbstractDeduction{
                 subsets.forEach(coordinate -> map.put(coordinate, Path.of(this.pawnOrigins.get(coordinate))));
 //                System.out.println(map);
                 set.forEach(coordinate -> this.originFree.put(coordinate, false));
+                System.out.println(getPawnOrigins());
+
                 if (reduceIterHelperStart(map)) {
 //                    System.out.println(map);
                 }
-//                System.out.println("removing");
+                System.out.println("removing...");
+                System.out.println(set);
+                System.out.println(subsets);
+                System.out.println(getPawnOrigins());
                 return removeCoords(set, subsets);
             }
             // If there does not exist a set that contains this set
@@ -286,7 +297,7 @@ public abstract class PawnMap extends AbstractDeduction{
         }
         return change;
     }
-    private boolean reduceIterHelperStart(Map<Coordinate, Path> map) {
+    protected boolean reduceIterHelperStart(Map<Coordinate, Path> map) {
         boolean originsRemoved = false;
         Map<Coordinate, Path> removalMap = new TreeMap<>();
         List<Coordinate> remainingPawns = new LinkedList<>(map.keySet());

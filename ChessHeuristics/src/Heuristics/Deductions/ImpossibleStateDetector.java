@@ -39,6 +39,7 @@ public class ImpossibleStateDetector {
         for (Deduction deduction : this.deductions) {
             deduction.deduce(board);
             if (!deduction.getState()) {
+                System.out.println(deduction);
                 return false;
             }
         }

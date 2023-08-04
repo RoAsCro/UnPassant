@@ -110,8 +110,6 @@ public class PromotionMap extends AbstractDeduction {
 
 
         // Generate map of promotion squares and pawn eligible pawn origins
-        // MUCH OF THE BELOW IS WHITE ONLY
-        // A{
         List<Coordinate> finalWhiteOrigins = whiteOrigins;
         whiteTargets.forEach(coordinate -> finalWhiteOrigins.forEach(coordinate1 -> path(
                 coordinate, board, forbiddenWhitePaths, forbiddenBlackPaths, coordinate1
@@ -243,7 +241,51 @@ public class PromotionMap extends AbstractDeduction {
         }
         // Get a valid piece / origin set
 
-//        pieceSquareOriginWhite
+        Map<Path, Integer> pathIntegerMap = this.pieceMap.getPromotionNumbers().values().stream()
+                .flatMap(map -> map.entrySet().stream())
+                .filter(entry -> entry.getKey() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        Map<Coordinate, Path> pieceOriginWhite = pieceSquareOriginWhite.entrySet()
+                .stream()
+                .flatMap(entry -> {
+                    Map<Coordinate, Path> pieceOrigin = new HashMap<>();
+                    Path allOrigins = Path.of(entry.getValue()
+                            .stream().map(LinkedList::getLast)
+                            .collect(Collectors.toSet()));
+                    for (int i = 0 ; i < pathIntegerMap.get(entry.getKey()) ; i++) {
+                        pieceOrigin.put(entry.getKey().get(i), allOrigins);
+                    }
+                    return pieceOrigin.entrySet().stream();
+                })
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Map<Coordinate, Path> pieceOriginBlack = pieceSquareOriginBlack.entrySet()
+                .stream()
+                .collect(Collectors.toMap(entry -> entry.getKey().getFirst(), entry -> Path.of(entry.getValue()
+                        .stream().map(LinkedList::getLast).collect(Collectors.toSet()))));
+
+        System.out.println("POW" + pieceOriginWhite);
+        TheoreticalPawnMap tPMW = new TheoreticalPawnMap("white");
+        tPMW.reduce(pieceOriginWhite);
+        TheoreticalPawnMap tPMB = new TheoreticalPawnMap("black");
+        tPMB.reduce(pieceOriginBlack);
+        System.out.println("POW" + pieceOriginWhite);
+
+        // Fail if after reduction any piece does not have enough origins
+        if (!(tPMW.state && tPMB.state)) {
+            this.state = false;
+            return false;
+        }
+//        for (Map.Entry<Coordinate, Path> entry : pieceOriginWhite.entrySet()) {
+//
+//            if (promotionNumbers.entrySet().stream()
+//                    .filter(innerEntry -> innerEntry.getKey().contains(entry.getKey()))
+//                    .findAny().orElse(null)
+//                    .getValue() > entry.getValue().size()){
+//
+//            }
+//        }
+
 
         System.out.println("goasl " + this.goalOrigins);
         System.out.println(this.pieceMap.getPromotedPieceMap());
@@ -590,7 +632,7 @@ public class PromotionMap extends AbstractDeduction {
     private class PromotionPawnMapTwo extends PawnMap {
 
         public PromotionPawnMapTwo(PawnMap pawnMap) {
-            // DON'T JUST PUT ALL
+            // DON'T JUST PUTALL
             super(pawnMap.colour, pawnMap.pawnNumber, pawnMap.pieceNumber);
             boolean white = this.colour.equals("white");
 
@@ -824,4 +866,50 @@ public class PromotionMap extends AbstractDeduction {
         }
 
     }
+
+    private class TheoreticalPawnMap extends PawnMap {
+
+        public TheoreticalPawnMap(String colour) {
+            super(colour, PromotionMap.this.pawnNumber, PromotionMap.this.pieceNumber);
+        }
+
+        public void reduce(Map<Coordinate, Path> pawnOrigins) {
+            getPawnOrigins().clear();
+            getPawnOrigins().putAll(pawnOrigins);
+            List<Coordinate> origins = getPawnOrigins().entrySet().stream()
+                    .flatMap(f -> f.getValue().stream())
+                    .collect(Collectors.toSet())
+                    .stream().toList();
+            if (!origins.isEmpty()) {
+                List<Coordinate> originsTwo = new LinkedList<>(origins);
+                boolean change = true;
+                while (change){
+                    System.out.println("change" + getPawnOrigins());
+                    change = reduceIter(new HashSet<>(), originsTwo);
+
+                }
+            }
+        }
+
+        @Override
+        protected boolean reduceIterHelperStart(Map<Coordinate, Path> map) {
+            return false;
+        }
+
+        @Override
+        public void update() {
+            super.update(this.colour);
+        }
+
+        @Override
+        public int capturedPieces() {
+            return super.capturedPieces(this.colour);
+        }
+
+        @Override
+        public Map<Coordinate, Integer> getCaptureSet() {
+            return super.getCaptureSet(this.colour);
+        }
+    }
+
 }

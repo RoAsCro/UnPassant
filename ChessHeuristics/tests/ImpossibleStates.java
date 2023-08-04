@@ -347,6 +347,31 @@ public class ImpossibleStates {
     }
 
     @Test
+    void multipleValidMultiplePiecesBadCombinationTwo() {
+        Assertions.assertFalse(test("1nb1kb2/1pp1ppp1/1pp1B1p1/Qrq1B1rQ/8/8/1PP2PP1/R1BQKB2 w Q - 0 1"));
+    }
+
+    @Test
+    void multipleValidMultiplePiecesBadCombinationTwoValid() {
+        Assertions.assertTrue(test("1nb1kb2/1pp2pp1/1pp1Bpp1/Qrq1B1rQ/8/8/1PP2PP1/2BQKB2 w - - 0 1"));
+    }
+
+    @Test
+    void multipleValidMultiplePiecesBadCombinationValid() {
+        Assertions.assertTrue(test("2bqkb2/1ppppp1r/1p3p1p/2r2B2/5Q2/6B1/2PPPP2/R1BQKB1R w KQ - 0 1"));
+    }
+
+    @Test
+    void multipleValidMultiplePiecesCombinationValid() {
+        Assertions.assertTrue(test("2bqkb2/1ppppp1r/1p3p1p/2r2B2/5Q1Q/6B1/2PPPP2/R1BQKB1R w KQ - 0 1"));
+    }
+
+    @Test
+    void multipleValidMultiplePiecesCombinationValidTwo() {
+        Assertions.assertTrue(test("r1b1k3/2p1pp1p/1pp1pp2/3QqnQ1/2BB4/8/2P1PP1P/2BQKB2 w q - 0 1"));
+    }
+
+    @Test
     void twoValidOrigins() {
         Assertions.assertTrue(test("rnbqkb1r/ppp1pppp/2p5/6Q1/6Q1/8/1PP2PPP/RNBQKB1R w KQkq - 0 1"));
     }
@@ -369,6 +394,11 @@ public class ImpossibleStates {
     @Test
     void wrongPieceTypesKnight() {
         Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNNQKBNR w KQkq - 0 1"));
+    }
+
+    @Test
+    void noPathOut() {
+        Assertions.assertFalse(test("rnbqkb1r/ppppppp1/6p1/5B2/8/8/PPPPPPP1/RNBQKBNR w KQkq - 0 1"));
     }
 
 }
