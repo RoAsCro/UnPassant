@@ -280,7 +280,7 @@ public class PawnMapTest {
     void p() {
 
         //NOT A TEST
-        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("3qkbnr/pp1ppppp/2p5/5P1P/3QP3/2P1Q1P1/8/RNBQKBNR w KQk - 0 1"));
+        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/3ppp2/8/p2PP2p/8/8/1PPP1PP1/RNBQKBNR w KQ - 0 1"));
 //        board = new BoardInterface(BoardBuilder.buildBoard("r3k2r/p7/1pp5/2p5/2P5/1PP5/P7/4K3 w kq - 0 1"));
         PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         map.deduce(board);
@@ -290,6 +290,8 @@ public class PawnMapTest {
         mape.clear();
         System.out.println(map.getPawnOrigins());
         System.out.println(map.capturedPieces());
+        System.out.println(map.getCaptureSet());
+
 
 
 ////        System.out.println(map.getPawnOrigins().get(new Coordinate(1, 2)).hashCode());

@@ -29,6 +29,10 @@ public class PromotionMap extends AbstractDeduction {
     private Path captureSquaresWhite = new Path();
     private Path captureSquaresBlack = new Path();
 
+    private List<Map<Path, Path>> claimsWhite = new LinkedList<>();
+    private List<Map<Path, Path>> claimsBlack = new LinkedList<>();
+
+
 
     private int additionalCapturesWhite = 0;
     private int additionalCapturesBlack = 0;
@@ -37,8 +41,9 @@ public class PromotionMap extends AbstractDeduction {
     private Path origins;
     private Path targets;
 
-    private final PromotionPawnMapWhite promotionPawnMapWhite;
-    private final PromotionPawnMapBlack promotionPawnMapBlack;
+    private PromotionPawnMapWhite promotionPawnMapWhite;
+    private PromotionPawnMapBlack promotionPawnMapBlack;
+    private CombinedPawnMap combinedPawnMap;
 
     private final Map<Coordinate, Integer> captureSet = new HashMap<>();
 
@@ -73,6 +78,11 @@ public class PromotionMap extends AbstractDeduction {
 
 //        this.captureLocations.deduce(board);
 
+        System.out.println("FIRSTOFALL" + this.pieceMap.getPromotedPieceMap());
+        if (this.pieceMap.getPromotedPieceMap().values().stream().flatMap(Path::stream).toList().isEmpty()) {
+            this.state = true;
+            return true;
+        }
         boolean priorCheck = this.pawnMapWhite.getState();
 
 
@@ -209,6 +219,7 @@ public class PromotionMap extends AbstractDeduction {
                 .filter(entry -> entry.getKey() != null)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+
         Map<Coordinate, Path> pieceOriginWhite = pieceSquareOriginWhite.entrySet()
                 .stream()
                 .flatMap(entry -> {
@@ -216,7 +227,7 @@ public class PromotionMap extends AbstractDeduction {
                     Path allOrigins = Path.of(entry.getValue()
                             .stream().map(LinkedList::getLast)
                             .collect(Collectors.toSet()));
-                    for (int i = 0 ; i < pathIntegerMap.get(entry.getKey()) ; i++) {
+                    for (int i = 0 ; i < (entry.getKey().size() - pathIntegerMap.get(entry.getKey())) ; i++) {
                         pieceOrigin.put(entry.getKey().get(i), allOrigins);
                     }
                     return pieceOrigin.entrySet().stream();
@@ -224,10 +235,20 @@ public class PromotionMap extends AbstractDeduction {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         Map<Coordinate, Path> pieceOriginBlack = pieceSquareOriginBlack.entrySet()
                 .stream()
-                .collect(Collectors.toMap(entry -> entry.getKey().getFirst(), entry -> Path.of(entry.getValue()
-                        .stream().map(LinkedList::getLast).collect(Collectors.toSet()))));
+                .flatMap(entry -> {
+                    Map<Coordinate, Path> pieceOrigin = new HashMap<>();
+                    Path allOrigins = Path.of(entry.getValue()
+                            .stream().map(LinkedList::getLast)
+                            .collect(Collectors.toSet()));
+                    for (int i = 0 ; i < (entry.getKey().size() - pathIntegerMap.get(entry.getKey())) ; i++) {
+                        pieceOrigin.put(entry.getKey().get(i), allOrigins);
+                    }
+                    return pieceOrigin.entrySet().stream();
+                })
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         System.out.println("POW" + pieceOriginWhite);
+        System.out.println(pathIntegerMap);
         TheoreticalPawnMap tPMW = new TheoreticalPawnMap("white");
         tPMW.reduce(pieceOriginWhite);
         TheoreticalPawnMap tPMB = new TheoreticalPawnMap("black");
@@ -240,15 +261,38 @@ public class PromotionMap extends AbstractDeduction {
             return false;
         }
         System.out.println("TPTPTP" + tPMW.getPawnOrigins());
-//        for (Map.Entry<Coordinate, Path> entry : pieceOriginWhite.entrySet()) {
-//
-//            if (promotionNumbers.entrySet().stream()
-//                    .filter(innerEntry -> innerEntry.getKey().contains(entry.getKey()))
-//                    .findAny().orElse(null)
-//                    .getValue() > entry.getValue().size()){
-//
-//            }
-//        }
+
+
+
+        Path originPool = Path.of(this.origins.stream().filter(c -> c.getY() == 1).toList());
+        Map<Path, Path> claims = new HashMap<>();
+        Map<Path, Path> pieceOriginWhiteTwo = pieceSquareOriginWhite.entrySet()
+                .stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> Path.of(entry.getValue().stream().map(Path::getLast).collect(Collectors.toSet()).stream().toList())));
+
+
+        originClaimIteratorHelperStarter(0, pathIntegerMap, originPool, pieceOriginWhiteTwo, claims, true);
+
+        originPool = Path.of(this.origins.stream().filter(c -> c.getY() == 6).toList());
+        claims = new HashMap<>();
+        Map<Path, Path> pieceOriginBlackTwo = pieceSquareOriginBlack.entrySet()
+                .stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> Path.of(entry.getValue().stream().map(Path::getLast).collect(Collectors.toSet()).stream().toList())));
+        System.out.println("POB22" + pathIntegerMap);
+        originClaimIteratorHelperStarter(0, pathIntegerMap, originPool, pieceOriginBlackTwo, claims, false);
+
+
+        System.out.println("CLAIMS" + this.claimsWhite);
+        System.out.println("CLAIMS" + this.claimsBlack);
+
+        reduceClaims(true, pieceSquareOriginWhite);
+        reduceClaims(false, pieceSquareOriginBlack);
+
+        System.out.println("CLAIMS" + this.claimsWhite);
+        System.out.println("CLAIMS" + this.claimsBlack);
+
+
+
+
+
 
 
         System.out.println("goasl " + this.goalOrigins);
@@ -283,15 +327,46 @@ public class PromotionMap extends AbstractDeduction {
 
 //        this.promotionPawnMapWhite.deduce(board);
 //        System.out.println(promotionPawnMapWhite.getPawnOrigins());
-        System.out.println("Prior" + this.pawnMapWhite.getPawnOrigins());
+//        System.out.println("Prior" + this.pawnMapWhite.getPawnOrigins());
 
-        CombinedPawnMap combinedPawnMap = new PromotionCombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
-        System.out.println("Prior" + this.pawnMapWhite.getPawnOrigins());
+        this.combinedPawnMap = new PromotionCombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
+        Path savedOrigin = this.origins;
+        if (this.claimsBlack.isEmpty() && this.claimsWhite.isEmpty()) {
+            this.state = false;
+            return false;
+        }
+        this.state = false;
+        stateIterateStart(board);
+//        for (Map<Path, Path> blackClaim : this.claimsBlack) {
+//            for (Map<Path, Path> whiteClaim : this.claimsWhite) {
+////            CombinedPawnMap combinedPawnMap = new PromotionCombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
+////        System.out.println("Prior" + this.pawnMapWhite.getPawnOrigins());
+//                this.origins = Path.of(whiteClaim.values().stream().flatMap(Path::stream).toList());
+//                this.origins.addAll(blackClaim.values().stream().flatMap(Path::stream).toList());
+//                this.promotionPawnMapWhite = new PromotionPawnMapWhite();
+//                this.promotionPawnMapBlack = new PromotionPawnMapBlack();
+//                this.combinedPawnMap = new PromotionCombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
+//                this.combinedPawnMap.deduce(board);
+//                System.out.println("STESTE" + (this.promotionPawnMapBlack.state && this.promotionPawnMapWhite.state && combinedPawnMap.state));
+//                if (this.promotionPawnMapBlack.state && this.promotionPawnMapWhite.state && combinedPawnMap.state) {
+//                    this.state = true;
+//                    break;
+//                }
+////        System.out.println("Prior" + this.pawnMapWhite.getPawnOrigins());
+//            }
+//        }
 
-        combinedPawnMap.deduce(board);
-        System.out.println("Prior" + this.pawnMapWhite.getPawnOrigins());
+//        this.promotionPawnMapWhite = new PromotionPawnMapWhite();
+//                this.promotionPawnMapBlack = new PromotionPawnMapBlack();
+//        this.origins = this.origins;
+//        this.combinedPawnMap = new PromotionCombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
+//        this.combinedPawnMap.deduce(board);
+
 
         System.out.println("Combined:");
+        System.out.println(savedOrigin);
+        System.out.println(this.origins);
+
         System.out.println(combinedPawnMap.getWhitePaths());
         System.out.println(this.promotionPawnMapWhite.getPawnOrigins());
         System.out.println(combinedPawnMap.getBlackPaths());
@@ -305,10 +380,213 @@ public class PromotionMap extends AbstractDeduction {
         System.out.println(this.pawnMapWhite.getState());
         System.out.println(this.pawnMapBlack.getState());
         System.out.println(priorCheck);
-
-        this.state = this.promotionPawnMapBlack.state && this.promotionPawnMapWhite.state && combinedPawnMap.state;
+//        this.state = this.promotionPawnMapBlack.state && this.promotionPawnMapWhite.state && combinedPawnMap.state;
 
         return false;
+    }
+
+    private boolean stateIterateStart(BoardInterface board) {
+        List<List<Map<Path, Path>>> claimList = new LinkedList<>();
+        if (!this.claimsWhite.isEmpty()) {
+            claimList.add(this.claimsWhite);
+        }
+        if (!this.claimsBlack.isEmpty()) {
+            claimList.add(this.claimsBlack);
+        }
+        System.out.println(this.claimsWhite);
+        System.out.println(this.claimsBlack);
+
+        System.out.println(claimList);
+
+        return stateIterate(board, claimList, new LinkedList<>());
+    }
+    private boolean stateIterate(BoardInterface board, List<List<Map<Path, Path>>> claimList, List<Map<Path, Path>> originList) {
+        System.out.println("passhere");
+        System.out.println(claimList);
+        List<Map<Path, Path>> claims = claimList.get(0);
+        List<List<Map<Path, Path>>> newClaims = new LinkedList<>(claimList);
+
+        newClaims.remove(claims);
+
+        for (Map<Path, Path> map : claims) {
+            List<Map<Path, Path>> newOrigins = new LinkedList<>(originList);
+            newOrigins.add(map);
+            if (!newClaims.isEmpty()) {
+                System.out.println("itererating");
+                stateIterate(board, newClaims, newOrigins);
+            } else {
+                if (stateUpdate(board, newOrigins)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+
+    private boolean stateUpdate(BoardInterface board, List<Map<Path, Path>> originList) {
+        if (!originList.isEmpty()) {
+            this.origins = new Path();
+        }
+        originList.forEach(map -> this.origins.addAll(map.values().stream().flatMap(Path::stream).toList()));
+//            this.origins.addAll(blackClaim.values().stream().flatMap(Path::stream).toList());
+        this.promotionPawnMapWhite = new PromotionPawnMapWhite();
+        this.promotionPawnMapBlack = new PromotionPawnMapBlack();
+        this.combinedPawnMap = new PromotionCombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
+        this.combinedPawnMap.deduce(board);
+//            System.out.println("STESTE" + (this.promotionPawnMapBlack.state && this.promotionPawnMapWhite.state && combinedPawnMap.state));
+        if (this.promotionPawnMapBlack.state && this.promotionPawnMapWhite.state && combinedPawnMap.state) {
+            this.state = true;
+            return true;
+        }
+    return false;
+    }
+
+
+    private boolean originClaimIteratorHelperStarter(int j, Map<Path, Integer> pathIntegerMap, Path originPool,  Map<Path, Path> pieceOrigin, Map<Path, Path> claims, boolean white) {
+        pieceOrigin.keySet().forEach(p -> claims.put(p, new Path()));
+        for (int i = j ; i < 16 ;) {
+            Iterator<Map.Entry<Path, Path>> iter = pieceOrigin.entrySet().iterator();
+
+            boolean called = false;
+            while (iter.hasNext()) {
+                Map.Entry<Path, Path> entry = iter.next();
+//                System.out.println(pathIntegerMap);
+                System.out.println(i);
+
+                if ((entry.getKey().size() - pathIntegerMap.get(entry.getKey())) + claims.get(entry.getKey()).size()
+                        > entry.getValue().size() + i) {
+                    continue;
+                }
+
+                Map<Path, Path> pieceOriginNew = pieceOrigin.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Path.of(e.getValue())));
+                Map<Path, Path> claimsNew = claims.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Path.of(e.getValue())));
+                if (!originClaimIteratorHelper(i, pathIntegerMap, Path.of(originPool), pieceOriginNew, claimsNew, entry.getKey(), white)) {
+                } else {
+                    called = true;
+                }
+
+            }
+            if (!called) {
+                i++;
+            }
+        }
+
+        return false;
+    }
+
+
+        private boolean originClaimIteratorHelper(int j, Map<Path, Integer> pathIntegerMap, Path originPool,  Map<Path, Path> pieceOrigin, Map<Path, Path> claims, Path current, boolean white) {
+//        System.out.println(this.claims);
+        if (originPool.isEmpty()) {
+//            System.out.println("empty");
+            return false;
+        }
+
+        List<Coordinate> claim = pieceOrigin.get(current).stream().filter(originPool::contains).toList();
+        if (claim.isEmpty()) {
+//            System.out.println("claimempty");
+
+            return false;
+        }
+
+        boolean claimed = false;
+        ///
+        for (Coordinate coordinate : claim) {
+
+            Map<Path, Path> newClaims = claims.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Path.of(e.getValue())));
+
+            newClaims.get(current).add(coordinate);
+//            System.out.println(newClaims.get(current).size() == 0);
+//            System.out.println(newClaims.get(current));
+//            System.out.println(coordinate);
+//            if (newClaims.get(current).size() == 2) {
+//                System.out.println(newClaims);
+//            }
+//            System.out.println(claims);
+            Path originPoolNew = Path.of(originPool);
+            originPoolNew.remove(coordinate);
+//            pieceOriginWhiteTwo.entrySet().forEach(innerEntry -> System.out.println(innerEntry.getKey().size() - pathIntegerMap.get(innerEntry.getKey()) - finalClaims.get(innerEntry.getKey()).size()));
+//            System.out.println((pieceOriginWhiteTwo.keySet().size() - pathIntegerMap.get(current)) + finalClaims.get(current).size());
+            if (pieceOrigin.entrySet().stream().allMatch(innerEntry -> (innerEntry.getKey().size() - pathIntegerMap.get(innerEntry.getKey())) - newClaims.get(innerEntry.getKey()).size() == 0)) {
+//                System.out.println(newClaims);
+                List<Map<Path, Path>> allClaims = white ? this.claimsWhite : this.claimsBlack;
+                if (!allClaims.contains(newClaims)) {
+                    allClaims.add(newClaims);
+                    claimed = true;
+                }
+                continue;
+            }
+//            for (int i = j ; i < 17 ;) {
+//                System.out.println("inLopp" + coordinate);
+//                boolean called = false;
+                Iterator<Map.Entry<Path, Path>> iter = pieceOrigin.entrySet().iterator();
+                while (iter.hasNext()) {
+                    Map.Entry<Path, Path> entry = iter.next();
+//                    if ((entry.getKey().size() - pathIntegerMap.get(entry.getKey())) + newClaims.get(entry.getKey()).size()
+//                            > entry.getValue().size() + i) {
+////                        System.out.println("continuing...");
+//                        continue;
+//                    }
+
+
+                    Map<Path, Path> pieceOriginWhiteTwoNew = pieceOrigin.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Path.of(e.getValue())));
+//                    System.out.println("thisFar");
+                    if (!originClaimIteratorHelper(j, pathIntegerMap, originPoolNew, pieceOriginWhiteTwoNew, newClaims, entry.getKey(), white)) {
+                    } else {
+//                        called = true;
+                    }
+
+                }
+//                if (!called) {
+//                    i++;
+//                }
+            }
+//        }
+
+        return claimed;
+    }
+
+    private void reduceClaims(boolean white, Map<Path, List<Path>> pieceSquareOrigin) {
+        PawnMap playersPawnMap = white ? this.pawnMapWhite : this.pawnMapBlack;
+        int maxCaptures = playersPawnMap.capturedPieces() - this.pawnMap.capturesTwo(white ? "white" : "black")
+                + (white ? additionalCapturesWhite : additionalCapturesBlack)
+                ;
+//        System.out.println("MAXP" + goalOrigins);
+//        System.out.println("MAXP" + pieceSquareOrigin);
+
+        List<Map<Path, Path>> allClaims = white ? this.claimsWhite : this.claimsBlack;
+
+        List<Map<Path, Path>> toRemove = allClaims.stream().filter(map -> {
+            int max = map.entrySet().stream().map(entry -> {
+                        Path key = entry.getKey();
+                        Path value = entry.getValue();
+                        return value.stream().map(c -> {
+                                     int m = pieceSquareOrigin.get(key)
+                                            .stream().filter(p -> p.getLast().equals(c))
+                                            .map(p -> this.goalOrigins.get(p.getFirst()).get(p.getLast()))
+                                            .reduce((i, j) -> i < j ? i : j)
+                                            .orElse(10000);
+//                                     System.out.println("innermax" + m);
+//                                    System.out.println(c);
+//                                    System.out.println(entry);
+
+                                    return m;
+                                })
+                                .reduce(Integer::sum)
+                                .orElse(10000);
+
+                    }).reduce(Integer::sum)
+                    .orElse(10000);
+
+//            System.out.println("MCMC" + max);
+//            System.out.println(map);
+
+            return max > maxCaptures;
+        }).toList();
+        allClaims.removeAll(toRemove);
+//        System.out.println(toRemove);
     }
 
     private Map<Path, List<Path>> updates(boolean white) {
@@ -924,11 +1202,20 @@ public class PromotionMap extends AbstractDeduction {
 
         public TheoreticalPawnMap(String colour) {
             super(colour, PromotionMap.this.pawnNumber, PromotionMap.this.pieceNumber);
-//            this.maxPieces = colour.equals("white")
-//                    ? PromotionMap.this.pawnMapWhite.maxPieces
-//                    : PromotionMap.this.pawnMapBlack.maxPieces;
-//            System.out.println("MAXMAX" + maxPieces);
+            this.maxPieces = colour.equals("white")
+                    ? PromotionMap.this.pawnMapWhite.maxPieces
+                    : PromotionMap.this.pawnMapBlack.maxPieces;
+            System.out.println("MAXMAX" + maxPieces);
 
+        }
+
+        public boolean captures() {
+            int savedMaxPieces = this.maxPieces;
+            super.updateCaptureSet(this.colour);
+            System.out.println(this.maxPieces);
+            System.out.println(savedMaxPieces);
+            System.out.println(getPawnOrigins());
+            return this.capturedPieces > 0;
         }
 
         public void reduce(Map<Coordinate, Path> pawnOrigins) {
@@ -943,7 +1230,7 @@ public class PromotionMap extends AbstractDeduction {
 
                 boolean change = true;
                 while (change){
-                    System.out.println("change" + getPawnOrigins());
+//                    System.out.println("change" + getPawnOrigins());
 //                    captures(getPawnOrigins(), colour);
 
                     change = reduceIter(new HashSet<>(), originsTwo);

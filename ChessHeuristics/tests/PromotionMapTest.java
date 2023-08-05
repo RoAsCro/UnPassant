@@ -321,3 +321,4 @@ public class PromotionMapTest {
         Assertions.assertTrue(promotionMap.getState());
     }
 }
+
