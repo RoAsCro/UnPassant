@@ -21,7 +21,7 @@ public abstract class PawnMap extends AbstractDeduction{
 
     protected int capturedPieces = 0;
 
-    private int maxPieces = 16;
+    protected int maxPieces = 16;
 
     protected String colour;
 

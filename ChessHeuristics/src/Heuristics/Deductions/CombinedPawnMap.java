@@ -79,6 +79,8 @@ public class CombinedPawnMap extends AbstractDeduction {
 
 //            System.out.println("1A" + black.getMaxCaptures(new Coordinate(0, 4)));
             System.out.println("change");
+            System.out.println(startingWhite);
+
             System.out.println(startingPawnOriginsWhite);
             System.out.println(startingPawnOriginsBlack);
             makeMaps(board, false);
@@ -90,6 +92,8 @@ public class CombinedPawnMap extends AbstractDeduction {
 
             System.out.println(this.getWhitePaths());
             System.out.println(this.getBlackPaths());
+
+            System.out.println("CCCCCC" + this.whitePaths);
 
             if ((!exclude(board, true) & !exclude(board, false))
                     || (startingWhite.values().containsAll(this.whitePaths.values())
@@ -170,6 +174,8 @@ public class CombinedPawnMap extends AbstractDeduction {
         Map<Coordinate, List<Path>> opposingPlayerPaths = white
                 ? this.blackPaths
                 : this.whitePaths;
+        System.out.println("CPP" + checkedPlayerPaths);
+
         // Find every pawn of the opposing player with one origin and one possible path
         System.out.println(opposingPlayerPaths);
         List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = opposingPlayerPaths.entrySet()
@@ -185,7 +191,9 @@ public class CombinedPawnMap extends AbstractDeduction {
                 .toList();
         System.out.println("SOP" + singleOriginPawns);
 
+
         singleOriginPawns.forEach(entry -> (white ? singleBlackPaths : singleWhitePaths).put(entry.getKey(), entry.getValue().get(0)));
+
 
         List<Path> newPaths = new LinkedList<>();
         singleOriginPawns
@@ -347,7 +355,9 @@ public class CombinedPawnMap extends AbstractDeduction {
                                         p -> PATH_DEVIATION.apply(p) <= player.getMaxCaptures(entry.getKey()),
                                         (p1, p2) -> PATH_DEVIATION.apply(p1) < PATH_DEVIATION.apply(p2)
                                 );
-                                paths.add(path);
+                                if (!path.isEmpty()) {
+                                    paths.add(path);
+                                }
                             });
                     if (white) {
                         this.whitePaths.put(entry.getKey(), paths);

@@ -297,6 +297,20 @@ public class ImpossibleStates {
     }
 
     @Test
+    void test7Simplified() {
+        Assertions.assertTrue(test("3qkbnr/p2ppppp/bpp5/8/1n1Q4/8/PPP1PPPP/RNBQKBNR w KQk - 0 1"));
+    }
+    @Test
+    void test7SimplifiedTwo() {
+        Assertions.assertTrue(test("2bqkbnr/pp1ppppp/2p5/8/3Q4/8/PPP1PPPP/RNBQKBNR w KQk - 0 1"));
+    }
+
+    @Test
+    void test7SimplifiedThree() {
+        Assertions.assertTrue(test("2bqkbnr/p1pppppp/1p6/8/1n1Q4/8/1PPPPPPP/RNBQKBNR w KQk - 0 1"));
+    }
+
+    @Test
     void multiplePSquaresOneValidOrigin() {
         Assertions.assertFalse(test("3qkbnr/p1pppppp/p7/3Q4/3Q4/5br1/P1PPPPP1/RNBQKB1R w KQk - 0 1"));
     }
@@ -400,5 +414,35 @@ public class ImpossibleStates {
     void noPathOut() {
         Assertions.assertFalse(test("rnbqkb1r/ppppppp1/6p1/5B2/8/8/PPPPPPP1/RNBQKBNR w KQkq - 0 1"));
     }
+
+    @Test
+    void cagedRookCapture() {
+        Assertions.assertTrue(test("rnbqkbn1/pppppp2/6pp/8/4Q3/8/PPPPP1PP/RNBQKBNR w KQq - 0 1"));
+    }
+    @Test
+    void cagedRookCaptureMirrorVertical() {
+        Assertions.assertTrue(test("1nbqkbnr/2pppppp/pp6/8/4Q3/8/PP1PPPPP/RNBQKBNR w KQ - 0 1"));
+    }
+
+    @Test
+    void cagedRookCaptureMirrorHorizontal() {
+        Assertions.assertTrue(test("rnbqkbnr/ppppp1pp/4q3/8/8/6PP/PPPPPP2/RNBQKBN1 w Qkq - 0 1"));
+    }
+
+    @Test
+    void badPieceNumberMissing() {
+        Assertions.assertFalse(test("rnbqkb1r/p1pppp1p/2p2p2/3Q4/3Q4/8/PP1PP1PP/R1BQKB1R w KQkq - 0 1"));
+    }
+    @Test
+    void promotionMapCombinedPawnMapWithCagedPieces() {
+        // Later Checks Don't Account For Earlier Discovered Missing pawns
+        Assertions.assertFalse(test("1nbqk2r/pppppp1p/5n2/5q2/5Q2/5N2/PPPPPP1P/RNBQK2R w KQk - 0 1"));
+    }
+
+    @Test
+    void promotionMapCombinedPawnMapWithCagedPiecesCounterexample() {
+        Assertions.assertFalse(test("rnbqk2r/pppppp1p/5n2/5q2/5Q2/5N2/PPPPPP1P/RNBQK2R w KQkq - 0 1"));
+    }
+
 
 }

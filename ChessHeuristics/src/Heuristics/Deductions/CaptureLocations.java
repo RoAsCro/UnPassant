@@ -101,18 +101,7 @@ public class CaptureLocations extends AbstractDeduction {
                 .map(Map.Entry::getKey)
                 .toList());
         int ofWhichBishop = (int) ofWhichCaged.stream()
-                .filter(coordinate -> {
-                    boolean bishop = coordinate.getX() == 2 || coordinate.getX() == 5;
-                    if (bishop) {
-                        if (white) {
-                            this.whiteCagedCaptures.add(coordinate);
-
-                        } else {
-                            this.blackCagedCaptures.add(coordinate);
-                        }
-                    }
-                    return bishop;
-                }) // Is a bishop
+                .filter(coordinate -> coordinate.getX() == 2 || coordinate.getX() == 5) // Is a bishop
                 .count();
 
         // Rooks are the only piece capable of being both caged and captured on the pawn rank
@@ -121,13 +110,13 @@ public class CaptureLocations extends AbstractDeduction {
                 .toList());
 
         int ofWhichQueen = ofWhichCaged.size() - ofWhichBishop - ofWhichRook.size();
-        if (ofWhichQueen > 0) {
-            if (white) {
-                this.whiteCagedCaptures.add(new Coordinate(3, 0));
-            } else {
-                this.blackCagedCaptures.add(new Coordinate(3, 7));
-            }
-        }
+//        if (ofWhichQueen > 0) {
+//            if (white) {
+//                this.whiteCagedCaptures.add(new Coordinate(3, 0));
+//            } else {
+//                this.blackCagedCaptures.add(new Coordinate(3, 7));
+//            }
+//        }
 
         System.out.println(colour);
         System.out.println("Caged" + ofWhichCaged);
@@ -178,7 +167,10 @@ public class CaptureLocations extends AbstractDeduction {
                 }
             }
             if (increase) {
+                System.out.println("increases");
                 if (white) {
+                    System.out.println("increases");
+
                     this.whiteCagedCaptures.add(coordinate);
                 } else {
                     this.blackCagedCaptures.add(coordinate);

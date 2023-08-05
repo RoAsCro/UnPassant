@@ -60,13 +60,27 @@ public class PieceMap extends AbstractDeduction{
         }
         return true;
     };
-    Predicate<Path> firstRankCollision = path ->!(
-            (path.getLast().getY() == 0 || path.getLast().getY() == 7)
-            && !STANDARD_STARTS.get(path.getLast().getX()).equals("rook")
-            && this.startLocations.containsKey(path.getLast())
-            && !this.startLocations.get(path.getLast()).isEmpty()
-            && this.caged.containsKey(path.getLast())
-            && this.caged.get(path.getLast()));
+    Predicate<Path> firstRankCollision = path ->{
+        if (path.getFirst().equals(new Coordinate(0, 7))) {
+            System.out.println("ptt" + path);
+            if (!(
+                    (path.getLast().getY() == 0 || path.getLast().getY() == 7)
+                            && !STANDARD_STARTS.get(path.getLast().getX()).equals("rook")
+                            && this.startLocations.containsKey(path.getLast())
+                            && !this.startLocations.get(path.getLast()).isEmpty()
+                            && this.caged.containsKey(path.getLast())
+                            && this.caged.get(path.getLast()))) {
+                System.out.println("ptt" + path);
+            }
+        }
+        return !(
+                (path.getLast().getY() == 0 || path.getLast().getY() == 7)
+                        && !STANDARD_STARTS.get(path.getLast().getX()).equals("rook")
+                        && this.startLocations.containsKey(path.getLast())
+                        && !this.startLocations.get(path.getLast()).isEmpty()
+                        && this.caged.containsKey(path.getLast())
+                        && this.caged.get(path.getLast()));
+    };
 
     private final Map<String, Predicate<Path>> pathConditions = Map.of(
             //
@@ -415,6 +429,7 @@ public class PieceMap extends AbstractDeduction{
                 (b, c) -> c.equals(target) || (c.getY() >= 2 && c.getY() <= 5),
                 board,
                 this.pathConditions.get(pieceName)));
+        System.out.println("PIECEIS" + StandardPieceFactory.getInstance().getPiece(pieceCode).getType());
 
         return Pathfinder.findShortestPath(
                 StandardPieceFactory.getInstance().getPiece(pieceCode),
