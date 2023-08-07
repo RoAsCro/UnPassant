@@ -1,3 +1,5 @@
+import Heuristics.Deductions.CombinedPawnMap;
+import Heuristics.Deductions.PawnMap;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
@@ -158,6 +160,30 @@ public class SolverTest {
     public void test() {
         // Simple
         new Solver().solve(BoardBuilder.buildBoard("4Q3/8/8/8/8/8/1rk5/K7 w - - 0 1"), 1);
+    }
+
+    @Test
+    public void test2() {
+        // Simple
+        SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector("rnbqkbnr/pppppppp/8/8/5P2/7N/PPPPP1PP/RNBQKB1R w KQkq - 0 1");
+        detector.testState();
+        SolverImpossibleStateDetector detectorTwo = DetectorUpdater.update("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R b :Pf2-f4", detector);
+        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
+        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
+        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
+        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
+
+
+
+        detector = StateDetectorFactory.getDetector("rnbqkbnr/pppppppp/8/8/5P2/7N/PPPPP1PP/RNBQKB1R w KQkq - 0 1");
+        detector.testState();
+        detectorTwo = DetectorUpdater.update("rnbqkbnr/pppppppp/8/8/5P2/8/PPPPPNPP/RNBQKB1R b :Rf2-f4", detector);
+        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
+        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
+        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
+        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
+
+
     }
 
 

@@ -14,8 +14,8 @@ public class Solver {
     LinkedList<String> fens;
     UnMoveMaker mover;
     boolean turnIsWhite;
-    private int additionalDepth = 2;
-    private int numberOfSolutions = 1;
+    private int additionalDepth = 1;
+    private int numberOfSolutions = 100;
 
     private final static List<String> PIECES = List.of("", "p", "r", "b", "n", "q");
 
@@ -79,8 +79,13 @@ public class Solver {
     }
 
     private String toLAN(ChessBoard board, Coordinate origin, Coordinate target, String piece) {
+//        System.out.println(board.getReader().toFEN());
+//
+//        System.out.println(origin);
+//        System.out.println(target);
+
         return
-                board.at(origin).getType().toUpperCase().charAt(board.at(origin).getType().equals("knight") ? 1 : 0)+
+                board.at(target).getType().toUpperCase().charAt(board.at(target).getType().equals("knight") ? 1 : 0)+
                 Coordinates.readableString(target)
                 + (piece.equals("") ? "-" : "x")
                 + piece.toUpperCase()
@@ -121,15 +126,16 @@ public class Solver {
                     ChessBoard currentBoard = BoardBuilder.buildBoard(board.getReader().toFEN());
                     Coordinate target = Coordinates.add(origin, new Coordinate(direction.getX() * i, direction.getY() * i));
                     this.count++;
-                    System.out.println(this.count);
+//                    System.out.println(this.count);
                     if (makeJustMove(currentBoard,
                             origin,
                             target,
                             piece,
                             promotion)){
                         if (testState(currentBoard)) {
+
                             currentBoard.setTurn(white ? "black" : "white");
-                            states.add(currentBoard.getReader().toFEN() + ":" + toLAN(board, origin, target, piece));
+                            states.add(currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece));
                         }
                     } else {
                         continueFlag = false;
@@ -149,7 +155,6 @@ public class Solver {
     }
 
     private boolean testState(ChessBoard board) {
-//        System.out.println(board.getReader().toFEN());
         return StateDetectorFactory.getDetector(board).testState();
     }
 
@@ -163,6 +168,13 @@ public class Solver {
             moveMaker.setCapturePiece(StandardPieceFactory.getInstance()
                     .getPiece(board.getTurn().equals("white") ? piece.toLowerCase() : piece.toUpperCase()));
         }
+//        String original = board.getReader().toFEN();
+        //        if (s) {
+//            System.out.println("::");
+//            System.out.println(original);
+//            System.out.println(board.getReader().toFEN());
+//
+//        }
         return moveMaker.makeUnMove(origin, target);
     }
 
