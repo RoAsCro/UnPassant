@@ -11,7 +11,7 @@ public class ImpossibleStates {
 
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;
-    ImpossibleStateDetector detector;
+    TestImpossibleStateDetector detector;
 
     @BeforeEach
     public void setup() {
@@ -23,7 +23,7 @@ public class ImpossibleStates {
         PieceMap pm = new PieceMap(cpm);
         CaptureLocations cl = new CaptureLocations(pmw, pmb, pm, cpm);
         PromotionMap prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
-        this.detector = new ImpossibleStateDetector(pawnNumber, pieceNumber,
+        this.detector = new TestImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,
                 pmb,
                 cpm,

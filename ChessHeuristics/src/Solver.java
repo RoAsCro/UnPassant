@@ -1,10 +1,7 @@
 import Heuristics.BoardInterface;
-import Heuristics.Deductions.ImpossibleStateDetector;
-import Heuristics.Observations.PawnNumber;
-import Heuristics.Observations.PieceNumber;
-import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
+import StandardChess.StandardPieceFactory;
 
 import java.util.LinkedList;
 
@@ -13,15 +10,20 @@ public class Solver {
     String originalBoard;
     LinkedList<String> fens;
     UnMoveMaker mover;
+    boolean turnIsWhite;
 
-    public void solve(BoardInterface boardInterface, int depth) {
-        this.originalBoard = boardInterface.getReader().toFEN();
+    public void solve(ChessBoard board, int depth) {
+        this.originalBoard = board.getReader().toFEN();
     }
 
-    public boolean makeMove(BoardInterface boardInterface, Coordinate origin, Coordinate target) {
-        ChessBoard board = BoardBuilder.buildBoard(boardInterface.getReader().toFEN());
+    public boolean makeMove(ChessBoard board, Coordinate origin, Coordinate target, String piece) {
         UnMoveMaker moveMaker = new UnMoveMaker(board);
-        return moveMaker.makeUnMove(origin, target) && StateDetectorFactory.getDetector().testState(new BoardInterface(board));
+        if (!piece.equals("")) {
+            moveMaker.setCaptureFlag(true);
+            moveMaker.setCapturePiece(StandardPieceFactory.getInstance()
+                    .getPiece(board.getTurn().equals("white") ? piece.toLowerCase() : piece.toUpperCase()));
+        }
+        return moveMaker.makeUnMove(origin, target) && StateDetectorFactory.getDetector(board).testState();
     }
 
 }

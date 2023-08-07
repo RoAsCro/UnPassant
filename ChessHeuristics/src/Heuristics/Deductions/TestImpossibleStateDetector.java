@@ -8,7 +8,7 @@ import Heuristics.Observations.PieceNumber;
 import java.util.Arrays;
 import java.util.List;
 
-public class ImpossibleStateDetector {
+public class TestImpossibleStateDetector {
 
     private static int MAX_PAWNS = 8;
     private static int MAX_PIECES = 16;
@@ -19,11 +19,14 @@ public class ImpossibleStateDetector {
 
     private List<Deduction> deductions;
 
-    public ImpossibleStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction ... deductions) {
+
+    public TestImpossibleStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction ... deductions) {
         this.pawnNumber = pawnNumber;
         this.pieceNumber = pieceNumber;
         this.deductions = Arrays.stream(deductions).toList();
     }
+
+
 
     public boolean testState(BoardInterface board) {
         this.pieceNumber.observe(board);

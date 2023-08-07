@@ -66,6 +66,12 @@ public class CaptureLocations extends AbstractDeduction {
         System.out.println("WRemovals" + whiteRemovals);
         System.out.println("BRemovals" + blackRemovals);
         System.out.println(this.pieceMap.getCaged());
+        System.out.println(board.getReader().toFEN());
+        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.pawnMapWhite.getState());
+        System.out.println(this.pawnMapBlack.getState());
+
+
 
         if (!(this.pawnMapWhite.getState() && this.pawnMapBlack.getState()
                 && this.combinedPawnMap.getState() && this.pieceMap.getState())) {
@@ -204,8 +210,7 @@ public class CaptureLocations extends AbstractDeduction {
                         .orElse(0))
                 .reduce(0, Integer::sum);
         System.out.println(otherValue);
-
-        if (otherValue == this.combinedPawnMap.captures(colour)) {
+        if (otherValue == this.combinedPawnMap.captures(colour) && otherValue != 0) {
 
 
             for (List<Path> pathList : paths.values()) {
@@ -229,6 +234,16 @@ public class CaptureLocations extends AbstractDeduction {
                 capturesToRemove += predicates.size();
             }
         }
+        System.out.println("finalVerdict");
+        System.out.println(white);
+        System.out.println(capturesToRemove);
+        System.out.println(ofWhichBishop);
+        System.out.println(ofWhichQueen);
+        System.out.println(innaccessibleTakenRooks);
+
+
+
+
 
         return ofWhichQueen + ofWhichBishop + innaccessibleTakenRooks + capturesToRemove;
     }

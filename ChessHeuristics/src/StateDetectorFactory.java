@@ -1,9 +1,10 @@
+import Heuristics.BoardInterface;
 import Heuristics.Deduction;
 import Heuristics.Deductions.*;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
-
-import java.util.List;
+import StandardChess.BoardBuilder;
+import StandardChess.ChessBoard;
 
 public class StateDetectorFactory {
 
@@ -17,10 +18,14 @@ public class StateDetectorFactory {
         return new Deduction[]{pmw, pmb, cpm, cl, prm};
     }
 
-    public static ImpossibleStateDetector getDetector() {
+    public static SolverImpossibleStateDetector getDetector(ChessBoard board) {
         PawnNumber pawnNumber = new PawnNumber();
         PieceNumber pieceNumber = new PieceNumber();
-        return new ImpossibleStateDetector(pawnNumber, pieceNumber, getDeductions(pawnNumber, pieceNumber));
+        return new SolverImpossibleStateDetector(pawnNumber, pieceNumber, new BoardInterface(board), getDeductions(pawnNumber, pieceNumber));
+    }
+
+    public static SolverImpossibleStateDetector getDetector(String fen) {
+        return getDetector(BoardBuilder.buildBoard(fen));
     }
 
 }
