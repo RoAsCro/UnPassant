@@ -15,6 +15,8 @@ public class Solver {
     UnMoveMaker mover;
     boolean turnIsWhite;
     private int additionalDepth = 2;
+    private int numberOfSolutions = 1;
+
     private final static List<String> PIECES = List.of("", "p", "r", "b", "n", "q");
 
     private int count = 0;
@@ -26,7 +28,7 @@ public class Solver {
     }
 
     private List<String> iterate(String startingFen, int depth, boolean any) {
-        Map<String, CombinedPawnMap>
+//        Map<String, CombinedPawnMap>
 
 
         LinkedList<String> states = new LinkedList<>();
@@ -37,6 +39,9 @@ public class Solver {
 //        LinkedList<List<Coordinate>> statePieces
         states.add(startingFen + ": ");
         while (!states.isEmpty()) {
+            if (finalStates.size() >= this.numberOfSolutions) {
+                break;
+            }
             stateSizes.push(stateSizes.pop() - 1);
             String[] stateDescription = states.pop().split(":");
             String currentState = stateDescription[0];
@@ -62,6 +67,7 @@ public class Solver {
                     return finalStates;
                 } else if (!iterate(currentState, this.additionalDepth, true).isEmpty()) {
                     finalStates.add(currentState + ":" + stateDescription[1]);
+
                 }
             }
             if (stateSizes.getFirst() < 1) {

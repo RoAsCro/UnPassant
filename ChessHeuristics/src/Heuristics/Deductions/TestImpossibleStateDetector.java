@@ -54,4 +54,8 @@ public class TestImpossibleStateDetector {
         return true;
     }
 
+    public List<Deduction> getDeductions() {
+        return this.deductions;
+    }
+
 }

@@ -8,6 +8,10 @@ import StandardChess.Coordinate;
 import java.util.Map;
 
 public class PawnMapBlack extends PawnMap{
+
+    public PawnMapBlack(PawnMap pawnMap) {
+        super(pawnMap);
+    }
     public PawnMapBlack(PawnNumber pawnNumber, PieceNumber pieceNumber) {
         super("black", pawnNumber, pieceNumber);
     }

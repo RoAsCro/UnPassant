@@ -55,9 +55,8 @@ public class CaptureLocations extends AbstractDeduction {
 
 
 
-
         // Updates the pawn map
-        if (whiteRemovals + blackRemovals != 0) {
+        if (((16 - this.pawnMapWhite.capturedPieces()) != whiteRemovals) || ((16 - this.pawnMapBlack.capturedPieces()) != whiteRemovals)) {
 //            System.out.println("Rerunning...");
             this.pawnMapWhite.updateMaxCapturedPieces(whiteRemovals);
             this.pawnMapBlack.updateMaxCapturedPieces(blackRemovals);

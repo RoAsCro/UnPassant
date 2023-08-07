@@ -29,12 +29,22 @@ public abstract class PawnMap extends AbstractDeduction{
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;
 
+    public PawnMap(PawnMap pawnMap) {
+        this.colour = pawnMap.colour;
+        this.observations = pawnMap.observations;
+        this.pawnNumber = pawnMap.pawnNumber;
+        this.pieceNumber = pawnMap.pieceNumber;
+        pawnMap.pawnOrigins.forEach((k, v) -> this.pawnOrigins.put(k, Path.of(v)));
+        this.captureSet.putAll(pawnMap.captureSet);
+        this.originFree.putAll(pawnMap.originFree);
+        this.capturedPieces = pawnMap.capturedPieces;
+        this.maxPieces = pawnMap.maxPieces;
+    }
+
     public PawnMap(String colour, PawnNumber pawnNumber, PieceNumber pieceNumber) {
         this.colour = colour;
-        PawnNumber pawNumber = new PawnNumber();
         this.observations.add(pawnNumber);
         this.pawnNumber = pawnNumber;
-        PieceNumber piecNumber = new PieceNumber();
         this.observations.add(pieceNumber);
         this.pieceNumber = pieceNumber;
         for (int i = 0; i < 8 ; i++ ) {

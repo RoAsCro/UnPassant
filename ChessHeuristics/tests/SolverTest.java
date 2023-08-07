@@ -154,4 +154,11 @@ public class SolverTest {
     }
 
 
+    @Test
+    public void test() {
+        // Simple
+        new Solver().solve(BoardBuilder.buildBoard("4Q3/8/8/8/8/8/1rk5/K7 w - - 0 1"), 1);
+    }
+
+
 }

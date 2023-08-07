@@ -28,6 +28,24 @@ public class CombinedPawnMap extends AbstractDeduction {
             }).getY();
 
 
+    public CombinedPawnMap(PawnMap white, PawnMap black, CombinedPawnMap combinedPawnMap) {
+        combinedPawnMap.whitePaths.forEach((k, v) -> {
+            this.whitePaths.put(k,
+                    v.stream().map(Path::of).toList());
+        });
+        combinedPawnMap.blackPaths.forEach((k, v) -> {
+            this.blackPaths.put(k,
+                    v.stream().map(Path::of).toList());
+        });
+
+        combinedPawnMap.singleWhitePaths.forEach((k, v) -> this.singleWhitePaths.put(k, Path.of(v)));
+        combinedPawnMap.singleBlackPaths.forEach((k, v) -> this.singleBlackPaths.put(k, Path.of(v)));
+
+
+        this.black = black;
+        this.white = white;
+    }
+
     public CombinedPawnMap(PawnMap white, PawnMap black) {
         this.black = black;
         this.white = white;
