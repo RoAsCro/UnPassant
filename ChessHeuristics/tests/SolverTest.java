@@ -62,6 +62,28 @@ public class SolverTest {
         makeMoveTest("rnbqk2r/ppppp3/4b3/8/8/8/PPPPP3/RNBQKnNR b KQkq - 0 1",
                 new Coordinate(5, 0), new Coordinate(6, 2),
                 false, "p");
+
+    }
+
+    @Test
+    public void makeMoveTestUnCaptureImpossibleNumbers() {
+        makeMoveTest("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+                new Coordinate(6, 0), new Coordinate(5, 2),
+                false, "q");
+    }
+
+    @Test
+    public void makeMoveTestCheckOnWrongTurn() {
+        makeMoveTest("rnbqkbnr/pppp4/4p3/6Q1/8/8/PPPPP3/RNB1KBNR w KQkq - 0 1",
+                new Coordinate(6, 4), new Coordinate(6, 5),
+                false, "q");
+    }
+
+    @Test
+    public void makeMoveTestCheckOnTurn() {
+        makeMoveTest("rnbqkbnr/pppp4/4p3/6Q1/8/8/PPPPP3/RNB1KBNR b KQkq - 0 1",
+                new Coordinate(4, 7), new Coordinate(4, 6),
+                true);
     }
 
 

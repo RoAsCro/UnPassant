@@ -52,6 +52,7 @@ public class UnMoveMaker {
             if (this.captureFlag) {
                 this.board.place(captureLocation, this.capturePiece);
             }
+//            if (board.)
             return true;
         }
         return false;

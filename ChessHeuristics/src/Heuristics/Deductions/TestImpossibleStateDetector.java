@@ -30,6 +30,9 @@ public class TestImpossibleStateDetector {
 
     public boolean testState(BoardInterface board) {
         this.pieceNumber.observe(board);
+        if (board.inCheck(board.getTurn().equals("white") ? "black" : "white")) {
+            return false;
+        }
         if (this.pieceNumber.getBlackPieces() > MAX_PIECES || this.pieceNumber.getWhitePieces() > MAX_PIECES) {
             return false;
         }

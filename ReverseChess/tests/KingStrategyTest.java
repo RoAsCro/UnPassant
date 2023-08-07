@@ -194,4 +194,23 @@ public class KingStrategyTest {
 
     }
 
+    @Test
+    public void testTryUnMoveIntoCheck() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppp4/4p3/6Q1/8/8/PPPPP3/RNB1KBNR b KQkq - 0 1");
+        Coordinate originTwo = new Coordinate(4, 6);
+        Piece pieceTwo = boardTwo.at(Coordinates.BLACK_KING);
+        Assertions.assertTrue(pieceTwo.tryUnMove(Coordinates.BLACK_KING, originTwo, boardTwo));
+//        originTwo = new Coordinate(6, 0);
+//        pieceTwo = boardTwo.at(originTwo);
+//        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+//
+//        originTwo = new Coordinate(2, 7);
+//        pieceTwo = boardTwo.at(originTwo);
+//        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+//        originTwo = new Coordinate(6, 7);
+//        pieceTwo = boardTwo.at(originTwo);
+//        Assertions.assertFalse(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+
+    }
+
 }
