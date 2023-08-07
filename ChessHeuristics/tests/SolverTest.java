@@ -50,5 +50,19 @@ public class SolverTest {
                 true, "b");
     }
 
+    @Test
+    public void makeMoveTestUnCapturePawnOnFinalRank() {
+        makeMoveTest("rnbqk1nr/ppppp3/4b3/8/8/8/PPPPP3/RNBQK1NR b KQkq - 0 1",
+                new Coordinate(6, 7), new Coordinate(5, 5),
+                false, "p");
+    }
+
+    @Test
+    public void makeMoveTestUnCapturePawnOnFirstRank() {
+        makeMoveTest("rnbqk2r/ppppp3/4b3/8/8/8/PPPPP3/RNBQKnNR b KQkq - 0 1",
+                new Coordinate(5, 0), new Coordinate(6, 2),
+                false, "p");
+    }
+
 
 }

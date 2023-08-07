@@ -10,13 +10,5 @@ public interface Deduction {
 
     public boolean deduce(BoardInterface board);
 
-    void addOr(Deduction deduction);
-
-    void addXor(Deduction deduction);
-
-    List<Deduction> orList();
-
-    List<Deduction> orList(List<Deduction> list);
-
     public Boolean getState();
 }
