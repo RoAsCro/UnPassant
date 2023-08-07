@@ -337,50 +337,6 @@ public class PromotionMap extends AbstractDeduction {
         }
         this.state = false;
         stateIterateStart(board);
-//        for (Map<Path, Path> blackClaim : this.claimsBlack) {
-//            for (Map<Path, Path> whiteClaim : this.claimsWhite) {
-////            CombinedPawnMap combinedPawnMap = new PromotionCombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
-////        //system.out.println("Prior" + this.pawnMapWhite.getPawnOrigins());
-//                this.origins = Path.of(whiteClaim.values().stream().flatMap(Path::stream).toList());
-//                this.origins.addAll(blackClaim.values().stream().flatMap(Path::stream).toList());
-//                this.promotionPawnMapWhite = new PromotionPawnMapWhite();
-//                this.promotionPawnMapBlack = new PromotionPawnMapBlack();
-//                this.combinedPawnMap = new PromotionCombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
-//                this.combinedPawnMap.deduce(board);
-//                //system.out.println("STESTE" + (this.promotionPawnMapBlack.state && this.promotionPawnMapWhite.state && combinedPawnMap.state));
-//                if (this.promotionPawnMapBlack.state && this.promotionPawnMapWhite.state && combinedPawnMap.state) {
-//                    this.state = true;
-//                    break;
-//                }
-////        //system.out.println("Prior" + this.pawnMapWhite.getPawnOrigins());
-//            }
-//        }
-
-//        this.promotionPawnMapWhite = new PromotionPawnMapWhite();
-//                this.promotionPawnMapBlack = new PromotionPawnMapBlack();
-//        this.origins = this.origins;
-//        this.combinedPawnMap = new PromotionCombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
-//        this.combinedPawnMap.deduce(board);
-
-
-        //system.out.println("Combined:");
-        //system.out.println(savedOrigin);
-        //system.out.println(this.origins);
-
-        //system.out.println(combinedPawnMap.getWhitePaths());
-        //system.out.println(this.promotionPawnMapWhite.getPawnOrigins());
-        //system.out.println(combinedPawnMap.getBlackPaths());
-
-        //system.out.println(this.pawnMapWhite.getPawnOrigins());
-        //system.out.println("States:");
-        //system.out.println(this.promotionPawnMapBlack.state);
-        //system.out.println(this.promotionPawnMapWhite.state);
-        //system.out.println(combinedPawnMap.state);
-        //system.out.println(this.pawnMap.getState());
-        //system.out.println(this.pawnMapWhite.getState());
-        //system.out.println(this.pawnMapBlack.getState());
-        //system.out.println(priorCheck);
-//        this.state = this.promotionPawnMapBlack.state && this.promotionPawnMapWhite.state && combinedPawnMap.state;
 
         return false;
     }
@@ -434,6 +390,8 @@ public class PromotionMap extends AbstractDeduction {
         this.promotionPawnMapWhite = new PromotionPawnMapWhite();
         this.promotionPawnMapBlack = new PromotionPawnMapBlack();
         this.combinedPawnMap = new PromotionCombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
+        this.promotionPawnMapWhite.deduce(board);
+        this.promotionPawnMapBlack.deduce(board);
         this.combinedPawnMap.deduce(board);
 //            //system.out.println("STESTE" + (this.promotionPawnMapBlack.state && this.promotionPawnMapWhite.state && combinedPawnMap.state));
         if (this.promotionPawnMapBlack.state && this.promotionPawnMapWhite.state && combinedPawnMap.state) {

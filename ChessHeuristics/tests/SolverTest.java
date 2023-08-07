@@ -1,4 +1,5 @@
 import StandardChess.BoardBuilder;
+import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -6,14 +7,22 @@ import org.junit.jupiter.api.Test;
 
 public class SolverTest {
 
-    public void makeMoveTest(String fen, Coordinate origin, Coordinate target, boolean pass, String piece) {
-        Assertions.assertEquals(pass, new Solver().makeMove(BoardBuilder.buildBoard(fen),
-                origin, target, piece));
+    public void makeMoveTest(String fen, Coordinate origin, Coordinate target, boolean pass, String piece, boolean promotion) {
+        ChessBoard board = BoardBuilder.buildBoard(fen);
+        Assertions.assertEquals(pass, new Solver().makeMove(board,
+                origin, target, piece, promotion));
+        System.out.println(board.getReader().toFEN());
     }
 
     public void makeMoveTest(String fen, Coordinate origin, Coordinate target, boolean pass) {
-        makeMoveTest(fen, origin, target, pass, "");
+        makeMoveTest(fen, origin, target, pass, "", false);
     }
+
+    public void makeMoveTest(String fen, Coordinate origin, Coordinate target, boolean pass, String piece) {
+        makeMoveTest(fen, origin, target, pass, piece, false);
+    }
+
+
 
     @Test
     public void makeMoveTestOne() {
@@ -87,15 +96,61 @@ public class SolverTest {
     }
 
     @Test
-    public void makeMoveTestCheckOnTurn() {
-        makeMoveTest("rnbqkbnr/pppp4/4p3/6Q1/8/8/PPPPP3/RNB1KBNR b KQkq - 0 1",
-                new Coordinate(4, 7), new Coordinate(4, 6),
-                false);
+    public void unPromote() {
+        makeMoveTest("rnbqk1N1/ppppp3/8/8/8/8/PPPPP3/RNBQK1b1 w Qq - 0 1",
+                new Coordinate(6, 7), new Coordinate(6, 6),
+                true, "", true);
+    }
+    @Test
+    public void unPromoteBlack() {
+        makeMoveTest("rnbqk1N1/ppppp3/8/8/8/8/PPPPP3/RNBQK1b1 b Qq - 0 1",
+                new Coordinate(6, 0), new Coordinate(6, 1),
+                true, "", true);
     }
 
     @Test
-    public void solveTest() {
+    public void unPromoteCaptureNoPiece() {
+        makeMoveTest("rnbqk1N1/ppppp3/8/8/8/8/PPPPP3/RNBQK1b1 b Qq - 0 1",
+                new Coordinate(6, 0), new Coordinate(5, 1),
+                false, "", true);
+    }
+
+    @Test
+    public void unPromoteCapturePiece() {
+        makeMoveTest("rnbqk1N1/ppppp3/8/8/8/8/PPPPP3/RNBQK1b1 b Qq - 0 1",
+                new Coordinate(6, 0), new Coordinate(7, 1),
+                true, "r", true);
+    }
+
+
+
+
+
+    @Test
+    public void chessMysteries1() {
+        // Simple
         new Solver().solve(BoardBuilder.buildBoard("k1K5/8/8/8/8/8/7P/6B1 b - - 0 1"), 2);
+    }
+
+    @Test
+    public void chessMysteries2() {
+        // Part 1 - Whose move?
+        // Part 2 - Which Direction?
+        String board1 = "k1K5/4Q3/8/2B1P3/3P4/7P/8/7B";
+        String board2 = "7B/8/7P/3P4/2B1P3/8/4Q3/k1K5";
+        System.out.println("Testing 1...");
+        new Solver().solve(BoardBuilder.buildBoard(board1 + " w"), 1);
+
+        System.out.println("Testing 2...");
+        new Solver().solve(BoardBuilder.buildBoard(board1 + " b"), 1);
+
+        System.out.println("Testing 4...");
+        new Solver().solve(BoardBuilder.buildBoard(board2 + " b"), 1);
+
+        System.out.println("Testing 3...");
+        new Solver().solve(BoardBuilder.buildBoard(board2 + " w"), 1);
+
+
     }
 
 

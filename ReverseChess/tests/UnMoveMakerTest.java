@@ -207,6 +207,13 @@ public class UnMoveMakerTest {
     }
 
     @Test
+    public void tryMakeUnMovePromoteCaptureBlack() {
+        Coordinate target = new Coordinate(2, 1);
+        Coordinate origin = new Coordinate(2, 0);
+        makeUnMoveWithPromotion(origin, target, "null", "pawn", true, BoardBuilder.buildBoard("1KB1kNnr/p3p1pp/rppp4/4b3/8/5P2/PP2PPPP/RNqQ1BNR w - - 0 1"), false, "p");
+    }
+
+    @Test
     public void tryMakeUnMovePromoteCapture() {
         Coordinate target = new Coordinate(3, 1);
         Coordinate origin = new Coordinate(2, 0);

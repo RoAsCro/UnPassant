@@ -49,7 +49,7 @@ public class CaptureLocations extends AbstractDeduction {
     @Override
     public boolean deduce(BoardInterface board) {
         int capturesToRemove = 0;
-        this.pieceMap.deduce(board);
+//        this.pieceMap.deduce(board);
         int whiteRemovals = reductions(board, true);
         int blackRemovals = reductions(board, false);
 
@@ -61,6 +61,9 @@ public class CaptureLocations extends AbstractDeduction {
 //            System.out.println("Rerunning...");
             this.pawnMapWhite.updateMaxCapturedPieces(whiteRemovals);
             this.pawnMapBlack.updateMaxCapturedPieces(blackRemovals);
+            this.pawnMapWhite.deduce(board);
+            this.pawnMapBlack.deduce(board);
+            this.combinedPawnMap.deduce(board);
             this.pieceMap.deduce(board);
         }
 //        System.out.println("WRemovals" + whiteRemovals);
@@ -96,7 +99,7 @@ public class CaptureLocations extends AbstractDeduction {
                         return true;
                     }
                     if (map.size() == 1) {
-                        System.out.println(entry.getKey());
+//                        System.out.println(entry.getKey());
                         return this.pieceMap.getStartLocations()
                                 .get(new Coordinate(Math.abs(7 - entry.getKey().getX()), entry.getKey().getY()))
                                 .containsKey(map.keySet().stream().findAny().orElse(new Coordinate(-1, -1)))

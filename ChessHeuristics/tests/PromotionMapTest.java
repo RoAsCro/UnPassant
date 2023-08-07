@@ -36,6 +36,14 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("4k3/8/8/3BB3/8/7P/2PPPPP1/RNBQKBNR w KQ - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
         System.out.println(promotionMap.getPawnOrigins("white"));
@@ -50,6 +58,10 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbnr/1pppp1pp/5p2/2Q5/8/8/1PPPPPPP/RNBQKBNR w KQk - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
         Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
@@ -69,6 +81,10 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("2bqkbnr/1pppp1pp/1pn2p2/2Q5/8/2P5/2PPPPPP/RNBQKB1R w KQk - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
         Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
@@ -82,6 +98,10 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/8/p2Q4/8/1PPPPPPP/RNBQKBNR"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
@@ -101,6 +121,10 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/2pppppp/8/8/p2Q4/8/1PPPPPPP/RNBQKBNR w - - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
@@ -120,6 +144,10 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkbnr/2pppppp/8/8/p2Q4/8/1PPPPPPP/RNBQKBNR w - - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
@@ -141,6 +169,10 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkbnr/2pppppp/5P2/3P4/p1PQP1PP/1P6/8/RNBQKBNR w - - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
@@ -162,6 +194,10 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/3q4/3Q4/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
@@ -188,6 +224,10 @@ public class PromotionMapTest {
             BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/3q4/3Q4/8/1PPPPPPP/2BQKBNR w Kkq - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
@@ -214,6 +254,10 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/3q4/3Q4/8/1PPPPPPP/R1BQKBNR w KQkq - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
@@ -238,6 +282,10 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkbnr/1ppppppp/8/3q4/3Q4/8/1PPPPPPP/R1BQKBNR w KQkq - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
@@ -263,6 +311,10 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkbnr/p1pppppp/8/4q3/4Q3/8/P1PPPPPP/R1BQKBNR w KQkq - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
@@ -288,6 +340,10 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/p1ppppp1/6p1/4q3/4Q3/6P1/P1PPPPP1/R1BQKB1R w KQkq - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
@@ -313,6 +369,10 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("2b1k3/1pppp3/8/2B2p2/1B6/8/2PPPPPP/RNBQKBNR w KQ - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());

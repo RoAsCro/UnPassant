@@ -151,7 +151,7 @@ public class Pathfinder {
                                          Predicate<Path> pathCondition) {
         path.add(origin);
         if (endCondition.test(board, origin)) {
-            System.out.println("g: " + path);
+//            System.out.println("g: " + path);
             possiblePaths.add(path);
             return;
         }
@@ -195,12 +195,12 @@ public class Pathfinder {
         if (y == 0 || y == 7 && containingPath.size() > 2 && containedPath.size() > 2) {
             Coordinate secondTarget = containingPath.get(containingPath.size() - 2);
             if (containedPath.contains(secondTarget)) {
-                System.out.println(containedPath);
-                System.out.println(containingPath);
+                //system.out.println(containedPath);
+                //system.out.println(containingPath);
 
-                System.out.println(containedPath.subList(containedPath.indexOf(secondTarget), containedPath.size() - 1));
+                //system.out.println(containedPath.subList(containedPath.indexOf(secondTarget), containedPath.size() - 1));
 
-                System.out.println("GETHERE");
+                //system.out.println("GETHERE");
 
                 return containingPath.containsAll(containedPath.subList(containedPath.indexOf(secondTarget), containedPath.size() - 1));
             }

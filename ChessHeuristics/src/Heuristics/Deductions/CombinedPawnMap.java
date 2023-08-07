@@ -66,8 +66,8 @@ public class CombinedPawnMap extends AbstractDeduction {
     @Override
     public boolean deduce(BoardInterface board) {
 
-        this.black.deduce(board);
-        this.white.deduce(board);
+//        this.black.deduce(board);
+//        this.white.deduce(board);
 
         boolean changed = true;
         while (changed) {

@@ -26,7 +26,11 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+        blackMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(map.getPawnOrigins());
         System.out.println(combinedPawnMap.getWhitePaths());
         System.out.println(combinedPawnMap.getBlackPaths());
@@ -46,7 +50,11 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+        blackMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(map.getPawnOrigins());
         System.out.println(combinedPawnMap.getWhitePaths());
         Assertions.assertTrue(combinedPawnMap.getState());
@@ -65,7 +73,11 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+        blackMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(map.getPawnOrigins().get(new Coordinate(0, 4)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)));
         System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 3)));
@@ -87,7 +99,11 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+        blackMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(map.getPawnOrigins().get(new Coordinate(0, 2)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 2)));
         Assertions.assertEquals(2, combinedPawnMap.getWhitePaths().get(new Coordinate(0, 2)).size());
@@ -108,7 +124,11 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+        blackMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(Pathfinder.pathsExclusive(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).get(0), combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)).get(0)));
         System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 3)));
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
@@ -132,7 +152,11 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+        blackMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 3)));
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
         System.out.println(map.getPawnOrigins().get(new Coordinate(0, 4)));
@@ -155,7 +179,11 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+        blackMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(5, 3)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(4, 4)));
         Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(5, 3)).size());
@@ -176,7 +204,11 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+        blackMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 3)));
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
         System.out.println(map.getPawnOrigins().get(new Coordinate(0, 4)));
@@ -203,7 +235,9 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 3)));
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
         System.out.println(map.getPawnOrigins().get(new Coordinate(0, 4)));
@@ -232,7 +266,9 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(3, 3)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(4, 4)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(3, 4)));
@@ -254,7 +290,9 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(3, 3)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(3, 4)));
         Assertions.assertFalse(combinedPawnMap.getBlackPaths().get(new Coordinate(3, 3)).get(0).contains(new Coordinate(3, 4)));
@@ -275,7 +313,9 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 3)));
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
         System.out.println(map.getPawnOrigins().get(new Coordinate(0, 4)));
@@ -302,7 +342,9 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 4)));
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 4)));
         Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(0, 4)).size());
@@ -324,7 +366,9 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 4)));
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 4)));
         System.out.println(blackMap.getPawnOrigins().get(new Coordinate(4, 3)));
@@ -353,7 +397,9 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
 //        System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 4)));
 //        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 4)));
 //        System.out.println(blackMap.getPawnOrigins().get(new Coordinate(4, 3)));
@@ -393,7 +439,9 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
 //        System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 4)));
 //        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 4)));
 //        System.out.println(blackMap.getPawnOrigins().get(new Coordinate(4, 3)));
@@ -432,7 +480,9 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(Pathfinder.pathsExclusive(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).get(0), combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)).get(0)));
         System.out.println(blackMap.getPawnOrigins().get(new Coordinate(0, 3)));
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
@@ -456,7 +506,9 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(combinedPawnMap.getBlackPaths());
         System.out.println(combinedPawnMap.getWhitePaths());
 
@@ -479,7 +531,9 @@ public class CombinedPawnMapTest {
             o.observe(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
-        combinedPawnMap.deduce(board);
+        map.deduce(board);
+blackMap.deduce(board);
+combinedPawnMap.deduce(board);
         System.out.println(combinedPawnMap.getBlackPaths());
         System.out.println(combinedPawnMap.getWhitePaths());
 

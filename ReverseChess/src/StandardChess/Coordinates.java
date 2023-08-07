@@ -4,6 +4,8 @@ import java.util.List;
 
 public class Coordinates {
 
+    private static final int LOWER_ASCII_A = 97;
+
     public static final Coordinate BLACK_KING = new Coordinate(4, 7);
     public static final Coordinate BLACK_KING_ROOK = new Coordinate(7, 7);
     public static final Coordinate BLACK_QUEEN_ROOK = new Coordinate(0, 7);
@@ -38,6 +40,10 @@ public class Coordinates {
 
     public static Coordinate add(Coordinate origin, Coordinate target) {
         return new Coordinate(origin.getX() + target.getX(), origin.getY() + target.getY());
+    }
+
+    public static String readableString(Coordinate coordinate) {
+        return ((char) (coordinate.getX() + LOWER_ASCII_A)) + "" + ((int) (coordinate.getY() + 1));
     }
 
 }

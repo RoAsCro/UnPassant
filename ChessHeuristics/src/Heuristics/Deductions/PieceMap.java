@@ -134,7 +134,7 @@ public class PieceMap extends AbstractDeduction{
 
     @Override
     public boolean deduce(BoardInterface board) {
-        pawnMap.deduce(board);
+//        pawnMap.deduce(board);
         // bishops -> royalty -> rooks
         Arrays.stream(new int[]{2, 5, 3, 4, 0, 7}).forEach(x -> {
             findFromOrigin(board, x, true, false);
