@@ -6,12 +6,15 @@ import Heuristics.Observations.PieceNumber;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 
+import java.util.Arrays;
+
 public class StateDetectorFactory {
 
     private static Deduction[] getDeductions(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction... deductions) {
         PawnMapWhite pmw = null;
         PawnMapBlack pmb = null;
         CombinedPawnMap cpm = null;
+//        System.out.println(Arrays.stream(deductions).toList());
         for (Deduction d : deductions) {
             if (d instanceof PawnMapWhite p) {
                 pmw = new PawnMapWhite(p);
@@ -21,16 +24,18 @@ public class StateDetectorFactory {
                 cpm = p;
             }
         }
+//        System.out.println(pmw);
         pmw = pmw == null ? new PawnMapWhite(pawnNumber, pieceNumber) : pmw;
         pmb = pmb == null ? new PawnMapBlack(pawnNumber, pieceNumber) : pmb;
         cpm = cpm == null ? new CombinedPawnMap(pmw, pmb) : cpm;
 
+//        System.out.println(pmw.getPawnOrigins());
 
         PawnPositions pp = new PawnPositions();
         PieceMap pm = new PieceMap(cpm);
         CaptureLocations cl = new CaptureLocations(pmw, pmb, pm, cpm);
         PromotionMap prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
-        return new Deduction[]{pp, pmw, pmb, cpm, cl, prm};
+        return new Deduction[]{pp, pmw, pmb, pm, cpm, cl, prm};
     }
 
     public static SolverImpossibleStateDetector getDetector(ChessBoard board) {
@@ -43,11 +48,11 @@ public class StateDetectorFactory {
         return getDetector(BoardBuilder.buildBoard(fen));
     }
 
-    public static SolverImpossibleStateDetector getDetector(String fen, Deduction... deductions) {
+    public static SolverImpossibleStateDetector getDetector(ChessBoard board, Deduction... deductions) {
         PawnNumber pawnNumber = new PawnNumber();
         PieceNumber pieceNumber = new PieceNumber();
         return new SolverImpossibleStateDetector(pawnNumber, pieceNumber,
-                new BoardInterface(BoardBuilder.buildBoard(fen)), getDeductions(pawnNumber, pieceNumber, deductions));
+                new BoardInterface(board), getDeductions(pawnNumber, pieceNumber, deductions));
     }
 
 

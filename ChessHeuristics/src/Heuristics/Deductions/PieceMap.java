@@ -20,7 +20,6 @@ public class PieceMap extends AbstractDeduction{
     private final Map<Coordinate, Map<Coordinate, Path>> startLocations = new TreeMap<>();
     // Consider deleting
     public final Map<Coordinate, Path> startPiecePairs = new TreeMap<>();
-    private final Map<Coordinate, List<Path>> pieceMap = new TreeMap<>();
     private final Map<Coordinate, Boolean> caged = new TreeMap<>();
 
     private final Map<Coordinate, Path> promotedPieceMap;

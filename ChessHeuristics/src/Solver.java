@@ -3,10 +3,7 @@ import Heuristics.Deductions.CombinedPawnMap;
 import Heuristics.Path;
 import StandardChess.*;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Solver {
 
@@ -14,12 +11,15 @@ public class Solver {
     LinkedList<String> fens;
     UnMoveMaker mover;
     boolean turnIsWhite;
-    private int additionalDepth = 1;
+    private int additionalDepth = 2;
     private int numberOfSolutions = 100;
 
     private final static List<String> PIECES = List.of("", "p", "r", "b", "n", "q");
 
     private int count = 0;
+
+    private Map<String, SolverImpossibleStateDetector> stringDetectorMap = new HashMap<>();
+
 
     public void solve(ChessBoard board, int depth) {
         this.originalBoard = board.getReader().toFEN();
@@ -43,14 +43,15 @@ public class Solver {
                 break;
             }
             stateSizes.push(stateSizes.pop() - 1);
-            String[] stateDescription = states.pop().split(":");
+            String state = states.pop();
+            String[] stateDescription = state.split(":");
             String currentState = stateDescription[0];
             if (currentDepth != depth) {
                 ChessBoard currentBoard = BoardBuilder.buildBoard(currentState);
                 List<Coordinate> pieces = allPieces(currentBoard);
                 stateSizes.push(0);
                 for (Coordinate piece : pieces) {
-                    List<String> newStates = iterateThroughMoves(currentBoard, piece);
+                    List<String> newStates = iterateThroughMoves(currentBoard, piece, state, any && currentDepth == depth - 1);
                     stateSizes.push(stateSizes.pop() + newStates.size());
                     newStates.forEach(s ->
                             states.push(s.split(":")[0]
@@ -97,7 +98,7 @@ public class Solver {
                 .values().stream().flatMap(Path::stream).toList();
     }
 
-    private List<String> iterateThroughMoves(ChessBoard board, Coordinate origin) {
+    private List<String> iterateThroughMoves(ChessBoard board, Coordinate origin, String currentState, boolean any) {
         // If piece is on final rank, allow it to be a pawn.
         List<String> states = new LinkedList<>();
 
@@ -105,17 +106,21 @@ public class Solver {
         boolean white = board.getTurn().equals("white");
         if ((white && origin.getY() == 7) || (!white && origin.getY() == 0) && !board.at(origin).getType().equals("king")) {
             Coordinate[] additionalMoves = StandardPieceFactory.getInstance().getPiece(white ? "p" : "P").getMoves(origin);
-            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, true));
+            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, true, any));
+            if (any && !states.isEmpty()) {
+                return states;
+            }
 //            List<Coordinate> tempMoves = new LinkedList<>(Arrays.stream(moves).toList());
 //            tempMoves.addAll((Arrays.stream(additionalMoves).toList()));
 //            moves = tempMoves.toArray(moves);
         }
-        states.addAll(iterateThroughMovesHelper(board, moves, origin, false));
+        states.addAll(iterateThroughMovesHelper(board, moves, origin, currentState, false, any));
 
         return states;
     }
 
-    private List<String> iterateThroughMovesHelper(ChessBoard board, Coordinate[] moves, Coordinate origin, boolean promotion) {
+    private List<String> iterateThroughMovesHelper(ChessBoard board, Coordinate[] moves,
+                                                   Coordinate origin, String currentState, boolean promotion, boolean any) {
         List<String> states = new LinkedList<>();
         boolean white = board.getTurn().equals("white");
         for (Coordinate currentMove : moves) {
@@ -125,17 +130,23 @@ public class Solver {
                 for (String piece : PIECES) {
                     ChessBoard currentBoard = BoardBuilder.buildBoard(board.getReader().toFEN());
                     Coordinate target = Coordinates.add(origin, new Coordinate(direction.getX() * i, direction.getY() * i));
-                    this.count++;
+//                    this.count++;
 //                    System.out.println(this.count);
                     if (makeJustMove(currentBoard,
                             origin,
                             target,
                             piece,
                             promotion)){
-                        if (testState(currentBoard)) {
+                        if (CheckUtil.check(new BoardInterface(currentBoard)) &&
+                                (!(currentBoard.at(target).getType().charAt(0) == 'p') && piece.equals("") && !promotion)
+                            || testState(currentBoard)) {
+
 
                             currentBoard.setTurn(white ? "black" : "white");
                             states.add(currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece));
+                            if (any) {
+                                break;
+                            }
                         }
                     } else {
                         continueFlag = false;
@@ -155,7 +166,26 @@ public class Solver {
     }
 
     private boolean testState(ChessBoard board) {
-        return StateDetectorFactory.getDetector(board).testState();
+//        String lastMove =  move.split(":")[1];
+//        if (!(board.at(target).getType().charAt(0) == 'p') && piece.equals("") && !promotion) {
+////            System.out.println(board.getReader().toFEN());
+//            return true;
+//        }
+
+
+
+
+        SolverImpossibleStateDetector detector;
+//        if (this.stringDetectorMap.containsKey(move)) {
+//            detector = DetectorUpdater.update(board, move, this.stringDetectorMap.get(move));
+//        } else {
+            detector = StateDetectorFactory.getDetector(board);
+//        }
+        boolean pass = detector.testState();
+//        if (pass) {
+//            this.stringDetectorMap.put(move, detector);
+//        }
+        return pass;
     }
 
     private boolean makeJustMove(ChessBoard board, Coordinate origin, Coordinate target, String piece, boolean promotion) {
