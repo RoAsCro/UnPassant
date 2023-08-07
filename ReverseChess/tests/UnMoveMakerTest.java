@@ -257,4 +257,13 @@ public class UnMoveMakerTest {
         Assertions.assertFalse(unMoveMaker.makeUnMove(origin, target));
     }
 
+    @Test
+    public void tryMakeUnMoveOutOfBounds() {
+        Coordinate target = new Coordinate(1, 8);
+        Coordinate origin = new Coordinate(1, 7);
+        UnMoveMaker unMoveMaker = new UnMoveMaker(this.boardFour);
+        this.boardFour.setTurn("white");
+        Assertions.assertFalse(unMoveMaker.makeUnMove(origin, target));
+    }
+
 }

@@ -86,5 +86,10 @@ public class SolverTest {
                 true);
     }
 
+    @Test
+    public void solveTest() {
+        new Solver().solve(BoardBuilder.buildBoard("k1K5/8/8/8/8/8/7P/6B1 b - - 0 1"), 2);
+    }
+
 
 }

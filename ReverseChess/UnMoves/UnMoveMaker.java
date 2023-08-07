@@ -17,6 +17,9 @@ public class UnMoveMaker {
     }
 
     private boolean makeUnMoveHelper(Coordinate origin, Coordinate target) {
+        if(!Coordinates.inBounds(origin) || !Coordinates.inBounds(target)) {
+            return false;
+        }
         Piece piece = this.board.at(origin);
         Coordinate captureLocation = origin;
         if (!this.board.getTurn().equals(piece.getColour())) {
