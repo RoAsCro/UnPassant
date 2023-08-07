@@ -55,7 +55,7 @@ public class UnMoveMaker {
             if (this.captureFlag) {
                 this.board.place(captureLocation, this.capturePiece);
             }
-//            if (board.)
+//            System.out.println(board.getReader().toFEN());
             return true;
         }
         return false;

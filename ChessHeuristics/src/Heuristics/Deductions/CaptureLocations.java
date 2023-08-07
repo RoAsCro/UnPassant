@@ -58,18 +58,18 @@ public class CaptureLocations extends AbstractDeduction {
 
         // Updates the pawn map
         if (whiteRemovals + blackRemovals != 0) {
-            System.out.println("Rerunning...");
+//            System.out.println("Rerunning...");
             this.pawnMapWhite.updateMaxCapturedPieces(whiteRemovals);
             this.pawnMapBlack.updateMaxCapturedPieces(blackRemovals);
             this.pieceMap.deduce(board);
         }
-        System.out.println("WRemovals" + whiteRemovals);
-        System.out.println("BRemovals" + blackRemovals);
-        System.out.println(this.pieceMap.getCaged());
-        System.out.println(board.getReader().toFEN());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getState());
-        System.out.println(this.pawnMapBlack.getState());
+//        System.out.println("WRemovals" + whiteRemovals);
+//        System.out.println("BRemovals" + blackRemovals);
+//        System.out.println(this.pieceMap.getCaged());
+//        System.out.println(board.getReader().toFEN());
+//        System.out.println(this.pawnMapWhite.getPawnOrigins());
+//        System.out.println(this.pawnMapWhite.getState());
+//        System.out.println(this.pawnMapBlack.getState());
 
 
 
@@ -86,7 +86,7 @@ public class CaptureLocations extends AbstractDeduction {
         String colour = white ? "white" : "black";
 //        int missingPawns = (8 - (white ? this.pawnNumber.getBlackPawns() : this.pawnNumber.getWhitePawns()));
 //        int missingNonPawns = (16 - (white ? this.pawnNumber.getBlackPawns() : this.pawnNumber.getWhitePawns())) - missingPawns;
-        System.out.println("SLCT" + this.pieceMap.getStartLocations());
+//        System.out.println("SLCT" + this.pieceMap.getStartLocations());
         Path ofWhichCaged = Path.of(this.pieceMap.getCaged().entrySet().stream()
                 .filter(entry -> entry.getKey().getY() == (white ? 7 : 0))
                 .filter(Map.Entry::getValue) //Is Caged
@@ -124,11 +124,11 @@ public class CaptureLocations extends AbstractDeduction {
 //            }
 //        }
 
-        System.out.println(colour);
-        System.out.println("Caged" + ofWhichCaged);
+//        System.out.println(colour);
+//        System.out.println("Caged" + ofWhichCaged);
 
 
-        System.out.println("Ofwhick" + ofWhichBishop);
+//        System.out.println("Ofwhick" + ofWhichBishop);
 
 
         Map<Integer, Path> reachable = Map.of(0, new Path(), 7, new Path());
@@ -151,8 +151,8 @@ public class CaptureLocations extends AbstractDeduction {
 
         int innaccessibleTakenRooks = 0;
 
-        System.out.println("Innacces" + reachable);
-        System.out.println("rook" + ofWhichRook);
+//        System.out.println("Innacces" + reachable);
+//        System.out.println("rook" + ofWhichRook);
 
         //Check each rook is only pathing to one pawn
         for (int i = 0 ; i < ofWhichRook.size() ; i++){
@@ -160,9 +160,9 @@ public class CaptureLocations extends AbstractDeduction {
             Coordinate coordinate = ofWhichRook.get(i);
             int size = reachable.get(coordinate.getX()).size();
 
-            System.out.println(size);
+//            System.out.println(size);
             if (size == 0) {
-                System.out.println("ZERO");
+//                System.out.println("ZERO");
                 increase = true;
                 innaccessibleTakenRooks += 1;
             } else if (!(ofWhichRook.size() == 1) && !(size > 1)) {
@@ -173,9 +173,9 @@ public class CaptureLocations extends AbstractDeduction {
                 }
             }
             if (increase) {
-                System.out.println("increases");
+//                System.out.println("increases");
                 if (white) {
-                    System.out.println("increases");
+//                    System.out.println("increases");
 
                     this.whiteCagedCaptures.add(coordinate);
                 } else {
@@ -183,8 +183,8 @@ public class CaptureLocations extends AbstractDeduction {
                 }
             }
         }
-        System.out.println("Innacces" + innaccessibleTakenRooks);
-        System.out.println("Innacces" + reachable);
+//        System.out.println("Innacces" + innaccessibleTakenRooks);
+//        System.out.println("Innacces" + reachable);
 
 
 
@@ -198,7 +198,7 @@ public class CaptureLocations extends AbstractDeduction {
                         .filter(entry -> entry.getValue().isEmpty()) //Is missing
                         .map(entry -> ((entry.getKey().getX() + entry.getKey().getY()) % 2 == 0)  ? DARK_TEST : LIGHT_TEST)
                         .toList());
-        System.out.println(predicates.size());
+//        System.out.println(predicates.size());
 
         Map<Coordinate, List<Path>> paths = white ? this.combinedPawnMap.getWhitePaths() : this.combinedPawnMap.getBlackPaths();
 
@@ -209,7 +209,7 @@ public class CaptureLocations extends AbstractDeduction {
                         .reduce((i, j) -> i < j ? i : j)
                         .orElse(0))
                 .reduce(0, Integer::sum);
-        System.out.println(otherValue);
+//        System.out.println(otherValue);
         if (otherValue == this.combinedPawnMap.captures(colour) && otherValue != 0) {
 
 
@@ -223,7 +223,7 @@ public class CaptureLocations extends AbstractDeduction {
                     BiPredicate<Coordinate, Coordinate> predicate = predicateIterator.next();
                     for (int j = 0; j < path.size() - 1; j++) {
                         if (predicate.test(path.get(j), path.get(j + 1))) {
-                            System.out.println(path);
+//                            System.out.println(path);
                             predicateIterator.remove();
                             break;
                         }
@@ -234,12 +234,12 @@ public class CaptureLocations extends AbstractDeduction {
                 capturesToRemove += predicates.size();
             }
         }
-        System.out.println("finalVerdict");
-        System.out.println(white);
-        System.out.println(capturesToRemove);
-        System.out.println(ofWhichBishop);
-        System.out.println(ofWhichQueen);
-        System.out.println(innaccessibleTakenRooks);
+//        System.out.println("finalVerdict");
+//        System.out.println(white);
+//        System.out.println(capturesToRemove);
+//        System.out.println(ofWhichBishop);
+//        System.out.println(ofWhichQueen);
+//        System.out.println(innaccessibleTakenRooks);
 
 
 

@@ -47,6 +47,7 @@ public class Solver {
                 currentDepth--;
             }
         }
+        System.out.println(finalStates);
 
     }
 
@@ -68,7 +69,8 @@ public class Solver {
                             origin,
                             Coordinates.add(origin, new Coordinate(direction.getX() * i, direction.getY() * i)),
                             piece)){
-                        if (testState(board)) {
+                        if (testState(currentBoard)) {
+                            currentBoard.setTurn(currentBoard.getTurn().equals("white") ? "black" : "white");
                             states.add(currentBoard.getReader().toFEN());
                         }
                     } else {

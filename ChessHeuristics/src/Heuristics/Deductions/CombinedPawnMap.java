@@ -77,12 +77,12 @@ public class CombinedPawnMap extends AbstractDeduction {
             Map<Coordinate, Path> startingPawnOriginsBlack = Map.copyOf(this.black.getPawnOrigins());
 
 
-//            System.out.println("1A" + black.getMaxCaptures(new Coordinate(0, 4)));
-            System.out.println("change");
-            System.out.println(startingWhite);
+//            //system.out.println("1A" + black.getMaxCaptures(new Coordinate(0, 4)));
+            //system.out.println("change");
+            //system.out.println(startingWhite);
 
-            System.out.println(startingPawnOriginsWhite);
-            System.out.println(startingPawnOriginsBlack);
+            //system.out.println(startingPawnOriginsWhite);
+            //system.out.println(startingPawnOriginsBlack);
             makeMaps(board, false);
 
             makeMaps(board, true);
@@ -90,10 +90,10 @@ public class CombinedPawnMap extends AbstractDeduction {
 
 
 
-            System.out.println(this.getWhitePaths());
-            System.out.println(this.getBlackPaths());
+            //system.out.println(this.getWhitePaths());
+            //system.out.println(this.getBlackPaths());
 
-            System.out.println("CCCCCC" + this.whitePaths);
+            //system.out.println("CCCCCC" + this.whitePaths);
 
             if ((!exclude(board, true) & !exclude(board, false))
                     || (startingWhite.values().containsAll(this.whitePaths.values())
@@ -104,33 +104,33 @@ public class CombinedPawnMap extends AbstractDeduction {
                 changed = false;
             }
 
-            System.out.println("CHANGES HERE: ");
-            System.out.println(startingWhite);
-            System.out.println(this.whitePaths);
-            System.out.println(startingWhite.values().equals(this.whitePaths));
-            System.out.println(startingBlack);
-            System.out.println(this.blackPaths);
-            System.out.println(startingBlack.values().equals(this.blackPaths));
-            System.out.println(startingPawnOriginsWhite);
-            System.out.println(this.white.getPawnOrigins());
-            System.out.println(startingPawnOriginsBlack);
-            System.out.println(this.black.getPawnOrigins());
+            //system.out.println("CHANGES HERE: ");
+            //system.out.println(startingWhite);
+            //system.out.println(this.whitePaths);
+            //system.out.println(startingWhite.values().equals(this.whitePaths));
+            //system.out.println(startingBlack);
+            //system.out.println(this.blackPaths);
+            //system.out.println(startingBlack.values().equals(this.blackPaths));
+            //system.out.println(startingPawnOriginsWhite);
+            //system.out.println(this.white.getPawnOrigins());
+            //system.out.println(startingPawnOriginsBlack);
+            //system.out.println(this.black.getPawnOrigins());
 
 
 
 
 
         }
-        System.out.println("CPM INFO:");
+        //system.out.println("CPM INFO:");
 
-        System.out.println(white.getPawnOrigins());
-        System.out.println(black.getPawnOrigins());
-        System.out.println(black.getCaptureSet());
-//        System.out.println(black.getMaxCaptures(new Coordinate(0, 4)));
+        //system.out.println(white.getPawnOrigins());
+        //system.out.println(black.getPawnOrigins());
+        //system.out.println(black.getCaptureSet());
+//        //system.out.println(black.getMaxCaptures(new Coordinate(0, 4)));
 
 
-        System.out.println(whitePaths);
-        System.out.println(blackPaths);
+        //system.out.println(whitePaths);
+        //system.out.println(blackPaths);
 
         if (this.whitePaths.values().stream().anyMatch(List::isEmpty) || this.blackPaths.values().stream().anyMatch(List::isEmpty)
                 || !this.white.state || ! this.black.state) {
@@ -142,13 +142,13 @@ public class CombinedPawnMap extends AbstractDeduction {
 
     public Path getSinglePath(String colour, Coordinate coordinate) {
 //        if (coordinate.equals(new Coordinate(0, 2))) {
-////            System.out.println(this.singleWhitePaths);
+////            //system.out.println(this.singleWhitePaths);
 //        }
         return (colour.equals("white") ? this.singleWhitePaths : this.singleBlackPaths).get(coordinate);
     }
     public Map<Coordinate, Path> getSinglePath(String colour) {
 //        if (coordinate.equals(new Coordinate(0, 2))) {
-////            System.out.println(this.singleWhitePaths);
+////            //system.out.println(this.singleWhitePaths);
 //        }
         return (colour.equals("white") ? this.singleWhitePaths : this.singleBlackPaths);
     }
@@ -174,10 +174,10 @@ public class CombinedPawnMap extends AbstractDeduction {
         Map<Coordinate, List<Path>> opposingPlayerPaths = white
                 ? this.blackPaths
                 : this.whitePaths;
-        System.out.println("CPP" + checkedPlayerPaths);
+        //system.out.println("CPP" + checkedPlayerPaths);
 
         // Find every pawn of the opposing player with one origin and one possible path
-        System.out.println(opposingPlayerPaths);
+        //system.out.println(opposingPlayerPaths);
         List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = opposingPlayerPaths.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() == 1 && !(entry.getValue().get(0).size() == 1))
@@ -189,7 +189,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                                 p -> PATH_DEVIATION.apply(p) <= opposingPlayer.getMaxCaptures(entry.getKey()))
                         .size() == 1)
                 .toList();
-        System.out.println("SOP" + singleOriginPawns);
+        //system.out.println("SOP" + singleOriginPawns);
 
 
         singleOriginPawns.forEach(entry -> (white ? singleBlackPaths : singleWhitePaths).put(entry.getKey(), entry.getValue().get(0)));
@@ -211,38 +211,38 @@ public class CombinedPawnMap extends AbstractDeduction {
                                 }
                                 int y2 = innerEntryKey.getY();
                                 if (y2 == 7 || y2 == 0) {
-                                    System.out.println(innerEntryKey);
+                                    //system.out.println(innerEntryKey);
 
-                                    System.out.println(innerEntry.getValue().get(0));
+                                    //system.out.println(innerEntry.getValue().get(0));
                                     return entry.getValue().get(0).contains(innerEntry.getValue().get(0).get(innerEntry.getValue().get(0).size() - 2));
                                 }
                                 return false;
                             })
                             .forEach(innerEntry -> {
-                                System.out.println("inner entry" + innerEntry);
+                                //system.out.println("inner entry" + innerEntry);
                                 innerEntry.getValue()
                                         .stream().filter(path -> Pathfinder.pathsExclusive(entry.getValue().get(0), path))
                                         .forEach(path -> {
-                                            System.out.println("checking..." + path);
-                                            System.out.println("entry..." + entry);
+                                            //system.out.println("checking..." + path);
+                                            //system.out.println("entry..." + entry);
 
                                             Path toPut = makeExclusiveMaps(board, path, white, singleOriginPawns);
                                             if (toPut.isEmpty()) {
-//                                                System.out.println("path");
+//                                                //system.out.println("path");
                                                 toPut.add(path.getFirst());
                                                 toPut.add(new Coordinate(-1, -1));
                                                 toPut.add(innerEntry.getKey());
                                             } else {
-//                                                System.out.println(toPut);
+//                                                //system.out.println(toPut);
                                             }
-//                                            System.out.println(toPut);
+//                                            //system.out.println(toPut);
                                             newPaths.add(toPut);
-//                                            System.out.println(newPaths);
+//                                            //system.out.println(newPaths);
                                         });
                             });
                 });
         List<Coordinate[]> forRemoval = new LinkedList<>();
-        System.out.println("paths " + newPaths);
+        //system.out.println("paths " + newPaths);
 
 
         newPaths.stream().forEach(path -> {
@@ -255,18 +255,18 @@ public class CombinedPawnMap extends AbstractDeduction {
             if (!(path.contains(new Coordinate(-1, -1)))) {
                 pathList.add(path);
             } else {
-//                System.out.println("remove:" + path);
+//                //system.out.println("remove:" + path);
 
                 forRemoval.add(new Coordinate[]{path.getLast(), path.getFirst()});
             }
         });
-        System.out.println("removing" + forRemoval);
-        System.out.println(checkedPlayer.getPawnOrigins());
+        //system.out.println("removing" + forRemoval);
+        //system.out.println(checkedPlayer.getPawnOrigins());
         forRemoval.forEach(coordinates -> checkedPlayer.removeOrigins(coordinates[0], coordinates[1]));
-        System.out.println(checkedPlayer.getPawnOrigins());
-//        System.out.println("Updadting...");
+        //system.out.println(checkedPlayer.getPawnOrigins());
+//        //system.out.println("Updadting...");
         checkedPlayer.update();
-//        System.out.println("All paths 2: " + checkedPlayerPaths);
+//        //system.out.println("All paths 2: " + checkedPlayerPaths);
 
         return !forRemoval.isEmpty()
                 || !newPaths.isEmpty()
@@ -274,23 +274,23 @@ public class CombinedPawnMap extends AbstractDeduction {
     }
 
     private Path makeExclusiveMaps(BoardInterface board, Path path, boolean white, List<Map.Entry<Coordinate, List<Path>>> forbiddenPaths) {
-//        System.out.println(path);
+//        //system.out.println(path);
         PawnMap player = !white
                 ? this.black
                 : this.white;
 
         //TODO current forbidden paths won't contain paths that are one coordinate long
-//        System.out.println("forbidden:" + forbiddenPaths);
+//        //system.out.println("forbidden:" + forbiddenPaths);
         Path newPath = Pathfinder.findShortestPawnPath(StandardPieceFactory.getInstance().getPiece(!white ? "p" : "P"),
                 path.getFirst(),
                 (b, c) -> c.equals(path.getLast()),
                 board,
                 p -> PATH_DEVIATION.apply(p) <= player.getMaxCaptures(path.getLast()),
                 (p1, p2) -> {
-                    System.out.println(
-                            p1 + " vs " + p2
-                    );
-                    System.out.println(forbiddenPaths);
+                    //system.out.println(
+//                            p1 + " vs " + p2
+//                    );
+                    //system.out.println(forbiddenPaths);
 
                     boolean p1NotExclusive;
                     if (p1.isEmpty()) {
@@ -318,20 +318,20 @@ public class CombinedPawnMap extends AbstractDeduction {
                         return p2;
                     }
                     if (!p2NotExclusive) {
-                        System.out.println("p2 exclusive");
+                        //system.out.println("p2 exclusive");
                         return p1;
                     }
 
                     if (!p1.isEmpty() && PATH_DEVIATION.apply(p1) < PATH_DEVIATION.apply(p2)) {
                         return p1;
                     }
-                    System.out.println("both not exclusive");
+                    //system.out.println("both not exclusive");
                     return p2;
                 }
                 );
-        System.out.println("new path = " + newPath);
-//        System.out.println(PATH_DEVIATION.apply(newPath));
-//        System.out.println(player.getMaxCaptures(newPath.getLast()));
+        //system.out.println("new path = " + newPath);
+//        //system.out.println(PATH_DEVIATION.apply(newPath));
+//        //system.out.println(player.getMaxCaptures(newPath.getLast()));
 
 
         return newPath;

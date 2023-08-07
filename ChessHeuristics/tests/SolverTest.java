@@ -80,10 +80,17 @@ public class SolverTest {
     }
 
     @Test
+    public void makeMoveTestCheckOnTurnKing() {
+        makeMoveTest("k1K5/8/8/8/8/8/7P/6B1 b - - 0 1",
+                new Coordinate(0, 7), new Coordinate(1, 6),
+                false, "Q");
+    }
+
+    @Test
     public void makeMoveTestCheckOnTurn() {
         makeMoveTest("rnbqkbnr/pppp4/4p3/6Q1/8/8/PPPPP3/RNB1KBNR b KQkq - 0 1",
                 new Coordinate(4, 7), new Coordinate(4, 6),
-                true);
+                false);
     }
 
     @Test
