@@ -10,6 +10,7 @@ import StandardChess.Coordinate;
 import java.sql.Time;
 import java.util.*;
 import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 
 public class CaptureLocations extends AbstractDeduction {
 
@@ -60,14 +61,17 @@ public class CaptureLocations extends AbstractDeduction {
         if (
                 whiteRemovals + blackRemovals != 0
         ) {
-//            System.out.println("K");
+//            System.out.println("br" + blackRemovals);
             this.pawnMapWhite.updateMaxCapturedPieces(whiteRemovals);
             this.pawnMapBlack.updateMaxCapturedPieces(blackRemovals);
             this.pawnMapWhite.deduce(board);
             this.pawnMapBlack.deduce(board);
             this.combinedPawnMap.deduce(board);
             this.pieceMap.deduce(board);
-//            System.out.println(this.combinedPawnMap.getWhitePaths());
+//            System.out.println(this.combinedPawnMap.getBlackPaths());
+//            System.out.println(this.combinedPawnMap.getState());
+//            System.out.println(this.pawnMapBlack.capturedPieces());
+
 //            System.out.println(this.pawnMapWhite.maxPieces);
 //            System.out.println(this.pawnMapWhite.getMaxCaptures(new Coordinate(3, 3)));
 
@@ -79,7 +83,7 @@ public class CaptureLocations extends AbstractDeduction {
             this.state = false;
         }
 
-        return true ;
+        return false ;
     }
 
     private int reductions(BoardInterface board, boolean white) {
@@ -189,30 +193,39 @@ public class CaptureLocations extends AbstractDeduction {
                         .toList());
 //        System.out.println(predicates.size());
         if (!predicates.isEmpty()) {
-            Map<Coordinate, List<Path>> paths = white ? this.combinedPawnMap.getWhitePaths() : this.combinedPawnMap.getBlackPaths();
-            int otherValue = paths.entrySet().stream()
-                    .filter(entry -> this.combinedPawnMap.getSinglePath(colour, entry.getKey()) != null) //Every path that's a single path
-                    .map(entry -> entry.getValue()
+            Map<Coordinate, List<Path>> paths = (white ? this.combinedPawnMap.getWhitePaths() : this.combinedPawnMap.getBlackPaths())
+                    .entrySet()
+                    .stream()
+                    .filter(entry -> this.combinedPawnMap.getSinglePath(colour, entry.getKey()) != null)
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)); //Every path that's a single path;
+            int otherValue = paths.values().stream()
+                    .map(pathList -> pathList
                             .stream().map(CombinedPawnMap.PATH_DEVIATION)
                             .reduce((i, j) -> i < j ? i : j)
                             .orElse(0))
                     .reduce(0, Integer::sum);
-//        System.out.println(otherValue);
+//            System.out.println(otherValue);
+//            System.out.println(this.combinedPawnMap.captures(colour));
+//            System.out.println(this.combinedPawnMap.capturesTwo(colour));
+//            if (otherValue == this.combinedPawnMap.capturesTwo(colour)) {
+//                System.out.println(otherValue);
+//                System.out.println(this.combinedPawnMap.captures(colour));
+//                System.out.println(this.combinedPawnMap.capturesTwo(colour));
+//                System.out.println(colour);
+////                throw new RuntimeException();
+//            }
 
-            if (otherValue == this.combinedPawnMap.captures(colour) && otherValue != 0) {
+
+            if (otherValue == this.combinedPawnMap.capturesTwo(colour) && otherValue != 0) {
 
 
                 for (List<Path> pathList : paths.values()) {
-//                if (pathList.isEmpty()) {
-//                    continue;
-//                }
                     Path path = pathList.get(0);
                     Iterator<BiPredicate<Coordinate, Coordinate>> predicateIterator = predicates.iterator();
                     while (predicateIterator.hasNext()) {
                         BiPredicate<Coordinate, Coordinate> predicate = predicateIterator.next();
                         for (int j = 0; j < path.size() - 1; j++) {
                             if (predicate.test(path.get(j), path.get(j + 1))) {
-//                            System.out.println(path);
                                 predicateIterator.remove();
                                 break;
                             }

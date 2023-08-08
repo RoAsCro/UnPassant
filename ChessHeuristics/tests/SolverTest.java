@@ -67,7 +67,8 @@ public class SolverTest {
 
     @Test
     public void chessMysteries4() {
-        List<String> list = List.of("2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4p/2PP2P1/4P2P/n7 w - - 0 1",
+        List<String> list = List.of(
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4p/2PP2P1/4P2P/n7 w - - 0 1",
                 "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4P/2PP2P1/4P2P/n7 w - - 0 1",
                 "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4r/2PP2P1/4P2P/n7 w - - 0 1",
                 "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4R/2PP2P1/4P2P/n7 w - - 0 1",
@@ -86,11 +87,14 @@ public class SolverTest {
                 "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4b/2PP2P1/4P2P/n7 b - - 0 1",
                 "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4B/2PP2P1/4P2P/n7 b - - 0 1",
                 "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4q/2PP2P1/4P2P/n7 b - - 0 1",
-                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4Q/2PP2P1/4P2P/n7 b - - 0 1");
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4Q/2PP2P1/4P2P/n7 b - - 0 1"
+        );
         // pp30
         for (String s : list) {
             if (StateDetectorFactory.getDetector(s).testState()) {
-                new Solver().solve(BoardBuilder.buildBoard(s), 2);
+                ChessBoard b = BoardBuilder.buildBoard(s);
+                b.setTurn(b.getTurn().equals("white") ? "black" : "white");
+                new Solver().solve(b, 2);
                 System.out.println("Finished");
                 System.out.println(s);
             }

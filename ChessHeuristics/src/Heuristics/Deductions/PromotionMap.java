@@ -23,7 +23,7 @@ public class PromotionMap extends AbstractDeduction {
     private final PieceNumber pieceNumber;
     private final PawnNumber pawnNumber;
 
-    boolean inDepth = false;
+    boolean inDepth = true;
 
 
     CaptureLocations captureLocations;

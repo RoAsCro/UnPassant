@@ -45,9 +45,9 @@ public class Solver {
             String[] stateDescription = state.split(":");
             String currentState = stateDescription[0];
             ChessBoard currentBoard = BoardBuilder.buildBoard(currentState);
-            if (any && legalFirst) {
-                System.out.println(currentState);
-            }
+//            if (any && legalFirst) {
+//                System.out.println(currentState);
+//            }
 
             if (currentDepth != depth) {
 //                if (any && legalFirst) {

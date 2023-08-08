@@ -66,6 +66,7 @@ public abstract class PawnMap extends AbstractDeduction{
 
 
         reduce(this.colour);
+//        if (this.maxPieces - capturedPieces)
 
         return false;
     }

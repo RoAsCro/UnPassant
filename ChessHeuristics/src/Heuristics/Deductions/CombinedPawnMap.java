@@ -86,6 +86,7 @@ public class CombinedPawnMap extends AbstractDeduction {
 //        this.black.deduce(board);
 //        this.white.deduce(board);
 
+//        System.out.println(this.black.getPawnOrigins());
         boolean changed = true;
         boolean another = true;
         while (changed) {
@@ -137,7 +138,7 @@ public class CombinedPawnMap extends AbstractDeduction {
 //        System.out.println("Time2:" + ((System.nanoTime() - start)/ 10000));
 
         if (this.whitePaths.values().stream().anyMatch(List::isEmpty) || this.blackPaths.values().stream().anyMatch(List::isEmpty)
-                || !this.white.state || ! this.black.state) {
+                || !this.white.getState() || ! this.black.getState()) {
             this.state = false;
         }
 

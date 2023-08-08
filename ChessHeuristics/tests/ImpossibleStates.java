@@ -446,7 +446,7 @@ public class ImpossibleStates {
 
     @Test
     void promotionChangingBoardState() {
-//        Assertions.assertFalse(test("2bqkb1r/1pp1ppp1/8/p2P1q2/3p1Q2/5P2/PPP2P2/RNBQKBNR w KQk - 0 1"));
+        Assertions.assertFalse(test("2bqkb1r/1pp1ppp1/8/p2P1q2/3p1Q2/5P2/PPP2P2/RNBQKBNR w KQk - 0 1"));
     }
 
     @Test
@@ -456,7 +456,7 @@ public class ImpossibleStates {
 
     @Test
     void r() {
-        Assertions.assertTrue(test("2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4Q/2PP2P1/4P2P/n7 w - - 0 1"));
+        Assertions.assertFalse(test("2nn3K/pkPRp1p1/p2p4/P1p5/1Pp4Q/2PP2P1/4P2P/n7 b - - 0 1"));
     }
 
 
