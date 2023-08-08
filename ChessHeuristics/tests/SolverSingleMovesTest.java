@@ -140,6 +140,20 @@ public class SolverSingleMovesTest {
                 true, "p", false, true);
     }
 
+    @Test
+    public void unPassantIllegal() {
+        makeMoveTest("rnbqk1nr/ppppp1pp/4P3/8/8/6P1/PPPP1P1P/RNBQK1NR w - - 0 1",
+                new Coordinate(4, 5), new Coordinate(5, 4),
+                false, "p", false, true);
+    }
+
+    @Test
+    public void doubleMove() {
+        makeMoveTest("rnbqk1nr/ppppp1pp/8/8/4P3/6P1/PPPP1P1P/RNBQK1NR w - - 0 1",
+                new Coordinate(4, 3), new Coordinate(4, 1),
+                true, "", false, false);
+    }
+
 //    @Test
 //    public void unPassantBadPosition() {
 //        makeMoveTest("rnbqk1nr/pppp2pp/8/4P3/8/6P1/PPPP1P1P/RNBQK1NR w - - 0 1",

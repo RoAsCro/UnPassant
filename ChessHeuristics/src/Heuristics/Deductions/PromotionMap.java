@@ -23,6 +23,8 @@ public class PromotionMap extends AbstractDeduction {
     private final PieceNumber pieceNumber;
     private final PawnNumber pawnNumber;
 
+    boolean inDepth = false;
+
 
     CaptureLocations captureLocations;
 
@@ -253,6 +255,7 @@ public class PromotionMap extends AbstractDeduction {
                 })
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+
         //system.out.println("POW" + pieceOriginWhite);
         //system.out.println(pathIntegerMap);
         TheoreticalPawnMap tPMW = new TheoreticalPawnMap("white");
@@ -269,41 +272,52 @@ public class PromotionMap extends AbstractDeduction {
         //system.out.println("TPTPTP" + tPMW.getPawnOrigins());
 
 
-
-        Path originPool = Path.of(this.origins.stream().filter(c -> c.getY() == 1).toList());
-        Map<Path, Path> claims = new HashMap<>();
-        Map<Path, Path> pieceOriginWhiteTwo = pieceSquareOriginWhite.entrySet()
-                .stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> Path.of(entry.getValue().stream().map(Path::getLast).collect(Collectors.toSet()).stream().toList())));
-
-
-        originClaimIteratorHelperStarter(pathIntegerMap, originPool, pieceOriginWhiteTwo, claims, true);
-
-        originPool = Path.of(this.origins.stream().filter(c -> c.getY() == 6).toList());
-        claims = new HashMap<>();
-        Map<Path, Path> pieceOriginBlackTwo = pieceSquareOriginBlack.entrySet()
-                .stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> Path.of(entry.getValue().stream().map(Path::getLast).collect(Collectors.toSet()).stream().toList())));
-        //system.out.println("POB22" + pathIntegerMap);
-        originClaimIteratorHelperStarter(pathIntegerMap, originPool, pieceOriginBlackTwo, claims, false);
-
-
-        //system.out.println("CLAIMS" + this.claimsWhite);
-        //system.out.println("CLAIMS" + this.claimsBlack);
-
-//        System.out.println(this.claimsWhite);
-//        System.out.println(this.claimsBlack);
-        reduceClaims(true, pieceSquareOriginWhite);
-        reduceClaims(false, pieceSquareOriginBlack);
-//        System.out.println(this.claimsWhite);
-//        System.out.println(this.claimsBlack);
-
-
         this.combinedPawnMap = new PromotionCombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
-        if ((this.claimsBlack.isEmpty() && promotionsBlack != 0) || (this.claimsWhite.isEmpty() && promotionsWhite != 0)) {
+
+        if (inDepth) {
+
+            Path originPool = Path.of(this.origins.stream().filter(c -> c.getY() == 1).toList());
+            Map<Path, Path> claims = new HashMap<>();
+            Map<Path, Path> pieceOriginWhiteTwo = pieceSquareOriginWhite.entrySet()
+                    .stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> Path.of(entry.getValue().stream().map(Path::getLast).collect(Collectors.toSet()).stream().toList())));
+
+
+            originClaimIteratorHelperStarter(pathIntegerMap, originPool, pieceOriginWhiteTwo, claims, true);
+
+            originPool = Path.of(this.origins.stream().filter(c -> c.getY() == 6).toList());
+            claims = new HashMap<>();
+            Map<Path, Path> pieceOriginBlackTwo = pieceSquareOriginBlack.entrySet()
+                    .stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> Path.of(entry.getValue().stream().map(Path::getLast).collect(Collectors.toSet()).stream().toList())));
+            //system.out.println("POB22" + pathIntegerMap);
+            originClaimIteratorHelperStarter(pathIntegerMap, originPool, pieceOriginBlackTwo, claims, false);
+
+
+            //system.out.println("CLAIMS" + this.claimsWhite);
+            //system.out.println("CLAIMS" + this.claimsBlack);
+
+//        System.out.println(this.claimsWhite);
+//        System.out.println(this.claimsBlack);
+            reduceClaims(true, pieceSquareOriginWhite);
+            reduceClaims(false, pieceSquareOriginBlack);
+//        System.out.println(this.claimsWhite);
+//        System.out.println(this.claimsBlack);
+
+
+            if ((this.claimsBlack.isEmpty() && promotionsBlack != 0) || (this.claimsWhite.isEmpty() && promotionsWhite != 0)) {
+                this.state = false;
+                return false;
+            }
             this.state = false;
-            return false;
+            stateIterateStart(board);
+        } else {
+            this.promotionPawnMapWhite.deduce(board);
+            this.promotionPawnMapBlack.deduce(board);
+            this.combinedPawnMap.deduce(board);
+            this.state = this.promotionPawnMapWhite.getState() && this.promotionPawnMapBlack.state && this.combinedPawnMap.getState();
         }
-        this.state = false;
-        stateIterateStart(board);
+
+
+
 
         return false;
     }
@@ -368,11 +382,11 @@ public class PromotionMap extends AbstractDeduction {
 
     private boolean originClaimIteratorHelperStarter(Map<Path, Integer> pathIntegerMap, Path originPool, Map<Path, Path> pieceOrigin, Map<Path, Path> claims, boolean white) {
         pieceOrigin.keySet().forEach(p -> claims.put(p, new Path()));
-        for (int i = 0; i < 16 ;) {
+        for (int i = 0; i < 1 ;) {
             Iterator<Map.Entry<Path, Path>> iter = pieceOrigin.entrySet().iterator();
-
             boolean called = false;
             while (iter.hasNext()) {
+
                 Map.Entry<Path, Path> entry = iter.next();
 //                //system.out.println(pathIntegerMap);
                 //system.out.println(i);
@@ -400,16 +414,12 @@ public class PromotionMap extends AbstractDeduction {
 
 
         private boolean originClaimIteratorHelper(Map<Path, Integer> pathIntegerMap, Path originPool, Map<Path, Path> pieceOrigin, Map<Path, Path> claims, Path current, boolean white) {
-//        //system.out.println(this.claims);
         if (originPool.isEmpty()) {
-//            //system.out.println("empty");
             return false;
         }
 
         List<Coordinate> claim = pieceOrigin.get(current).stream().filter(originPool::contains).toList();
         if (claim.isEmpty()) {
-//            //system.out.println("claimempty");
-
             return false;
         }
 
@@ -420,13 +430,6 @@ public class PromotionMap extends AbstractDeduction {
             Map<Path, Path> newClaims = claims.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Path.of(new HashSet<>(e.getValue()))));
 
             newClaims.get(current).add(coordinate);
-//            //system.out.println(newClaims.get(current).size() == 0);
-//            //system.out.println(newClaims.get(current));
-//            //system.out.println(coordinate);
-//            if (newClaims.get(current).size() == 2) {
-//                //system.out.println(newClaims);
-//            }
-//            //system.out.println(claims);
             Path originPoolNew = Path.of(originPool);
             originPoolNew.remove(coordinate);
 
@@ -435,42 +438,20 @@ public class PromotionMap extends AbstractDeduction {
                 Path key = innerEntry.getKey();
                 return (key.size() - pathIntegerMap.get(key)) - newClaims.get(key).size() == 0;
             })) {
-//                //system.out.println(newClaims);
+
                 List<Map<Path, Path>> allClaims = white ? this.claimsWhite : this.claimsBlack;
-//                newClaims = Path.of(new HashSet<>(newClaims));
+
                 if (!allClaims.contains(newClaims)) {
                     allClaims.add(newClaims);
                     claimed = true;
                 }
                 continue;
             }
-//            for (int i = j ; i < 17 ;) {
-//                //system.out.println("inLopp" + coordinate);
-//                boolean called = false;
-                Iterator<Map.Entry<Path, Path>> iter = pieceOrigin.entrySet().iterator();
-                while (iter.hasNext()) {
-                    Map.Entry<Path, Path> entry = iter.next();
-//                    if ((entry.getKey().size() - pathIntegerMap.get(entry.getKey())) + newClaims.get(entry.getKey()).size()
-//                            > entry.getValue().size() + i) {
-////                        //system.out.println("continuing...");
-//                        continue;
-//                    }
-
-
-                    Map<Path, Path> pieceOriginWhiteTwoNew = pieceOrigin.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Path.of(e.getValue())));
-//                    //system.out.println("thisFar");
-                    if (!originClaimIteratorHelper(pathIntegerMap, originPoolNew, pieceOriginWhiteTwoNew, newClaims, entry.getKey(), white)) {
-                    } else {
-//                        called = true;
-                    }
-
-                }
-//                if (!called) {
-//                    i++;
-//                }
+            for (Map.Entry<Path, Path> entry : pieceOrigin.entrySet()) {
+                Map<Path, Path> pieceOriginWhiteTwoNew = pieceOrigin.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> Path.of(e.getValue())));
+                originClaimIteratorHelper(pathIntegerMap, originPoolNew, pieceOriginWhiteTwoNew, newClaims, entry.getKey(), white);
             }
-//        }
-
+        }
         return claimed;
     }
 

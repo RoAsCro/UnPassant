@@ -87,10 +87,10 @@ public class StandardBoardReader implements BoardReader {
             }
         }
         builder.append(" ");
-        if (this.board.getEnPassant().equals(new Coordinate(-1, -1))) {
+        if (this.board.getEnPassant().equals(Coordinates.NULL_COORDINATE)) {
             builder.append("-");
         } else {
-            builder.append((char) this.board.getEnPassant().getX() + ASCII_LOWERCASE_A)
+            builder.append((char) (this.board.getEnPassant().getX() + ASCII_LOWERCASE_A))
                     .append(this.board.getEnPassant().getY() + 1);
         }
         return builder.toString();

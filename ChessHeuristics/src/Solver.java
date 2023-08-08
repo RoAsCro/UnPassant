@@ -10,7 +10,7 @@ public class Solver {
     String originalBoard;
     private boolean legalFirst = false;
     private int additionalDepth = 2;
-    private int numberOfSolutions = 100;
+    private int numberOfSolutions = 5;
 
     private final static List<String> PIECES = List.of("", "p", "r", "b", "n", "q");
 
@@ -45,12 +45,27 @@ public class Solver {
             String[] stateDescription = state.split(":");
             String currentState = stateDescription[0];
             ChessBoard currentBoard = BoardBuilder.buildBoard(currentState);
+            if (any && legalFirst) {
+                System.out.println(currentState);
+            }
 
             if (currentDepth != depth) {
+//                if (any && legalFirst) {
+//                    System.out.println("A");
+//                }
+
                 List<Coordinate> pieces = allPieces(currentBoard);
                 stateSizes.push(0);
                 for (Coordinate piece : pieces) {
+                    if (!currentBoard.getEnPassant().equals(Coordinates.NULL_COORDINATE)) {
 
+                        if (!piece.equals(currentBoard.getEnPassant())){
+
+                            continue;
+                        }
+                    }
+//                    if (currentState.equals("k1K5/3pQ3/8/2B1P3/3P4/7P/8/7B w - -")) {
+//                    }
                     List<String> newStates = iterateThroughMoves(currentBoard, piece, state, any && currentDepth == depth - 1);
 //                    System.out.println(currentDepth);
 //                    System.out.println(depth);
@@ -66,19 +81,33 @@ public class Solver {
 //                System.out.println("finish");
                 currentDepth++;
             } else {
+//                if (any && legalFirst) {
+//                    System.out.println("B");
+//                }
 //                System.out.println("l");
 //                boolean pass = false;
                 if (any) {
-//                    System.out.println(currentState);
+//                    if (any && legalFirst) {
+//                        System.out.println("C");
+//                    }
 
                     if (!legalFirst || testState(currentBoard)) {
+//                        if (any && legalFirst) {
+//                            System.out.println("E");
+//                        }
+
                         finalStates.add(currentState);
                         return finalStates;
 
                     }
+//                    if (any && legalFirst) {
+//                        System.out.println("D");
+//                    }
+
                 } else {
                     this.legalFirst = true;
-                    if (!iterate(currentState, this.additionalDepth, true).isEmpty()) {
+                    if (this.additionalDepth == 0 || !iterate(currentState, this.additionalDepth, true).isEmpty()) {
+
 //                        if (testState(currentBoard)) {
                         finalStates.add(currentState + ":" + stateDescription[1]);
 //                            finalStates.add(currentState + ":" + stateDescription[1]);
@@ -173,9 +202,15 @@ public class Solver {
                                                    Coordinate origin, String currentState, boolean promotion,
                                                    boolean enPassant,
                                                    boolean any) {
+        boolean previousEnPassant = !board.getEnPassant().equals(Coordinates.NULL_COORDINATE);
         List<String> states = new LinkedList<>();
         boolean white = board.getTurn().equals("white");
         for (Coordinate currentMove : moves) {
+            if (previousEnPassant) {
+                if (currentMove.getX() != origin.getX()) {
+                    continue;
+                }
+            }
             Coordinate direction = Coordinates.add(currentMove, new Coordinate(-origin.getX(), -origin.getY()));
             List<String> pieces = PIECES;
             if (enPassant) {
@@ -184,8 +219,13 @@ public class Solver {
             for (int i = 1 ; ; i++) {
                 boolean continueFlag = true;
 
+                if (previousEnPassant) {
+                    i = 2;
+                    continueFlag = false;
+                }
                 for (String piece : pieces) {
                     ChessBoard currentBoard = BoardBuilder.buildBoard(board.getReader().toFEN());
+
                     Coordinate target = Coordinates.add(origin, new Coordinate(direction.getX() * i, direction.getY() * i));
 //                    this.count++;
 //                    System.out.println(this.count);
@@ -196,8 +236,12 @@ public class Solver {
                             piece,
                             promotion,
                             enPassant)){
+//                        if (previousEnPassant) {
+//                            System.out.println("justMove");
+//                        }
 
-                        if (CheckUtil.check(new BoardInterface(currentBoard))) {
+
+                            if (CheckUtil.check(new BoardInterface(currentBoard))) {
                             boolean pass = false;
                             if (legalFirst) {
                                 pass = true;
@@ -209,6 +253,9 @@ public class Solver {
 //
                             if (pass) {
                                 currentBoard.setTurn(white ? "black" : "white");
+                                if (previousEnPassant) {
+                                    currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
+                                }
                                 states.add(currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece));
                                 if (!legalFirst && any) {
                                     break;
@@ -242,16 +289,13 @@ public class Solver {
 ////            System.out.println(board.getReader().toFEN());
 //            return true;
 //        }
-
-
-
-
         SolverImpossibleStateDetector detector;
 //        if (this.stringDetectorMap.containsKey(move)) {
 //            detector = DetectorUpdater.update(board, move, this.stringDetectorMap.get(move));
 //        } else {
             detector = StateDetectorFactory.getDetector(board);
 //        }
+        // System.out.println(board.getReader().toFEN());
         boolean pass = detector.testState();
 //        if (pass) {
 //            this.stringDetectorMap.put(move, detector);

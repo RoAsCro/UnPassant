@@ -8,7 +8,7 @@ public class StandardBoard implements ChessBoard{
     private final Piece[][] board = new Piece[LENGTH][LENGTH];
 
     private Map<String, Boolean> castlingRights = new TreeMap<>();
-    private Coordinate enPassant = new Coordinate(-1, -1);
+    private Coordinate enPassant = Coordinates.NULL_COORDINATE;
     private String turn = "white";
 
     public StandardBoard() {

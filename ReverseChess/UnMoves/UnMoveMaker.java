@@ -56,6 +56,10 @@ public class UnMoveMaker {
             piece.updateBoard(origin, target, board, true);
             this.board.remove(origin);
             this.board.place(target, piece);
+            if (this.enPassantFlag) {
+//                System.out.println();
+                this.board.setEnPassant(captureLocation);
+            }
             if (this.captureFlag) {
                 this.board.place(captureLocation, this.capturePiece);
             }

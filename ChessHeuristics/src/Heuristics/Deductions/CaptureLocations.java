@@ -60,7 +60,7 @@ public class CaptureLocations extends AbstractDeduction {
         if (
                 whiteRemovals + blackRemovals != 0
         ) {
-            System.out.println("K");
+//            System.out.println("K");
             this.pawnMapWhite.updateMaxCapturedPieces(whiteRemovals);
             this.pawnMapBlack.updateMaxCapturedPieces(blackRemovals);
             this.pawnMapWhite.deduce(board);

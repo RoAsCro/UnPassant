@@ -1,10 +1,13 @@
 package StandardChess;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Coordinates {
 
-    private static final int LOWER_ASCII_A = 97;
+    public static final int LOWER_ASCII_A = 97;
+
+    public static final Coordinate NULL_COORDINATE = new NulCoordinate();
 
     public static final Coordinate BLACK_KING = new Coordinate(4, 7);
     public static final Coordinate BLACK_KING_ROOK = new Coordinate(7, 7);
@@ -46,4 +49,16 @@ public class Coordinates {
         return ((char) (coordinate.getX() + LOWER_ASCII_A)) + "" + ((int) (coordinate.getY() + 1));
     }
 
+    private static class NulCoordinate extends Coordinate {
+
+        public NulCoordinate() {
+            super(-1, -1);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof NulCoordinate;
+        }
+
+    };
 }

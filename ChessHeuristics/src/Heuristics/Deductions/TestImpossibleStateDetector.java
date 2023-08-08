@@ -29,6 +29,7 @@ public class TestImpossibleStateDetector {
 
 
     public boolean testState(BoardInterface board) {
+
         this.pieceNumber.observe(board);
         if (board.inCheck(board.getTurn().equals("white") ? "black" : "white")) {
             return false;
@@ -43,9 +44,12 @@ public class TestImpossibleStateDetector {
         }
 
         for (Deduction deduction : this.deductions) {
+
+
             deduction.deduce(board);
             if (!deduction.getState()) {
 //                System.out.println(deduction);
+
                 return false;
             }
         }

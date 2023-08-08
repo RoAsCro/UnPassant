@@ -96,7 +96,7 @@ public abstract class AbstractStrategy implements PieceStrategy{
 
     @Override
     public void updateBoard(Coordinate origin, Coordinate target, ChessBoard board, boolean unMove) {
-        board.setEnPassant(new Coordinate(-1, -1));
+        board.setEnPassant(Coordinates.NULL_COORDINATE);
     }
 
 

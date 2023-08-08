@@ -7,6 +7,8 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 public class SolverTest {
 
 
@@ -49,17 +51,51 @@ public class SolverTest {
         // En passant
         String board1 = "B7/8/P7/4P3/5B2/4P3/3Q4/5K1k";
         String board2 = "k1K5/4Q3/3P4/2B5/3P4/7P/8/7B";
-        System.out.println("Testing 1...");
-        new Solver().solve(BoardBuilder.buildBoard(board1 + " w"), 1);
-
-        System.out.println("Testing 2...");
-        new Solver().solve(BoardBuilder.buildBoard(board1 + " b"), 1);
-
-        System.out.println("Testing 3...");
-        new Solver().solve(BoardBuilder.buildBoard(board2 + " b"), 1);
+//        System.out.println("Testing 1...");
+//        new Solver().solve(BoardBuilder.buildBoard(board1 + " w"), 1);
+//
+//        System.out.println("Testing 2...");
+//        new Solver().solve(BoardBuilder.buildBoard(board1 + " b"), 1);
+//
+//        System.out.println("Testing 3...");
+//        new Solver().solve(BoardBuilder.buildBoard(board2 + " b"), 1);
 
         System.out.println("Testing 4...");
-        new Solver().solve(BoardBuilder.buildBoard(board2 + " w"), 1);
+        new Solver().solve(BoardBuilder.buildBoard(board2 + " w"), 5);
+
+    }
+
+    @Test
+    public void chessMysteries4() {
+        List<String> list = List.of("2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4p/2PP2P1/4P2P/n7 w - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4P/2PP2P1/4P2P/n7 w - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4r/2PP2P1/4P2P/n7 w - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4R/2PP2P1/4P2P/n7 w - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4n/2PP2P1/4P2P/n7 w - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4N/2PP2P1/4P2P/n7 w - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4b/2PP2P1/4P2P/n7 w - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4B/2PP2P1/4P2P/n7 w - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4q/2PP2P1/4P2P/n7 w - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4Q/2PP2P1/4P2P/n7 w - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4p/2PP2P1/4P2P/n7 b - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4P/2PP2P1/4P2P/n7 b - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4r/2PP2P1/4P2P/n7 b - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4R/2PP2P1/4P2P/n7 b - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4n/2PP2P1/4P2P/n7 b - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4N/2PP2P1/4P2P/n7 b - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4b/2PP2P1/4P2P/n7 b - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4B/2PP2P1/4P2P/n7 b - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4q/2PP2P1/4P2P/n7 b - - 0 1",
+                "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4Q/2PP2P1/4P2P/n7 b - - 0 1");
+        // pp30
+        for (String s : list) {
+            if (StateDetectorFactory.getDetector(s).testState()) {
+                new Solver().solve(BoardBuilder.buildBoard(s), 2);
+                System.out.println("Finished");
+                System.out.println(s);
+            }
+        }
+
 
     }
 
