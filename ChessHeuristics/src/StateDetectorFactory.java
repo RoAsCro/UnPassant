@@ -35,7 +35,14 @@ public class StateDetectorFactory {
         PieceMap pm = new PieceMap(cpm);
         CaptureLocations cl = new CaptureLocations(pmw, pmb, pm, cpm);
         PromotionMap prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
-        return new Deduction[]{pp, pmw, pmb, pm, cpm, cl, prm};
+        return new Deduction[]{pp,
+                pmw,
+                pmb,
+                cpm,
+                pm,
+                cl,
+                prm
+        };
     }
 
     public static SolverImpossibleStateDetector getDetector(ChessBoard board) {

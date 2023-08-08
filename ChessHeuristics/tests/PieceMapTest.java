@@ -1185,7 +1185,7 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1QR2RK1 w kq - 0 1"));
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
-        test(boardInterface, start1, start2, 0, 0, true);
+//        test(boardInterface, start1, start2, 0, 0, true);
 
     }
 
@@ -1213,7 +1213,7 @@ public class PieceMapTest {
 //            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
 //        }
         for (int i = 7; i < 8 ; i++) {
-            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+//            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
 
     }

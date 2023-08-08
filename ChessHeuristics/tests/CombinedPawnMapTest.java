@@ -267,8 +267,8 @@ combinedPawnMap.deduce(board);
         }
         CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, blackMap);
         map.deduce(board);
-blackMap.deduce(board);
-combinedPawnMap.deduce(board);
+        blackMap.deduce(board);
+        combinedPawnMap.deduce(board);
         System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(3, 3)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(4, 4)));
         System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(3, 4)));

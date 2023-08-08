@@ -83,72 +83,58 @@ public class CombinedPawnMap extends AbstractDeduction {
 
     @Override
     public boolean deduce(BoardInterface board) {
-
 //        this.black.deduce(board);
 //        this.white.deduce(board);
 
         boolean changed = true;
+        boolean another = true;
         while (changed) {
-            Map<Coordinate, List<Path>> startingWhite = Map.copyOf(this.whitePaths);
-            Map<Coordinate, List<Path>> startingBlack = Map.copyOf(this.blackPaths);
-            Map<Coordinate, Path> startingPawnOriginsWhite = Map.copyOf(this.white.getPawnOrigins());
-            Map<Coordinate, Path> startingPawnOriginsBlack = Map.copyOf(this.black.getPawnOrigins());
+            HashSet<List<Path>> startingWhite = new HashSet<>(this.whitePaths.values());
+            HashSet<List<Path>> startingBlack = new HashSet<>(this.blackPaths.values());
+//            Map<Coordinate, Path> startingPawnOriginsWhite = Map.copyOf(this.white.getPawnOrigins());
+//            Map<Coordinate, Path> startingPawnOriginsBlack = Map.copyOf(this.black.getPawnOrigins());
 
-
-//            //system.out.println("1A" + black.getMaxCaptures(new Coordinate(0, 4)));
-            //system.out.println("change");
-            //system.out.println(startingWhite);
-
-            //system.out.println(startingPawnOriginsWhite);
-            //system.out.println(startingPawnOriginsBlack);
             makeMaps(board, false);
-
             makeMaps(board, true);
-
-
-
-
-            //system.out.println(this.getWhitePaths());
-            //system.out.println(this.getBlackPaths());
-
-            //system.out.println("CCCCCC" + this.whitePaths);
-
+//            System.out.println("Time1:" + ((System.nanoTime() - start1) / 1000));
             if ((!exclude(board, true) & !exclude(board, false))
-                    || (startingWhite.values().containsAll(this.whitePaths.values())
-                    && startingBlack.values().containsAll(this.blackPaths.values())
-                    && startingPawnOriginsWhite.values().containsAll(this.white.getPawnOrigins().values())
-                    && startingPawnOriginsBlack.values().containsAll(this.black.getPawnOrigins().values()))
+//                    || (startingWhite.entrySet()
+//                    .stream().allMatch(l -> {
+//                        if (this.whitePaths.get(l.getKey()).size() < l.getValue().size()) {
+//                            return false;
+//                        }
+//                        for (int i = 0 ; i < l.getValue().size() ; i++) {
+//
+//                            if (!l.getValue().equals(this.whitePaths.get(l.getKey()).get(i))) {
+//                                return false;
+//                            }
+//                        }
+//                        return true;
+//                    })
+//                    &&
+////                    startingBlack.values().containsAll(this.blackPaths.values())
+//                    startingBlack.entrySet()
+//                    .stream().allMatch(l -> new HashSet<>(l.getValue()).containsAll(this.blackPaths.get(l.getKey())))
+////                    && startingPawnOriginsWhite.values().containsAll(this.white.getPawnOrigins().values())
+////                    && startingPawnOriginsBlack.values().containsAll(this.black.getPawnOrigins().values())
+//            )
+                    || (startingWhite.containsAll(new HashSet<>(this.whitePaths.values()))
+                    && startingBlack.containsAll(new HashSet<>(this.blackPaths.values())))
             ) {
-                changed = false;
+                if (!another) {
+                    changed = false;
+                } else {
+                    another = false;
+                }
             }
 
-            //system.out.println("CHANGES HERE: ");
-            //system.out.println(startingWhite);
-            //system.out.println(this.whitePaths);
-            //system.out.println(startingWhite.values().equals(this.whitePaths));
-            //system.out.println(startingBlack);
-            //system.out.println(this.blackPaths);
-            //system.out.println(startingBlack.values().equals(this.blackPaths));
-            //system.out.println(startingPawnOriginsWhite);
-            //system.out.println(this.white.getPawnOrigins());
-            //system.out.println(startingPawnOriginsBlack);
-            //system.out.println(this.black.getPawnOrigins());
-
-
+//            System.out.println("Time2:" + ((System.nanoTime() - start1)/ 1000000));
 
 
 
         }
-        //system.out.println("CPM INFO:");
 
-        //system.out.println(white.getPawnOrigins());
-        //system.out.println(black.getPawnOrigins());
-        //system.out.println(black.getCaptureSet());
-//        //system.out.println(black.getMaxCaptures(new Coordinate(0, 4)));
-
-
-        //system.out.println(whitePaths);
-        //system.out.println(blackPaths);
+//        System.out.println("Time2:" + ((System.nanoTime() - start)/ 10000));
 
         if (this.whitePaths.values().stream().anyMatch(List::isEmpty) || this.blackPaths.values().stream().anyMatch(List::isEmpty)
                 || !this.white.state || ! this.black.state) {
@@ -207,9 +193,12 @@ public class CombinedPawnMap extends AbstractDeduction {
                                 p -> PATH_DEVIATION.apply(p) <= opposingPlayer.getMaxCaptures(entry.getKey()))
                         .size() == 1)
                 .toList();
-        //system.out.println("SOP" + singleOriginPawns);
 
-
+        if (singleOriginPawns.isEmpty()) {
+//            System.out.println("A" + ((System.nanoTime() - start1) / 1000000));
+            checkedPlayer.update();
+            return false;
+        }
         singleOriginPawns.forEach(entry -> (white ? singleBlackPaths : singleWhitePaths).put(entry.getKey(), entry.getValue().get(0)));
 
 
@@ -259,9 +248,11 @@ public class CombinedPawnMap extends AbstractDeduction {
                                         });
                             });
                 });
+
+
+
         List<Coordinate[]> forRemoval = new LinkedList<>();
         //system.out.println("paths " + newPaths);
-
 
         newPaths.stream().forEach(path -> {
             List<Path> pathList = checkedPlayerPaths.get(path.getLast());
@@ -278,6 +269,8 @@ public class CombinedPawnMap extends AbstractDeduction {
                 forRemoval.add(new Coordinate[]{path.getLast(), path.getFirst()});
             }
         });
+
+
         //system.out.println("removing" + forRemoval);
         //system.out.println(checkedPlayer.getPawnOrigins());
         forRemoval.forEach(coordinates -> checkedPlayer.removeOrigins(coordinates[0], coordinates[1]));
@@ -285,9 +278,15 @@ public class CombinedPawnMap extends AbstractDeduction {
 //        //system.out.println("Updadting...");
         checkedPlayer.update();
 //        //system.out.println("All paths 2: " + checkedPlayerPaths);
+//        System.out.println("B" + ((System.nanoTime() - start1) / 1000000));
 
-        return !forRemoval.isEmpty()
-                || !newPaths.isEmpty()
+
+
+        return
+                !forRemoval.isEmpty()
+                ||
+                        !newPaths.isEmpty()
+//                        || removed[0]
                 ;
     }
 
@@ -378,6 +377,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                                 }
                             });
                     if (white) {
+//                        if (this.whitePaths.containsKey(entry.getKey()) && this.whitePaths.get(entry.getKey()).containsAll(paths))
                         this.whitePaths.put(entry.getKey(), paths);
                     } else {
                         this.blackPaths.put(entry.getKey(), paths);

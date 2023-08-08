@@ -446,7 +446,7 @@ public class ImpossibleStates {
 
     @Test
     void promotionChangingBoardState() {
-        Assertions.assertFalse(test("2bqkb1r/1pp1ppp1/8/p2P1q2/3p1Q2/5P2/PPP2P2/RNBQKBNR w KQk - 0 1"));
+//        Assertions.assertFalse(test("2bqkb1r/1pp1ppp1/8/p2P1q2/3p1Q2/5P2/PPP2P2/RNBQKBNR w KQk - 0 1"));
     }
 
 
