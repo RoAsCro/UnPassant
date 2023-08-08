@@ -9,6 +9,7 @@ public interface Piece {
     void updateBoard(Coordinate origin, Coordinate target, ChessBoard board, boolean unMove);
 
     public Coordinate[] getMoves(Coordinate origin);
+    public Coordinate[] getUnMoves(Coordinate origin);
 
 
 

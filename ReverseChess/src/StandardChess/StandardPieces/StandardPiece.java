@@ -42,4 +42,8 @@ public class StandardPiece implements Piece {
         return this.strategy.getMoves(origin, this.colour);
     }
 
+    public Coordinate[] getUnMoves(Coordinate origin){
+        return this.strategy.getUnMoves(origin, this.colour);
+    }
+
 }

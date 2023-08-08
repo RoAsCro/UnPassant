@@ -32,6 +32,11 @@ public abstract class AbstractStrategy implements PieceStrategy{
     }
 
     @Override
+    public Coordinate[] getUnMoves(Coordinate origin, String colour) {
+        return getMoves(origin, colour);
+    }
+
+    @Override
     public String getName() {
         return this.name;
     }

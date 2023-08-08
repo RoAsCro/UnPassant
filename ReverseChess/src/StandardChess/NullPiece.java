@@ -41,4 +41,9 @@ public class NullPiece implements Piece{
     public Coordinate[] getMoves(Coordinate origin) {
         return new Coordinate[0];
     }
+
+    @Override
+    public Coordinate[] getUnMoves(Coordinate origin) {
+        return new Coordinate[0];
+    }
 }

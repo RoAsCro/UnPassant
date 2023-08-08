@@ -11,5 +11,6 @@ public interface PieceStrategy {
     void updateBoard(Coordinate origin, Coordinate target, ChessBoard board, boolean unMove);
 
     Coordinate[] getMoves(Coordinate origin, String colour);
+    Coordinate[] getUnMoves(Coordinate origin, String colour);
 
 }

@@ -32,6 +32,11 @@ public class PawnStrategy extends AbstractStrategy {
         };
     }
 
+    @Override
+    public Coordinate[] getUnMoves(Coordinate origin, String colour) {
+        return getMoves(origin, colour.equals("white") ? "black" : "white");
+    }
+
 
     private boolean tryMoveGeneral(Coordinate origin, Coordinate target, ChessBoard board, int unMove) {
         int xDiff = Math.abs(origin.getX() - target.getX());

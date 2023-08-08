@@ -31,6 +31,7 @@ public class UnMoveMaker {
             captureLocation = new Coordinate(origin.getX(), origin.getY() - (isWhite ? 1 : -1));
             if (!this.board.at(captureLocation).getType().equals("null")
                     || !piece.getType().equals("pawn")) {
+
                 return false;
             }
         } else if (this.promotionFlag ) {
@@ -39,11 +40,14 @@ public class UnMoveMaker {
             }
             piece = StandardPieceFactory.getInstance().getPiece(isWhite ? "P" : "p");
         }
+
         if (piece.tryUnMove(origin, target, this.board)) {
+
             int xDiff = origin.getX() - target.getX();
             if (!this.captureFlag && piece.getType().equals("pawn") && xDiff != 0) {
                 return false;
             } else if (this.captureFlag && piece.getType().equals("pawn") && xDiff == 0) {
+
                 return false;
             }
             else if (this.captureFlag && piece.getType().equals("king") && Math.abs(xDiff) == 2) {
@@ -58,6 +62,7 @@ public class UnMoveMaker {
 //            System.out.println(board.getReader().toFEN());
             return true;
         }
+
         return false;
     }
 
