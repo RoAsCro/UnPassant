@@ -49,14 +49,14 @@ public class SolverTest {
         // En passant
         String board1 = "B7/8/P7/4P3/5B2/4P3/3Q4/5K1k";
         String board2 = "k1K5/4Q3/3P4/2B5/3P4/7P/8/7B";
-//        System.out.println("Testing 1...");
-//        new Solver().solve(BoardBuilder.buildBoard(board1 + " w"), 1);
-//
-//        System.out.println("Testing 2...");
-//        new Solver().solve(BoardBuilder.buildBoard(board1 + " b"), 1);
-//
-//        System.out.println("Testing 3...");
-//        new Solver().solve(BoardBuilder.buildBoard(board2 + " b"), 1);
+        System.out.println("Testing 1...");
+        new Solver().solve(BoardBuilder.buildBoard(board1 + " w"), 1);
+
+        System.out.println("Testing 2...");
+        new Solver().solve(BoardBuilder.buildBoard(board1 + " b"), 1);
+
+        System.out.println("Testing 3...");
+        new Solver().solve(BoardBuilder.buildBoard(board2 + " b"), 1);
 
         System.out.println("Testing 4...");
         new Solver().solve(BoardBuilder.buildBoard(board2 + " w"), 1);

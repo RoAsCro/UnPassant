@@ -8,9 +8,7 @@ import java.util.*;
 public class Solver {
 
     String originalBoard;
-    LinkedList<String> fens;
     private boolean legalFirst = false;
-    boolean turnIsWhite;
     private int additionalDepth = 2;
     private int numberOfSolutions = 100;
 
@@ -78,16 +76,17 @@ public class Solver {
                         return finalStates;
 
                     }
-                } else if (!iterate(currentState, this.additionalDepth, true).isEmpty()) {
+                } else {
+                    this.legalFirst = true;
+                    if (!iterate(currentState, this.additionalDepth, true).isEmpty()) {
 //                        if (testState(currentBoard)) {
-                            finalStates.add(currentState + ":" + stateDescription[1]);
-                            if (any) {
-                                break;
-                            }
+                        finalStates.add(currentState + ":" + stateDescription[1]);
 //                            finalStates.add(currentState + ":" + stateDescription[1]);
 //                        }
 //                    }
                     }
+                    this.legalFirst = false;
+                }
 //                System.out.println(currentState);
 //                System.out.println(any);
 
