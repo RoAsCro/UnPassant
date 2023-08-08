@@ -9,7 +9,7 @@ public class Solver {
 
     String originalBoard;
     LinkedList<String> fens;
-    UnMoveMaker mover;
+    boolean legalFirst = false;
     boolean turnIsWhite;
     private int additionalDepth = 2;
     private int numberOfSolutions = 100;
@@ -46,8 +46,9 @@ public class Solver {
             String state = states.pop();
             String[] stateDescription = state.split(":");
             String currentState = stateDescription[0];
+            ChessBoard currentBoard = BoardBuilder.buildBoard(currentState);
+
             if (currentDepth != depth) {
-                ChessBoard currentBoard = BoardBuilder.buildBoard(currentState);
                 List<Coordinate> pieces = allPieces(currentBoard);
                 stateSizes.push(0);
                 for (Coordinate piece : pieces) {
@@ -67,7 +68,15 @@ public class Solver {
                     finalStates.add(currentState);
                     return finalStates;
                 } else if (!iterate(currentState, this.additionalDepth, true).isEmpty()) {
-                    finalStates.add(currentState + ":" + stateDescription[1]);
+
+                    if (testState(currentBoard)) {
+
+                        finalStates.add(currentState + ":" + stateDescription[1]);
+
+                        if (any) {
+                            break;
+                        }
+                    }
 
                 }
             }
@@ -137,19 +146,23 @@ public class Solver {
                             target,
                             piece,
                             promotion)){
-                        if (CheckUtil.check(new BoardInterface(currentBoard)) &&
-                                (!(currentBoard.at(target).getType().charAt(0) == 'p') && piece.equals("") && !promotion)
-                            || testState(currentBoard)) {
 
-
+                        if (CheckUtil.check(new BoardInterface(currentBoard))) {
+//                                (!(currentBoard.at(target).getType().charAt(0) == 'p') && piece.equals("") && !promotion)
+//                            || testState(currentBoard)) {
+//
+//
                             currentBoard.setTurn(white ? "black" : "white");
                             states.add(currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece));
-                            if (any) {
-                                break;
+//                            if (any) {
+//                                break;
                             }
-                        }
+//                        }
                     } else {
-                        continueFlag = false;
+                        // May break from creating a pawn
+                        if (!piece.equals("pawn")) {
+                            continueFlag = false;
+                        }
                     }
                 }
                 if (!continueFlag) {
