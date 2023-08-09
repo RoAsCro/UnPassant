@@ -64,7 +64,6 @@ public class CaptureLocations extends AbstractDeduction {
         if (
                 whiteRemovals + blackRemovals != 0
         ) {
-//            System.out.println("br" + blackRemovals);
             this.pawnMapWhite.updateMaxCapturedPieces(whiteRemovals);
             this.pawnMapBlack.updateMaxCapturedPieces(blackRemovals);
             this.pawnMapWhite.deduce(board);
@@ -90,8 +89,8 @@ public class CaptureLocations extends AbstractDeduction {
         }
         this.promotedWhitePawns.addAll(pawnCaptureLocations(true));
         this.promotedBlackPawns.addAll(pawnCaptureLocations(false));
-        System.out.println(this.promotedWhitePawns);
-        System.out.println(this.promotedBlackPawns);
+//        System.out.println(this.promotedWhitePawns);
+//        System.out.println(this.promotedBlackPawns);
 
         return false ;
     }
@@ -205,6 +204,7 @@ public class CaptureLocations extends AbstractDeduction {
 
 //        System.out.println(predicates.size());
         if (!predicates.isEmpty()) {
+
             Map<Coordinate, List<Path>> paths = everySingularPawnPath(white);//Every path that's a single path;
 
             if (pawnCaptures(paths, colour)) {
@@ -219,10 +219,6 @@ public class CaptureLocations extends AbstractDeduction {
 //        System.out.println(ofWhichBishop);
 //        System.out.println(ofWhichQueen);
 //        System.out.println(innaccessibleTakenRooks);
-
-
-
-
 
         return ofWhichQueen + ofWhichBishop + innaccessibleTakenRooks + capturesToRemove;
     }
@@ -244,29 +240,25 @@ public class CaptureLocations extends AbstractDeduction {
     }
 
     private List<Coordinate> pawnCaptureLocations(boolean white) {
-        System.out.println(white);
-        System.out.println((!white ? this.pawnMapWhite : this.pawnMapBlack).maxPieces);
-        System.out.println((white ? pieceNumber.getWhitePieces() : pieceNumber.getBlackPieces()));
-        System.out.println(this.combinedPawnMap.capturesTwo(white ? "black" : "white"));
+//        System.out.println((!white ? this.pawnMapWhite : this.pawnMapBlack).maxPieces);
+//        System.out.println((white ? pieceNumber.getWhitePieces() : pieceNumber.getBlackPieces()));
+//        System.out.println(this.combinedPawnMap.capturesTwo(white ? "black" : "white"));
+
         // If every capture of the opponent has been made by pawns
         if ((!white ? this.pawnMapWhite : this.pawnMapBlack).maxPieces - (white ? pieceNumber.getWhitePieces() : pieceNumber.getBlackPieces())
                 == this.combinedPawnMap.capturesTwo(white ? "black" : "white")) {
-
             // The deviation a pawn can make
             int unnaccountedCaptures = ((!white ? this.pawnMapBlack : this.pawnMapWhite).maxPieces - (white ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()))
                     - this.combinedPawnMap.capturesTwo(white ? "white" : "black");
-            System.out.println("C");
-            System.out.println((!white ? this.pawnMapBlack : this.pawnMapWhite).maxPieces - (!white ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()));
-            System.out.println(this.combinedPawnMap.capturesTwo(!white ? "white" : "black"));
+//            System.out.println((!white ? this.pawnMapBlack : this.pawnMapWhite).maxPieces - (!white ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()));
+//            System.out.println(this.combinedPawnMap.capturesTwo(!white ? "white" : "black"));
 
 
             List<BiPredicate<Coordinate, Coordinate>> pawnPredicates = new LinkedList<>();
             List<Coordinate> missingPawns = new LinkedList<>();
             Map<Coordinate, List<Path>> otherPlayerPaths = everySingularPawnPath(!white);
-            System.out.println(otherPlayerPaths);
             // Might always be true
             if (pawnCaptures(otherPlayerPaths, white ? "black" : "white")) {
-                System.out.println("HERE");
 //            System.out.println(otherPlayerPaths);
                 int y = white ? 1 : 6;
                 for (int i = 0 ; i < 7 ; i++) {
@@ -279,7 +271,7 @@ public class CaptureLocations extends AbstractDeduction {
                     }
                 }
                 List<BiPredicate<Coordinate, Coordinate>> newPredicates = predicateIterate(!white, pawnPredicates);
-                System.out.println(newPredicates.size());
+//                System.out.println(newPredicates.size());
                 return missingPawns.stream().filter(c -> {
                     return pawnPredicates.stream().anyMatch(p -> p.test(c, c));
                 }).toList();
@@ -298,8 +290,8 @@ public class CaptureLocations extends AbstractDeduction {
                 while (predicateIterator.hasNext()) {
                     BiPredicate<Coordinate, Coordinate> predicate = predicateIterator.next();
                     for (int j = 0; j < path.size() - 1; j++) {
-                        System.out.println(path.get(j));
-                        System.out.println(path.get(j+1));
+//                        System.out.println(path.get(j));
+//                        System.out.println(path.get(j+1));
                         if (predicate.test(path.get(j), path.get(j + 1))) {
                             predicateIterator.remove();
                             break;

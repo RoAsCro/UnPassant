@@ -207,6 +207,7 @@ public class CombinedPawnMap extends AbstractDeduction {
             checkedPlayer.update();
             return false;
         }
+
         singleOriginPawns.forEach(entry -> (white ? singleBlackPaths : singleWhitePaths).put(entry.getKey(), entry.getValue().get(0)));
 
 
@@ -399,4 +400,7 @@ public class CombinedPawnMap extends AbstractDeduction {
             return p2;
     }
 
+    public PawnMap getPawnMap(boolean white) {
+        return white ? this.white : this.black;
+    }
 }

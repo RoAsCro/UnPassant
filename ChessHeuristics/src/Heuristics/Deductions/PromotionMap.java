@@ -720,6 +720,8 @@ public class PromotionMap extends AbstractDeduction {
                         ? PromotionMap.this.pawnMapWhite.maxPieces + PromotionMap.this.additionalCapturesWhite
                         : PromotionMap.this.pawnMapBlack.maxPieces + PromotionMap.this.additionalCapturesBlack;
                 updateMaxCapturedPieces(16 - subtrahend);
+
+
             }
 
             super.deduce(board);

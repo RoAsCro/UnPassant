@@ -30,35 +30,34 @@ public class UnCastle {
     }
 
     public List<boolean[]> hasMoved() {
-        this.whiteData[0] = this.pieceMap.getKingMovement(true);
+
         this.blackData[0] = this.pieceMap.getKingMovement(false);
         this.blackData[1] = this.pieceMap.getRookMovement(false, false);
         this.blackData[2] = this.pieceMap.getRookMovement(false, true);
+        this.whiteData[0] = this.pieceMap.getKingMovement(true);
         this.whiteData[1] = this.pieceMap.getRookMovement(true, false);
         this.whiteData[2] = this.pieceMap.getRookMovement(true, true);
-
         // Check rook posisitons
 
 //        System.out.println(this.promotionMap.getState());
         if (this.promotionMap.getState() && this.promotionMap.getPromotionCombinedPawnMap() != null) {
-//            System.out.println("III");
-            if (!this.whiteData[0]) {
+            if (!this.blackData[0]) {
                 checkPromotionMap(true);
             }
-            if (!blackData[0]) {
+            if (!this.whiteData[0]) {
                 checkPromotionMap(false);
             }
         }
 
-        if (!this.whiteData[0]) {
+        if (!this.blackData[0]) {
+
             this.promotedPawnSquares.getPromotionPaths(true)
                     .forEach(p -> checkPromotedPawns(true, p));
         }
-        if (!blackData[0]) {
+        if (!this.whiteData[0]) {
             this.promotedPawnSquares.getPromotionPaths(false)
                     .forEach(p -> checkPromotedPawns(false, p));
         }
-
 
         return List.of(this.whiteData, this.blackData);
     }
@@ -70,7 +69,7 @@ public class UnCastle {
         List<Coordinate> rookCoords = List.of(new Coordinate(0, y + offSet), new Coordinate(7, y + offSet));
 
 
-        boolean[] data = white ? this.whiteData : this.blackData;
+        boolean[] data = !white ? this.whiteData : this.blackData;
         promotionPaths.forEach(c -> {
                 if (kingCoords.contains(c)) {
                     data[0] = true;
@@ -95,7 +94,7 @@ public class UnCastle {
         List<Coordinate> criticalCoords = List.of(new Coordinate(3, y), new Coordinate(5, y), new Coordinate(4, y + offSet));
         List<Coordinate> rookCoords = List.of(new Coordinate(0, y + offSet), new Coordinate(7, y + offSet));
 
-        boolean[] data = white ? this.whiteData : this.blackData;
+        boolean[] data = !white ? this.whiteData : this.blackData;
         pawnPaths.entrySet().stream()
                 .filter(entry -> !pawnMap.getPawnOrigins().containsKey(entry.getKey()))
                 .filter(entry -> entry.getValue().size() == 1)
