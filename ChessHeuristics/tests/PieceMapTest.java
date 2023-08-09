@@ -1152,6 +1152,60 @@ public class PieceMapTest {
 
     }
 
+    @Test
+    void testKingsNotMoved() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard());
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertFalse(pieceMap.getKingMovement(true));
+        Assertions.assertFalse(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testWhiteKingMoved() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPPKPPP/RNBQ1BNR w"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertTrue(pieceMap.getKingMovement(true));
+        Assertions.assertFalse(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testBlackKingMoved() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbq1bnr/ppppkppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertFalse(pieceMap.getKingMovement(true));
+        Assertions.assertTrue(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
 
     @Test
     void testMultiple() {

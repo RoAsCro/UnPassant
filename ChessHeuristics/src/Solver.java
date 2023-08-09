@@ -4,13 +4,15 @@ import Heuristics.Path;
 import StandardChess.*;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class Solver {
 
+    Predicate<String> fenPredicate = p -> true;
     String originalBoard;
     private boolean legalFirst = false;
     private int additionalDepth = 2;
-    private int numberOfSolutions = 5;
+    private int numberOfSolutions = 100;
 
     private final static List<String> PIECES = List.of("", "p", "r", "b", "n", "q");
 
@@ -18,10 +20,17 @@ public class Solver {
 
     private Map<String, SolverImpossibleStateDetector> stringDetectorMap = new HashMap<>();
 
+    public Solver(){};
 
-    public void solve(ChessBoard board, int depth) {
+    public Solver(Predicate<String> fenPredicate){
+        this.fenPredicate = fenPredicate;
+    }
+
+    public List<String> solve(ChessBoard board, int depth) {
         this.originalBoard = board.getReader().toFEN();
-        System.out.println(iterate(this.originalBoard, depth, false));
+        List<String> solutions = iterate(this.originalBoard, depth, false);
+        System.out.println(solutions);
+        return solutions;
 
     }
 
@@ -35,7 +44,7 @@ public class Solver {
         stateSizes.push(1);
         int currentDepth = 0;
 //        LinkedList<List<Coordinate>> statePieces
-        states.add(startingFen + ": ");
+        states.add(startingFen + ":");
         while (!states.isEmpty()) {
             if (finalStates.size() >= this.numberOfSolutions) {
                 break;
@@ -74,8 +83,8 @@ public class Solver {
                             states.push(s.split(":")[0]
                                     + ":"
                                     + s.split(":")[1]
-                                    + ", "
-                                    + stateDescription[1]));
+                                    + (stateDescription.length > 1 ? (", "
+                                    + stateDescription[1]) : "")));
 
                 }
 //                System.out.println("finish");
@@ -95,9 +104,8 @@ public class Solver {
 //                        if (any && legalFirst) {
 //                            System.out.println("E");
 //                        }
-
-                        finalStates.add(currentState);
-                        return finalStates;
+                            finalStates.add(currentState);
+                            return finalStates;
 
                     }
 //                    if (any && legalFirst) {
@@ -230,6 +238,7 @@ public class Solver {
 //                    this.count++;
 //                    System.out.println(this.count);
 
+
                     if (makeJustMove(currentBoard,
                             origin,
                             target,
@@ -239,9 +248,7 @@ public class Solver {
 //                        if (previousEnPassant) {
 //                            System.out.println("justMove");
 //                        }
-
-
-                            if (CheckUtil.check(new BoardInterface(currentBoard))) {
+                        if (CheckUtil.check(new BoardInterface(currentBoard))) {
                             boolean pass = false;
                             if (legalFirst) {
                                 pass = true;
@@ -256,7 +263,10 @@ public class Solver {
                                 if (previousEnPassant) {
                                     currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
                                 }
-                                states.add(currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece));
+                                String boardAndMove = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece);
+                                 if (this.fenPredicate.test(boardAndMove)) {
+                                     states.add(boardAndMove);
+                                 }
                                 if (!legalFirst && any) {
                                     break;
                                 }
@@ -337,5 +347,9 @@ public class Solver {
 
     public void setAdditionalDepth(int additionalDepth) {
         this.additionalDepth = additionalDepth;
+    }
+
+    public void setNumberOfSolutions(int numberOfSolutions) {
+        this.numberOfSolutions = numberOfSolutions;
     }
 }

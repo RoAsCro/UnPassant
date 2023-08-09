@@ -82,6 +82,11 @@ public abstract class PawnMap extends AbstractDeduction{
         this.pawnOrigins.get(piece).remove(origin);
     }
 
+    /**
+     * Returns the max number of pieces minus the number of pieces the opponent is missing
+     * @param colour
+     * @return
+     */
     protected int capturedPieces(String colour) {
         return this.maxPieces - (colour.equals("white")
                 ? this.pieceNumber.getBlackPieces()

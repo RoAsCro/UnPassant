@@ -191,6 +191,23 @@ public class CaptureLocations extends AbstractDeduction {
                         .filter(entry -> entry.getValue().isEmpty()) //Is missing
                         .map(entry -> ((entry.getKey().getX() + entry.getKey().getY()) % 2 == 0)  ? DARK_TEST : LIGHT_TEST)
                         .toList());
+
+//        Map<Coordinate, List<Path>> otherPlayerPaths = (!white ? this.combinedPawnMap.getWhitePaths() : this.combinedPawnMap.getBlackPaths())
+//                .entrySet()
+//                .stream()
+//                .filter(entry -> this.combinedPawnMap.getSinglePath(colour, entry.getKey()) != null)
+//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)); //Every path that's a single path;
+//        if (pawnCaptures(otherPlayerPaths, white ? "black" : "white")) {
+//            int y = white ? 1 : 6;
+//            for (int i = 0 ; i < 7 ; i++) {
+//                Coordinate c = new Coordinate(i, y);
+//                if ((white ? this.pawnMapWhite : this.pawnMapBlack).getPawnOrigins().values()
+//                        .stream().flatMap(Path::stream).noneMatch(c::equals));
+//                predicates.add((c1, c2) -> c1.getX() != c2.getX() && c2.equals(c));
+//            }
+//        }
+
+
 //        System.out.println(predicates.size());
         if (!predicates.isEmpty()) {
             Map<Coordinate, List<Path>> paths = (white ? this.combinedPawnMap.getWhitePaths() : this.combinedPawnMap.getBlackPaths())
@@ -198,12 +215,13 @@ public class CaptureLocations extends AbstractDeduction {
                     .stream()
                     .filter(entry -> this.combinedPawnMap.getSinglePath(colour, entry.getKey()) != null)
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)); //Every path that's a single path;
-            int otherValue = paths.values().stream()
-                    .map(pathList -> pathList
-                            .stream().map(CombinedPawnMap.PATH_DEVIATION)
-                            .reduce((i, j) -> i < j ? i : j)
-                            .orElse(0))
-                    .reduce(0, Integer::sum);
+
+//            int otherValue = paths.values().stream()
+//                    .map(pathList -> pathList
+//                            .stream().map(CombinedPawnMap.PATH_DEVIATION)
+//                            .reduce((i, j) -> i < j ? i : j)
+//                            .orElse(0))
+//                    .reduce(0, Integer::sum);
 //            System.out.println(otherValue);
 //            System.out.println(this.combinedPawnMap.captures(colour));
 //            System.out.println(this.combinedPawnMap.capturesTwo(colour));
@@ -216,9 +234,7 @@ public class CaptureLocations extends AbstractDeduction {
 //            }
 
 
-            if (otherValue == this.combinedPawnMap.capturesTwo(colour) && otherValue != 0) {
-
-
+            if (pawnCaptures(paths, colour)) {
                 for (List<Path> pathList : paths.values()) {
                     Path path = pathList.get(0);
                     Iterator<BiPredicate<Coordinate, Coordinate>> predicateIterator = predicates.iterator();
@@ -249,6 +265,22 @@ public class CaptureLocations extends AbstractDeduction {
 
 
         return ofWhichQueen + ofWhichBishop + innaccessibleTakenRooks + capturesToRemove;
+    }
+
+    /**
+     * Returns true if the number of captures made on the given paths is equal to minimum number of captures made by pawns
+     * @param singlePawns
+     * @param colour
+     * @return
+     */
+    private boolean pawnCaptures(Map<Coordinate, List<Path>> singlePawns, String colour) {
+        int otherValue = singlePawns.values().stream()
+                .map(pathList -> pathList
+                        .stream().map(CombinedPawnMap.PATH_DEVIATION)
+                        .reduce((i, j) -> i < j ? i : j)
+                        .orElse(0))
+                .reduce(0, Integer::sum);
+        return otherValue == this.combinedPawnMap.capturesTwo(colour) && otherValue != 0;
     }
 
 }

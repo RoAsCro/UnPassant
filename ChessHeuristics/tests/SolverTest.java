@@ -12,15 +12,14 @@ import java.util.List;
 public class SolverTest {
 
 
-
-
-
-
-
     @Test
     public void chessMysteries1() {
         // Simple
-        new Solver().solve(BoardBuilder.buildBoard("k1K5/8/8/8/8/8/7P/6B1 b - - 0 1"), 2);
+        Solver solver = new Solver();
+        solver.setAdditionalDepth(2);
+        solver.setNumberOfSolutions(100);
+        Assertions.assertEquals(4, solver.solve(BoardBuilder.buildBoard("k1K5/8/8/8/8/8/7P/6B1 b - - 0 1"), 2).size());
+        // This is solved entirely through iterating through possible scenarios
     }
 
     @Test
@@ -30,16 +29,22 @@ public class SolverTest {
         String board1 = "k1K5/4Q3/8/2B1P3/3P4/7P/8/7B";
         String board2 = "7B/8/7P/3P4/2B1P3/8/4Q3/k1K5";
         System.out.println("Testing 1...");
-        new Solver().solve(BoardBuilder.buildBoard(board1 + " w"), 1);
+        Assertions.assertEquals(0, new Solver().solve(BoardBuilder.buildBoard(board1 + " w"), 1).size());
 
         System.out.println("Testing 2...");
-        new Solver().solve(BoardBuilder.buildBoard(board1 + " b"), 1);
+        Assertions.assertEquals(0, new Solver().solve(BoardBuilder.buildBoard(board1 + " b"), 1).size());
 
         System.out.println("Testing 3...");
-        new Solver().solve(BoardBuilder.buildBoard(board2 + " b"), 1);
+        Assertions.assertEquals(0, new Solver().solve(BoardBuilder.buildBoard(board2 + " b"), 1).size());
 
         System.out.println("Testing 4...");
-        new Solver().solve(BoardBuilder.buildBoard(board2 + " w"), 1);
+        Solver solver = new Solver();
+        solver.setAdditionalDepth(2);
+        solver.setNumberOfSolutions(100);
+        Assertions.assertEquals(3, solver.solve(BoardBuilder.buildBoard(board2 + " w"), 1).size());
+//        new Solver().solve(BoardBuilder.buildBoard(board2 + " w"), 1);
+
+        // Only one scenario, after eliminating impossible board states, has valid moves
 
 
     }
@@ -51,22 +56,32 @@ public class SolverTest {
         // En passant
         String board1 = "B7/8/P7/4P3/5B2/4P3/3Q4/5K1k";
         String board2 = "k1K5/4Q3/3P4/2B5/3P4/7P/8/7B";
-//        System.out.println("Testing 1...");
-//        new Solver().solve(BoardBuilder.buildBoard(board1 + " w"), 1);
-//
-//        System.out.println("Testing 2...");
-//        new Solver().solve(BoardBuilder.buildBoard(board1 + " b"), 1);
-//
-//        System.out.println("Testing 3...");
-//        new Solver().solve(BoardBuilder.buildBoard(board2 + " b"), 1);
+        System.out.println("Testing 1...");
+        Assertions.assertNotEquals(0, new Solver().solve(BoardBuilder.buildBoard(board1 + " w"), 1).size());
+
+        System.out.println("Testing 2...");
+        Assertions.assertEquals(0,new Solver().solve(BoardBuilder.buildBoard(board1 + " b"), 1).size());
+
+        System.out.println("Testing 3...");
+        Assertions.assertEquals(0,new Solver().solve(BoardBuilder.buildBoard(board2 + " b"), 1).size());
 
         System.out.println("Testing 4...");
-        new Solver().solve(BoardBuilder.buildBoard(board2 + " w"), 5);
+        // Set no. of solutions to 1
+        Solver solver = new Solver();
+        solver.setAdditionalDepth(2);
+        solver.setNumberOfSolutions(1);
+        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard(board2 + " w"), 6).size());
+
+        // As above for Test 1
+        // Test 4 solving up to a depth of 6 yields:
+        // Nb6xQa8, Ka7xNa8, Pe4-e5, Pd7-d5, Pe5xPd6
+        // This is slightly different from Smullyan's solution, but is equally valid
 
     }
 
     @Test
     public void chessMysteries4() {
+        // pp30
         List<String> list = List.of(
                 "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4p/2PP2P1/4P2P/n7 w - - 0 1",
                 "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4P/2PP2P1/4P2P/n7 w - - 0 1",
@@ -89,18 +104,95 @@ public class SolverTest {
                 "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4q/2PP2P1/4P2P/n7 b - - 0 1",
                 "2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4Q/2PP2P1/4P2P/n7 b - - 0 1"
         );
-        // pp30
         for (String s : list) {
             if (StateDetectorFactory.getDetector(s).testState()) {
                 ChessBoard b = BoardBuilder.buildBoard(s);
                 b.setTurn(b.getTurn().equals("white") ? "black" : "white");
-                new Solver().solve(b, 2);
+                // set max states to 1?
+                Solver solver = new Solver();
+                solver.setAdditionalDepth(2);
+                solver.setNumberOfSolutions(1);
+                if (!s.equals("2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4B/2PP2P1/4P2P/n7 b - - 0 1")) {
+                    Assertions.assertEquals(0, solver.solve(b, 2).size(), (s));
+                } else {
+                    Assertions.assertNotEquals(0, solver.solve(b, 2).size());
+                }
+
                 System.out.println("Finished");
                 System.out.println(s);
             }
         }
+        // The initial check eliminates all states where white is in check on black's turn
+        // It then iterates through the last few moves for each remaining state
+        // This eliminates all states that result in black being checked - everything except a promotion on d8
+        // The scenario in which the missing piece is a pawn is therefore eliminated
+        // The next ply will eliminate the piece captured on d8 being a queen or rook as they will be unable to move
+        // in such a way that white will not be in check on black's turn
+        // Due to the fact that the black square black bishop is caged and two knights already exist,
+        // the captured piece on d8 therefore must be promoted piece.
+        // With all pawns now accounted for, the missing piece being a black bishop or knight are eliminated as possibilities
+        // The CaptureLocations Deduction will see that no definitive black capture took place on a black square
+        // In the case of every scenario except white bishop,
+        // it will therefore reduce the number of captures black pawns can make by one, since the black square
+        // white bishop is missing
+        // When the PromotionMap is told that black has one certain promoted piece, and that there is exactly one
+        // pawn whose start location is unnaccounted for, it creates a path from that start location to the 1st rank
+        // To not clash with the white pawn paths, it must make a capture
+        // In all remaining scenarios except the missing piece being a white bishop, this will exceed the number of
+        // possible captures
+        // Retractor cannot solve this puzzle
 
+    }
 
+    @Test
+    public void chessMysteries5() {
+
+        //pp 39
+        List<String> list = List.of(
+                "r3k3/ppp3pp/6p1/P2Kp2P/1NB5/p5P1/PP3PP1/R7 w - - 0 1"
+        );
+        for (String s : list) {
+            if (StateDetectorFactory.getDetector(s).testState()) {
+                System.out.println(s);
+                ChessBoard b = BoardBuilder.buildBoard(s);
+                b.setTurn(b.getTurn().equals("white") ? "black" : "white");
+                // set max states to 100?
+                Solver solver = new Solver(string ->{
+                    String[] g = string.split(" ");
+                    String t = string.split(":")[1];
+                    char p = t.charAt(0);
+                    // This rook has not moved, the king is not part of the move
+                    return string.charAt(0) == 'r'
+                            && !(g[1].charAt(0) == 'w' && p == 'K')
+                            && !t.startsWith("Pf7")
+//                            && !t.startsWith("Pb4")
+                            ;
+                });
+                solver.setNumberOfSolutions(1);
+                solver.setAdditionalDepth(2);
+                solver.solve(b, 2);
+                System.out.println("Finished 1");
+
+                solver = new Solver(
+//                        string ->{
+//                    String[] g = string.split(" ");
+//                    String t = string.split(":")[1];
+//                    char p = t.charAt(0);
+//                    // This rook has not moved, the king is not part of the move
+//                    return (g[1].charAt(0) == 'w' && p == 'k');
+//                }
+                );
+                solver.setNumberOfSolutions(1);
+                solver.setAdditionalDepth(2);
+                b = BoardBuilder.buildBoard(s);
+                b.setTurn(b.getTurn().equals("white") ? "black" : "white");
+                solver.solve(b, 2);
+                System.out.println("Finished 2");
+            }
+        }
+        // This fails because pawn capture position is not accounted for
+        // This is because doing so would require that it be first established whether or not any given missing pawn promoted
+        // In this case the deduction needs to establish that the king has never moved, which
     }
 
 
