@@ -153,8 +153,11 @@ public class PromotionMap extends AbstractDeduction {
 
         Map<Path, List<Path>> pieceSquareOriginWhite = new HashMap<>(updates(true));
         Map<Path, List<Path>> pieceSquareOriginBlack = new HashMap<>(updates(false));
+
         // Fail if a piece has no valid origin
         if (pieceSquareOriginWhite.containsValue(List.of()) || pieceSquareOriginBlack.containsValue(List.of())) {
+            System.out.println("j");
+
             this.state = false;
             return false;
         }
@@ -269,7 +272,7 @@ public class PromotionMap extends AbstractDeduction {
             this.state = false;
             return false;
         }
-        //system.out.println("TPTPTP" + tPMW.getPawnOrigins());
+//        System.out.println("TPTPTP" + tPMW.getPawnOrigins());
 
 
         this.combinedPawnMap = new PromotionCombinedPawnMap(this.promotionPawnMapWhite, this.promotionPawnMapBlack);
@@ -686,6 +689,14 @@ public class PromotionMap extends AbstractDeduction {
 
     public Map<Coordinate, Path> getPawnOrigins(String colour) {
         return colour.equals("white") ? this.promotionPawnMapWhite.getPawnOrigins() : this.pawnMapBlack.getPawnOrigins();
+    }
+
+    public PawnMap getPromotionPawnMap(boolean white) {
+        return white ? promotionPawnMapWhite : promotionPawnMapBlack;
+    }
+
+    public CombinedPawnMap getPromotionCombinedPawnMap() {
+        return this.combinedPawnMap;
     }
 
     private class PromotionCombinedPawnMap extends CombinedPawnMap {

@@ -1206,6 +1206,96 @@ public class PieceMapTest {
 
     }
 
+    @Test
+    void testWhiteKingMovedByEscapeQ() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1rbqkbr1/pppp1ppp/2n4n/4p3/4P3/8/PPPPPQPP/RNB1KBNR w - - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertTrue(pieceMap.getKingMovement(true));
+        Assertions.assertFalse(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testBlackKingMovedByEscapeR() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbn1/pppp1ppp/4r3/4p3/4P3/8/PPPP1PPP/RNBQKBNR w - - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertFalse(pieceMap.getKingMovement(true));
+        Assertions.assertTrue(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testBlackKingMovedByEscapeRTwo() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbr1/p1pp1ppp/1p2r2n/4p3/4P3/8/PPPP1PPP/RNBQKBNR w - - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertFalse(pieceMap.getKingMovement(true));
+        Assertions.assertTrue(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+    @Test
+    void testBlackKingNotMovedByEscapeR() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbn1/pppp1pp1/4r3/4p2p/4P3/8/PPPP1PPP/RNBQKBNR w - - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertFalse(pieceMap.getKingMovement(true));
+        Assertions.assertFalse(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testBlackKingNotMovedByEscapeRTwo() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbr1/pppp1ppp/7n/4p3/4P3/8/PPPP1PPP/RNBQKBNR w - - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertFalse(pieceMap.getKingMovement(true));
+        Assertions.assertFalse(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+
 
     @Test
     void testMultiple() {
