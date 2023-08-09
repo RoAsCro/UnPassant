@@ -16,6 +16,10 @@ public class PieceMap extends AbstractDeduction{
 
     private boolean whiteKingMoved = false;
     private boolean blackKingMoved = false;
+    private boolean bQRook = false;
+    private boolean bKRook = false;
+    private boolean wQRook = false;
+    private boolean wKRook = false;
 
 
     private CombinedPawnMap pawnMap;
@@ -155,13 +159,22 @@ public class PieceMap extends AbstractDeduction{
             findFromOrigin(board, x, false, true);
         });
         //Check if rooks are at home
-        if (!(board.getBoardFacts().getCoordinates("white", "rook").contains(Coordinates.WHITE_KING_ROOK)
-                || board.getBoardFacts().getCoordinates("white", "rook").contains(Coordinates.WHITE_QUEEN_ROOK))) {
+        if (!board.getBoardFacts().getCoordinates("white", "rook").contains(Coordinates.WHITE_KING_ROOK)) {
+            this.wKRook = true;
+        }
+        if (!board.getBoardFacts().getCoordinates("white", "rook").contains(Coordinates.WHITE_QUEEN_ROOK)) {
+            this.wQRook = true;
+        }
+        if (this.wKRook && this.wQRook) {
             this.whiteKingMoved = true;
         }
-        if (!(board.getBoardFacts().getCoordinates("black", "rook").contains(Coordinates.BLACK_KING_ROOK)
-                || board.getBoardFacts().getCoordinates("black", "rook").contains(Coordinates.BLACK_QUEEN_ROOK))) {
-
+        if (!board.getBoardFacts().getCoordinates("black", "rook").contains(Coordinates.BLACK_KING_ROOK)) {
+            this.bKRook = true;
+        }
+        if (!board.getBoardFacts().getCoordinates("black", "rook").contains(Coordinates.BLACK_QUEEN_ROOK)) {
+            this.bQRook = true;
+        }
+        if (this.bKRook && this.bQRook) {
             this.blackKingMoved = true;
         }
 
@@ -535,6 +548,10 @@ public class PieceMap extends AbstractDeduction{
 
     public boolean getKingMovement(boolean white) {
         return white ? this.whiteKingMoved : this.blackKingMoved;
+    }
+
+    public boolean getRookMovement(boolean white, boolean kingside) {
+        return white ? (kingside ? this.wKRook : this.wQRook) : (kingside ? this.bKRook : this.bQRook);
     }
 
 }

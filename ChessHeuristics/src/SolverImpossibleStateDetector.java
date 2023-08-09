@@ -21,7 +21,7 @@ public class SolverImpossibleStateDetector extends TestImpossibleStateDetector {
     }
 
     public boolean canCastle(boolean white) {
-        return !unCastle.hasMoved()[white ? 0 : 1];
+        return !unCastle.hasMoved().get(white ? 0 : 1)[0];
     }
 
 }

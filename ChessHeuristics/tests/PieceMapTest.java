@@ -1208,7 +1208,7 @@ public class PieceMapTest {
 
     @Test
     void testWhiteKingMovedByEscapeQ() {
-
+        // TODO
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1rbqkbr1/pppp1ppp/2n4n/4p3/4P3/8/PPPPPQPP/RNB1KBNR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);

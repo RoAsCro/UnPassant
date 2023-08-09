@@ -22,6 +22,9 @@ public class CaptureLocations extends AbstractDeduction {
     CombinedPawnMap combinedPawnMap;
     Path whiteCagedCaptures = new Path();
     Path blackCagedCaptures = new Path();
+
+    private Path promotedWhitePawns = new Path();
+    private Path promotedBlackPawns = new Path();
     private static final BiPredicate<Coordinate, Coordinate> DARK_TEST =
             (c1, c2) -> c2.getX() != c1.getX() && (c1.getX() + c1.getY()) % 2 == 0;
     private static final BiPredicate<Coordinate, Coordinate> LIGHT_TEST =
@@ -78,10 +81,17 @@ public class CaptureLocations extends AbstractDeduction {
         }
 //        System.out.println((System.nanoTime() - start)/1000);
 
+
+
         if (!(this.pawnMapWhite.getState() && this.pawnMapBlack.getState()
                 && this.combinedPawnMap.getState() && this.pieceMap.getState())) {
             this.state = false;
+            return false;
         }
+        this.promotedWhitePawns.addAll(pawnCaptureLocations(true));
+        this.promotedBlackPawns.addAll(pawnCaptureLocations(false));
+        System.out.println(this.promotedWhitePawns);
+        System.out.println(this.promotedBlackPawns);
 
         return false ;
     }
@@ -181,7 +191,7 @@ public class CaptureLocations extends AbstractDeduction {
 
 
         // Account for bishops being taken on the correct colour
-        // this is only done in situations where all captures are made by certain pawn paths
+        // this is only done in situations where all captures made by pawns are made by certain pawn paths
 
         List<BiPredicate<Coordinate, Coordinate>> predicates =
                 new LinkedList<>(this.pieceMap.getStartLocations().entrySet().stream()
@@ -192,64 +202,14 @@ public class CaptureLocations extends AbstractDeduction {
                         .map(entry -> ((entry.getKey().getX() + entry.getKey().getY()) % 2 == 0)  ? DARK_TEST : LIGHT_TEST)
                         .toList());
 
-//        Map<Coordinate, List<Path>> otherPlayerPaths = (!white ? this.combinedPawnMap.getWhitePaths() : this.combinedPawnMap.getBlackPaths())
-//                .entrySet()
-//                .stream()
-//                .filter(entry -> this.combinedPawnMap.getSinglePath(colour, entry.getKey()) != null)
-//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)); //Every path that's a single path;
-//        if (pawnCaptures(otherPlayerPaths, white ? "black" : "white")) {
-//            int y = white ? 1 : 6;
-//            for (int i = 0 ; i < 7 ; i++) {
-//                Coordinate c = new Coordinate(i, y);
-//                if ((white ? this.pawnMapWhite : this.pawnMapBlack).getPawnOrigins().values()
-//                        .stream().flatMap(Path::stream).noneMatch(c::equals));
-//                predicates.add((c1, c2) -> c1.getX() != c2.getX() && c2.equals(c));
-//            }
-//        }
-
 
 //        System.out.println(predicates.size());
         if (!predicates.isEmpty()) {
-            Map<Coordinate, List<Path>> paths = (white ? this.combinedPawnMap.getWhitePaths() : this.combinedPawnMap.getBlackPaths())
-                    .entrySet()
-                    .stream()
-                    .filter(entry -> this.combinedPawnMap.getSinglePath(colour, entry.getKey()) != null)
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)); //Every path that's a single path;
-
-//            int otherValue = paths.values().stream()
-//                    .map(pathList -> pathList
-//                            .stream().map(CombinedPawnMap.PATH_DEVIATION)
-//                            .reduce((i, j) -> i < j ? i : j)
-//                            .orElse(0))
-//                    .reduce(0, Integer::sum);
-//            System.out.println(otherValue);
-//            System.out.println(this.combinedPawnMap.captures(colour));
-//            System.out.println(this.combinedPawnMap.capturesTwo(colour));
-//            if (otherValue == this.combinedPawnMap.capturesTwo(colour)) {
-//                System.out.println(otherValue);
-//                System.out.println(this.combinedPawnMap.captures(colour));
-//                System.out.println(this.combinedPawnMap.capturesTwo(colour));
-//                System.out.println(colour);
-////                throw new RuntimeException();
-//            }
-
+            Map<Coordinate, List<Path>> paths = everySingularPawnPath(white);//Every path that's a single path;
 
             if (pawnCaptures(paths, colour)) {
-                for (List<Path> pathList : paths.values()) {
-                    Path path = pathList.get(0);
-                    Iterator<BiPredicate<Coordinate, Coordinate>> predicateIterator = predicates.iterator();
-                    while (predicateIterator.hasNext()) {
-                        BiPredicate<Coordinate, Coordinate> predicate = predicateIterator.next();
-                        for (int j = 0; j < path.size() - 1; j++) {
-                            if (predicate.test(path.get(j), path.get(j + 1))) {
-                                predicateIterator.remove();
-                                break;
-                            }
-                        }
-                    }
-                }
                 if (!predicates.isEmpty()) {
-                    capturesToRemove += predicates.size();
+                    capturesToRemove += predicateIterate(white, predicates).size();
                 }
             }
         }
@@ -281,6 +241,89 @@ public class CaptureLocations extends AbstractDeduction {
                         .orElse(0))
                 .reduce(0, Integer::sum);
         return otherValue == this.combinedPawnMap.capturesTwo(colour) && otherValue != 0;
+    }
+
+    private List<Coordinate> pawnCaptureLocations(boolean white) {
+        System.out.println(white);
+        System.out.println((!white ? this.pawnMapWhite : this.pawnMapBlack).maxPieces);
+        System.out.println((white ? pieceNumber.getWhitePieces() : pieceNumber.getBlackPieces()));
+        System.out.println(this.combinedPawnMap.capturesTwo(white ? "black" : "white"));
+        // If every capture of the opponent has been made by pawns
+        if ((!white ? this.pawnMapWhite : this.pawnMapBlack).maxPieces - (white ? pieceNumber.getWhitePieces() : pieceNumber.getBlackPieces())
+                == this.combinedPawnMap.capturesTwo(white ? "black" : "white")) {
+
+            // The deviation a pawn can make
+            int unnaccountedCaptures = ((!white ? this.pawnMapBlack : this.pawnMapWhite).maxPieces - (white ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()))
+                    - this.combinedPawnMap.capturesTwo(white ? "white" : "black");
+            System.out.println("C");
+            System.out.println((!white ? this.pawnMapBlack : this.pawnMapWhite).maxPieces - (!white ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()));
+            System.out.println(this.combinedPawnMap.capturesTwo(!white ? "white" : "black"));
+
+
+            List<BiPredicate<Coordinate, Coordinate>> pawnPredicates = new LinkedList<>();
+            List<Coordinate> missingPawns = new LinkedList<>();
+            Map<Coordinate, List<Path>> otherPlayerPaths = everySingularPawnPath(!white);
+            System.out.println(otherPlayerPaths);
+            // Might always be true
+            if (pawnCaptures(otherPlayerPaths, white ? "black" : "white")) {
+                System.out.println("HERE");
+//            System.out.println(otherPlayerPaths);
+                int y = white ? 1 : 6;
+                for (int i = 0 ; i < 7 ; i++) {
+                    Coordinate c = new Coordinate(i, y);
+                    // If that origin has no pawn - should only be possible if there is a pawn missing
+                    if ((white ? this.pawnMapWhite : this.pawnMapBlack).getPawnOrigins().values()
+                            .stream().flatMap(Path::stream).noneMatch(c::equals)) {
+                        pawnPredicates.add((c1, c2) -> (c1.equals(c) && c2.equals(c)) || c1.getX() != c2.getX() && Math.abs(c2.getX() - c.getX()) <= unnaccountedCaptures);
+                        missingPawns.add(c);
+                    }
+                }
+                List<BiPredicate<Coordinate, Coordinate>> newPredicates = predicateIterate(!white, pawnPredicates);
+                System.out.println(newPredicates.size());
+                return missingPawns.stream().filter(c -> {
+                    return pawnPredicates.stream().anyMatch(p -> p.test(c, c));
+                }).toList();
+            }
+        }
+        return new LinkedList<>();
+    }
+
+    private List<BiPredicate<Coordinate, Coordinate>> predicateIterate(boolean white, List<BiPredicate<Coordinate, Coordinate>> predicates) {
+        String colour = white ? "white" : "black";
+        Map<Coordinate, List<Path>> paths = everySingularPawnPath(white);
+        if (pawnCaptures(paths, colour)) {
+            for (List<Path> pathList : paths.values()) {
+                Path path = pathList.get(0);
+                Iterator<BiPredicate<Coordinate, Coordinate>> predicateIterator = predicates.iterator();
+                while (predicateIterator.hasNext()) {
+                    BiPredicate<Coordinate, Coordinate> predicate = predicateIterator.next();
+                    for (int j = 0; j < path.size() - 1; j++) {
+                        System.out.println(path.get(j));
+                        System.out.println(path.get(j+1));
+                        if (predicate.test(path.get(j), path.get(j + 1))) {
+                            predicateIterator.remove();
+                            break;
+                        }
+                    }
+                }
+            }
+//            if (!predicates.isEmpty()) {
+//                capturesToRemove += predicates.size();
+//            }
+        }
+        return predicates;
+    }
+
+    private Map<Coordinate, List<Path>> everySingularPawnPath(boolean white) {
+        return (white ? this.combinedPawnMap.getWhitePaths() : this.combinedPawnMap.getBlackPaths())
+                .entrySet()
+                .stream()
+                .filter(entry -> this.combinedPawnMap.getSinglePath(white? "white" : "black", entry.getKey()) != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)); //Every path that's a single path;
+    }
+
+    public Path getPromotedPawns(boolean white) {
+        return white ? this.promotedWhitePawns : this.promotedBlackPawns;
     }
 
 }

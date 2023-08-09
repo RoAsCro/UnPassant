@@ -48,7 +48,7 @@ public class TestImpossibleStateDetector {
 
             deduction.deduce(board);
             if (!deduction.getState()) {
-//                System.out.println(deduction);
+                System.out.println(deduction);
 
                 return false;
             }

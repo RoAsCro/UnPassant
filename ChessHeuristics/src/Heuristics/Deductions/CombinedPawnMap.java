@@ -14,6 +14,8 @@ public class CombinedPawnMap extends AbstractDeduction {
     PawnMap white;
     PawnMap black;
 
+
+
     private final Map<Coordinate, List<Path>> whitePaths = new TreeMap<>();
     private final Map<Coordinate, List<Path>> blackPaths = new TreeMap<>();
 
@@ -63,6 +65,11 @@ public class CombinedPawnMap extends AbstractDeduction {
                 .orElse(0);
     }
 
+    /**
+     * return the minimum number of captures made by pawns
+     * @param colour
+     * @return
+     */
     public int capturesTwo(String colour) {
         Map<Coordinate, List<Path>> player = colour.equals("white") ? this.whitePaths : this.blackPaths;
 
@@ -304,48 +311,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 (b, c) -> c.equals(path.getLast()),
                 board,
                 p -> PATH_DEVIATION.apply(p) <= player.getMaxCaptures(path.getLast()),
-                (p1, p2) -> {
-                    //system.out.println(
-//                            p1 + " vs " + p2
-//                    );
-                    //system.out.println(forbiddenPaths);
-
-                    boolean p1NotExclusive;
-                    if (p1.isEmpty()) {
-                        p1NotExclusive = true;
-                    } else {
-                        p1NotExclusive = forbiddenPaths
-                                .stream()
-                                .noneMatch(entry ->
-                                        // What is commented out below may greatly affect performance
-                                        // now that it is commented out - however, it allows theoretical collision
-                                        // Before reinstating, create new checks
-//                                        p1.contains(entry.getKey()) &&
-                                                Pathfinder.pathsExclusive(p1, entry.getValue().get(0)));
-                    }
-                    boolean p2NotExclusive = forbiddenPaths
-                            .stream()
-                            .noneMatch(entry ->
-                                    // See above before deleting
-//                                    (p2.contains(entry.getKey()) || entry.getValue().get(0).contains(p2.getLast())) &&
-                                            Pathfinder.pathsExclusive(p2, entry.getValue().get(0)));
-                    if (!p1NotExclusive && !p2NotExclusive) {
-                        return new Path();
-                    }
-                    if (!p1NotExclusive) {
-                        return p2;
-                    }
-                    if (!p2NotExclusive) {
-                        //system.out.println("p2 exclusive");
-                        return p1;
-                    }
-
-                    if (!p1.isEmpty() && PATH_DEVIATION.apply(p1) < PATH_DEVIATION.apply(p2)) {
-                        return p1;
-                    }
-                    //system.out.println("both not exclusive");
-                    return p2;
-                }
+                (p1, p2) -> exclusion(forbiddenPaths, p1, p2)
                 );
         //system.out.println("new path = " + newPath);
 //        //system.out.println(PATH_DEVIATION.apply(newPath));
@@ -394,4 +360,43 @@ public class CombinedPawnMap extends AbstractDeduction {
     public Map<Coordinate, List<Path>> getBlackPaths() {
         return this.blackPaths;
     }
+
+    public Path exclusion(List<Map.Entry<Coordinate, List<Path>>> forbiddenPaths, Path p1, Path p2) {
+            boolean p1NotExclusive;
+            if (p1.isEmpty()) {
+                p1NotExclusive = true;
+            } else {
+                p1NotExclusive = forbiddenPaths
+                        .stream()
+                        .noneMatch(entry ->
+                                // What is commented out below may greatly affect performance
+                                // now that it is commented out - however, it allows theoretical collision
+                                // Before reinstating, create new checks
+//                                        p1.contains(entry.getKey()) &&
+                                Pathfinder.pathsExclusive(p1, entry.getValue().get(0)));
+            }
+            boolean p2NotExclusive = forbiddenPaths
+                    .stream()
+                    .noneMatch(entry ->
+                            // See above before deleting
+//                                    (p2.contains(entry.getKey()) || entry.getValue().get(0).contains(p2.getLast())) &&
+                            Pathfinder.pathsExclusive(p2, entry.getValue().get(0)));
+            if (!p1NotExclusive && !p2NotExclusive) {
+                return new Path();
+            }
+            if (!p1NotExclusive) {
+                return p2;
+            }
+            if (!p2NotExclusive) {
+                //system.out.println("p2 exclusive");
+                return p1;
+            }
+
+            if (!p1.isEmpty() && PATH_DEVIATION.apply(p1) < PATH_DEVIATION.apply(p2)) {
+                return p1;
+            }
+            //system.out.println("both not exclusive");
+            return p2;
+    }
+
 }

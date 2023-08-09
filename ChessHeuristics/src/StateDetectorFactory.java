@@ -15,6 +15,7 @@ public class StateDetectorFactory {
     private static int pmbPosition = 2;
     private static int pmPosition = 4;
     private static int prmPosition = 6;
+    private static int ppsPosition = 7;
 
     private static Deduction[] getDeductions(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction... deductions) {
         PawnMapWhite pmw = null;
@@ -41,6 +42,7 @@ public class StateDetectorFactory {
         PieceMap pm = new PieceMap(cpm);
         CaptureLocations cl = new CaptureLocations(pmw, pmb, pm, cpm);
         PromotionMap prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
+        PromotedPawnSquares pps = new PromotedPawnSquares(prm, cl, cpm);
 //        Deduction[] deductions1 = new Deduction[]{};
         return new Deduction[]{pp,
                 pmw,
@@ -48,7 +50,8 @@ public class StateDetectorFactory {
                 cpm,
                 pm,
                 cl,
-                prm
+                prm,
+                pps
         };
     }
 
@@ -77,7 +80,8 @@ public class StateDetectorFactory {
         return new UnCastle((PawnMap) deductions[pmwPosition],
                 (PawnMap) deductions[pmbPosition],
                 (PieceMap) deductions[pmPosition],
-                (PromotionMap) deductions[prmPosition]);
+                (PromotionMap) deductions[prmPosition],
+                (PromotedPawnSquares) deductions[ppsPosition]);
     }
 
 

@@ -245,6 +245,30 @@ public class SolverTest {
     }
 
     @Test
+    public void ChessMysteries8() {
+        // pp49
+        Solver solver = new Solver();
+        solver.setNumberOfSolutions(1);
+        solver.setNumberOfSolutions(1);
+        solver.setAdditionalDepth(2);
+        Assertions.assertEquals(1, solver.solve(BoardBuilder.buildBoard("k2q3r/R1B4p/R4p2/K2B2p1/1P2n1P1/P7/2P5/r4B2 w - - 0 1"), 1).size());
+        // This is entirely a matter of iterating through valid moves
+    }
+
+//    @Test
+//    public void ChessMysteries9() {
+//        // pp50
+////        Solver solver = new Solver();
+////        solver.setNumberOfSolutions(1);
+////        solver.setNumberOfSolutions(1);
+////        solver.setAdditionalDepth(2);
+////        Assertions.assertEquals(1, solver.solve(BoardBuilder.buildBoard("k2q3r/R1B4p/R4p2/K2B2p1/1P2n1P1/P7/2P5/r4B2 w - - 0 1"), 1).size());
+//        System.out.println(StateDetectorFactory.getDetector("R1BQKB1R/1PPPPPP1/8/1N6/1N6/2n5/1pppp1p1/1kr1q3 w - - 0 1").testState());
+//
+//        // This is entirely a matter of iterating through valid moves
+//    }
+
+    @Test
     public void testUnCastling() {
         Solver solver = new Solver(p ->
             !(p.split(":")[1].contains("x")) && !(p.split(":")[1].startsWith("R")));

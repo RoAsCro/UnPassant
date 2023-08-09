@@ -23,13 +23,15 @@ public class ImpossibleStates {
         PieceMap pm = new PieceMap(cpm);
         CaptureLocations cl = new CaptureLocations(pmw, pmb, pm, cpm);
         PromotionMap prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
+        PromotedPawnSquares pps = new PromotedPawnSquares(prm, cl, cpm);
         this.detector = new TestImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,
                 pmb,
                 cpm,
                 pm,
                 cl,
-                prm);
+                prm,
+                pps);
     }
 
     public boolean test(String fen) {
@@ -457,7 +459,7 @@ public class ImpossibleStates {
 
     @Test
     void r() {
-        Assertions.assertFalse(test("2nn3K/pkPRp1p1/p2p4/P1p5/1Pp4Q/2PP2P1/4P2P/n7 b - - 0 1"));
+        Assertions.assertFalse(test("rnbqk1nr/ppp1pp1p/2p2p2/8/8/8/1PPPPPPP/RNBQKB1R w KQkq - 0 1"));
     }
 
 
