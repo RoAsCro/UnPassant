@@ -1295,6 +1295,24 @@ public class PieceMapTest {
 
     }
 
+    @Test
+    void testBlackRooksMoved() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbn1/rppp3r/p3p3/8/8/8/PPPPP3/RNBQKBNR b KQ - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertFalse(pieceMap.getKingMovement(true));
+        Assertions.assertTrue(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
 
 
     @Test

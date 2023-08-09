@@ -229,17 +229,7 @@ public class SolverTest {
     public void ChessMysteries7() {
         // pp45
         Solver solver = new Solver(p -> {
-            SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(p.split(":")[0]);
-            detector.testState();
-            return detector.canCastle(false);
-        });
-        solver.setNumberOfSolutions(1);
-        solver.setNumberOfSolutions(2);
-        solver.setAdditionalDepth(2);
-        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w kq - 0 1"), 2).size());
-
-        solver = new Solver(p -> {
-            if (p.split(":")[1].endsWith("h8")) {
+            if (p.split(":")[1].contains("x")) {
                 return false;
             }
             SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(p.split(":")[0]);
@@ -249,101 +239,116 @@ public class SolverTest {
         solver.setNumberOfSolutions(1);
         solver.setNumberOfSolutions(2);
         solver.setAdditionalDepth(2);
-        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w kq - 0 1"), 3).size());
+        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w kq - 0 1"), 2).size());
 
         // This is entirely a matter of iterating through valid moves
     }
 
-
     @Test
-    public void test() {
-        // Simple
-        new Solver().solve(BoardBuilder.buildBoard("4Q3/8/8/8/8/8/1rk5/K7 w - - 0 1"), 1);
+    public void testUnCastling() {
+        Solver solver = new Solver(p ->
+            !(p.split(":")[1].contains("x")) && !(p.split(":")[1].startsWith("R")));
+        solver.setAdditionalDepth(0);
+        Assertions.assertTrue(solver.solve(BoardBuilder.buildBoard("5rk1/8/6K1/8/8/8/7P/8 b - - 0 1"), 1)
+                .contains("4k2r/8/6K1/8/8/8/7P/8 w - -:Ke8-g8"));
+
+        solver = new Solver(p ->
+                !(p.split(":")[1].contains("x")) && !(p.split(":")[1].startsWith("R")));
+        solver.setAdditionalDepth(0);
+        Assertions.assertTrue(solver.solve(BoardBuilder.buildBoard("2kr4/8/2K5/8/8/8/7P/8 b - - 0 1"), 1)
+                .contains("r3k3/8/2K5/8/8/8/7P/8 w - -:Ke8-c8"));
     }
 
-    @Test
-    public void test2() {
-        // Simple
-        SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector("rnbqkbnr/pppppppp/8/8/5P2/7N/PPPPP1PP/RNBQKB1R w KQkq - 0 1");
-        detector.testState();
-        SolverImpossibleStateDetector detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R b :Pf2-f4", detector);
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
 
-
-
-        detector = StateDetectorFactory.getDetector("rnbqkbnr/pppppppp/8/8/5P2/7N/PPPPP1PP/RNBQKB1R w KQkq - 0 1");
-        detector.testState();
-        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/pppppppp/8/8/5P2/8/PPPPPNPP/RNBQKB1R b :Rf2-f4", detector);
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-
-
-        System.out.println("-------------------");
-        detector = StateDetectorFactory.getDetector("rnbqkb1r/ppppp1pp/4n3/8/5PN1/8/PPPPP1PP/RNBQKB1R b KQkq - 0 1");
-        detector.testState();
-        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"),"rnbqkb1r/ppppp1pp/8/2n5/5PN1/8/PPPPP1PP/RNBQKB1R w :Rc5-b2", detector);
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-
-        System.out.println("-------------------");
-
-        detector = StateDetectorFactory.getDetector("rnbqkb1r/ppp1p1pp/3p4/2n5/5PN1/8/PPPPP1PP/RNBQKB1R b KQkq - 0 1");
-        detector.testState();
-        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"),"rnbqkb1r/ppppp1pp/8/2n5/5PN1/8/PPPPP1PP/RNBQKB1R w :Pd6-d7", detector);
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-
-        System.out.println("-------------------");
-
-        detector = StateDetectorFactory.getDetector("rnbq1bnr/pppppkpp/5N2/8/5P2/8/PPPPP1PP/RNBQKB1R w - - 0 1");
-        detector.testState();
-        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/ppppp1pp/5p2/8/5PN1/8/PPPPP1PP/RNBQKB1R b :Rf6xPg4", detector);
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-
-        System.out.println("!-------------------!");
-
-        detector = StateDetectorFactory.getDetector("rnbq1bnr/pppppkpp/5N2/8/5P2/8/PPPPP1PP/RNBQKB1R b KQkq - 0 1");
-        detector.testState();
-        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/ppppp1pp/5p2/8/5PN1/8/PPPPP1PP/RNBQKB1R w :Rf6xPg4", detector);
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-
-        System.out.println("!-------------------!");
-
-        detector = StateDetectorFactory.getDetector("rnbq1bnr/pppppkpp/5N2/8/5P2/8/PPPPP1PP/RNBQKB1R b KQkq - 0 1");
-        detector.testState();
-        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/ppppp1pp/5p2/8/5PN1/8/PPPPP1PP/RNBQKB1R w :Rf6xBg4", detector);
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-
-        System.out.println("!-------------------!");
-
-        detector = StateDetectorFactory.getDetector("rnbq1bnr/pppppkpp/5N2/8/5P2/8/PPPPP1PP/RNBQKB1R w KQkq - 0 1");
-        detector.testState();
-        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/ppppp1pp/5p2/8/5PN1/8/PPPPP1PP/RNBQKB1R b :Rf6xBg4", detector);
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-
-
-    }
+//    @Test
+//    public void test() {
+//        // Simple
+//        new Solver().solve(BoardBuilder.buildBoard("4Q3/8/8/8/8/8/1rk5/K7 w - - 0 1"), 1);
+//    }
+//
+//    @Test
+//    public void test2() {
+//        // Simple
+//        SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector("rnbqkbnr/pppppppp/8/8/5P2/7N/PPPPP1PP/RNBQKB1R w KQkq - 0 1");
+//        detector.testState();
+//        SolverImpossibleStateDetector detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R b :Pf2-f4", detector);
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
+//
+//
+//
+//        detector = StateDetectorFactory.getDetector("rnbqkbnr/pppppppp/8/8/5P2/7N/PPPPP1PP/RNBQKB1R w KQkq - 0 1");
+//        detector.testState();
+//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/pppppppp/8/8/5P2/8/PPPPPNPP/RNBQKB1R b :Rf2-f4", detector);
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
+//
+//
+//        System.out.println("-------------------");
+//        detector = StateDetectorFactory.getDetector("rnbqkb1r/ppppp1pp/4n3/8/5PN1/8/PPPPP1PP/RNBQKB1R b KQkq - 0 1");
+//        detector.testState();
+//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"),"rnbqkb1r/ppppp1pp/8/2n5/5PN1/8/PPPPP1PP/RNBQKB1R w :Rc5-b2", detector);
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
+//
+//        System.out.println("-------------------");
+//
+//        detector = StateDetectorFactory.getDetector("rnbqkb1r/ppp1p1pp/3p4/2n5/5PN1/8/PPPPP1PP/RNBQKB1R b KQkq - 0 1");
+//        detector.testState();
+//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"),"rnbqkb1r/ppppp1pp/8/2n5/5PN1/8/PPPPP1PP/RNBQKB1R w :Pd6-d7", detector);
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
+//
+//        System.out.println("-------------------");
+//
+//        detector = StateDetectorFactory.getDetector("rnbq1bnr/pppppkpp/5N2/8/5P2/8/PPPPP1PP/RNBQKB1R w - - 0 1");
+//        detector.testState();
+//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/ppppp1pp/5p2/8/5PN1/8/PPPPP1PP/RNBQKB1R b :Rf6xPg4", detector);
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
+//
+//        System.out.println("!-------------------!");
+//
+//        detector = StateDetectorFactory.getDetector("rnbq1bnr/pppppkpp/5N2/8/5P2/8/PPPPP1PP/RNBQKB1R b KQkq - 0 1");
+//        detector.testState();
+//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/ppppp1pp/5p2/8/5PN1/8/PPPPP1PP/RNBQKB1R w :Rf6xPg4", detector);
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
+//
+//        System.out.println("!-------------------!");
+//
+//        detector = StateDetectorFactory.getDetector("rnbq1bnr/pppppkpp/5N2/8/5P2/8/PPPPP1PP/RNBQKB1R b KQkq - 0 1");
+//        detector.testState();
+//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/ppppp1pp/5p2/8/5PN1/8/PPPPP1PP/RNBQKB1R w :Rf6xBg4", detector);
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
+//
+//        System.out.println("!-------------------!");
+//
+//        detector = StateDetectorFactory.getDetector("rnbq1bnr/pppppkpp/5N2/8/5P2/8/PPPPP1PP/RNBQKB1R w KQkq - 0 1");
+//        detector.testState();
+//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/ppppp1pp/5p2/8/5PN1/8/PPPPP1PP/RNBQKB1R b :Rf6xBg4", detector);
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
+//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
+//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
+//
+//
+//    }
 
 
 }

@@ -172,6 +172,7 @@ public class Solver {
         String type = board.at(origin).getType();
         boolean white = board.getTurn().equals("white");
         int y = origin.getY();
+        int x = origin.getX();
         if (((white && y == 7) || (!white && y == 0)) && !type.equals("king")) {
             Coordinate[] additionalMoves = StandardPieceFactory.getInstance().getPiece(white ? "p" : "P").getMoves(origin);
             states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, true, false, any));
@@ -182,7 +183,6 @@ public class Solver {
 //            tempMoves.addAll((Arrays.stream(additionalMoves).toList()));
 //            moves = tempMoves.toArray(moves);
         } else if (((white && y == 5) || (!white && y == 2)) && type.equals("pawn")) {
-            int x = origin.getX();
             int offfset = white ? -1 : 1;
             Coordinate[] additionalMoves = new Coordinate[]{new Coordinate(x + 1, y + offfset), new Coordinate(x - 1, y + offfset)};
             states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, true, any));
@@ -192,6 +192,10 @@ public class Solver {
             if (!legalFirst && any && !states.isEmpty()) {
                 return states;
             }
+        } else if (type.equals("king")) {
+            Coordinate[] additionalMoves = new Coordinate[]{new Coordinate(x - 2, y), new Coordinate(x + 2, y)};
+            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, false, any));
+
         }
 
 
@@ -294,22 +298,9 @@ public class Solver {
     }
 
     private boolean testState(ChessBoard board) {
-//        String lastMove =  move.split(":")[1];
-//        if (!(board.at(target).getType().charAt(0) == 'p') && piece.equals("") && !promotion) {
-////            System.out.println(board.getReader().toFEN());
-//            return true;
-//        }
         SolverImpossibleStateDetector detector;
-//        if (this.stringDetectorMap.containsKey(move)) {
-//            detector = DetectorUpdater.update(board, move, this.stringDetectorMap.get(move));
-//        } else {
             detector = StateDetectorFactory.getDetector(board);
-//        }
-        // System.out.println(board.getReader().toFEN());
         boolean pass = detector.testState();
-//        if (pass) {
-//            this.stringDetectorMap.put(move, detector);
-//        }
         return pass;
     }
 

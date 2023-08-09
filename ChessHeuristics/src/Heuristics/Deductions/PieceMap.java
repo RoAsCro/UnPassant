@@ -159,8 +159,9 @@ public class PieceMap extends AbstractDeduction{
                 || board.getBoardFacts().getCoordinates("white", "rook").contains(Coordinates.WHITE_QUEEN_ROOK))) {
             this.whiteKingMoved = true;
         }
-        if ((board.getBoardFacts().getCoordinates("black", "rook").contains(Coordinates.BLACK_KING_ROOK)
+        if (!(board.getBoardFacts().getCoordinates("black", "rook").contains(Coordinates.BLACK_KING_ROOK)
                 || board.getBoardFacts().getCoordinates("black", "rook").contains(Coordinates.BLACK_QUEEN_ROOK))) {
+
             this.blackKingMoved = true;
         }
 
