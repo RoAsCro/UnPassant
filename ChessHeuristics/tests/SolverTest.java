@@ -192,7 +192,66 @@ public class SolverTest {
         }
         // This fails because pawn capture position is not accounted for
         // This is because doing so would require that it be first established whether or not any given missing pawn promoted
-        // In this case the deduction needs to establish that the king has never moved, which
+        // Then there is two options - either the pawn promoted or was taken on a particular square
+        // The program as it is cannot account for both being pootentially true
+    }
+
+    @Test
+    public void ChessMysteries6() {
+        // pp45
+        Solver solver = new Solver(p -> {
+            SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(p.split(":")[0]);
+            detector.testState();
+            return detector.canCastle(false);
+        });
+        solver.setNumberOfSolutions(1);
+        solver.setNumberOfSolutions(2);
+        solver.setAdditionalDepth(2);
+        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w kq - 0 1"), 2).size());
+
+        solver = new Solver(p -> {
+            if (p.split(":")[1].endsWith("h8")) {
+                return false;
+            }
+            SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(p.split(":")[0]);
+            detector.testState();
+            return detector.canCastle(false);
+        });
+        solver.setNumberOfSolutions(1);
+        solver.setNumberOfSolutions(2);
+        solver.setAdditionalDepth(2);
+        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w kq - 0 1"), 3).size());
+
+        // This is entirely a matter of iterating through valid moves
+    }
+
+    @Test
+    public void ChessMysteries7() {
+        // pp45
+        Solver solver = new Solver(p -> {
+            SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(p.split(":")[0]);
+            detector.testState();
+            return detector.canCastle(false);
+        });
+        solver.setNumberOfSolutions(1);
+        solver.setNumberOfSolutions(2);
+        solver.setAdditionalDepth(2);
+        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w kq - 0 1"), 2).size());
+
+        solver = new Solver(p -> {
+            if (p.split(":")[1].endsWith("h8")) {
+                return false;
+            }
+            SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(p.split(":")[0]);
+            detector.testState();
+            return detector.canCastle(false);
+        });
+        solver.setNumberOfSolutions(1);
+        solver.setNumberOfSolutions(2);
+        solver.setAdditionalDepth(2);
+        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w kq - 0 1"), 3).size());
+
+        // This is entirely a matter of iterating through valid moves
     }
 
 

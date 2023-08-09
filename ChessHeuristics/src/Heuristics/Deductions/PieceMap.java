@@ -154,7 +154,17 @@ public class PieceMap extends AbstractDeduction{
             findFromOrigin(board, x, false, false);
             findFromOrigin(board, x, false, true);
         });
+        //Check if rooks are at home
+        if (!(board.getBoardFacts().getCoordinates("white", "rook").contains(Coordinates.WHITE_KING_ROOK)
+                || board.getBoardFacts().getCoordinates("white", "rook").contains(Coordinates.WHITE_QUEEN_ROOK))) {
+            this.whiteKingMoved = true;
+        }
+        if ((board.getBoardFacts().getCoordinates("black", "rook").contains(Coordinates.BLACK_KING_ROOK)
+                || board.getBoardFacts().getCoordinates("black", "rook").contains(Coordinates.BLACK_QUEEN_ROOK))) {
+            this.blackKingMoved = true;
+        }
 
+        // Check if King has been displaced
         this.startLocations.forEach((k, v) -> {
             String name =STANDARD_STARTS.get(k.getX());
                 if (!name.equals("king")) {
@@ -162,13 +172,13 @@ public class PieceMap extends AbstractDeduction{
                     v.forEach((k1, v1) -> updates.add(disturbsKing(board, name, PIECE_CODES.get(name), k, k1)));
                     if (!updates.isEmpty()) {
                         if (updates.stream().allMatch(b -> b[0])) {
-                            System.out.println("xx");
+//                            System.out.println("xx");
                             this.whiteKingMoved = true;
                         }
                         if (updates.stream().allMatch(b -> b[1])) {
-                            System.out.println("yy");
+//                            System.out.println("yy");
                             this.blackKingMoved = true;
-                            System.out.println(this.blackKingMoved);
+//                            System.out.println(this.blackKingMoved);
                         }
                     }
                 }
@@ -440,7 +450,7 @@ public class PieceMap extends AbstractDeduction{
 
                 if (originX == Coordinates.WHITE_KING.getX() && pieceName.equals("king")
                         && !target.equals(white ? Coordinates.WHITE_KING : Coordinates.BLACK_KING)) {
-                    System.out.println(target);
+//                    System.out.println(target);
                     if (white) {
                         this.whiteKingMoved = true;
                     } else {
@@ -475,19 +485,19 @@ public class PieceMap extends AbstractDeduction{
     private boolean[] disturbsKing(BoardInterface board, String pieceName,
                               String pieceCode, Coordinate start,
                               Coordinate target) {
-        System.out.println(pieceName);
-        System.out.println(start);
-        System.out.println(target);
-        System.out.println(findPath(board, pieceName, pieceCode, start, target, kingCollisionBlack));
-        System.out.println(findPath(board, pieceName, pieceCode, start, target, kingCollisionWhite));
+//        System.out.println(pieceName);
+//        System.out.println(start);
+//        System.out.println(target);
+//        System.out.println(findPath(board, pieceName, pieceCode, start, target, kingCollisionBlack));
+//        System.out.println(findPath(board, pieceName, pieceCode, start, target, kingCollisionWhite));
 
         boolean[] updates = new boolean[]{false, false};
         if (!this.whiteKingMoved && findPath(board, pieceName, pieceCode, start, target, kingCollisionWhite).isEmpty()) {
-            System.out.println("w");
+//            System.out.println("w");
             updates[0] = true;
         }
         if (!this.blackKingMoved && findPath(board, pieceName, pieceCode, start, target, kingCollisionBlack).isEmpty()) {
-            System.out.println("b");
+//            System.out.println("b");
             updates[1] = true;
         }
         return updates;

@@ -156,7 +156,7 @@ public class PromotionMap extends AbstractDeduction {
 
         // Fail if a piece has no valid origin
         if (pieceSquareOriginWhite.containsValue(List.of()) || pieceSquareOriginBlack.containsValue(List.of())) {
-            System.out.println("j");
+//            System.out.println("j");
 
             this.state = false;
             return false;
