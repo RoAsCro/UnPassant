@@ -71,6 +71,15 @@ public abstract class PawnMap extends AbstractDeduction{
         return false;
     }
 
+    private int capturablePieces(boolean white) {
+        return this.maxPieces - (white ? this.pieceNumber.getWhitePieces() : this.pieceNumber.getBlackPieces());
+    }
+
+    public int capturablePieces() {
+        return capturablePieces(this.colour.equals("white"));
+    }
+
+
 
     protected void update(String colour) {
         reduce(colour);

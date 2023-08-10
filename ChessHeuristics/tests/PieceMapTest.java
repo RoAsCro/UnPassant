@@ -1208,7 +1208,6 @@ public class PieceMapTest {
 
     @Test
     void testWhiteKingMovedByEscapeQ() {
-        // TODO
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1rbqkbr1/pppp1ppp/2n4n/4p3/4P3/8/PPPPPQPP/RNB1KBNR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
@@ -1225,9 +1224,93 @@ public class PieceMapTest {
     }
 
     @Test
+    void testWhiteKingMovedByTakenQ() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1rbqkbr1/pppp1pp1/2n3pn/4p3/4P3/8/PPPPP1PP/RNB1KBNR w - - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertTrue(pieceMap.getKingMovement(true));
+        Assertions.assertTrue(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testBlackKingMovedByTakenQ() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnb1kbnr/ppppp1pp/5p2/8/8/P5P1/RPPPPPPR/1NBQKBN1 w - - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertTrue(pieceMap.getKingMovement(true));
+        Assertions.assertTrue(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testWhiteKingMovedByTakenR() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbn1/rppppppr/p5p1/8/4P3/8/PPPP1PPP/RNBQKBN1 w Q - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertTrue(pieceMap.getKingMovement(true));
+        Assertions.assertTrue(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+    }
+
+    @Test
+    void testBlackKingMovedByTakenR() {
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r3k3/ppp2ppp/6Q1/P2Kp2q/1NB3P1/p5P1/PP3PP1/R7 w - - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertTrue(pieceMap.getKingMovement(true));
+        Assertions.assertTrue(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+    }
+
+
+
+    @Test
     void testBlackKingMovedByEscapeR() {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbn1/pppp1ppp/4r3/4p3/4P3/8/PPPP1PPP/RNBQKBNR w - - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertFalse(pieceMap.getKingMovement(true));
+        Assertions.assertTrue(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testWhiteOneMissingRook() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbq1bnr/ppppkppp/4p3/8/8/8/PPPPPPPP/1NBQKBNR w"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);

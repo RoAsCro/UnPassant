@@ -81,6 +81,16 @@ public class CombinedPawnMap extends AbstractDeduction {
                 .orElse(0);
     }
 
+    /**
+     * Returns the number of pieces the given player can capture:
+     * the opposing player's maxPieces minus the number of pieces the opposing player has on the board
+     * @param white
+     * @return
+     */
+    public int capturablePieces(boolean white) {
+        return (white ? this.black : this.white).capturablePieces();
+    }
+
     @Override
     public List<Observation> getObservations() {
         List<Observation> observations = new LinkedList<>(this.black.getObservations());

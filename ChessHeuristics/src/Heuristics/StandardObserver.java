@@ -25,8 +25,8 @@ public class StandardObserver {
     }
 
     public Path getCoordinates(String colour, String piece) {
-        return colour.equals("white")
-                ? whitePieces.get(piece) : blackPieces.get(piece);
+        return Path.of(colour.equals("white")
+                ? whitePieces.get(piece) : blackPieces.get(piece));
     }
 
     public Map<String, Path> getAllCoordinates(String colour) {

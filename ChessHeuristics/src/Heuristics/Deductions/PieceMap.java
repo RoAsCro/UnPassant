@@ -70,7 +70,7 @@ public class PieceMap extends AbstractDeduction{
             return !(
                     map.containsKey(path.getLast())
                     && toCheck != null
-                    && Pathfinder.pathsExclusive(toCheck, Path.of(path, NULL_COORDINATE)));
+                    && Pathfinder.pathsExclusive(toCheck, Path.of(path, Coordinates.NULL_COORDINATE)));
         }
         return true;
     };
@@ -365,14 +365,22 @@ public class PieceMap extends AbstractDeduction{
         if (this.bKRook && this.bQRook) {
             this.blackKingMoved = true;
         }
+        // Does not account for the possibility that these pieces are promoted
+        boolean allPiecesTakenByPawnsW = this.pawnMap.capturesTwo("black") == this.pawnMap.capturablePieces(false);
+        boolean allPiecesTakenByPawnsB = this.pawnMap.capturesTwo("white") == this.pawnMap.capturablePieces(true);
+
         // Check queen
         Coordinate currentQueen = new Coordinate(3, 0);
         boolean white = true;
+        boolean currentAllPieces = allPiecesTakenByPawnsW;
         for (int i = 0 ; i < 2 ; i++) {
             if ((white && !this.whiteKingMoved) || (!white && !this.blackKingMoved)) {
                 Coordinate finalCurrentQueen = currentQueen;
-                if (this.startLocations.containsKey(currentQueen) && this.startLocations.get(currentQueen)
-                        .keySet().stream().anyMatch(c -> disturbsKing(board, "queen", PIECE_CODES.get("queen"), finalCurrentQueen, c, true))) {
+                boolean finalWhite = white;
+                if (this.startLocations.containsKey(currentQueen) && ((this.startLocations.get(currentQueen)
+                        .keySet().stream().anyMatch(c -> disturbsKing(board, "queen", PIECE_CODES.get("queen"), finalCurrentQueen, c, finalWhite)))
+                        || (this.startLocations.get(currentQueen).isEmpty() && currentAllPieces && disturbsKing(board, "queen", PIECE_CODES.get("queen"), finalCurrentQueen, Coordinates.NULL_COORDINATE, white)))
+                ) {
                     if (white) {
                         this.whiteKingMoved = true;
                     } else {
@@ -382,13 +390,14 @@ public class PieceMap extends AbstractDeduction{
             }
             currentQueen = new Coordinate(3, 7);
             white = false;
+            currentAllPieces = allPiecesTakenByPawnsB;
         }
         // Check rooks
         if (!this.whiteKingMoved) {
-            rookKingMovementUpdate(board, true);
+            rookKingMovementUpdate(board, true, allPiecesTakenByPawnsW);
         }
         if (!this.blackKingMoved) {
-            rookKingMovementUpdate(board, false);
+            rookKingMovementUpdate(board, false, allPiecesTakenByPawnsB);
         }
     }
 
@@ -496,44 +505,51 @@ public class PieceMap extends AbstractDeduction{
 
     }
 
-    private void rookKingMovementUpdate(BoardInterface board, boolean white) {
+    private void rookKingMovementUpdate(BoardInterface board, boolean white, boolean allPiecesTakenByPawns) {
+
         // This makes no sense
         // If a rook is caged and taken by a visible pawn, that;ll actually cover the scenario on page 45
         Path rooks = board.getBoardFacts().getCoordinates(white ? "white" : "black", "rook");
         Coordinate kingRook = white ? Coordinates.WHITE_KING_ROOK : Coordinates.BLACK_KING_ROOK;
         Coordinate queenRook = white ? Coordinates.WHITE_QUEEN_ROOK : Coordinates.BLACK_QUEEN_ROOK;
+
+        if (allPiecesTakenByPawns && (!this.startLocations.containsKey(kingRook) || (
+                this.startLocations.get(kingRook).isEmpty()
+                        || (this.startLocations.get(kingRook).size() == 1 &&
+                        this.startLocations.get(kingRook).containsKey(queenRook)))
+        )) {
+            rooks.add(Coordinates.NULL_COORDINATE);
+        }
+        else if (allPiecesTakenByPawns && (!this.startLocations.containsKey(queenRook) || (
+                this.startLocations.get(queenRook).isEmpty()
+                        || (this.startLocations.get(queenRook).size() == 1 &&
+                        this.startLocations.get(queenRook).containsKey(kingRook)))
+        ))  {
+            rooks.add(Coordinates.NULL_COORDINATE);
+        }
+        boolean kk = (!this.startLocations.containsKey(kingRook) || (
+                this.startLocations.get(kingRook).isEmpty()
+                        || (
+                        !this.startLocations.get(kingRook).containsKey(kingRook))));
+        boolean qq = (!this.startLocations.containsKey(queenRook) || (
+                this.startLocations.get(queenRook).isEmpty()
+                        || (
+                        !this.startLocations.get(queenRook).containsKey(queenRook))));
         boolean kingMoved = false;
-        boolean qRook = true;
-        boolean kRook = true;
         for (Coordinate c : rooks) {
+            if (c.equals(queenRook) || c.equals(kingRook)) {
+                continue;
+            }
             if (kingMoved) {
                 continue;
             }
-            boolean king = this.startLocations.containsKey(kingRook) && this.startLocations.get(kingRook).containsKey(c);
-            boolean queen = this.startLocations.containsKey(queenRook) && this.startLocations.get(queenRook).containsKey(c);
-
-            boolean kingOne = false;
-            boolean kingTwo = false;
-            if (qRook && queen) {
-                kingOne = disturbsKing(board, "rook", "r", queenRook, c, white);
+            boolean king = c.equals(Coordinates.NULL_COORDINATE) || (this.startLocations.containsKey(kingRook) && this.startLocations.get(kingRook).containsKey(c));
+            boolean queen = c.equals(Coordinates.NULL_COORDINATE) || (this.startLocations.containsKey(queenRook) && this.startLocations.get(queenRook).containsKey(c));
+            if (qq && queen) {
+                kingMoved = disturbsKing(board, "rook", "r", queenRook, c, white);
             }
-            if (kRook && king) {
-                kingTwo = disturbsKing(board, "rook", "r", kingRook, c, white);
-            }
-            if (kingOne && kingTwo) {
-                kingMoved = true;
-            } else if (kingOne) {
-                if (king) {
-                    qRook = false;
-                } else {
-                    kingMoved = true;
-                }
-            } else if(kingTwo) {
-                if (queen) {
-                    kRook = false;
-                } else {
-                    kingMoved = true;
-                }
+            else if (kk && king) {
+                kingMoved = disturbsKing(board, "rook", "r", kingRook, c, white);
             }
         }
         if (kingMoved) {
