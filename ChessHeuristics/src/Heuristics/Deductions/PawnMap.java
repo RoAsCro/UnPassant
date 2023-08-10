@@ -41,6 +41,7 @@ public abstract class PawnMap extends AbstractDeduction{
         this.originFree.putAll(pawnMap.originFree);
         this.capturedPieces = pawnMap.capturedPieces;
         this.maxPieces = pawnMap.maxPieces;
+        this.sets = pawnMap.sets;
     }
 
     public PawnMap(Boolean white, PawnNumber pawnNumber, PieceNumber pieceNumber) {
@@ -93,7 +94,7 @@ public abstract class PawnMap extends AbstractDeduction{
 
     /**
      * Returns the max number of pieces minus the number of pieces the opponent is missing
-     * @return
+     * @return the max number of pieces minus the number of pieces the opponent is missing
      */
     protected int capturedPieces(boolean white) {
         return this.maxPieces - (white
@@ -107,7 +108,7 @@ public abstract class PawnMap extends AbstractDeduction{
 
     /**
      * When pieces are accounted for elsewhere, the maxPieces needs to be updated
-     * @param subtrahend
+     * @param subtrahend the number of pieces that cannot be captured by pawns
      */
     public void updateMaxCapturedPieces(int subtrahend) {
         this.maxPieces -= subtrahend;
@@ -119,17 +120,15 @@ public abstract class PawnMap extends AbstractDeduction{
         return this.capturedPieces + this.captureSet.get(coordinate);
     }
 
-    protected Map<Coordinate, Integer> getCaptureSet(boolean white) {
+    protected Map<Coordinate, Integer> getCaptureSet() {
         return this.captureSet;
     }
-
-    public abstract Map<Coordinate, Integer> getCaptureSet();
 
     protected void rawMap(BoardInterface board, boolean white) {
         int start = Math.abs((white ? FIRST_RANK : FINAL_RANK) - 1);
         int increment = white ? 1 : -1;
         BoardReader reader = board.getReader();
-        for (int y = 0 ; y < 6; y++) {
+        for (int y = 0 ; y < FINAL_RANK - 1; y++) {
             reader.to(new Coordinate(0, start + y * increment));
             int finalY = y;
             reader.nextWhile(Coordinates.RIGHT, coordinate -> coordinate.getX() <= FINAL_RANK, piece -> {
@@ -163,13 +162,12 @@ public abstract class PawnMap extends AbstractDeduction{
         updateCaptureSet(white);
 //        System.out.println("breaks" + this.pawnOrigins);
 
-        origins.entrySet()
-                .forEach(entry -> {
-                    int x = entry.getKey().getX();
-                    entry.getValue().removeAll(entry.getValue().stream()
-                            .filter(coordinate -> Math.abs(x - coordinate.getX()) > this.capturedPieces + this.captureSet.get(entry.getKey()))
-                            .toList());
-                });
+        origins.forEach((key, value) -> {
+            int x = key.getX();
+            value.removeAll(value.stream()
+                    .filter(coordinate -> Math.abs(x - coordinate.getX()) > this.capturedPieces + this.captureSet.get(key))
+                    .toList());
+        });
 //        System.out.println("breaks2" + this.pawnOrigins);
 
     }
@@ -227,8 +225,7 @@ public abstract class PawnMap extends AbstractDeduction{
      * Iterates through every combination of origins looking for set for which
      * there exists an equal number of pieces whose origin sets are a subset of it.
      * If such exists, no other piece may have any origin in that set as one of its possible origins.
-     * @param set
-     * @param origins
+     *
      */
     protected boolean reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
 
@@ -291,8 +288,7 @@ public abstract class PawnMap extends AbstractDeduction{
         }
         return change;
     }
-    protected boolean reduceIterHelperStart(Map<Coordinate, Path> map) {
-        boolean originsRemoved = false;
+    protected void reduceIterHelperStart(Map<Coordinate, Path> map) {
         Map<Coordinate, Path> removalMap = new TreeMap<>();
         List<Coordinate> remainingPawns = new LinkedList<>(map.keySet());
 
@@ -320,20 +316,14 @@ public abstract class PawnMap extends AbstractDeduction{
                 }
             }
             removalMap.put(currentPawn, forRemoval);
-            if (!forRemoval.isEmpty()) {
-                originsRemoved = true;
-            }
         }
 
         removalMap.forEach((key, value) -> this.pawnOrigins.get(key).removeAll(value));
 
-        return originsRemoved;
     }
 
     /**
      * Checks there aren't mutually required capture amounts that exceed the maximum capture amount
-     * @param map
-     * @return
      */
     private boolean reduceIterHelper(List<Coordinate> usedOrigins, List<Coordinate> remainingPawns,
                                      Map<Coordinate, Path> map, int totalCaptures) {
@@ -366,8 +356,6 @@ public abstract class PawnMap extends AbstractDeduction{
 
     /**
      *
-     * @param forRemoval
-     * @param ignore
      * @return true if something is removed
      */
     private boolean removeCoords(Set<Coordinate> forRemoval, List<Coordinate> ignore) {

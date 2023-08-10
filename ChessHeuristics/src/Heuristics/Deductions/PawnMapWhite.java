@@ -25,9 +25,4 @@ public class PawnMapWhite extends PawnMap{
     public int capturedPieces() {
         return super.capturedPieces(true);
     }
-
-    @Override
-    public Map<Coordinate, Integer> getCaptureSet() {
-        return super.getCaptureSet(true);
-    }
 }

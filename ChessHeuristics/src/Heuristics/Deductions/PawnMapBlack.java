@@ -25,8 +25,5 @@ public class PawnMapBlack extends PawnMap{
         return super.capturedPieces(false);
     }
 
-    @Override
-    public Map<Coordinate, Integer> getCaptureSet() {
-        return super.getCaptureSet(false);
-    }
+
 }

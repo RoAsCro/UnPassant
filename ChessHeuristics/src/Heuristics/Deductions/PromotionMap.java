@@ -863,11 +863,6 @@ public class PromotionMap extends AbstractDeduction {
             return super.capturedPieces(true);
         }
 
-        @Override
-        public Map<Coordinate, Integer> getCaptureSet() {
-            return super.getCaptureSet(true);
-        }
-
     }
 
     private class PromotionPawnMapBlack extends PromotionPawnMap {
@@ -884,11 +879,6 @@ public class PromotionMap extends AbstractDeduction {
         @Override
         public int capturedPieces() {
             return super.capturedPieces(false);
-        }
-
-        @Override
-        public Map<Coordinate, Integer> getCaptureSet() {
-            return super.getCaptureSet(false);
         }
 
     }
@@ -935,8 +925,7 @@ public class PromotionMap extends AbstractDeduction {
         }
 
         @Override
-        protected boolean reduceIterHelperStart(Map<Coordinate, Path> map) {
-            return false;
+        protected void reduceIterHelperStart(Map<Coordinate, Path> map) {
         }
 
         @Override
@@ -949,10 +938,6 @@ public class PromotionMap extends AbstractDeduction {
             return super.capturedPieces(this.white);
         }
 
-        @Override
-        public Map<Coordinate, Integer> getCaptureSet() {
-            return super.getCaptureSet(this.white);
-        }
     }
 
 }

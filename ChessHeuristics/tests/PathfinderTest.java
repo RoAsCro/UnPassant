@@ -134,7 +134,8 @@ public class PathfinderTest {
         // Tests that no duplicates are found
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
         List<Coordinate> list = new LinkedList<>();
-        Path path = Pathfinder.findFirstPath(StandardPieceFactory.getInstance().getPiece("k"),
+        Path path = Pathfinder.findFirstPath(
+                StandardPieceFactory.getInstance().getPiece("k"),
                 new Coordinate(0,0),
                 (b, c) -> {list.add(c);
                             return list.size() == 64;},

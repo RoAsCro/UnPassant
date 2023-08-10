@@ -9,8 +9,8 @@ public class PawnNumber extends AbstractObservation {
 
     @Override
     public void observe(BoardInterface board) {
-        this.blackPawns = board.getBoardFacts().getCoordinates("black", "pawn").size();
-        this.whitePawns = board.getBoardFacts().getCoordinates("white", "pawn").size();
+        this.blackPawns = board.getBoardFacts().getCoordinates(true, "pawn").size();
+        this.whitePawns = board.getBoardFacts().getCoordinates(false, "pawn").size();
 
     }
 

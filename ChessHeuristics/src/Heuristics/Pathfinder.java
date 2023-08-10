@@ -13,9 +13,11 @@ import java.util.function.Predicate;
 
 public class Pathfinder {
 
-    private static List<Path> possibles = new ArrayList<>();
 
     private static int MAX_DEPTH = 64;
+
+    protected static int FINAL_RANK = 7;
+    protected static int FIRST_RANK = 0;
 
     public static Path findShortestPath(Piece piece, Coordinate origin,
                                         BiPredicate<BoardInterface, Coordinate> endCondition,
@@ -23,7 +25,6 @@ public class Pathfinder {
         Path shortestPath = new Path();
         shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, true, p -> true, (c, d) -> true);
 //        System.out.println(possibles);
-        possibles.clear();
         return shortestPath;
     }
 
@@ -34,7 +35,6 @@ public class Pathfinder {
         Path shortestPath = new Path();
         shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, true, pathCondition, (c, d) -> true);
 //        System.out.println(possibles);
-        possibles.clear();
         return shortestPath;
     }
 
@@ -44,9 +44,9 @@ public class Pathfinder {
                                         BiPredicate<Path, Path> reductionCondition) {
 
         Path shortestPath = new Path();
-        shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, true, pathCondition, reductionCondition);
-//        System.out.println(possibles);
-        possibles.clear();
+        shortestPath = findPathIter(piece, origin, endCondition,
+                shortestPath, board, MAX_DEPTH,
+                true, pathCondition, reductionCondition);
         return shortestPath;
     }
 
@@ -57,18 +57,6 @@ public class Pathfinder {
         Path shortestPath = new Path();
         shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, false, p -> true, (c, d) -> true);
 //        System.out.println(possibles);
-        possibles.clear();
-        return shortestPath;
-    }
-
-    public static Path findFirstPath(Piece piece, Coordinate origin,
-                                     BiPredicate<BoardInterface, Coordinate> endCondition,
-                                     BoardInterface board, Predicate<Path> pathCondition) {
-
-        Path shortestPath = new Path();
-        shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, false, pathCondition, (c, d) -> true);
-//        System.out.println(possibles);
-        possibles.clear();
         return shortestPath;
     }
 
@@ -122,9 +110,6 @@ public class Pathfinder {
         Path shortestPath = new Path();
         List<Path> possiblePaths = new LinkedList<>();
         findPawnPathIter(piece, origin, endCondition, shortestPath, board, possiblePaths, pathCondition);
-//        System.out.println("PP" + possiblePaths);
-
-
         return possiblePaths.stream()
                 .reduce(new Path(), reductionCondition);
     }
@@ -136,9 +121,6 @@ public class Pathfinder {
         Path shortestPath = new Path();
         List<Path> possiblePaths = new LinkedList<>();
         findPawnPathIter(piece, origin, endCondition, shortestPath, board, possiblePaths, pathCondition);
-//        System.out.println(possiblePaths);
-
-
         return possiblePaths;
     }
 
@@ -149,19 +131,15 @@ public class Pathfinder {
                                          Predicate<Path> pathCondition) {
         path.add(origin);
         if (endCondition.test(board, origin)) {
-//            System.out.println("g: " + path);
             possiblePaths.add(path);
             return;
         }
         Coordinate[] moves = piece.getMoves(origin);
         for (Coordinate target : moves) {
-//            System.out.println(path);
-//            System.out.println(target);
             Path conditionalPath = new Path();
             conditionalPath.addAll(path);
             conditionalPath.add(target);
             if (!Coordinates.inBounds(target) || !pathCondition.test(conditionalPath)) {
-//                System.out.println("continues");
                 continue;
             }
             Path currentPath = new Path();
@@ -183,23 +161,14 @@ public class Pathfinder {
      * up to the head of containingPath is inside containingPath
      */
     private static boolean pathsExclusiveHelper(Path containedPath, Path containingPath) {
-        // todo THIS WON'T WORK WITH MORE FREE MOVE SETS!
-        // It will return true for only one piece being up to the head of the other
         Coordinate target = containingPath.getLast();
         if (containedPath.contains(target)) {
             return containingPath.containsAll(containedPath.subList(containedPath.indexOf(target), containedPath.size()));
         }
         int y = target.getY();
-        if (y == 0 || y == 7 && containingPath.size() > 2 && containedPath.size() > 2) {
+        if (y == FIRST_RANK || y == FINAL_RANK && containingPath.size() > 2 && containedPath.size() > 2) {
             Coordinate secondTarget = containingPath.get(containingPath.size() - 2);
             if (containedPath.contains(secondTarget)) {
-                //system.out.println(containedPath);
-                //system.out.println(containingPath);
-
-                //system.out.println(containedPath.subList(containedPath.indexOf(secondTarget), containedPath.size() - 1));
-
-                //system.out.println("GETHERE");
-
                 return containingPath.containsAll(containedPath.subList(containedPath.indexOf(secondTarget), containedPath.size() - 1));
             }
         }

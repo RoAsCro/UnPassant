@@ -100,10 +100,6 @@ public class CaptureLocations extends AbstractDeduction {
 
     private int reductions(BoardInterface board, boolean white) {
         int capturesToRemove = 0;
-        String colour = white ? "white" : "black";
-//        int missingPawns = (8 - (white ? this.pawnNumber.getBlackPawns() : this.pawnNumber.getWhitePawns()));
-//        int missingNonPawns = (16 - (white ? this.pawnNumber.getBlackPawns() : this.pawnNumber.getWhitePawns())) - missingPawns;
-//        System.out.println("SLCT" + this.pieceMap.getStartLocations());
         Path ofWhichCaged = Path.of(this.pieceMap.getCaged().entrySet().stream()
                 .filter(entry -> entry.getKey().getY() == (white ? FINAL_RANK : FIRST_RANK))
                 .filter(Map.Entry::getValue) //Is Caged
@@ -140,7 +136,7 @@ public class CaptureLocations extends AbstractDeduction {
         if (!ofWhichRook.isEmpty()) {
             ofWhichRook.stream().forEach(coordinate2 -> {
 
-                board.getBoardFacts().getCoordinates(colour, "pawn")
+                board.getBoardFacts().getCoordinates(white, "pawn")
                         .stream().filter(coordinate -> white ? (coordinate.getY() > FINAL_RANK - 2)  : (coordinate.getY() < FIRST_RANK + 2))
                         .forEach(coordinate -> {
                             if (!this.pieceMap.findPath(board, "rook", white ? "r" : "R", coordinate2, coordinate).isEmpty()) {

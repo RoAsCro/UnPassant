@@ -35,7 +35,7 @@ public class BoardInterface {
             String type = this.board.at(c).getType();
             String colour = this.board.at(c).getColour();
             if (!type.equals("null")) {
-                standardObserver.put(colour, type, c);
+                standardObserver.put(colour.equals("white"), type, c);
             }
         });
     }

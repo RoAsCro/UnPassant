@@ -53,18 +53,6 @@ public class CombinedPawnMap extends AbstractDeduction {
         this.white = white;
     }
 
-    public int captures(String colour) {
-        // This is potentially coded incorrectly, see method below
-        Map<Coordinate, List<Path>> player = colour.equals("white") ? this.whitePaths : this.blackPaths;
-
-        return player.values().stream().map(paths -> paths.stream().map(PATH_DEVIATION)
-                        .reduce((integer, integer2) -> integer > integer2 ? integer : integer2)
-                        .orElse(0)
-                )
-                .reduce(Integer::sum)
-                .orElse(0);
-    }
-
     /**
      * return the minimum number of captures made by pawns
      * @return

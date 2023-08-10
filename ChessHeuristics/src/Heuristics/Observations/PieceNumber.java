@@ -11,11 +11,11 @@ public class PieceNumber extends AbstractObservation{
     @Override
     public void observe(BoardInterface board) {
         this.whitePieces = HeuristicsUtil.PIECE_NAMES.stream()
-                .flatMap(s -> board.getBoardFacts().getCoordinates("white", s).stream())
+                .flatMap(s -> board.getBoardFacts().getCoordinates(true, s).stream())
                 .toList()
                 .size();
         this.blackPieces = HeuristicsUtil.PIECE_NAMES.stream()
-                .flatMap(s -> board.getBoardFacts().getCoordinates("black", s).stream())
+                .flatMap(s -> board.getBoardFacts().getCoordinates(false, s).stream())
                 .toList()
                 .size();
 

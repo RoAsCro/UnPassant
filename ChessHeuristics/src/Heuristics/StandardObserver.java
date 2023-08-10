@@ -14,16 +14,16 @@ public class StandardObserver {
             "king", new Path(), "queen", new Path(), "pawn", new Path()
     );
 
-    public void put(String colour, String piece, Coordinate coordinate) {
-        Path coordinates = colour.equals("white")
+    public void put(boolean white, String piece, Coordinate coordinate) {
+        Path coordinates = white
                 ? whitePieces.get(piece) : blackPieces.get(piece);
         if (!coordinates.contains(coordinate)) {
             coordinates.add(coordinate);
         }
     }
 
-    public Path getCoordinates(String colour, String piece) {
-        return Path.of(colour.equals("white")
+    public Path getCoordinates(boolean white, String piece) {
+        return Path.of(white
                 ? whitePieces.get(piece) : blackPieces.get(piece));
     }
 
