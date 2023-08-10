@@ -11,6 +11,10 @@ public class BoardBuilder {
         return buildBoard(INITIAL_POSITION);
     }
 
+    public static ChessBoard buildBoard(ChessBoard copiedBoard) {
+        return new StandardBoard(copiedBoard);
+    }
+
     public static ChessBoard buildBoard(String FEN) throws IllegalArgumentException {
         String[] params = FEN.split(" ");
         int paramLength = params.length;
@@ -128,5 +132,8 @@ public class BoardBuilder {
         }
 
     }
-    //TODO consider including en passant rights
+
+
+
+
 }

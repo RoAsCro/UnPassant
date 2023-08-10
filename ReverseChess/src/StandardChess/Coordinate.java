@@ -1,6 +1,8 @@
 package StandardChess;
 
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.TreeMap;
 
 public class Coordinate implements Comparable<Coordinate> {
 

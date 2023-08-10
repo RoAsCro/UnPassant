@@ -13,21 +13,21 @@ public class PawnMapBlack extends PawnMap{
         super(pawnMap);
     }
     public PawnMapBlack(PawnNumber pawnNumber, PieceNumber pieceNumber) {
-        super("black", pawnNumber, pieceNumber);
+        super(false, pawnNumber, pieceNumber);
     }
 
     @Override
     public void update() {
-        super.update("black");
+        super.update(false);
     }
 
     @Override
     public int capturedPieces() {
-        return super.capturedPieces("black");
+        return super.capturedPieces(false);
     }
 
     @Override
     public Map<Coordinate, Integer> getCaptureSet() {
-        return super.getCaptureSet("black");
+        return super.getCaptureSet(false);
     }
 }

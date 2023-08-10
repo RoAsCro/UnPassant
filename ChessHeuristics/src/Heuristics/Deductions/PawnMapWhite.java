@@ -13,23 +13,22 @@ public class PawnMapWhite extends PawnMap{
         super(pawnMap);
     }
     public PawnMapWhite(PawnNumber pawnNumber, PieceNumber pieceNumber) {
-        super("white", pawnNumber, pieceNumber);
-        this.maxPieces = 15;
+        super(true, pawnNumber, pieceNumber);
     }
 
 
     @Override
     public void update() {
-        super.update("white");
+        super.update(true);
     }
 
     @Override
     public int capturedPieces() {
-        return super.capturedPieces("white");
+        return super.capturedPieces(true);
     }
 
     @Override
     public Map<Coordinate, Integer> getCaptureSet() {
-        return super.getCaptureSet("white");
+        return super.getCaptureSet(true);
     }
 }

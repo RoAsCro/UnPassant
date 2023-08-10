@@ -207,7 +207,7 @@ public class CaptureLocations extends AbstractDeduction {
 
             Map<Coordinate, List<Path>> paths = everySingularPawnPath(white);//Every path that's a single path;
 
-            if (pawnCaptures(paths, colour)) {
+            if (pawnCaptures(paths, white)) {
                 if (!predicates.isEmpty()) {
                     capturesToRemove += predicateIterate(white, predicates).size();
                 }
@@ -226,17 +226,16 @@ public class CaptureLocations extends AbstractDeduction {
     /**
      * Returns true if the number of captures made on the given paths is equal to minimum number of captures made by pawns
      * @param singlePawns
-     * @param colour
      * @return
      */
-    private boolean pawnCaptures(Map<Coordinate, List<Path>> singlePawns, String colour) {
+    private boolean pawnCaptures(Map<Coordinate, List<Path>> singlePawns, boolean white) {
         int otherValue = singlePawns.values().stream()
                 .map(pathList -> pathList
                         .stream().map(CombinedPawnMap.PATH_DEVIATION)
                         .reduce((i, j) -> i < j ? i : j)
                         .orElse(0))
                 .reduce(0, Integer::sum);
-        return otherValue == this.combinedPawnMap.capturesTwo(colour) && otherValue != 0;
+        return otherValue == this.combinedPawnMap.capturesTwo(white) && otherValue != 0;
     }
 
     private List<Coordinate> pawnCaptureLocations(boolean white) {
@@ -246,10 +245,10 @@ public class CaptureLocations extends AbstractDeduction {
 
         // If every capture of the opponent has been made by pawns
         if ((!white ? this.pawnMapWhite : this.pawnMapBlack).maxPieces - (white ? pieceNumber.getWhitePieces() : pieceNumber.getBlackPieces())
-                == this.combinedPawnMap.capturesTwo(white ? "black" : "white")) {
+                == this.combinedPawnMap.capturesTwo(!white)) {
             // The deviation a pawn can make
             int unnaccountedCaptures = ((!white ? this.pawnMapBlack : this.pawnMapWhite).maxPieces - (white ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()))
-                    - this.combinedPawnMap.capturesTwo(white ? "white" : "black");
+                    - this.combinedPawnMap.capturesTwo(white);
 //            System.out.println((!white ? this.pawnMapBlack : this.pawnMapWhite).maxPieces - (!white ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()));
 //            System.out.println(this.combinedPawnMap.capturesTwo(!white ? "white" : "black"));
 
@@ -258,7 +257,7 @@ public class CaptureLocations extends AbstractDeduction {
             List<Coordinate> missingPawns = new LinkedList<>();
             Map<Coordinate, List<Path>> otherPlayerPaths = everySingularPawnPath(!white);
             // Might always be true
-            if (pawnCaptures(otherPlayerPaths, white ? "black" : "white")) {
+            if (pawnCaptures(otherPlayerPaths, !white)) {
 //            System.out.println(otherPlayerPaths);
                 int y = white ? 1 : 6;
                 for (int i = 0 ; i < 7 ; i++) {
@@ -283,7 +282,7 @@ public class CaptureLocations extends AbstractDeduction {
     private List<BiPredicate<Coordinate, Coordinate>> predicateIterate(boolean white, List<BiPredicate<Coordinate, Coordinate>> predicates) {
         String colour = white ? "white" : "black";
         Map<Coordinate, List<Path>> paths = everySingularPawnPath(white);
-        if (pawnCaptures(paths, colour)) {
+        if (pawnCaptures(paths, white)) {
             for (List<Path> pathList : paths.values()) {
                 Path path = pathList.get(0);
                 Iterator<BiPredicate<Coordinate, Coordinate>> predicateIterator = predicates.iterator();

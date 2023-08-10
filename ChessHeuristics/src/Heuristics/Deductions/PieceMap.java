@@ -366,8 +366,8 @@ public class PieceMap extends AbstractDeduction{
             this.blackKingMoved = true;
         }
         // Does not account for the possibility that these pieces are promoted
-        boolean allPiecesTakenByPawnsW = this.pawnMap.capturesTwo("black") == this.pawnMap.capturablePieces(false);
-        boolean allPiecesTakenByPawnsB = this.pawnMap.capturesTwo("white") == this.pawnMap.capturablePieces(true);
+        boolean allPiecesTakenByPawnsW = this.pawnMap.capturesTwo(false) == this.pawnMap.capturablePieces(false);
+        boolean allPiecesTakenByPawnsB = this.pawnMap.capturesTwo(true) == this.pawnMap.capturablePieces(true);
 
         // Check queen
         Coordinate currentQueen = new Coordinate(3, 0);

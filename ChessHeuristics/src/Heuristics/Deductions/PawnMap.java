@@ -25,14 +25,14 @@ public abstract class PawnMap extends AbstractDeduction{
 
     protected int maxPieces = 16;
 
-    protected String colour;
+    protected boolean white;
 
     List<Observation> observations = new ArrayList<>();
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;
 
     public PawnMap(PawnMap pawnMap) {
-        this.colour = pawnMap.colour;
+        this.white = pawnMap.white;
         this.observations = pawnMap.observations;
         this.pawnNumber = pawnMap.pawnNumber;
         this.pieceNumber = pawnMap.pieceNumber;
@@ -43,14 +43,14 @@ public abstract class PawnMap extends AbstractDeduction{
         this.maxPieces = pawnMap.maxPieces;
     }
 
-    public PawnMap(String colour, PawnNumber pawnNumber, PieceNumber pieceNumber) {
-        this.colour = colour;
+    public PawnMap(Boolean white, PawnNumber pawnNumber, PieceNumber pieceNumber) {
+        this.white = white;
         this.observations.add(pawnNumber);
         this.pawnNumber = pawnNumber;
         this.observations.add(pieceNumber);
         this.pieceNumber = pieceNumber;
         for (int i = 0; i < 8 ; i++ ) {
-            this.originFree.put(new Coordinate(i, this.colour.equals("white") ? 1 : 6), true);
+            this.originFree.put(new Coordinate(i, this.white ? 1 : 6), true);
         }
     }
 
@@ -62,10 +62,10 @@ public abstract class PawnMap extends AbstractDeduction{
     @Override
     public boolean deduce(BoardInterface board) {
         this.observations.forEach(observation -> observation.observe(board));
-        rawMap(board, this.colour);
+        rawMap(board, this.white);
 
 
-        reduce(this.colour);
+        reduce(this.white);
 //        if (this.maxPieces - capturedPieces)
 
         return false;
@@ -76,13 +76,13 @@ public abstract class PawnMap extends AbstractDeduction{
     }
 
     public int capturablePieces() {
-        return capturablePieces(this.colour.equals("white"));
+        return capturablePieces(this.white);
     }
 
 
 
-    protected void update(String colour) {
-        reduce(colour);
+    protected void update(boolean white) {
+        reduce(white);
     }
 
     public abstract void update();
@@ -93,11 +93,10 @@ public abstract class PawnMap extends AbstractDeduction{
 
     /**
      * Returns the max number of pieces minus the number of pieces the opponent is missing
-     * @param colour
      * @return
      */
-    protected int capturedPieces(String colour) {
-        return this.maxPieces - (colour.equals("white")
+    protected int capturedPieces(boolean white) {
+        return this.maxPieces - (white
                 ? this.pieceNumber.getBlackPieces()
                 : this.pieceNumber.getWhitePieces());
     }
@@ -120,21 +119,21 @@ public abstract class PawnMap extends AbstractDeduction{
         return this.capturedPieces + this.captureSet.get(coordinate);
     }
 
-    protected Map<Coordinate, Integer> getCaptureSet(String colour) {
+    protected Map<Coordinate, Integer> getCaptureSet(boolean white) {
         return this.captureSet;
     }
 
     public abstract Map<Coordinate, Integer> getCaptureSet();
 
-    protected void rawMap(BoardInterface board, String colour) {
-        int start = colour.equals("white") ? 1 : 6;
-        int increment = colour.equals("white") ? 1 : -1;
+    protected void rawMap(BoardInterface board, boolean white) {
+        int start = white ? 1 : 6;
+        int increment = white ? 1 : -1;
         BoardReader reader = board.getReader();
         for (int y = 0 ; y < 6; y++) {
             reader.to(new Coordinate(0, start + y * increment));
             int finalY = y;
             reader.nextWhile(Coordinates.RIGHT, coordinate -> coordinate.getX() < 8, piece -> {
-                if (piece.getType().equals("pawn") && piece.getColour().equals(colour)) {
+                if (piece.getType().equals("pawn") && piece.getColour().equals(white ? "white"  : "black")) {
                     Coordinate pawn = reader.getCoord();
                     int potentialPaths = finalY * 2 + 1;
                     Path starts = new Path();
@@ -159,10 +158,9 @@ public abstract class PawnMap extends AbstractDeduction{
      * and the sum of all y's z,
      * then removes any origins from the sets of origins of a given pawn which require taking a minimum of
      * greater than (x - z) + y captures
-     * @param colour
      */
-    protected void captures(Map<Coordinate, Path> origins, String colour) {
-        updateCaptureSet(colour);
+    protected void captures(Map<Coordinate, Path> origins, boolean white) {
+        updateCaptureSet(white);
 //        System.out.println("breaks" + this.pawnOrigins);
 
         origins.entrySet()
@@ -176,8 +174,8 @@ public abstract class PawnMap extends AbstractDeduction{
 
     }
 
-    protected void updateCaptureSet(String colour) {
-        int maxOffset = capturedPieces(colour) -
+    protected void updateCaptureSet(boolean white) {
+        int maxOffset = capturedPieces(white) -
                 this.pawnOrigins.entrySet().stream()
                         .map(entry -> {
                             int x = entry.getKey().getX();
@@ -203,7 +201,7 @@ public abstract class PawnMap extends AbstractDeduction{
         this.capturedPieces = maxOffset;
 
     }
-    private void reduce(String colour) {
+    private void reduce(boolean white) {
         this.sets = new LinkedList<>();
         List<Coordinate> origins = this.pawnOrigins.entrySet().stream()
                 .flatMap(f -> f.getValue().stream())
@@ -216,7 +214,7 @@ public abstract class PawnMap extends AbstractDeduction{
 
 //                this.sets = ;
 
-                captures(this.pawnOrigins, colour);
+                captures(this.pawnOrigins, white);
 //                long s = System.currentTimeMillis();
                 change = reduceIter(new HashSet<>(), originsTwo);
 
@@ -298,7 +296,7 @@ public abstract class PawnMap extends AbstractDeduction{
         Map<Coordinate, Path> removalMap = new TreeMap<>();
         List<Coordinate> remainingPawns = new LinkedList<>(map.keySet());
 
-        int maxCaptures = capturedPieces(this.colour);
+        int maxCaptures = capturedPieces(this.white);
 
         for (Coordinate currentPawn : remainingPawns) {
             List<Coordinate> newRemainingPawns = new LinkedList<>(remainingPawns);
@@ -339,7 +337,7 @@ public abstract class PawnMap extends AbstractDeduction{
      */
     private boolean reduceIterHelper(List<Coordinate> usedOrigins, List<Coordinate> remainingPawns,
                                      Map<Coordinate, Path> map, int totalCaptures) {
-        int maxCaptures = capturedPieces(this.colour);
+        int maxCaptures = capturedPieces(this.white);
 
         Coordinate currentPawn = remainingPawns.get(remainingPawns.size()-1);
         remainingPawns = new LinkedList<>(remainingPawns);

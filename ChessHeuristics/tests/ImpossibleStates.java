@@ -464,13 +464,8 @@ public class ImpossibleStates {
     @Test
     void r() {
 
-        System.out.println(test("r3k3/ppp2ppp/6N1/P2Kp2P/1NB5/p7/PP3PPP/R7 w - - 0 1"));
-        this.uc.hasMoved()
-                .forEach(b -> {
-            System.out.println(b[0]);
-            System.out.println(b[1]);
-            System.out.println(b[2]);
-        });
+        System.out.println(test("r2qk1nr/pp2pppp/1pp5/5P2/8/6P1/PPPP2PP/R2QK1NR"));
+
     }
 
 

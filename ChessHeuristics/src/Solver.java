@@ -11,6 +11,7 @@ public class Solver {
     Predicate<String> fenPredicate = p -> true;
     private Predicate<SolverImpossibleStateDetector> detectorPredicate = d -> true;
     String originalBoard;
+    private boolean legalFirstAlwaysTrue = false;
     private boolean legalFirst = false;
     private int additionalDepth = 2;
     private int numberOfSolutions = 100;
@@ -33,6 +34,9 @@ public class Solver {
     }
 
     public List<String> solve(ChessBoard board, int depth) {
+        if (this.legalFirst) {
+            this.legalFirstAlwaysTrue = true;
+        }
         this.originalBoard = board.getReader().toFEN();
         List<String> solutions = iterate(this.originalBoard, depth, false);
         System.out.println(solutions);
@@ -46,8 +50,8 @@ public class Solver {
 
         LinkedList<String> states = new LinkedList<>();
         LinkedList<String> finalStates = new LinkedList<>();
-        LinkedList<Integer> stateSizes = new LinkedList<>();
-        stateSizes.push(1);
+        ArrayList<Integer> stateSizes = new ArrayList<>();
+        stateSizes.add(1);
         int currentDepth = 0;
 //        LinkedList<List<Coordinate>> statePieces
         states.add(startingFen + ":");
@@ -55,7 +59,10 @@ public class Solver {
             if (finalStates.size() >= this.numberOfSolutions) {
                 break;
             }
-            stateSizes.push(stateSizes.pop() - 1);
+
+            int toAdd = stateSizes.get(currentDepth);
+            stateSizes.remove(currentDepth);
+            stateSizes.add(currentDepth, toAdd - 1);
             String state = states.pop();
             String[] stateDescription = state.split(":");
             String currentState = stateDescription[0];
@@ -68,9 +75,7 @@ public class Solver {
 //                if (any && legalFirst) {
 //                    System.out.println("A");
 //                }
-
                 List<Coordinate> pieces = allPieces(currentBoard);
-                stateSizes.push(0);
                 for (Coordinate piece : pieces) {
                     if (!currentBoard.getEnPassant().equals(Coordinates.NULL_COORDINATE)) {
 
@@ -86,7 +91,15 @@ public class Solver {
                             any && currentDepth == depth - 1);
 //                    System.out.println(currentDepth);
 //                    System.out.println(depth);
-                    stateSizes.push(stateSizes.pop() + newStates.size());
+                    toAdd = 0;
+                    if (stateSizes.size() >= currentDepth + 2) {
+                        toAdd = stateSizes.get(currentDepth + 1);
+                        stateSizes.remove(currentDepth + 1);
+                    }
+                    stateSizes.add(currentDepth + 1, toAdd + newStates.size());
+//                    System.out.println("----");
+//                    System.out.println(currentDepth);
+//                    System.out.println(stateSizes.size());
                     int finalCurrentDepth = currentDepth;
                     newStates.forEach(s ->
                             states.push(s.split(":")[0]
@@ -97,8 +110,10 @@ public class Solver {
                             + ":" + (finalCurrentDepth + 1)));
 
                 }
-//                System.out.println("finish");
-                currentDepth++;
+                if (stateSizes.get(currentDepth + 1) > 0) {
+//                    System.out.println(stateSizes.get(currentDepth + 1));
+                    currentDepth++;
+                }
             } else {
 //                if (any && legalFirst) {
 //                    System.out.println("B");
@@ -127,12 +142,15 @@ public class Solver {
                     if (this.additionalDepth == 0 || !iterate(currentState, this.additionalDepth, true).isEmpty()) {
 
 //                        if (testState(currentBoard)) {
+//                        System.out.println(currentDepth);
                         finalStates.add(currentState + ":" + stateDescription[1]);
 //                            finalStates.add(currentState + ":" + stateDescription[1]);
 //                        }
 //                    }
                     }
-                    this.legalFirst = false;
+                    if (!legalFirstAlwaysTrue) {
+                        this.legalFirst = false;
+                    }
                 }
 //                System.out.println(currentState);
 //                System.out.println(any);
@@ -141,11 +159,15 @@ public class Solver {
 //                    pass = true;
 //                }
             }
-            if (stateSizes.getFirst() < 1) {
-                stateSizes.pop();
-                currentDepth--;
+            while (stateSizes.size() >= currentDepth + 1 && stateSizes.get(currentDepth) < 1) {
+                stateSizes.remove(currentDepth);
+//                System.out.println("c");
+                if (currentDepth != 0) {
+                    currentDepth--;
+                }
             }
         }
+//        System.out.println(currentDepth);
         return finalStates;
     }
 
@@ -248,7 +270,7 @@ public class Solver {
                     continueFlag = false;
                 }
                 for (String piece : pieces) {
-                    ChessBoard currentBoard = BoardBuilder.buildBoard(board.getReader().toFEN());
+                    ChessBoard currentBoard = BoardBuilder.buildBoard(board);
 
                     Coordinate target = Coordinates.add(origin, new Coordinate(direction.getX() * i, direction.getY() * i));
 //                    this.count++;
@@ -313,6 +335,7 @@ public class Solver {
     }
 
     private boolean testState(ChessBoard board) {
+//        System.out.println(board.getReader().toFEN());
         SolverImpossibleStateDetector detector;
         detector = StateDetectorFactory.getDetector(board);
         boolean pass = detector.testState();

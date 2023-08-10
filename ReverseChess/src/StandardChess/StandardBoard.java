@@ -11,6 +11,21 @@ public class StandardBoard implements ChessBoard{
     private Coordinate enPassant = Coordinates.NULL_COORDINATE;
     private String turn = "white";
 
+    public StandardBoard(ChessBoard chessBoard) {
+        for (int x = 0 ; x < LENGTH ; x++) {
+            for (int y = 0 ; y < LENGTH ; y++) {
+                this.board[x][y] = chessBoard.at(new Coordinate(x, y));
+            }
+        }
+        this.castlingRights.put("blackking", chessBoard.canCastle("king", "black"));
+        castlingRights.put("blackqueen", chessBoard.canCastle("queen", "black"));
+        castlingRights.put("whiteking", chessBoard.canCastle("king", "white"));
+        castlingRights.put("whitequeen", chessBoard.canCastle("queen", "white"));
+        enPassant = chessBoard.getEnPassant();
+        turn = chessBoard.getTurn();
+    }
+
+
     public StandardBoard() {
         castlingRights.put("blackking", false);
         castlingRights.put("blackqueen", false);
