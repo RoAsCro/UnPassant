@@ -158,42 +158,60 @@ public class SolverTest {
                 b.setTurn(b.getTurn().equals("white") ? "black" : "white");
                 // set max states to 100?
                 Solver solver = new Solver(string ->{
-                    String[] g = string.split(" ");
-                    String t = string.split(":")[1];
-                    char p = t.charAt(0);
-                    // This rook has not moved, the king is not part of the move
-                    return string.charAt(0) == 'r'
-                            && !(g[1].charAt(0) == 'w' && p == 'K')
-                            && !t.startsWith("Pf7")
-//                            && !t.startsWith("Pb4")
-                            ;
+                    SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(string.split(":")[0]);
+                    detector.testState();
+                    return detector.canCastle(false);
                 });
                 solver.setNumberOfSolutions(1);
                 solver.setAdditionalDepth(2);
-                solver.solve(b, 2);
+                Assertions.assertEquals(0, solver.solve(b, 2).size());
                 System.out.println("Finished 1");
 
-                solver = new Solver(
-//                        string ->{
-//                    String[] g = string.split(" ");
-//                    String t = string.split(":")[1];
-//                    char p = t.charAt(0);
-//                    // This rook has not moved, the king is not part of the move
-//                    return (g[1].charAt(0) == 'w' && p == 'k');
-//                }
-                );
+                solver = new Solver();
                 solver.setNumberOfSolutions(1);
                 solver.setAdditionalDepth(2);
                 b = BoardBuilder.buildBoard(s);
                 b.setTurn(b.getTurn().equals("white") ? "black" : "white");
-                solver.solve(b, 2);
+                Assertions.assertNotEquals(0, solver.solve(b, 2).size());
                 System.out.println("Finished 2");
+
+                System.out.println("Testing alternative... r3k3/ppp3pp/N5p1/P2Kp2P/2B5/p5P1/PP3PP1/R7 w - - 0 1");
+                solver = new Solver(string ->{
+                    SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(string.split(":")[0]);
+                    detector.testState();
+                    return detector.canCastle(false);
+                });
+                solver.setNumberOfSolutions(1);
+                solver.setAdditionalDepth(2);
+                b = BoardBuilder.buildBoard("r3k3/ppp3pp/N5p1/P2Kp2P/2B5/p5P1/PP3PP1/R7 w - - 0 1");
+                b.setTurn(b.getTurn().equals("white") ? "black" : "white");
+                Assertions.assertNotEquals(0, solver.solve(b, 2).size());
+                System.out.println("Finished 3");
+
             }
         }
-        // This fails because pawn capture position is not accounted for
-        // This is because doing so would require that it be first established whether or not any given missing pawn promoted
-        // Then there is two options - either the pawn promoted or was taken on a particular square
-        // The program as it is cannot account for both being pootentially true
+        // The original puzzle is actually created incorrectly - with the knight moved as the last white move,
+        // the pawn can move more freely than the apparent solution allows for
+        // In the above, the first tests an amended version of the puzzle, with an extra check that black can castle
+        // The second does the same without the check for castling, therefore a line is found
+        // The third tries the puzzle under the original parameters, with the castling check and therefore finds alternative lines
+
+        // The pawn map constructs maps for both pawns
+        // The black move cannot be K or R - this means black cannot castle
+        // The black move cannot be g6 - The PieceMap will note this will result in the king moving
+        // It cannot be e5 - white will be in check on black's turn
+        // a4-a3 will be moved
+        // The pawn map is rebuilt
+        // All of black's captures were made by pawns
+        // 4 / 5 of white's captures were made by pawns
+        // CaptureLocations see pawn captures took place on white, therefore the black bishop cannot have been taken by white
+        // The PawnMaps are rebuilt on the basis that there is one fewer pawn capture
+        // CaptureLocations sees that one of white's missing pieces is a pawn:
+        // That pawn cannot move off it's file
+        // None of the pawns that have taken pieces can have taken on that file
+        // Therefore in order for it to have been taken, it must have promoted
+        // PromotionSquares comes up with a path from d2 rank 8
+        // UnCastle sees that this will pass d7, and therefore the king must have moved
     }
 
     @Test
@@ -227,7 +245,9 @@ public class SolverTest {
 
     @Test
     public void ChessMysteries7() {
-        // pp45
+        //TODO
+        // PREVENT KING/ROOK MOVEMENT AFTER UNCASTLING
+        // pp46
         Solver solver = new Solver(p -> {
             if (p.split(":")[1].contains("x")) {
                 return false;
@@ -239,7 +259,7 @@ public class SolverTest {
         solver.setNumberOfSolutions(1);
         solver.setNumberOfSolutions(2);
         solver.setAdditionalDepth(2);
-        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w kq - 0 1"), 2).size());
+        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("4k2r/8/8/8/2p5/5P2/2P2PP1/3b1RK1 w k - 0 1"), 2).size());
 
         // This is entirely a matter of iterating through valid moves
     }
@@ -268,6 +288,8 @@ public class SolverTest {
 //        // This is entirely a matter of iterating through valid moves
 //    }
 
+
+    //54, maybe
     @Test
     public void testUnCastling() {
         Solver solver = new Solver(p ->

@@ -4,6 +4,7 @@ import Heuristics.BoardInterface;
 import Heuristics.Observation;
 import Heuristics.Path;
 import Heuristics.Pathfinder;
+import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 import StandardChess.StandardPieceFactory;
@@ -125,11 +126,6 @@ public class PieceMap extends AbstractDeduction{
                 this.promotedPieceMap.put(new Coordinate(x, y), new Path());
             }
         }
-//        this.caged.put(new Coordinate(1, 0), false);
-//        this.caged.put(new Coordinate(1, 7), false);
-//        this.caged.put(new Coordinate(6, 0), false);
-//        this.caged.put(new Coordinate(6, 7), false);
-
     }
 
     public Map<String, Map<Path, Integer>> getPromotionNumbers() {
@@ -158,49 +154,13 @@ public class PieceMap extends AbstractDeduction{
             findFromOrigin(board, x, false, false);
             findFromOrigin(board, x, false, true);
         });
-        //Check if rooks are at home
-        if (!board.getBoardFacts().getCoordinates("white", "rook").contains(Coordinates.WHITE_KING_ROOK)) {
-            this.wKRook = true;
-        }
-        if (!board.getBoardFacts().getCoordinates("white", "rook").contains(Coordinates.WHITE_QUEEN_ROOK)) {
-            this.wQRook = true;
-        }
-        if (this.wKRook && this.wQRook) {
-            this.whiteKingMoved = true;
-        }
-        if (!board.getBoardFacts().getCoordinates("black", "rook").contains(Coordinates.BLACK_KING_ROOK)) {
-            this.bKRook = true;
-        }
-        if (!board.getBoardFacts().getCoordinates("black", "rook").contains(Coordinates.BLACK_QUEEN_ROOK)) {
-            this.bQRook = true;
-        }
-        if (this.bKRook && this.bQRook) {
-            this.blackKingMoved = true;
-        }
-
-        // Check if King has been displaced
-        this.startLocations.forEach((k, v) -> {
-            String name =STANDARD_STARTS.get(k.getX());
-                if (!name.equals("king")) {
-                    List<boolean[]> updates = new LinkedList<>();
-                    v.forEach((k1, v1) -> updates.add(disturbsKing(board, name, PIECE_CODES.get(name), k, k1)));
-                    if (!updates.isEmpty()) {
-                        if (updates.stream().allMatch(b -> b[0])) {
-//                            System.out.println("xx");
-                            this.whiteKingMoved = true;
-                        }
-                        if (updates.stream().allMatch(b -> b[1])) {
-//                            System.out.println("yy");
-                            this.blackKingMoved = true;
-//                            System.out.println(this.blackKingMoved);
-                        }
-                    }
-                }
-            });
 
 
         // For each start location, have each piece associated with it attempt to path to that start
         pathFromOtherDirection(board, this.startLocations);
+
+        // Check if King and Rooks have been displaced
+        kingMovementUpdate(board);
 
         // Every piece for which there are more of the type associated with a start location than there are by default
         //system.out.println("HERERE");
@@ -384,6 +344,54 @@ public class PieceMap extends AbstractDeduction{
         return false;
     }
 
+    private void kingMovementUpdate(BoardInterface board){
+
+        // Set positioning
+        if (!board.getBoardFacts().getCoordinates("white", "rook").contains(Coordinates.WHITE_KING_ROOK)) {
+            this.wKRook = true;
+        }
+        if (!board.getBoardFacts().getCoordinates("white", "rook").contains(Coordinates.WHITE_QUEEN_ROOK)) {
+            this.wQRook = true;
+        }
+        if (this.wKRook && this.wQRook) {
+            this.whiteKingMoved = true;
+        }
+        if (!board.getBoardFacts().getCoordinates("black", "rook").contains(Coordinates.BLACK_KING_ROOK)) {
+            this.bKRook = true;
+        }
+        if (!board.getBoardFacts().getCoordinates("black", "rook").contains(Coordinates.BLACK_QUEEN_ROOK)) {
+            this.bQRook = true;
+        }
+        if (this.bKRook && this.bQRook) {
+            this.blackKingMoved = true;
+        }
+        // Check queen
+        Coordinate currentQueen = new Coordinate(3, 0);
+        boolean white = true;
+        for (int i = 0 ; i < 2 ; i++) {
+            if ((white && !this.whiteKingMoved) || (!white && !this.blackKingMoved)) {
+                Coordinate finalCurrentQueen = currentQueen;
+                if (this.startLocations.containsKey(currentQueen) && this.startLocations.get(currentQueen)
+                        .keySet().stream().anyMatch(c -> disturbsKing(board, "queen", PIECE_CODES.get("queen"), finalCurrentQueen, c, true))) {
+                    if (white) {
+                        this.whiteKingMoved = true;
+                    } else {
+                        this.blackKingMoved = true;
+                    }
+                }
+            }
+            currentQueen = new Coordinate(3, 7);
+            white = false;
+        }
+        // Check rooks
+        if (!this.whiteKingMoved) {
+            rookKingMovementUpdate(board, true);
+        }
+        if (!this.blackKingMoved) {
+            rookKingMovementUpdate(board, false);
+        }
+    }
+
 
     private void pathFromOtherDirection(BoardInterface board, Map<Coordinate, Map<Coordinate, Path>> paths) {
         paths.entrySet().stream().forEach(entry -> {
@@ -478,15 +486,7 @@ public class PieceMap extends AbstractDeduction{
                 if (!foundPath.isEmpty()) {
                     candidatePaths.put(target, foundPath);
                     pieces.add(target);
-//                    if (foundPath.size() != 1 && !pieceName.equals("king")) {
-//                        if (pieceName.equals("rook")) {
-//                            if (this.startLocations.containsKey(start))
-//                        }
-//                        System.out.println(this.startLocations);
-//                        System.out.println(pieceName);
-//                        System.out.println(start);
-//                        disturbsKing(board, pieceName, pieceCode, start, target);
-//                    }
+
                 }
 
             }
@@ -496,25 +496,63 @@ public class PieceMap extends AbstractDeduction{
 
     }
 
-    private boolean[] disturbsKing(BoardInterface board, String pieceName,
-                              String pieceCode, Coordinate start,
-                              Coordinate target) {
-//        System.out.println(pieceName);
-//        System.out.println(start);
-//        System.out.println(target);
-//        System.out.println(findPath(board, pieceName, pieceCode, start, target, kingCollisionBlack));
-//        System.out.println(findPath(board, pieceName, pieceCode, start, target, kingCollisionWhite));
+    private void rookKingMovementUpdate(BoardInterface board, boolean white) {
+        // This makes no sense
+        // If a rook is caged and taken by a visible pawn, that;ll actually cover the scenario on page 45
+        Path rooks = board.getBoardFacts().getCoordinates(white ? "white" : "black", "rook");
+        Coordinate kingRook = white ? Coordinates.WHITE_KING_ROOK : Coordinates.BLACK_KING_ROOK;
+        Coordinate queenRook = white ? Coordinates.WHITE_QUEEN_ROOK : Coordinates.BLACK_QUEEN_ROOK;
+        boolean kingMoved = false;
+        boolean qRook = true;
+        boolean kRook = true;
+        for (Coordinate c : rooks) {
+            if (kingMoved) {
+                continue;
+            }
+            boolean king = this.startLocations.containsKey(kingRook) && this.startLocations.get(kingRook).containsKey(c);
+            boolean queen = this.startLocations.containsKey(queenRook) && this.startLocations.get(queenRook).containsKey(c);
 
-        boolean[] updates = new boolean[]{false, false};
-        if (!this.whiteKingMoved && findPath(board, pieceName, pieceCode, start, target, kingCollisionWhite).isEmpty()) {
-//            System.out.println("w");
-            updates[0] = true;
+            boolean kingOne = false;
+            boolean kingTwo = false;
+            if (qRook && queen) {
+                kingOne = disturbsKing(board, "rook", "r", queenRook, c, white);
+            }
+            if (kRook && king) {
+                kingTwo = disturbsKing(board, "rook", "r", kingRook, c, white);
+            }
+            if (kingOne && kingTwo) {
+                kingMoved = true;
+            } else if (kingOne) {
+                if (king) {
+                    qRook = false;
+                } else {
+                    kingMoved = true;
+                }
+            } else if(kingTwo) {
+                if (queen) {
+                    kRook = false;
+                } else {
+                    kingMoved = true;
+                }
+            }
         }
-        if (!this.blackKingMoved && findPath(board, pieceName, pieceCode, start, target, kingCollisionBlack).isEmpty()) {
-//            System.out.println("b");
-            updates[1] = true;
+        if (kingMoved) {
+            if (white)  {
+                this.whiteKingMoved = true;
+            } else {
+                this.blackKingMoved = true;
+            }
         }
-        return updates;
+    }
+
+    private boolean disturbsKing(BoardInterface board, String pieceName,
+                              String pieceCode, Coordinate start,
+                              Coordinate target, boolean white) {
+        if (white) {
+            return !this.whiteKingMoved && findPath(board, pieceName, pieceCode, start, target, kingCollisionWhite).isEmpty();
+        } else {
+            return !this.blackKingMoved && findPath(board, pieceName, pieceCode, start, target, kingCollisionBlack).isEmpty();
+        }
     }
     public Path findPath(BoardInterface board, String pieceName,
                          String pieceCode, Coordinate start,

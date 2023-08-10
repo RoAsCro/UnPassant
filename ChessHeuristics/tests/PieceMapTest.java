@@ -1217,7 +1217,7 @@ public class PieceMapTest {
         this.pieceMap.deduce(boardInterface);
 
         Assertions.assertTrue(pieceMap.getKingMovement(true));
-        Assertions.assertFalse(pieceMap.getKingMovement(false));
+        Assertions.assertTrue(pieceMap.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1296,6 +1296,24 @@ public class PieceMapTest {
     }
 
     @Test
+    void testBlackKingNotMoved() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1r1qkb1r/pppp1ppp/n6n/4p3/4P3/8/PPPP1PPP/RNBQKBNR w - - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertFalse(pieceMap.getKingMovement(true));
+        Assertions.assertFalse(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
     void testBlackRooksMoved() {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbn1/rppp3r/p3p3/8/8/8/PPPPP3/RNBQKBNR b KQ - 0 1"));
@@ -1307,6 +1325,42 @@ public class PieceMapTest {
 
         Assertions.assertFalse(pieceMap.getKingMovement(true));
         Assertions.assertTrue(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testRooksBothFromOneSide() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r2qkb2/pppp1ppp/n2r3n/4p3/8/6P1/PPPPPP1P/RNBQKB1R w - - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertFalse(pieceMap.getKingMovement(true));
+        Assertions.assertTrue(pieceMap.getKingMovement(false));
+
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testRookPromoted() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r2qkb2/pppp1ppp/n6n/4p3/8/6P1/PPPPPP1P/RNBQKBrR w - - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertFalse(pieceMap.getKingMovement(true));
+        Assertions.assertFalse(pieceMap.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 

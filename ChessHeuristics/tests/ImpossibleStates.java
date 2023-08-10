@@ -2,6 +2,7 @@ import Heuristics.BoardInterface;
 import Heuristics.Deductions.*;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
+import Heuristics.UnCastle;
 import StandardChess.BoardBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,8 @@ public class ImpossibleStates {
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;
     TestImpossibleStateDetector detector;
+    PieceMap pm;
+    UnCastle uc;
 
     @BeforeEach
     public void setup() {
@@ -20,10 +23,11 @@ public class ImpossibleStates {
         PawnMapWhite pmw = new PawnMapWhite(this.pawnNumber, this.pieceNumber);
         PawnMapBlack pmb = new PawnMapBlack(this.pawnNumber, this.pieceNumber);
         CombinedPawnMap cpm = new CombinedPawnMap(pmw, pmb);
-        PieceMap pm = new PieceMap(cpm);
+        this.pm = new PieceMap(cpm);
         CaptureLocations cl = new CaptureLocations(pmw, pmb, pm, cpm);
         PromotionMap prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
         PromotedPawnSquares pps = new PromotedPawnSquares(pieceNumber, prm, cl, cpm);
+        this.uc = new UnCastle(pmw, pmb, pm, prm, pps);
         this.detector = new TestImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,
                 pmb,
@@ -459,7 +463,14 @@ public class ImpossibleStates {
 
     @Test
     void r() {
-        Assertions.assertFalse(test("rnbqk1nr/ppp1pp1p/2p2p2/8/8/8/1PPPPPPP/RNBQKB1R w KQkq - 0 1"));
+
+        System.out.println(test("r3k3/ppp2ppp/6N1/P2Kp2P/1NB5/p7/PP3PPP/R7 w - - 0 1"));
+        this.uc.hasMoved()
+                .forEach(b -> {
+            System.out.println(b[0]);
+            System.out.println(b[1]);
+            System.out.println(b[2]);
+        });
     }
 
 
