@@ -24,7 +24,7 @@ public class PromotionSquaresTest {
         PieceMap pm = new PieceMap(cpm);
         CaptureLocations cl = new CaptureLocations(pmw, pmb, pm, cpm);
         PromotionMap prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
-        this.pps = new PromotedPawnSquares(pieceNumber, prm, cl, cpm);
+        this.pps = new PromotedPawnSquares(pieceNumber, pm, prm, cl, cpm);
         this.detector = new TestImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,
                 pmb,
@@ -117,6 +117,8 @@ public class PromotionSquaresTest {
         Assertions.assertTrue(test("rnb1kb1r/pppp1ppp/5p2/8/8/8/PP1PPPPP/RNBQKBNR w KQkq - 0 1"));
         System.out.println(this.pps.getPromotionPaths(true));
     }
+
+
 
 
 

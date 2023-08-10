@@ -33,7 +33,7 @@ public class UnCastleTest {
         this.pm = new PieceMap(cpm);
         CaptureLocations cl = new CaptureLocations(pmw, pmb, pm, cpm);
         this.prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
-        this.pps = new PromotedPawnSquares(pieceNumber, prm, cl, cpm);
+        this.pps = new PromotedPawnSquares(pieceNumber, pm, prm, cl, cpm);
         this.uc = new UnCastle(pmw, pmb, pm, prm, pps);
         this.detector = new TestImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,
@@ -111,6 +111,22 @@ public class UnCastleTest {
 
         Assertions.assertFalse(booleans.get(1)[1]);
         Assertions.assertTrue(booleans.get(1)[2]);
+
+    }
+
+    @Test
+    void promotionPastKingActual() {
+        this.detector.testState(new BoardInterface(BoardBuilder.buildBoard("4k2r/8/8/2p5/8/5q2/2P1PPP1/3bK2R w - - 0 1")));
+        List<boolean[]> booleans = uc.hasMoved();
+        Assertions.assertTrue(booleans.get(0)[0]);
+
+    }
+
+    @Test
+    void failedInSolver() {
+        System.out.println(this.detector.testState(new BoardInterface(BoardBuilder.buildBoard("4k2Q/8/8/2p5/8/5q2/2P1PPPr/3bK2R b K - 0 1"))));
+        List<boolean[]> booleans = uc.hasMoved();
+        Assertions.assertTrue(booleans.get(1)[0]);
 
     }
 

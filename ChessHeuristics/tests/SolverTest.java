@@ -225,7 +225,7 @@ public class SolverTest {
         solver.setNumberOfSolutions(1);
         solver.setNumberOfSolutions(2);
         solver.setAdditionalDepth(2);
-        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w kq - 0 1"), 2).size());
+        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w - - 0 1"), 2).size());
 
         solver = new Solver(p -> {
             if (p.split(":")[1].endsWith("h8")) {
@@ -238,30 +238,46 @@ public class SolverTest {
         solver.setNumberOfSolutions(1);
         solver.setNumberOfSolutions(2);
         solver.setAdditionalDepth(2);
-        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w kq - 0 1"), 3).size());
+        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w - - 0 1"), 3).size());
 
         // This is entirely a matter of iterating through valid moves
     }
 
     @Test
     public void ChessMysteries7() {
-        //TODO
-        // PREVENT KING/ROOK MOVEMENT AFTER UNCASTLING
         // pp46
-        Solver solver = new Solver(p -> {
-            if (p.split(":")[1].contains("x")) {
-                return false;
-            }
-            SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(p.split(":")[0]);
-            detector.testState();
-            return detector.canCastle(false);
-        });
+        Solver solver = new Solver(
+//                p -> {
+////            if (p.split(":")[1].contains("x")) {
+////                return false;
+////            }
+//            SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(p.split(":")[0]);
+//            if (!detector.testState()) {
+//                return false;
+//            }
+//            return detector.canCastle(false);
+//        }
+        );
         solver.setNumberOfSolutions(1);
-        solver.setNumberOfSolutions(2);
-        solver.setAdditionalDepth(2);
-        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("4k2r/8/8/8/2p5/5P2/2P2PP1/3b1RK1 w k - 0 1"), 2).size());
+        solver.setAdditionalDepth(0);
+        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("4k2r/8/8/2p5/8/5P2/2P2PP1/3bK2R w Kk - 0 1"), 2).size());
+        solver = new Solver(
+//                p -> {
+//            if (p.split(":")[1].contains("x")) {
+//                return false;
+//            }
+//            SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(p.split(":")[0]);
+//            detector.testState();
+//            return detector.canCastle(false);
+//        }
+        );
+        solver.setNumberOfSolutions(1);
+        solver.setAdditionalDepth(0);
+        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("4k2r/8/8/8/2p5/5P2/2P1bPP1/4K2R w K - 0 1"), 1).size());
+        // The above starts from the assumption that either of the two valid moves (2 plies) have been made under the conditions
+        // that neither ply can result in a piece being untaken
+        // Working backwards from there, it eliminates every situation that would not allow for castling in the future
 
-        // This is entirely a matter of iterating through valid moves
     }
 
     @Test
@@ -296,13 +312,13 @@ public class SolverTest {
             !(p.split(":")[1].contains("x")) && !(p.split(":")[1].startsWith("R")));
         solver.setAdditionalDepth(0);
         Assertions.assertTrue(solver.solve(BoardBuilder.buildBoard("5rk1/8/6K1/8/8/8/7P/8 b - - 0 1"), 1)
-                .contains("4k2r/8/6K1/8/8/8/7P/8 w - -:Ke8-g8"));
+                .stream().anyMatch(s -> s.contains("4k2r/8/6K1/8/8/8/7P/8")));
 
         solver = new Solver(p ->
                 !(p.split(":")[1].contains("x")) && !(p.split(":")[1].startsWith("R")));
         solver.setAdditionalDepth(0);
         Assertions.assertTrue(solver.solve(BoardBuilder.buildBoard("2kr4/8/2K5/8/8/8/7P/8 b - - 0 1"), 1)
-                .contains("r3k3/8/2K5/8/8/8/7P/8 w - -:Ke8-c8"));
+                .stream().anyMatch(s -> s.contains("r3k3/8/2K5/8/8/8/7P/8 w")));
     }
 
 

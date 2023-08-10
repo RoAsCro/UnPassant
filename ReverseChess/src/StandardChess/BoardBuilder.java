@@ -32,16 +32,19 @@ public class BoardBuilder {
         String castleInput;
         if (paramLength > 2) {
             castleInput = params[2];
-        } else {
-            castleInput = castleParse(board);
-        }
+//        }
+//        else {
+//            castleInput = castleParse(board);
+//        }
         castleDecode(castleInput, board);
+        }
         if (paramLength > 3) {
             String enPassant = params[3];
             if (!enPassant.equals("-")) {
                 board.setEnPassant(new Coordinate((char) ((int)enPassant.charAt(0) - Coordinates.LOWER_ASCII_A), Integer.parseInt(enPassant.substring(1)) - 1));
             }
         }
+
 
         return board;
     }

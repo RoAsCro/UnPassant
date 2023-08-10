@@ -75,7 +75,9 @@ public class Solver {
                     }
 //                    if (currentState.equals("k1K5/3pQ3/8/2B1P3/3P4/7P/8/7B w - -")) {
 //                    }
-                    List<String> newStates = iterateThroughMoves(currentBoard, piece, state, any && currentDepth == depth - 1);
+                    List<String> newStates = iterateThroughMoves(currentBoard,
+                            piece, state,
+                            any && currentDepth == depth - 1);
 //                    System.out.println(currentDepth);
 //                    System.out.println(depth);
                     stateSizes.push(stateSizes.pop() + newStates.size());
@@ -104,7 +106,7 @@ public class Solver {
 //                        if (any && legalFirst) {
 //                            System.out.println("E");
 //                        }
-                            finalStates.add(currentState);
+                            finalStates.add(currentState + ":" + stateDescription[1]);
                             return finalStates;
 
                     }
@@ -139,7 +141,7 @@ public class Solver {
         return finalStates;
     }
 
-    private String toLAN(ChessBoard board, Coordinate origin, Coordinate target, String piece) {
+    private String toLAN(ChessBoard board, Coordinate origin, Coordinate target, String piece, boolean castle) {
 //        System.out.println(board.getReader().toFEN());
 //
 //        System.out.println(origin);
@@ -149,6 +151,7 @@ public class Solver {
                 board.at(target).getType().toUpperCase().charAt(board.at(target).getType().equals("knight") ? 1 : 0)+
                 Coordinates.readableString(target)
                 + (piece.equals("") ? "-" : "x")
+                + (castle ? (Math.abs(origin.getX() - target.getX()) == 2 ? "O-O" : "O-O-O") : "")
                 + piece.toUpperCase()
                 + Coordinates.readableString(origin);
     }
@@ -173,9 +176,18 @@ public class Solver {
         boolean white = board.getTurn().equals("white");
         int y = origin.getY();
         int x = origin.getX();
-        if (((white && y == 7) || (!white && y == 0)) && !type.equals("king")) {
+        boolean king = type.equals("king");
+        boolean rook = type.equals("rook");
+        if (king || rook) {
+            String colour = white ? "white" : "black";
+            if ((rook && board.canCastle(origin.getX() == Coordinates.WHITE_KING_ROOK.getX() ? "king" : "queen", colour))
+                    || (king && board.canCastle("queen", colour) || board.canCastle("king", colour))) {
+                return states;
+            }
+        }
+        if (((white && y == 7) || (!white && y == 0)) && !king) {
             Coordinate[] additionalMoves = StandardPieceFactory.getInstance().getPiece(white ? "p" : "P").getMoves(origin);
-            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, true, false, any));
+            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, true, false, any, false));
             if (!legalFirst && any && !states.isEmpty()) {
                 return states;
             }
@@ -185,35 +197,27 @@ public class Solver {
         } else if (((white && y == 5) || (!white && y == 2)) && type.equals("pawn")) {
             int offfset = white ? -1 : 1;
             Coordinate[] additionalMoves = new Coordinate[]{new Coordinate(x + 1, y + offfset), new Coordinate(x - 1, y + offfset)};
-            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, true, any));
+            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, true, any, false));
 //            System.out.println(additionalMoves[0]);
 //            System.out.println(states);
 
             if (!legalFirst && any && !states.isEmpty()) {
                 return states;
             }
-        } else if (type.equals("king")) {
+        } else if (king) {
             Coordinate[] additionalMoves = new Coordinate[]{new Coordinate(x - 2, y), new Coordinate(x + 2, y)};
-            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, false, any));
+            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, false, any, true));
 
         }
-
-
-        states.addAll(iterateThroughMovesHelper(board, moves, origin, currentState, false, false, any));
-//        if (origin.equals(new Coordinate(3, 4))) {
-////            StandardPieceFactory.getInstance().getPiece("P").tryUnMove()
-//            System.out.println("moves[0]");
-//            System.out.println(any);
-//            System.out.println(states);
-//        }
-//        System.out.println(any);
+        states.addAll(iterateThroughMovesHelper(board, moves, origin, currentState, false, false, any, false));
         return states;
     }
 
     private List<String> iterateThroughMovesHelper(ChessBoard board, Coordinate[] moves,
                                                    Coordinate origin, String currentState, boolean promotion,
                                                    boolean enPassant,
-                                                   boolean any) {
+                                                   boolean any,
+                                                   boolean castle) {
         boolean previousEnPassant = !board.getEnPassant().equals(Coordinates.NULL_COORDINATE);
         List<String> states = new LinkedList<>();
         boolean white = board.getTurn().equals("white");
@@ -267,8 +271,9 @@ public class Solver {
                                 if (previousEnPassant) {
                                     currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
                                 }
-                                String boardAndMove = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece);
+                                String boardAndMove = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece, castle);
                                  if (this.fenPredicate.test(boardAndMove)) {
+//                                     System.out.println(boardAndMove);
                                      states.add(boardAndMove);
                                  }
                                 if (!legalFirst && any) {
@@ -299,8 +304,11 @@ public class Solver {
 
     private boolean testState(ChessBoard board) {
         SolverImpossibleStateDetector detector;
-            detector = StateDetectorFactory.getDetector(board);
+        detector = StateDetectorFactory.getDetector(board);
         boolean pass = detector.testState();
+        if (pass) {
+            pass = castleCheck(board, detector);
+        }
         return pass;
     }
 
@@ -330,6 +338,23 @@ public class Solver {
 //        }
 
         return moveMaker.makeUnMove(origin, target);
+    }
+
+    private boolean castleCheck(ChessBoard board, SolverImpossibleStateDetector detector) {
+        boolean white = true;
+        for (int i = 0 ; i < 2 ; i++) {
+            String piece = "king";
+            for (int j = 0 ; j < 2 ; j++) {
+                if (board.canCastle(piece, white ? "white" : "black")) {
+                    if (!detector.canCastle(white)) {
+                        return false;
+                    }
+                }
+                piece = "queen";
+            }
+            white = false;
+        }
+        return true;
     }
 
     public int getAdditionalDepth() {

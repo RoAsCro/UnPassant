@@ -26,7 +26,7 @@ public class KingStrategyTest {
 
     @Test
     public void testTryMoveCastle() {
-        ChessBoard boardTwo = BoardBuilder.buildBoard("r3k2r/8/8/8/PPPPPPPP/8/8/R3K2R");
+        ChessBoard boardTwo = BoardBuilder.buildBoard("r3k2r/8/8/8/PPPPPPPP/8/8/R3K2R w KQkq - 0 1");
         Coordinate originTwo = new Coordinate(4, 0);
         Piece pieceTwo = boardTwo.at(originTwo);
         Assertions.assertTrue(pieceTwo.tryMove(originTwo, new Coordinate(2, 0), boardTwo));
@@ -109,6 +109,37 @@ public class KingStrategyTest {
         originTwo = new Coordinate(6, 7);
         pieceTwo = boardTwo.at(originTwo);
         Assertions.assertTrue(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+
+    }
+
+    @Test
+    public void testTryUnMoveCastleFen() {
+        ChessBoard boardTwo = BoardBuilder.buildBoard("2kr1rk1/8/8/8/PPPPPPPP/8/8/2KR1RK1");
+        Coordinate originTwo = new Coordinate(2, 0);
+        Piece pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertTrue(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+        pieceTwo.updateBoard(originTwo, Coordinates.WHITE_KING, boardTwo, true);
+
+        System.out.println(boardTwo.getReader().toFEN());
+        originTwo = new Coordinate(6, 0);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertTrue(pieceTwo.tryUnMove(originTwo, Coordinates.WHITE_KING, boardTwo));
+        pieceTwo.updateBoard(originTwo, Coordinates.WHITE_KING, boardTwo, true);
+
+        System.out.println(boardTwo.getReader().toFEN());
+
+        originTwo = new Coordinate(2, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertTrue(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+        pieceTwo.updateBoard(originTwo, Coordinates.BLACK_KING, boardTwo, true);
+
+        System.out.println(boardTwo.getReader().toFEN());
+        originTwo = new Coordinate(6, 7);
+        pieceTwo = boardTwo.at(originTwo);
+        Assertions.assertTrue(pieceTwo.tryUnMove(originTwo, Coordinates.BLACK_KING, boardTwo));
+        pieceTwo.updateBoard(originTwo, Coordinates.BLACK_KING, boardTwo, true);
+
+        System.out.println(boardTwo.getReader().toFEN());
 
     }
     @Test

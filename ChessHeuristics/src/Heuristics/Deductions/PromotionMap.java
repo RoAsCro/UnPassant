@@ -49,6 +49,7 @@ public class PromotionMap extends AbstractDeduction {
 
     // <Promotion square, <Origin square, Number of captures>>
     private final Map<Coordinate, Map<Coordinate, Integer>> goalOrigins = new HashMap<>();
+//    private final Map<>
 
 
 
@@ -323,6 +324,10 @@ public class PromotionMap extends AbstractDeduction {
 
 
         return false;
+    }
+
+    public Path getOrigins() {
+        return this.origins;
     }
 
     private boolean stateIterateStart(BoardInterface board) {

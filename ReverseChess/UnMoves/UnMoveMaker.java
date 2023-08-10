@@ -4,6 +4,10 @@ public class UnMoveMaker {
     private boolean captureFlag = false;
     private boolean enPassantFlag = false;
     private boolean promotionFlag = false;
+    private boolean castleFlag = false;
+    private boolean kRookFlag = false;
+    private boolean qRookFlag = false;
+
     private Piece capturePiece = NullPiece.getInstance();
     private ChessBoard board;
     private static final Coordinate nullCoordinate = new Coordinate(-1, -1);
@@ -84,5 +88,17 @@ public class UnMoveMaker {
 
     public void setPromotionFlag(boolean promotionFlag) {
         this.promotionFlag = promotionFlag;
+    }
+
+    public void setCastleFlag(boolean castleFlag) {
+        this.castleFlag = castleFlag;
+    }
+
+    public void setkRookFlag(boolean kRookFlag) {
+        this.kRookFlag = kRookFlag;
+    }
+
+    public void setqRookFlag(boolean qRookFlag) {
+        this.qRookFlag = qRookFlag;
     }
 }

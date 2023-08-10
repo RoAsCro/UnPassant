@@ -58,8 +58,10 @@ public class KingStrategy extends AbstractStrategy{
         if (unMove) {
             if (castle) {
                 Coordinate rookLocation = new Coordinate(target.getX() + xDiff / 2, target.getY());
-                board.place(new Coordinate(origin.getX() + (xDiff > 0 ? xDiff / 2 : xDiff), origin.getY()), board.at(rookLocation));
+                Coordinate placement = new Coordinate(origin.getX() + (xDiff > 0 ? xDiff / 2 : xDiff), origin.getY());
+                board.place(placement, board.at(rookLocation));
                 board.remove(rookLocation);
+                board.setCastle(placement.getX() == 0 ? "queen" : "king", placement.getY() == 0 ? "white" : "black", true);
             }
         } else {
             board.setCastle("king", king.getColour(), false);

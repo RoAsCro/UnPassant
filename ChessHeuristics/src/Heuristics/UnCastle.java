@@ -6,8 +6,11 @@ import Heuristics.Path;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class UnCastle {
 
@@ -50,7 +53,6 @@ public class UnCastle {
         }
 
         if (!this.blackData[0]) {
-
             this.promotedPawnSquares.getPromotionPaths(true)
                     .forEach(p -> checkPromotedPawns(true, p));
         }
@@ -59,7 +61,44 @@ public class UnCastle {
                     .forEach(p -> checkPromotedPawns(false, p));
         }
 
-        return List.of(this.whiteData, this.blackData);
+        if (!(this.blackData[0] && this.whiteData[0])) {
+            boolean[] bishops = bishops();
+            if (bishops[0]) {
+                this.whiteData[0] = true;
+            }
+            if (bishops[1]) {
+                this.blackData[0] = true;
+            }
+        }
+
+            return List.of(this.whiteData, this.blackData);
+    }
+
+    private boolean[] bishops() {
+        List<Coordinate> onPSquare = this.pieceMap.getPromotedPieceMap().entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().contains(entry.getKey()))
+                .map(Map.Entry::getKey)
+                .toList();
+        Path bishops = Path.of(this.pieceMap.getPromotionNumbers().entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().startsWith("bi"))
+                .flatMap(e -> e.getValue().keySet().stream().filter(Objects::nonNull).flatMap(Collection::stream))
+                .filter(onPSquare::contains)
+                .filter(c -> c.getX() == 3 || c.getX() == 5)
+                .collect(Collectors.toSet()));
+        boolean[] returnBooleans = new boolean[]{false, false};
+        bishops.forEach(c -> {
+            List<Coordinate> criticalCoords = List.of(new Coordinate(c.getX() + 1, Math.abs(c.getY() - 1)), new Coordinate(c.getX() - 1, Math.abs(c.getY() - 1)));
+            if (this.pawnMapWhite.getPawnOrigins().keySet().containsAll(criticalCoords)) {
+                returnBooleans[0] = true;
+            }
+            if (this.pawnMapBlack.getPawnOrigins().keySet().containsAll(criticalCoords)) {
+                returnBooleans[1] = true;
+
+            }
+        });
+        return returnBooleans;
     }
 
     private void checkPromotedPawns(boolean white, Path promotionPaths) {

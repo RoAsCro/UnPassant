@@ -9,20 +9,21 @@ import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 import StandardChess.StandardPieceFactory;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PromotedPawnSquares extends AbstractDeduction{
     private PieceNumber pieceNumber;
+    private PieceMap pieceMap;
     private final PromotionMap promotionMap;
     private final CaptureLocations cl;
     private CombinedPawnMap combinedPawnMap;
     private List<Path> whitePaths = new LinkedList<>();
     private List<Path> blackPaths = new LinkedList<>();
     private boolean promotionMapInUse = false;
-    public PromotedPawnSquares(PieceNumber pieceNumber, PromotionMap promotionMap, CaptureLocations cl, CombinedPawnMap combinedPawnMap) {
+    public PromotedPawnSquares(PieceNumber pieceNumber, PieceMap pieceMap, PromotionMap promotionMap, CaptureLocations cl, CombinedPawnMap combinedPawnMap) {
         this.pieceNumber = pieceNumber;
+        this.pieceMap = pieceMap;
         this.promotionMap = promotionMap;
         this.cl = cl;
         this.combinedPawnMap = combinedPawnMap;
@@ -38,7 +39,13 @@ public class PromotedPawnSquares extends AbstractDeduction{
         this.promotionMapInUse = this.promotionMap.getPromotionCombinedPawnMap() == null;
         Path emptyWhiteOrigins = findEmptyOrigins(true);
         Path emptyBlackOrigins = findEmptyOrigins(false);
-
+//        this.promotionMap.getOrigins();
+//        System.out.println(bishops()[0]);
+//
+//        boolean[] bishops = bishops();
+//        if (bishops[0]) {
+//
+//        }
 
         if (!emptyWhiteOrigins.isEmpty()) {
             whitePaths = pathToFinalRank(board, false, emptyWhiteOrigins);
@@ -121,5 +128,33 @@ public class PromotedPawnSquares extends AbstractDeduction{
     public List<Path> getPromotionPaths(boolean white) {
         return white ? this.whitePaths : this.blackPaths;
     }
+
+//    private boolean[] bishops() {
+//        List<Coordinate> onPSquare = this.pieceMap.getPromotedPieceMap().entrySet()
+//                .stream()
+//                .filter(entry -> entry.getValue().contains(entry.getKey()))
+//                .map(Map.Entry::getKey)
+//                .toList();
+//        System.out.println(onPSquare);
+//        Path bishops = Path.of(this.pieceMap.getPromotionNumbers().entrySet()
+//                .stream()
+//                .filter(entry -> entry.getKey().startsWith("bi"))
+//                .flatMap(e -> e.getValue().keySet().stream().filter(Objects::nonNull).flatMap(Collection::stream))
+//                .filter(onPSquare::contains)
+//                .filter(c -> c.getX() == 3 || c.getX() == 5)
+//                .collect(Collectors.toSet()));
+//        boolean[] returnBooleans = new boolean[]{false, false};
+//        bishops.forEach(c -> {
+//            List<Coordinate> criticalCoords = List.of(new Coordinate(c.getX() + 1, Math.abs(c.getY() - 1)), new Coordinate(c.getX() - 1, Math.abs(c.getY() - 1)));
+//            if (this.combinedPawnMap.getPawnMap(true).getPawnOrigins().keySet().containsAll(criticalCoords)) {
+//                returnBooleans[0] = true;
+//            }
+//            if (this.combinedPawnMap.getPawnMap(true).getPawnOrigins().keySet().containsAll(criticalCoords)) {
+//                returnBooleans[1] = true;
+//
+//            }
+//        });
+//        return returnBooleans;
+//    }
 
 }
