@@ -1,5 +1,4 @@
 import Heuristics.BoardInterface;
-import StandardChess.ChessBoard;
 
 public class CheckUtil {
 

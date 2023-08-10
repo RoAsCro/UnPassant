@@ -1,8 +1,6 @@
 package Heuristics;
 
 
-import StandardChess.Coordinate;
-
 import java.util.List;
 
 public interface Deduction {

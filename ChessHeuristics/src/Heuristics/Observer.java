@@ -2,7 +2,6 @@ package Heuristics;
 
 import StandardChess.Coordinate;
 
-import java.util.List;
 import java.util.Map;
 
 /**

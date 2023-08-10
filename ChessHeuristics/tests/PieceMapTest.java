@@ -3,19 +3,16 @@ import Heuristics.Deductions.CombinedPawnMap;
 import Heuristics.Deductions.PawnMapBlack;
 import Heuristics.Deductions.PawnMapWhite;
 import Heuristics.Deductions.PieceMap;
-import Heuristics.Observation;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
 import Heuristics.Pathfinder;
 import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
-import StandardChess.StandardBoard;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Map;
 
 public class PieceMapTest {

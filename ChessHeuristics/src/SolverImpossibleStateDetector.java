@@ -4,7 +4,6 @@ import Heuristics.Deductions.PieceMap;
 import Heuristics.Deductions.TestImpossibleStateDetector;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
-import Heuristics.Path;
 import Heuristics.UnCastle;
 import StandardChess.Coordinate;
 

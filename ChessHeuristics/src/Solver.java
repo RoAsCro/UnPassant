@@ -1,5 +1,4 @@
 import Heuristics.BoardInterface;
-import Heuristics.Deductions.CombinedPawnMap;
 import Heuristics.Path;
 import StandardChess.*;
 

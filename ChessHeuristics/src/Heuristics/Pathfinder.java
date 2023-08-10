@@ -1,12 +1,10 @@
 package Heuristics;
 
-import Heuristics.Deductions.AbstractDeduction;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 import StandardChess.Piece;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiPredicate;

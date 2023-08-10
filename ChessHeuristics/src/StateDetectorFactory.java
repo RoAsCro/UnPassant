@@ -7,8 +7,6 @@ import Heuristics.UnCastle;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 
-import java.util.Arrays;
-
 public class StateDetectorFactory {
 
     public static final int pmwPosition = 1;

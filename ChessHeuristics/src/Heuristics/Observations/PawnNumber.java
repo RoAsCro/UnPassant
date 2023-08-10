@@ -1,7 +1,6 @@
 package Heuristics.Observations;
 
 import Heuristics.BoardInterface;
-import Heuristics.Observation;
 
 public class PawnNumber extends AbstractObservation {
 

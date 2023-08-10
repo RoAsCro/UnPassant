@@ -1,10 +1,10 @@
 package Heuristics;
 
-import Heuristics.BoardInterface;
-import Heuristics.Deductions.*;
-import Heuristics.Path;
+import Heuristics.Deductions.PawnMap;
+import Heuristics.Deductions.PieceMap;
+import Heuristics.Deductions.PromotedPawnSquares;
+import Heuristics.Deductions.PromotionMap;
 import StandardChess.Coordinate;
-import StandardChess.Coordinates;
 
 import java.util.Collection;
 import java.util.List;

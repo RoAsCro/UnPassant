@@ -8,7 +8,10 @@ import Heuristics.Path;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 

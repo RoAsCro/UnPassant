@@ -1,9 +1,5 @@
-import Heuristics.Deductions.CombinedPawnMap;
-import Heuristics.Deductions.PawnMap;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
-import StandardChess.Coordinate;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

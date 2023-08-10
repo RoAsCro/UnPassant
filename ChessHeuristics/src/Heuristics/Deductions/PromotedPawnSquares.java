@@ -6,11 +6,11 @@ import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
 import Heuristics.Pathfinder;
 import StandardChess.Coordinate;
-import StandardChess.Coordinates;
 import StandardChess.StandardPieceFactory;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class PromotedPawnSquares extends AbstractDeduction{
     private PieceNumber pieceNumber;

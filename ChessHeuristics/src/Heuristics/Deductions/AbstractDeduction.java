@@ -2,8 +2,6 @@ package Heuristics.Deductions;
 
 import Heuristics.Deduction;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractDeduction implements Deduction {

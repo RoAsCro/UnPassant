@@ -1,6 +1,5 @@
 package Heuristics.Deductions;
 
-import Heuristics.BoardInterface;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import StandardChess.Coordinate;

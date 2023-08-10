@@ -4,7 +4,6 @@ import Heuristics.BoardInterface;
 import Heuristics.Observation;
 import Heuristics.Path;
 import Heuristics.Pathfinder;
-import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 import StandardChess.StandardPieceFactory;

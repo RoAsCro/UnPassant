@@ -1,12 +1,9 @@
 import Heuristics.Deduction;
 import Heuristics.Deductions.CombinedPawnMap;
-import Heuristics.Deductions.PawnMap;
 import Heuristics.Deductions.PawnMapBlack;
 import Heuristics.Deductions.PawnMapWhite;
-import Heuristics.Path;
 import StandardChess.ChessBoard;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
