@@ -71,7 +71,14 @@ public class UnCastle {
             }
         }
 
-            return List.of(this.whiteData, this.blackData);
+        if (this.blackData[1] && this.blackData[2]) {
+            this.blackData[0] = true;
+        }
+        if (this.whiteData[1] && this.whiteData[2]) {
+            this.whiteData[0] = true;
+        }
+
+        return List.of(this.whiteData, this.blackData);
     }
 
     private boolean[] bishops() {

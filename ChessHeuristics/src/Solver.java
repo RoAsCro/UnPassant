@@ -81,12 +81,14 @@ public class Solver {
 //                    System.out.println(currentDepth);
 //                    System.out.println(depth);
                     stateSizes.push(stateSizes.pop() + newStates.size());
+                    int finalCurrentDepth = currentDepth;
                     newStates.forEach(s ->
                             states.push(s.split(":")[0]
                                     + ":"
                                     + s.split(":")[1]
                                     + (stateDescription.length > 1 ? (", "
-                                    + stateDescription[1]) : "")));
+                                    + stateDescription[1]) : "")
+                            + ":" + (finalCurrentDepth + 1)));
 
                 }
 //                System.out.println("finish");
@@ -272,7 +274,9 @@ public class Solver {
                                     currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
                                 }
                                 String boardAndMove = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece, castle);
-                                 if (this.fenPredicate.test(boardAndMove)) {
+                                 if (this.fenPredicate.test(boardAndMove +
+                                         (currentState.split(":").length > 1 ? (":" + currentState.split(":")[2])
+                                                 : ":0"))) {
 //                                     System.out.println(boardAndMove);
                                      states.add(boardAndMove);
                                  }

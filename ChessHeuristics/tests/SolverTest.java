@@ -247,36 +247,32 @@ public class SolverTest {
     public void ChessMysteries7() {
         // pp46
         Solver solver = new Solver(
-//                p -> {
-////            if (p.split(":")[1].contains("x")) {
-////                return false;
-////            }
-//            SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(p.split(":")[0]);
-//            if (!detector.testState()) {
-//                return false;
-//            }
-//            return detector.canCastle(false);
-//        }
+                s -> {
+                    int depth = Integer.parseInt(s.split(":")[2]);
+                    return depth >= 2 || !s.split(":")[1].contains("x");
+                }
         );
-        solver.setNumberOfSolutions(1);
+        solver.setNumberOfSolutions(2);
         solver.setAdditionalDepth(0);
-        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("4k2r/8/8/2p5/8/5P2/2P2PP1/3bK2R w Kk - 0 1"), 2).size());
+        List<String> solutions = solver.solve(BoardBuilder.buildBoard("4k2r/8/8/8/2p5/5P2/2P2PP1/3b1RK1 w k - 0 1"), 2);
+        Assertions.assertTrue((solutions.get(0).contains("4k2r/8/8/2p5/8/5P2/2P2PP1/3bK2R") || solutions.get(0).contains("4k2r/8/8/8/2p5/5P2/2P1bPP1/4K2R"))
+        && (solutions.get(1).contains("4k2r/8/8/2p5/8/5P2/2P2PP1/3bK2R") || solutions.get(1).contains("4k2r/8/8/8/2p5/5P2/2P1bPP1/4K2R"))) ;
+
         solver = new Solver(
-//                p -> {
-//            if (p.split(":")[1].contains("x")) {
-//                return false;
-//            }
-//            SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(p.split(":")[0]);
-//            detector.testState();
-//            return detector.canCastle(false);
-//        }
+                s -> {
+                    int depth = Integer.parseInt(s.split(":")[2]);
+                    return depth >= 2 || !s.split(":")[1].contains("x");
+                }
         );
         solver.setNumberOfSolutions(1);
-        solver.setAdditionalDepth(0);
-        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("4k2r/8/8/8/2p5/5P2/2P1bPP1/4K2R w K - 0 1"), 1).size());
-        // The above starts from the assumption that either of the two valid moves (2 plies) have been made under the conditions
-        // that neither ply can result in a piece being untaken
-        // Working backwards from there, it eliminates every situation that would not allow for castling in the future
+        solver.setAdditionalDepth(1);
+        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("4k2r/8/8/8/2p5/5P2/2P2PP1/3b1RK1 w k - 0 1"), 2).size());
+
+        // The first here does not have any extra depth, checking that it comes to one of two valid solutions to the
+        // first part of the problem, the only moves available with the given castling rights and the capture restrictions
+        // The second part checks with additional depth - the detector uses the information gathered by the piece and pawn
+        // maps to conclude that the bishop A. must have promoted, B. Must have promoted on that square, C. must have passed
+        // a critical king sqaure to get there - this would violate the castling constraints that happen as a result of the iteration
 
     }
 
@@ -291,18 +287,31 @@ public class SolverTest {
         // This is entirely a matter of iterating through valid moves
     }
 
-//    @Test
-//    public void ChessMysteries9() {
-//        // pp50
-////        Solver solver = new Solver();
-////        solver.setNumberOfSolutions(1);
-////        solver.setNumberOfSolutions(1);
-////        solver.setAdditionalDepth(2);
-////        Assertions.assertEquals(1, solver.solve(BoardBuilder.buildBoard("k2q3r/R1B4p/R4p2/K2B2p1/1P2n1P1/P7/2P5/r4B2 w - - 0 1"), 1).size());
+    // 54 cannot be done as it is a question of timing
+    @Test
+    public void ChessMysteries9() {
+        // pp54
+        Solver solver = new Solver(s -> {
+            boolean black = s.split(" ")[1].equals("b");
+            String move = s.split(":")[1];
+
+            int xY = (Integer.parseInt(move.substring(move.length()-1)) - 1) + (((int)move.charAt(move.length()-2)) - 97);
+
+            if (black && move.contains("xQ") && xY % 2 == 0) {
+                return false;
+            }
+            xY = (Integer.parseInt(move.substring(2, 3)) - 1) + (((int)move.charAt(1)) - 97);
+            return black || move.charAt(0) != 'Q' || xY % 2 != 0;
+        }
+                );
+        solver.setNumberOfSolutions(1);
+        solver.setAdditionalDepth(2);
+        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w Qq - 0 1"), 2).size());
+        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r3kr2/1pp2p2/1pn2npP/1B1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 b Qq - 0 1"), 2).size());
+
 //        System.out.println(StateDetectorFactory.getDetector("R1BQKB1R/1PPPPPP1/8/1N6/1N6/2n5/1pppp1p1/1kr1q3 w - - 0 1").testState());
-//
-//        // This is entirely a matter of iterating through valid moves
-//    }
+
+    }
 
 
     //54, maybe
