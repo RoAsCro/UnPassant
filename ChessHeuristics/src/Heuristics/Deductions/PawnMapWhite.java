@@ -14,6 +14,7 @@ public class PawnMapWhite extends PawnMap{
     }
     public PawnMapWhite(PawnNumber pawnNumber, PieceNumber pieceNumber) {
         super("white", pawnNumber, pieceNumber);
+        this.maxPieces = 15;
     }
 
 

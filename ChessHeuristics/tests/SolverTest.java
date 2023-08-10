@@ -291,25 +291,167 @@ public class SolverTest {
     @Test
     public void ChessMysteries9() {
         // pp54
-        Solver solver = new Solver(s -> {
-            boolean black = s.split(" ")[1].equals("b");
-            String move = s.split(":")[1];
+        List<String> list = List.of(
+                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w q - 0 1",
+                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w Q - 0 1",
+                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 b q - 0 1",
+                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 b Q - 0 1",
+                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K3 w q - 0 1",
+                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K3 b q - 0 1",
+                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K3 w Q - 0 1",
+                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K3 b Q - 0 1"
 
-            int xY = (Integer.parseInt(move.substring(move.length()-1)) - 1) + (((int)move.charAt(move.length()-2)) - 97);
 
-            if (black && move.contains("xQ") && xY % 2 == 0) {
-                return false;
+
+        );
+        for (String st : list) {
+            Solver solver = new Solver(s -> {
+                boolean black = s.split(" ")[1].equals("b");
+                String move = s.split(":")[1];
+
+                int xY = (Integer.parseInt(move.substring(move.length() - 1)) - 1) + (((int) move.charAt(move.length() - 2)) - 97);
+
+                if (black && move.contains("xQ") && xY % 2 == 0) {
+                    return false;
+                }
+                xY = (Integer.parseInt(move.substring(2, 3)) - 1) + (((int) move.charAt(1)) - 97);
+                return black || move.charAt(0) != 'Q' || xY % 2 != 0;
             }
-            xY = (Integer.parseInt(move.substring(2, 3)) - 1) + (((int)move.charAt(1)) - 97);
-            return black || move.charAt(0) != 'Q' || xY % 2 != 0;
+            );
+            solver.setNumberOfSolutions(1);
+            solver.setAdditionalDepth(1);
+            solver.solve(BoardBuilder.buildBoard(st), 1);
         }
-                );
-        solver.setNumberOfSolutions(1);
-        solver.setAdditionalDepth(2);
-        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w Qq - 0 1"), 2).size());
-        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r3kr2/1pp2p2/1pn2npP/1B1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 b Qq - 0 1"), 2).size());
 
-//        System.out.println(StateDetectorFactory.getDetector("R1BQKB1R/1PPPPPP1/8/1N6/1N6/2n5/1pppp1p1/1kr1q3 w - - 0 1").testState());
+        //This puzzle has two relevant parts, (a) and (b)
+        // (a)
+        // This is not really a problem of last n moves AND the additional rules can't be accounted for in the deductions
+        // The first part can be spookfed by replacing the white bishop with a queen, resulting in it coming to
+        // the same conclusion as you would if a captured queen never left white - every piece that can have been captured
+        // by a black pawn was captured by a black pawn, which means the a2 pawn was either taken or promoted,
+        // and since it cannot have reached the square on which b6 makes it'scapture, it promoted, and it must have promoted
+        // on a8 as every white capture was carried out by the h6 pawn, resulting in the a8 rook being displaced
+        // The second part of the puzzle is a question of timing, which is beyond the scope of UnPassant, and not of last
+        // n moves
+        // (b)
+        // This is also not a last n moves question, but once again the first part can be solved -
+        // With the extra missing piece, there's now no reason to believe that a2 must have promoted or been captured by  the b6 pawn
+    }
+
+    @Test
+    public void ChessMysteries10() {
+        // pp58
+        List<String> list = List.of(
+                "2kr3r/1qppp2p/pn3n1p/4b3/b6P/P1N2N2/1PPP1PP1/R3K2R b Q - 0 1",
+                "2kr3r/1qppp2p/pn3n1p/4b3/b6P/P1N2N2/1PPP1PP1/R3K2R w K - 0 1",
+                "2kr3r/1qppp2p/pn3n1p/4b3/b6P/P1N2N2/1PPP1PP1/R3K2R b Q - 0 1",
+                "2kr3r/1qppp2p/pn3n1p/4b3/b6P/P1N2N2/1PPP1PP1/R3K2R w K - 0 1",
+                "2kr3r/1qppp2p/pn3n1p/4b3/b6P/P1N2N2/1PPP1PP1/R3K2R w KQ - 0 1",
+                "2kr3r/1qppp2p/pn3n1p/4b3/b6P/P1N2N2/1PPP1PP1/R3K2R b KQ - 0 1"
+
+        );
+
+        for (String st : list) {
+            Solver solver = new Solver(
+            );
+            solver.setNumberOfSolutions(1);
+            solver.setAdditionalDepth(1);
+            solver.solve(BoardBuilder.buildBoard(st), 1);
+        }
+
+        //This puzzle has two relevant parts, (a) and (b)
+        // (a)
+        // This is not really a problem of last n moves AND the additional rules can't be accounted for in the deductions
+        // The first part can be spookfed by replacing the white bishop with a queen, resulting in it coming to
+        // the same conclusion as you would if a captured queen never left white - every piece that can have been captured
+        // by a black pawn was captured by a black pawn, which means the a2 pawn was either taken or promoted,
+        // and since it cannot have reached the square on which b6 makes it'scapture, it promoted, and it must have promoted
+        // on a8 as every white capture was carried out by the h6 pawn, resulting in the a8 rook being displaced
+        // The second part of the puzzle is a question of timing, which is beyond the scope of UnPassant, and not of last
+        // n moves
+        // (b)
+        // This is also not a last n moves question, but once again the first part can be solved -
+        // With the extra missing piece, there's now no reason to believe that a2 must have promoted or been captured by  the b6 pawn
+    }
+
+   @Test
+    public void ChessMysteries11() {
+        // pp58
+        List<String> list = List.of(
+                "2b5/pp1p4/PRP5/pR3N2/2K5/2P5/2k1PNP1/1nrnB3 b - - 0 1",
+                "2b5/pp1p4/PRP5/pR3N2/2K5/2P5/2k1PN1P/1nrnB3 b - - 0 1"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+            Solver solver = new Solver( s ->{
+//                String move = s.split(":")[1];
+//                int xY = (Integer.parseInt(move.substring(move.length() - 1)) - 1) + (((int) move.charAt(move.length() - 2)) - 97);
+//                if (s.split(":")[1].contains("x") && (s.split(":")[1].charAt(4) == 'N' || s.split(":")[1].charAt(4) == 'R'  ||
+//                        (s.split(":")[1].contains("w") && s.split(":")[1].charAt(4) == 'B' && xY % 2 == 0))) {
+//                    return false;
+//                }
+//                System.out.println(s);
+                return !(s.split(":")[1].charAt(0) == 'P'
+                        && (s.split(":")[1].endsWith("1")  || s.split(":")[1].endsWith("8")));
+
+            },
+                    d -> {
+//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
+//                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
+//                }
+                return d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty();
+                    }
+            );
+            solver.setNumberOfSolutions(1);
+            solver.setAdditionalDepth(1);
+            if (count == 1) {
+                Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard(st), 2).size());
+            } else {
+                Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard(st), 2).size());
+            }
+        }
+        
+    }
+
+    @Test
+    public void ChessMysteries12() {
+        // pp58
+        List<String> list = List.of(
+                "2b5/pp1p4/PR1P4/pR3N2/2K5/2P5/2k1PNP1/1nrnB3 w - - 0 1");
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+            Solver solver = new Solver(
+//                    s ->{
+////                String move = s.split(":")[1];
+////                int xY = (Integer.parseInt(move.substring(move.length() - 1)) - 1) + (((int) move.charAt(move.length() - 2)) - 97);
+////                if (s.split(":")[1].contains("x") && (s.split(":")[1].charAt(4) == 'N' || s.split(":")[1].charAt(4) == 'R'  ||
+////                        (s.split(":")[1].contains("w") && s.split(":")[1].charAt(4) == 'B' && xY % 2 == 0))) {
+////                    return false;
+////                }
+////                System.out.println(s);
+//                return !(s.split(":")[1].charAt(0) == 'P'
+//                        && (s.split(":")[1].endsWith("1")  || s.split(":")[1].endsWith("8")));
+//
+//            },
+//                    d -> {
+////                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
+////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
+////                }
+//                        return d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty();
+//                    }
+            );
+            solver.setNumberOfSolutions(5);
+            solver.setAdditionalDepth(1);
+//            if (count == 1) {
+                solver.solve(BoardBuilder.buildBoard(st), 2);
+//            } else {
+//                Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard(st), 2).size());
+//            }
+        }
 
     }
 

@@ -11,11 +11,11 @@ import java.util.Arrays;
 
 public class StateDetectorFactory {
 
-    private static int pmwPosition = 1;
-    private static int pmbPosition = 2;
-    private static int pmPosition = 4;
-    private static int prmPosition = 6;
-    private static int ppsPosition = 7;
+    public static final int pmwPosition = 1;
+    public static final int pmbPosition = 2;
+    public static final int pmPosition = 4;
+    public static final int prmPosition = 6;
+    public static final int ppsPosition = 7;
 
     private static Deduction[] getDeductions(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction... deductions) {
         PawnMapWhite pmw = null;

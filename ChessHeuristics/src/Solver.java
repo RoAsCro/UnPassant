@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 public class Solver {
 
     Predicate<String> fenPredicate = p -> true;
+    private Predicate<SolverImpossibleStateDetector> detectorPredicate = d -> true;
     String originalBoard;
     private boolean legalFirst = false;
     private int additionalDepth = 2;
@@ -21,6 +22,11 @@ public class Solver {
     private Map<String, SolverImpossibleStateDetector> stringDetectorMap = new HashMap<>();
 
     public Solver(){};
+
+    public Solver(Predicate<String> fenPredicate, Predicate<SolverImpossibleStateDetector> detectorPredicate){
+        this.fenPredicate = fenPredicate;
+        this.detectorPredicate = detectorPredicate;
+    }
 
     public Solver(Predicate<String> fenPredicate){
         this.fenPredicate = fenPredicate;
@@ -312,6 +318,9 @@ public class Solver {
         boolean pass = detector.testState();
         if (pass) {
             pass = castleCheck(board, detector);
+            if (pass) {
+            pass = this.detectorPredicate.test(detector);
+            }
         }
         return pass;
     }
@@ -345,6 +354,8 @@ public class Solver {
     }
 
     private boolean castleCheck(ChessBoard board, SolverImpossibleStateDetector detector) {
+
+
         boolean white = true;
         for (int i = 0 ; i < 2 ; i++) {
             String piece = "king";
@@ -358,6 +369,9 @@ public class Solver {
             }
             white = false;
         }
+//        System.out.println(board.canCastle("queen", "white"));
+//
+//        System.out.println(detector.canCastle(true));
         return true;
     }
 

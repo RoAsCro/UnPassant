@@ -608,4 +608,5 @@ public class PieceMap extends AbstractDeduction{
         return white ? (kingside ? this.wKRook : this.wQRook) : (kingside ? this.bKRook : this.bQRook);
     }
 
+
 }
