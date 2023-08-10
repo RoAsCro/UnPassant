@@ -49,6 +49,11 @@ public class Coordinates {
         return ((char) (coordinate.getX() + LOWER_ASCII_A)) + "" + ((int) (coordinate.getY() + 1));
     }
 
+    public static boolean light(Coordinate coordinate) {
+        return (coordinate.getX() + coordinate.getY()) % 2 != 0;
+    }
+
+
     private static class NulCoordinate extends Coordinate {
 
         public NulCoordinate() {

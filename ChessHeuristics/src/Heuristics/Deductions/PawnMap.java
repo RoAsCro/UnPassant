@@ -51,7 +51,7 @@ public abstract class PawnMap extends AbstractDeduction{
         this.observations.add(pieceNumber);
         this.pieceNumber = pieceNumber;
         for (int i = 0; i < 8 ; i++ ) {
-            this.originFree.put(new Coordinate(i, Math.abs((this.white ? FIRST_RANK : FINAL_RANK) - 1)), true);
+            this.originFree.put(new Coordinate(i, Math.abs((this.white ? FIRST_RANK_Y : FINAL_RANK_Y) - 1)), true);
         }
     }
 
@@ -125,23 +125,23 @@ public abstract class PawnMap extends AbstractDeduction{
     }
 
     protected void rawMap(BoardInterface board, boolean white) {
-        int start = Math.abs((white ? FIRST_RANK : FINAL_RANK) - 1);
+        int start = Math.abs((white ? FIRST_RANK_Y : FINAL_RANK_Y) - 1);
         int increment = white ? 1 : -1;
         BoardReader reader = board.getReader();
-        for (int y = 0 ; y < FINAL_RANK - 1; y++) {
+        for (int y = 0; y < FINAL_RANK_Y - 1; y++) {
             reader.to(new Coordinate(0, start + y * increment));
             int finalY = y;
-            reader.nextWhile(Coordinates.RIGHT, coordinate -> coordinate.getX() <= FINAL_RANK, piece -> {
+            reader.nextWhile(Coordinates.RIGHT, coordinate -> coordinate.getX() <= FINAL_RANK_Y, piece -> {
                 if (piece.getType().equals("pawn") && piece.getColour().equals(white ? "white"  : "black")) {
                     Coordinate pawn = reader.getCoord();
                     int potentialPaths = finalY * 2 + 1;
                     Path starts = new Path();
                     for (int j = 0 ; j < potentialPaths ; j++) {
                         int x = (pawn.getX() - finalY) + j;
-                        if (x > FINAL_RANK) {
+                        if (x > FINAL_RANK_Y) {
                             break;
                         }
-                        if (x < FIRST_RANK) {
+                        if (x < FIRST_RANK_Y) {
                             continue;
                         }
                         starts.add(new Coordinate(x, start));
@@ -359,7 +359,6 @@ public abstract class PawnMap extends AbstractDeduction{
      * @return true if something is removed
      */
     private boolean removeCoords(Set<Coordinate> forRemoval, List<Coordinate> ignore) {
-
         return !this.pawnOrigins.entrySet()
                 .stream()
                 .filter(entry -> !ignore.contains(entry.getKey()))

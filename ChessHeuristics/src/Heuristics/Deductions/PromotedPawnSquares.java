@@ -75,11 +75,6 @@ public class PromotedPawnSquares extends AbstractDeduction{
                 : this.promotionMap.getPromotionCombinedPawnMap();
         int captures = (combinedPawnMap.getPawnMap(!notWhite).maxPieces - (!notWhite ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()))
                 - combinedPawnMap.minimumCaptures(!notWhite);
-//        System.out.println("PTR");
-//        System.out.println(notWhite);
-//        System.out.println(combinedPawnMap.getPawnMap(notWhite).maxPieces);
-//        System.out.println(combinedPawnMap.getPawnMap(!notWhite).maxPieces);
-
         int enemyCaptures = (combinedPawnMap.getPawnMap(notWhite).maxPieces - (notWhite ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()))
                 - combinedPawnMap.minimumCaptures(notWhite);
         List<Path> paths = new LinkedList<>();
@@ -102,7 +97,7 @@ public class PromotedPawnSquares extends AbstractDeduction{
             Path shortest = Pathfinder.findShortestPawnPath(
                     StandardPieceFactory.getInstance().getPiece(notWhite ? "p" : "P"),
                     origin,
-                    (b, c) -> c.getY() == (notWhite ? 0 : 7),
+                    (b, c) -> c.getY() == (notWhite ? FIRST_RANK_Y : FINAL_RANK_Y),
                     board,
                     p -> CombinedPawnMap.PATH_DEVIATION.apply(p) <= captures,
                     (p1, p2) -> combinedPawnMap.exclusion(forbidden, p1, p2));

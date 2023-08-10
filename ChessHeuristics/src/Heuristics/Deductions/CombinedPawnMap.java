@@ -12,10 +12,8 @@ import java.util.*;
 import java.util.function.Function;
 
 public class CombinedPawnMap extends AbstractDeduction {
-    PawnMap white;
-    PawnMap black;
-
-
+    private final PawnMap white;
+    private final PawnMap black;
 
     private final Map<Coordinate, List<Path>> whitePaths = new TreeMap<>();
     private final Map<Coordinate, List<Path>> blackPaths = new TreeMap<>();
@@ -39,8 +37,6 @@ public class CombinedPawnMap extends AbstractDeduction {
 
         combinedPawnMap.singleWhitePaths.forEach((k, v) -> this.singleWhitePaths.put(k, Path.of(v)));
         combinedPawnMap.singleBlackPaths.forEach((k, v) -> this.singleBlackPaths.put(k, Path.of(v)));
-
-
         this.black = black;
         this.white = white;
     }
@@ -166,7 +162,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                                 return true;
                             }
                             int y2 = innerEntryKey.getY();
-                            if (y2 == FINAL_RANK || y2 == FIRST_RANK) {
+                            if (y2 == FINAL_RANK_Y || y2 == FIRST_RANK_Y) {
                                 return entry.getValue().get(0).contains(innerEntry.getValue().get(0).get(innerEntry.getValue().get(0).size() - 2));
                             }
                             return false;

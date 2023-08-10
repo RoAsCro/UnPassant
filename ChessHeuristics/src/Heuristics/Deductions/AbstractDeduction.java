@@ -8,8 +8,12 @@ public abstract class AbstractDeduction implements Deduction {
 
     protected static final int MAX_PAWNS = 8;
     protected static final int MAX_PIECES = 16;
-    protected static int FINAL_RANK = 7;
-    protected static int FIRST_RANK = 0;
+    protected static int FINAL_RANK_Y = 7;
+    protected static int FIRST_RANK_Y = 0;
+    protected static int BLACK_PIECE_Y = 6;
+    protected static int WHITE_PIECE_Y = 1;
+    protected static int BLACK_ESCAPE_Y = 5;
+    protected static int WHITE_ESCAPE_Y = 2;
     protected static int Q_ROOK_X = 0;
     protected static int K_ROOK_X = 7;
     protected static int Q_KNIGHT_X = 1;
