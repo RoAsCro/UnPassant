@@ -46,9 +46,9 @@ public class PromotionMapTest {
         this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
-        System.out.println(promotionMap.getPawnOrigins("white"));
-        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(7, 7)).size());
-        Assertions.assertEquals(2, promotionMap.getPawnOrigins("white").get(new Coordinate(6, 7)).size());
+        System.out.println(promotionMap.getPawnOrigins(true));
+        Assertions.assertEquals(1, promotionMap.getPawnOrigins(true).get(new Coordinate(7, 7)).size());
+        Assertions.assertEquals(2, promotionMap.getPawnOrigins(true).get(new Coordinate(6, 7)).size());
         Assertions.assertTrue(promotionMap.getState());
 
     }
@@ -64,11 +64,11 @@ public class PromotionMapTest {
         this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
-        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(5, 7)));
-        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(2, 7)));
-        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(4, 7)));
-        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));
+        Assertions.assertEquals(1, promotionMap.getPawnOrigins(true).get(new Coordinate(0, 7)).size());
+        Assertions.assertFalse(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(5, 7)));
+        Assertions.assertFalse(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(2, 7)));
+        Assertions.assertFalse(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(4, 7)));
+        Assertions.assertTrue(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(1, 7)));
         Assertions.assertTrue(promotionMap.getState());
 
 
@@ -87,9 +87,9 @@ public class PromotionMapTest {
         this.pieceMap.deduce(boardInterface);
         this.captureLocations.deduce(boardInterface);
         promotionMap.deduce(boardInterface);
-        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
-        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));
+        Assertions.assertEquals(1, promotionMap.getPawnOrigins(true).get(new Coordinate(0, 7)).size());
+        Assertions.assertTrue(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
+        Assertions.assertFalse(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(1, 7)));
         Assertions.assertTrue(promotionMap.getState());
     }
 
@@ -106,7 +106,7 @@ public class PromotionMapTest {
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
+        Assertions.assertFalse(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
 //        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));
@@ -129,9 +129,9 @@ public class PromotionMapTest {
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins("white"));
-        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
-        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));
+        System.out.println(promotionMap.getPawnOrigins(true));
+        Assertions.assertFalse(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
+        Assertions.assertTrue(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(1, 7)));
 
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
@@ -152,10 +152,10 @@ public class PromotionMapTest {
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins("white"));
-        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
-        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));
-        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(2, 7)));
+        System.out.println(promotionMap.getPawnOrigins(true));
+        Assertions.assertTrue(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
+        Assertions.assertTrue(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(1, 7)));
+        Assertions.assertTrue(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(2, 7)));
 
 
 
@@ -177,10 +177,10 @@ public class PromotionMapTest {
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins("white"));
-        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
-        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));
-        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(2, 7)));
+        System.out.println(promotionMap.getPawnOrigins(true));
+        Assertions.assertTrue(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
+        Assertions.assertTrue(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(1, 7)));
+        Assertions.assertTrue(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(2, 7)));
 
 
 
@@ -202,16 +202,16 @@ public class PromotionMapTest {
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins("white"));
-        System.out.println(promotionMap.getPawnOrigins("black"));
+        System.out.println(promotionMap.getPawnOrigins(true));
+        System.out.println(promotionMap.getPawnOrigins(false));
         System.out.println(combinedPawnMap.getWhitePaths());
 
 
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(x, 7)), "" + x);
+            Assertions.assertFalse(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(x, 7)), "" + x);
         }
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(promotionMap.getPawnOrigins("black").containsKey(new Coordinate(x, 0)), "" + x);
+            Assertions.assertFalse(promotionMap.getPawnOrigins(false).containsKey(new Coordinate(x, 0)), "" + x);
         }
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
@@ -232,16 +232,16 @@ public class PromotionMapTest {
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins("white"));
-        System.out.println(promotionMap.getPawnOrigins("black"));
+        System.out.println(promotionMap.getPawnOrigins(true));
+        System.out.println(promotionMap.getPawnOrigins(false));
         System.out.println(combinedPawnMap.getBlackPaths());
 
 
 //        for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
+            Assertions.assertTrue(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
 //        }
 //        for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(promotionMap.getPawnOrigins("black").containsKey(new Coordinate(0, 0)));
+            Assertions.assertFalse(promotionMap.getPawnOrigins(false).containsKey(new Coordinate(0, 0)));
 //        }
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
@@ -262,14 +262,14 @@ public class PromotionMapTest {
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins("white"));
-        System.out.println(promotionMap.getPawnOrigins("black"));
+        System.out.println(promotionMap.getPawnOrigins(true));
+        System.out.println(promotionMap.getPawnOrigins(false));
         System.out.println(combinedPawnMap.getWhitePaths());
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(x, 7)), "" + x);
+            Assertions.assertFalse(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(x, 7)), "" + x);
         }
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(promotionMap.getPawnOrigins("black").containsKey(new Coordinate(x, 0)), "" + x);
+            Assertions.assertFalse(promotionMap.getPawnOrigins(false).containsKey(new Coordinate(x, 0)), "" + x);
         }
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
@@ -290,15 +290,15 @@ public class PromotionMapTest {
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins("white"));
-        System.out.println(promotionMap.getPawnOrigins("black"));
+        System.out.println(promotionMap.getPawnOrigins(true));
+        System.out.println(promotionMap.getPawnOrigins(false));
         System.out.println(combinedPawnMap.getWhitePaths());
         // One of the below should be true, it doesn't matter which
         for (int x = 0 ; x < 8 ; x++) {
 //            Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(x, 7)), "" + x);
         }
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(promotionMap.getPawnOrigins("black").containsKey(new Coordinate(x, 0)), "" + x);
+            Assertions.assertFalse(promotionMap.getPawnOrigins(false).containsKey(new Coordinate(x, 0)), "" + x);
         }
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
@@ -319,15 +319,15 @@ public class PromotionMapTest {
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins("white"));
-        System.out.println(promotionMap.getPawnOrigins("black"));
+        System.out.println(promotionMap.getPawnOrigins(true));
+        System.out.println(promotionMap.getPawnOrigins(false));
         System.out.println(combinedPawnMap.getWhitePaths());
         // One of the below should be true, it doesn't matter which
         for (int x = 0 ; x < 8 ; x++) {
 //            Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(x, 7)), "" + x);
         }
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(promotionMap.getPawnOrigins("black").containsKey(new Coordinate(x, 0)), "" + x);
+            Assertions.assertFalse(promotionMap.getPawnOrigins(false).containsKey(new Coordinate(x, 0)), "" + x);
         }
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
@@ -348,15 +348,15 @@ public class PromotionMapTest {
         promotionMap.deduce(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins("white"));
-        System.out.println(promotionMap.getPawnOrigins("black"));
+        System.out.println(promotionMap.getPawnOrigins(true));
+        System.out.println(promotionMap.getPawnOrigins(false));
         System.out.println(combinedPawnMap.getWhitePaths());
         // One of the below should be true, it doesn't matter which
         for (int x = 0 ; x < 8 ; x++) {
 //            Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(x, 7)), "" + x);
         }
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(promotionMap.getPawnOrigins("black").containsKey(new Coordinate(x, 0)), "" + x);
+            Assertions.assertFalse(promotionMap.getPawnOrigins(false).containsKey(new Coordinate(x, 0)), "" + x);
         }
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));

@@ -39,13 +39,6 @@ public class PromotedPawnSquares extends AbstractDeduction{
         this.promotionMapInUse = this.promotionMap.getPromotionCombinedPawnMap() == null;
         Path emptyWhiteOrigins = findEmptyOrigins(true);
         Path emptyBlackOrigins = findEmptyOrigins(false);
-//        this.promotionMap.getOrigins();
-//        System.out.println(bishops()[0]);
-//
-//        boolean[] bishops = bishops();
-//        if (bishops[0]) {
-//
-//        }
 
         if (!emptyWhiteOrigins.isEmpty()) {
             whitePaths = pathToFinalRank(board, false, emptyWhiteOrigins);

@@ -50,7 +50,7 @@ public abstract class PawnMap extends AbstractDeduction{
         this.observations.add(pieceNumber);
         this.pieceNumber = pieceNumber;
         for (int i = 0; i < 8 ; i++ ) {
-            this.originFree.put(new Coordinate(i, this.white ? 1 : 6), true);
+            this.originFree.put(new Coordinate(i, Math.abs((this.white ? FIRST_RANK : FINAL_RANK) - 1)), true);
         }
     }
 
@@ -126,23 +126,23 @@ public abstract class PawnMap extends AbstractDeduction{
     public abstract Map<Coordinate, Integer> getCaptureSet();
 
     protected void rawMap(BoardInterface board, boolean white) {
-        int start = white ? 1 : 6;
+        int start = Math.abs((white ? FIRST_RANK : FINAL_RANK) - 1);
         int increment = white ? 1 : -1;
         BoardReader reader = board.getReader();
         for (int y = 0 ; y < 6; y++) {
             reader.to(new Coordinate(0, start + y * increment));
             int finalY = y;
-            reader.nextWhile(Coordinates.RIGHT, coordinate -> coordinate.getX() < 8, piece -> {
+            reader.nextWhile(Coordinates.RIGHT, coordinate -> coordinate.getX() <= FINAL_RANK, piece -> {
                 if (piece.getType().equals("pawn") && piece.getColour().equals(white ? "white"  : "black")) {
                     Coordinate pawn = reader.getCoord();
                     int potentialPaths = finalY * 2 + 1;
                     Path starts = new Path();
                     for (int j = 0 ; j < potentialPaths ; j++) {
                         int x = (pawn.getX() - finalY) + j;
-                        if (x > 7) {
+                        if (x > FINAL_RANK) {
                             break;
                         }
-                        if (x < 0) {
+                        if (x < FIRST_RANK) {
                             continue;
                         }
                         starts.add(new Coordinate(x, start));
@@ -188,7 +188,7 @@ public abstract class PawnMap extends AbstractDeduction{
                                         }
                                         return c2;
                                     })
-                                    .orElse(new Coordinate(0, 0));
+                                    .orElse(Coordinates.NULL_COORDINATE);
 
                             int minCaptures = Math.abs(x - coordinate.getX());
                             this.captureSet.put(entry.getKey(), minCaptures);

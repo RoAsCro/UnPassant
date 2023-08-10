@@ -38,16 +38,6 @@ public class PieceMap extends AbstractDeduction{
     private final Map<String, Map<Path, Integer>> promotionNumbers = new TreeMap<>();
 
 
-    private final static Coordinate NULL_COORDINATE = new Coordinate(-1, -1);
-    private final static Map<Integer, String> STANDARD_STARTS = Map.of(
-            0, "rook", 1, "knight", 2, "bishop", 3, "queen", 4,
-            "king", 5, "bishop", 6, "knight", 7, "rook"
-    );
-
-    private final static Map<String, String> PIECE_CODES = Map.of(
-            "rook", "r", "knight", "n", "bishop", "b", "queen", "q",
-            "king", "k"
-    );
 
     Predicate<Coordinate> secondRankCollision = coordinate -> {
         int y = coordinate.getY();
@@ -63,10 +53,10 @@ public class PieceMap extends AbstractDeduction{
 
     Predicate<Path> thirdRankCollision = path -> {
         int y = path.getLast().getY();
-        if (y == 2 || y == 5) {
-            String colour = y == 2 ? "white" : "black";
-            Path toCheck = this.pawnMap.getSinglePath(colour, path.getLast());
-            Map<Coordinate, List<Path>> map = y == 2 ? this.pawnMap.getWhitePaths() : this.pawnMap.getBlackPaths();
+        if (y == FIRST_RANK + 2 || y == FINAL_RANK - 2) {
+            boolean white = y == FIRST_RANK + 2;
+            Path toCheck = this.pawnMap.getSinglePath(white, path.getLast());
+            Map<Coordinate, List<Path>> map = white ? this.pawnMap.getWhitePaths() : this.pawnMap.getBlackPaths();
             return !(
                     map.containsKey(path.getLast())
                     && toCheck != null

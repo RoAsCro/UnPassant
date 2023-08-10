@@ -67,7 +67,6 @@ public class CombinedPawnMap extends AbstractDeduction {
 
     /**
      * return the minimum number of captures made by pawns
-     * @param colour
      * @return
      */
     public int capturesTwo(boolean white) {
@@ -162,11 +161,11 @@ public class CombinedPawnMap extends AbstractDeduction {
         return false;
     }
 
-    public Path getSinglePath(String colour, Coordinate coordinate) {
+    public Path getSinglePath(boolean white, Coordinate coordinate) {
 //        if (coordinate.equals(new Coordinate(0, 2))) {
 ////            //system.out.println(this.singleWhitePaths);
 //        }
-        return (colour.equals("white") ? this.singleWhitePaths : this.singleBlackPaths).get(coordinate);
+        return (white ? this.singleWhitePaths : this.singleBlackPaths).get(coordinate);
     }
     public Map<Coordinate, Path> getSinglePath(String colour) {
 //        if (coordinate.equals(new Coordinate(0, 2))) {
