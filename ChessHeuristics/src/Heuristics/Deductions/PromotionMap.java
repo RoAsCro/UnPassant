@@ -466,7 +466,7 @@ public class PromotionMap extends AbstractDeduction {
 
     private void reduceClaims(boolean white, Map<Path, List<Path>> pieceSquareOrigin) {
         PawnMap playersPawnMap = white ? this.pawnMapWhite : this.pawnMapBlack;
-        int maxCaptures = playersPawnMap.capturedPieces() - this.pawnMap.capturesTwo(white)
+        int maxCaptures = playersPawnMap.capturedPieces() - this.pawnMap.minimumCaptures(white)
                 + (white ? additionalCapturesWhite : additionalCapturesBlack)
                 ;
 //        //system.out.println("MAXP" + goalOrigins);
@@ -502,7 +502,7 @@ public class PromotionMap extends AbstractDeduction {
     private Map<Path, List<Path>> updates(boolean white) {
         //system.out.println("goasl " + this.goalOrigins);
         PawnMap playersPawnMap = white ? this.pawnMapWhite : this.pawnMapBlack;
-        int maxCaptures = playersPawnMap.capturedPieces() - this.pawnMap.capturesTwo(white)
+        int maxCaptures = playersPawnMap.capturedPieces() - this.pawnMap.minimumCaptures(white)
                 + (white ? additionalCapturesWhite : additionalCapturesBlack)
                 ;
         //system.out.println(playersPawnMap.capturedPieces());

@@ -225,7 +225,7 @@ public class CaptureLocations extends AbstractDeduction {
                         .reduce((i, j) -> i < j ? i : j)
                         .orElse(0))
                 .reduce(0, Integer::sum);
-        return otherValue == this.combinedPawnMap.capturesTwo(white) && otherValue != 0;
+        return otherValue == this.combinedPawnMap.minimumCaptures(white) && otherValue != 0;
     }
 
     private List<Coordinate> pawnCaptureLocations(boolean white) {
@@ -235,10 +235,10 @@ public class CaptureLocations extends AbstractDeduction {
 
         // If every capture of the opponent has been made by pawns
         if ((!white ? this.pawnMapWhite : this.pawnMapBlack).maxPieces - (white ? pieceNumber.getWhitePieces() : pieceNumber.getBlackPieces())
-                == this.combinedPawnMap.capturesTwo(!white)) {
+                == this.combinedPawnMap.minimumCaptures(!white)) {
             // The deviation a pawn can make
             int unnaccountedCaptures = ((!white ? this.pawnMapBlack : this.pawnMapWhite).maxPieces - (white ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()))
-                    - this.combinedPawnMap.capturesTwo(white);
+                    - this.combinedPawnMap.minimumCaptures(white);
 //            System.out.println((!white ? this.pawnMapBlack : this.pawnMapWhite).maxPieces - (!white ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()));
 //            System.out.println(this.combinedPawnMap.capturesTwo(!white ? "white" : "black"));
 

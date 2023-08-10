@@ -2,9 +2,6 @@ package Heuristics.Deductions;
 
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
-import StandardChess.Coordinate;
-
-import java.util.Map;
 
 public class PawnMapWhite extends PawnMap{
 

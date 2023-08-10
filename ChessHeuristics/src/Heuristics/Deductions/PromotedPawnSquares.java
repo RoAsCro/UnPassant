@@ -74,14 +74,14 @@ public class PromotedPawnSquares extends AbstractDeduction{
                 ? this.combinedPawnMap
                 : this.promotionMap.getPromotionCombinedPawnMap();
         int captures = (combinedPawnMap.getPawnMap(!notWhite).maxPieces - (!notWhite ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()))
-                - combinedPawnMap.capturesTwo(!notWhite);
+                - combinedPawnMap.minimumCaptures(!notWhite);
 //        System.out.println("PTR");
 //        System.out.println(notWhite);
 //        System.out.println(combinedPawnMap.getPawnMap(notWhite).maxPieces);
 //        System.out.println(combinedPawnMap.getPawnMap(!notWhite).maxPieces);
 
         int enemyCaptures = (combinedPawnMap.getPawnMap(notWhite).maxPieces - (notWhite ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()))
-                - combinedPawnMap.capturesTwo(notWhite);
+                - combinedPawnMap.minimumCaptures(notWhite);
         List<Path> paths = new LinkedList<>();
 
         List<Map.Entry<Coordinate, List<Path>>> forbidden = (notWhite ? combinedPawnMap.getWhitePaths() : combinedPawnMap.getBlackPaths()).entrySet()
