@@ -8,10 +8,7 @@ import Heuristics.Path;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
@@ -61,6 +58,7 @@ public class CaptureLocations extends AbstractDeduction {
         if (
                 whiteRemovals + blackRemovals != 0
         ) {
+//            System.out.println(whiteRemovals);
             this.pawnMapWhite.updateMaxCapturedPieces(whiteRemovals);
             this.pawnMapBlack.updateMaxCapturedPieces(blackRemovals);
             this.pawnMapWhite.deduce(board);
@@ -165,13 +163,14 @@ public class CaptureLocations extends AbstractDeduction {
                         .filter(entry -> entry.getValue().isEmpty()) //Is missing
                         .map(entry -> ((!Coordinates.light(entry.getKey())  ? DARK_TEST : LIGHT_TEST)))
                         .toList());
-
         if (!predicates.isEmpty()) {
-
+//            System.out.println(white);
+//            System.out.println(predicates.size());
             Map<Coordinate, List<Path>> paths = everySingularPawnPath(white);//Every path that's a single path;
 
             if (pawnCaptures(paths, white)) {
                 if (!predicates.isEmpty()) {
+//                    System.out.println("What");
                     capturesToRemove += predicateIterate(white, predicates).size();
                 }
             }
@@ -198,6 +197,10 @@ public class CaptureLocations extends AbstractDeduction {
                         .reduce((i, j) -> i < j ? i : j)
                         .orElse(0))
                 .reduce(0, Integer::sum);
+//        System.out.println("p");
+//        System.out.println(otherValue);
+//
+//        System.out.println(this.combinedPawnMap.minimumCaptures(white));
         return otherValue == this.combinedPawnMap.minimumCaptures(white) && otherValue != 0;
     }
 
@@ -255,11 +258,21 @@ public class CaptureLocations extends AbstractDeduction {
     }
 
     private Map<Coordinate, List<Path>> everySingularPawnPath(boolean white) {
-        return (white ? this.combinedPawnMap.getWhitePaths() : this.combinedPawnMap.getBlackPaths())
+        Map<Coordinate, List<Path>> pathsInUse = (white ? this.combinedPawnMap.getWhitePaths() : this.combinedPawnMap.getBlackPaths());
+
+        HashMap<Coordinate, List<Path>> returnMap = new HashMap<Coordinate, List<Path>>(pathsInUse.entrySet().stream()
+                .filter(entry -> entry.getKey().getY() == (white ? WHITE_ESCAPE_Y : BLACK_ESCAPE_Y))
+                .filter(entry -> pathsInUse
+                        .containsKey(new Coordinate(entry.getKey().getX(), white ? WHITE_PIECE_Y + 1 : BLACK_PIECE_Y -1)))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        returnMap.putAll((white ? this.combinedPawnMap.getWhitePaths() : this.combinedPawnMap.getBlackPaths())
                 .entrySet()
                 .stream()
+                .filter(entry -> !returnMap.containsKey(entry.getKey()))
                 .filter(entry -> this.combinedPawnMap.getSinglePath(white, entry.getKey()) != null)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)); //Every path that's a single path;
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+
+        return  returnMap; //Every path that's a single path;
     }
 
     public Path getPromotedPawns(boolean white) {

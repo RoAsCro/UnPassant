@@ -464,7 +464,7 @@ public class ImpossibleStates {
     @Test
     void r() {
 
-        System.out.println(test("RbB5/npp2pp1/2B1p3/P1Kp4/kP2P3/p2p3P/P2P3P/8 b - - 0 1"));
+        System.out.println(test("8/p1p1p1p1/p1kP2p1/8/P1N1K1N1/1P1RP1PP/1Q1Pq2P/rb2n2B w - - 0 1"));
         System.out.println(this.pm.getPromotedPieceMap());
 
 

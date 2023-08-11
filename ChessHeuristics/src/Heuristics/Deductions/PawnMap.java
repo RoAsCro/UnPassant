@@ -68,7 +68,6 @@ public abstract class PawnMap extends AbstractDeduction{
 
         reduce(this.white);
 //        if (this.maxPieces - capturedPieces)
-
         return false;
     }
 
@@ -215,7 +214,6 @@ public abstract class PawnMap extends AbstractDeduction{
                 captures(this.pawnOrigins, white);
 //                long s = System.currentTimeMillis();
                 change = reduceIter(new HashSet<>(), originsTwo);
-
 
             }
         }

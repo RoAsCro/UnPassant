@@ -49,7 +49,7 @@ public class PromotedPawnSquares extends AbstractDeduction{
         }
 
         if (!emptyBlackOrigins.isEmpty()) {
-            System.out.println(emptyBlackOrigins);
+//            System.out.println(emptyBlackOrigins);
             blackPaths = pathToFinalRank(board, true, emptyBlackOrigins);
             if (blackPaths.size() < emptyBlackOrigins.size()) {
                 this.state = false;

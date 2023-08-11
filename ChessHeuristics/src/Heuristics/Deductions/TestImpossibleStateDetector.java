@@ -32,14 +32,20 @@ public class TestImpossibleStateDetector {
 
         this.pieceNumber.observe(board);
         if (board.inCheck(board.getTurn().equals("white") ? "black" : "white")) {
+//            System.out.println("Eh1");
+
             return false;
         }
         if (this.pieceNumber.getBlackPieces() > MAX_PIECES || this.pieceNumber.getWhitePieces() > MAX_PIECES) {
+//            System.out.println("Eh2");
+
             return false;
         }
 
         this.pawnNumber.observe(board);
         if (this.pawnNumber.getBlackPawns() > MAX_PAWNS || this.pawnNumber.getWhitePawns() > MAX_PAWNS) {
+//            System.out.println("Eh3");
+
             return false;
         }
 
@@ -53,7 +59,6 @@ public class TestImpossibleStateDetector {
                 return false;
             }
         }
-
 
         return true;
     }

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SolverTest {
 
@@ -835,7 +836,6 @@ public class SolverTest {
     public void ChessMysteries24() {
         // pp115
         List<String> list = List.of(
-                "K7/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
                 "1K6/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
                 "2K5/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
                 "3K4/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
@@ -867,6 +867,12 @@ public class SolverTest {
         for (String st : list) {
             count++;
 //            System.out.println(count);
+            System.out.println(st);
+            ChessBoard board = BoardBuilder.buildBoard(st);
+            board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
+            if (!StateDetectorFactory.getDetector(board).testState()) {
+                continue;
+            }
             Solver solver = new Solver(
                     s -> true
                     ,d -> {
@@ -878,12 +884,14 @@ public class SolverTest {
             );
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
-            System.out.println(st);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 3);
+            if (count != list.size()) {
+                Assertions.assertEquals(0, solutions.size());
+            } else {
+                Assertions.assertNotEquals(0, solutions.size());
+            }
         }
-        // This successfully uncovers that the only valid move while maintaining castling rights is a double pawn move
-        // The first part tests it while dissallowing the only valid move
-        // exaplanation...
+        // This correctly assesses using CaptureLocations that after a depth of two, the position becomes impossible as black's captures no longer add up
 
     }
 
