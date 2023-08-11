@@ -51,13 +51,21 @@ public class CombinedPawnMap extends AbstractDeduction {
      */
     public int minimumCaptures(boolean white) {
         Map<Coordinate, List<Path>> player = white ? this.whitePaths : this.blackPaths;
-
-        return player.values().stream().map(paths -> paths.stream().map(PATH_DEVIATION)
-                        .reduce((integer, integer2) -> integer < integer2 ? integer : integer2)
-                        .orElse(0)
-                )
-                .reduce(Integer::sum)
-                .orElse(0);
+        Path claimed = new Path();
+        int[] size = new int[]{0};
+        // With the claimed clause this will not work 100% of the time
+        player.values().stream().forEach(paths -> {
+                    size[0] = size[0] + paths.stream()
+                            .filter(p -> !claimed.contains(p.getFirst()))
+                            .reduce((integer, integer2) -> PATH_DEVIATION.apply(integer) < PATH_DEVIATION.apply(integer2) ? integer : integer2)
+                            .map(p -> {
+                                claimed.add(p.getFirst());
+                                return PATH_DEVIATION.apply(p);
+                            })
+                            .orElse(0);
+                }
+        );
+        return size[0];
     }
 
     /**
@@ -101,6 +109,8 @@ public class CombinedPawnMap extends AbstractDeduction {
                 || !this.white.getState() || ! this.black.getState()) {
             this.state = false;
         }
+//        System.out.println(minimumCaptures(true));
+//        System.out.println(this.whitePaths);
 
         return false;
     }
@@ -129,7 +139,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 : this.whitePaths;
 
         // Find every pawn of the opposing player with one origin and one possible path
-        List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = opposingPlayerPaths.entrySet()
+        List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = new ArrayList<>(opposingPlayerPaths.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() == 1 && !(entry.getValue().get(0).size() == 1))
                 .filter(entry -> Pathfinder.findAllPawnPaths(
@@ -139,7 +149,10 @@ public class CombinedPawnMap extends AbstractDeduction {
                                 board,
                                 p -> PATH_DEVIATION.apply(p) <= opposingPlayer.getMaxCaptures(entry.getKey()))
                         .size() == 1)
-                .toList();
+                .toList());
+        singleOriginPawns.addAll(opposingPlayerPaths.entrySet()
+                .stream().filter(entry ->entry.getValue().size() == 1 && entry.getValue().get(0).size() == 1).toList());
+//        System.out.println(singleOriginPawns);
 
         if (singleOriginPawns.isEmpty()) {
             checkedPlayer.update();

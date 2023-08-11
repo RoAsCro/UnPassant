@@ -705,7 +705,7 @@ public class SolverTest {
 
     @Test
     public void ChessMysteries20() {
-        // pp89
+        // pp103
         List<String> list = List.of(
                 "r3k3/P5P1/1P1P1P2/3PpK2/8/8/6B1/8 b q - 0 1"
         );
@@ -731,14 +731,159 @@ public class SolverTest {
                 return true;
             }
             );
-            solver.setNumberOfSolutions(100);
+            solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
 //            System.out.println(count);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
 //            Assertions.assertEquals(0, solutions.size());
 //            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
         }
-        // This is again a question of timing
+        // This successfully uncovers that the only valid move while maintaining castling rights is a double pawn move
+
+    }
+
+    @Test
+    public void ChessMysteries21() {
+        // pp105
+        List<String> list = List.of(
+                "r2qk2r/p1pp1pp1/1pn3n1/2b1p3/2B1P1P1/N1P3N1/P1PP1P1P/R2QK2R w KQkq - 0 1"
+        );
+        SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(list.get(0));
+
+        System.out.println(detector.testState());
+        //TODO
+        // Once the detector is made its own object
+        // Consider - if a bishop exists and the noly pawn capture was a bishop of the same colour...
+        Assertions.assertFalse(detector.getPromotions().values().stream().flatMap(s -> s.stream()).toList().isEmpty());
+
+        // This successfully uncovers that the only valid move while maintaining castling rights is a double pawn move
+
+    }
+
+    @Test
+    public void ChessMysteries22() {
+        // pp105
+        List<String> list = List.of(
+                "r2qk2r/ppp2p2/2np1np1/2b1p1B1/N5B1/P1P2NP1/P2PPP2/R4RK1 w - - 0 1"
+        );
+        SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(list.get(0));
+        detector.testState();
+        System.out.println(detector.getPromotions());
+        //TODO
+        // Once the detector is made its own object
+        // Consider - if a bishop exists and the noly pawn capture was a bishop of the same colour...
+        Assertions.assertFalse(detector.getPromotions().values().stream().flatMap(s -> s.stream()).toList().isEmpty());
+
+        // This successfully uncovers that the only valid move while maintaining castling rights is a double pawn move
+
+    }
+
+    @Test
+    public void ChessMysteries23() {
+        // pp113
+        List<String> list = List.of(
+                "RbB5/n1p2pp1/2B1p3/PpKp4/kP2P3/p2p3P/P2P3P/8 b - - 0 1"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+            Solver solver = new Solver(
+                    s -> {
+                        String move = s.split(":")[1];
+//                System.out.println(s);
+                        if (s.split(":")[2].equals("0")) {
+//                            System.out.println(move);
+                            return !(move.charAt(0) == 'P' && move.endsWith("b5"))
+                                    ;
+                        }
+                        return true ;
+                    }
+                    ,d -> {
+//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
+////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
+//                }
+                return true;
+            }
+            );
+            solver.setNumberOfSolutions(5);
+            solver.setAdditionalDepth(1);
+//            System.out.println(count);
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 4);
+            Assertions.assertEquals(0, solutions.size());
+
+            solver = new Solver(
+                    s -> true
+                    ,d ->  true);
+            solver.setNumberOfSolutions(5);
+            solver.setAdditionalDepth(1);
+//            System.out.println(count);
+            solutions = solver.solve(BoardBuilder.buildBoard(st), 4);
+            Assertions.assertNotEquals(0, solutions.size());
+
+//            Assertions.assertEquals(0, solutions.size());
+//            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
+        }
+        // This successfully uncovers that the only valid move while maintaining castling rights is a double pawn move
+        // The first part tests it while dissallowing the only valid move
+        // exaplanation...
+
+    }
+
+    @Test
+    public void ChessMysteries24() {
+        // pp115
+        List<String> list = List.of(
+                "K7/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "1K6/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "2K5/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "3K4/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "4K3/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "5K2/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "6K1/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "7K/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1pKp1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1pK/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kPK1p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP1Kp1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2pK/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2p1/K7/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2p1/4K3/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2p1/5K2/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2p1/6K1/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2p1/7K/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2p1/8/PKN3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2p1/8/P1NK2N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2p1/8/P1N1K1N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2p1/8/P1N2KN1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2p1/8/P1N3NK/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2p1/8/P1N3N1/KP1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2p1/8/P1N3N1/1PKbP1PP/1Q1Pq2P/r3n2B w - - 0 1",
+                "8/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n1KB w - - 0 1"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+            Solver solver = new Solver(
+                    s -> true
+                    ,d -> {
+//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
+////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
+//                }
+                return true;
+            }
+            );
+            solver.setNumberOfSolutions(1);
+            solver.setAdditionalDepth(1);
+            System.out.println(st);
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 3);
+        }
+        // This successfully uncovers that the only valid move while maintaining castling rights is a double pawn move
+        // The first part tests it while dissallowing the only valid move
+        // exaplanation...
 
     }
 
@@ -828,6 +973,8 @@ public class SolverTest {
         Assertions.assertTrue(solver.solve(BoardBuilder.buildBoard("2kr4/8/2K5/8/8/8/7P/8 b - - 0 1"), 1)
                 .stream().anyMatch(s -> s.contains("r3k3/8/2K5/8/8/8/7P/8 w")));
     }
+
+
 
 
 //    @Test

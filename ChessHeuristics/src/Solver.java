@@ -5,7 +5,7 @@ import StandardChess.*;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class Solver {
+public class Solver implements Runnable {
 
     Predicate<String> fenPredicate = p -> true;
     private Predicate<SolverImpossibleStateDetector> detectorPredicate = d -> true;
@@ -15,6 +15,8 @@ public class Solver {
     private int additionalDepth = 2;
     private int maxDepth;
     private int numberOfSolutions = 100;
+
+//    private LinkedList<String> finalStates = new LinkedList<>();
 
     private final static List<String> PIECES = List.of("", "p", "r", "b", "n", "q");
 
@@ -39,13 +41,18 @@ public class Solver {
             this.legalFirstAlwaysTrue = true;
         }
         this.originalBoard = board.getReader().toFEN();
-        List<String> solutions = iterate(this.originalBoard, depth, false);
+        List<String> solutions = null;
+        try {
+            solutions = iterate(this.originalBoard, depth, false);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         System.out.println(solutions);
         return solutions;
 
     }
 
-    private List<String> iterate(String startingFen, int depth, boolean any) {
+    private List<String> iterate(String startingFen, int depth, boolean any) throws InterruptedException {
 //        Map<String, CombinedPawnMap>
 
 
@@ -56,11 +63,11 @@ public class Solver {
         int currentDepth = 0;
 //        LinkedList<List<Coordinate>> statePieces
         startingFen = startingFen + "::";
-//        if (any) {
-//            startingFen = startingFen + this.maxDepth;
-//        } else {
-//            startingFen = startingFen + "0";
-//        }
+        if (any) {
+            startingFen = startingFen + this.maxDepth;
+        } else {
+            startingFen = startingFen + "0";
+        }
         states.add(startingFen);
 
         while (!states.isEmpty()) {
@@ -87,43 +94,51 @@ public class Solver {
                 List<SolverRunner> runnerPool = new LinkedList<>();
                 for (Coordinate piece : pieces) {
                     if (!currentBoard.getEnPassant().equals(Coordinates.NULL_COORDINATE)) {
-                        if (!piece.equals(currentBoard.getEnPassant())){
+                        if (!piece.equals(currentBoard.getEnPassant())) {
                             continue;
                         }
                     }
 //                    if (currentState.equals("k1K5/3pQ3/8/2B1P3/3P4/7P/8/7B w - -")) {
 //                    }
 //                    for (int i = 0 ; i < 10 ; i++) {
-//                    SolverRunner runner = new SolverRunner(this, currentBoard, piece, state, any && currentDepth == depth - 1);
-//                    runnerPool.add(runner);
-//                    Thread thread = new Thread(runner);
-//                    thread.start();
+//                    System.out.println("launchingThread");
+                    SolverRunner runner = new SolverRunner(this, currentBoard, piece, state, any && currentDepth == depth - 1);
+                    runnerPool.add(runner);
+                    Thread thread = new Thread(runner);
+                    thread.start();
 //                    }
+                }
+                int sleepCount = 0;
+                while (!runnerPool.stream().allMatch(SolverRunner::isFinished)) {
+                    sleepCount++;
+//                    System.out.println("sleeping");
 
-                    List<String> newStates = iterateThroughMoves(currentBoard,
-                            piece, state,
-                            any && currentDepth == depth - 1);
+                    Thread.sleep(100L * sleepCount);
+                }
+//                System.out.println("threads done");
+
+                List<String> newStates = runnerPool.stream().flatMap(r -> r.getStates().stream()).toList();
 //                    System.out.println(currentDepth);
 //                    System.out.println(depth);
-                    toAdd = 0;
-                    if (stateSizes.size() >= currentDepth + 2) {
-                        toAdd = stateSizes.get(currentDepth + 1);
-                        stateSizes.remove(currentDepth + 1);
-                    }
-                    stateSizes.add(currentDepth + 1, toAdd + newStates.size());
+                toAdd = 0;
+                if (stateSizes.size() >= currentDepth + 2) {
+                    toAdd = stateSizes.get(currentDepth + 1);
+                    stateSizes.remove(currentDepth + 1);
+                }
+                stateSizes.add(currentDepth + 1, toAdd + newStates.size());
 //                    System.out.println("----");
 //                    System.out.println(currentDepth);
 //                    System.out.println(stateSizes.size());
-                    int finalCurrentDepth = currentDepth;
-                    newStates.forEach(s ->
-                            states.push(s.split(":")[0]
-                                    + ":"
-                                    + s.split(":")[1]
-                                    + (stateDescription.length > 1 ? (", "
-                                    + stateDescription[1]) : "")
-                            + ":" + (finalCurrentDepth + 1)));
+                int finalCurrentDepth = currentDepth;
+                newStates.forEach(s ->
+                        states.push(s.split(":")[0]
+                                + ":"
+                                + s.split(":")[1]
+                                + (stateDescription.length > 1 ? (", "
+                                + stateDescription[1]) : "")
+                        + ":" + (finalCurrentDepth + 1)));
 
-                }
+
                 if (stateSizes.get(currentDepth + 1) > 0) {
 //                    System.out.println(stateSizes.get(currentDepth + 1));
                     currentDepth++;
@@ -362,7 +377,7 @@ public class Solver {
         return justMove && testState(board);
     }
 
-    private boolean testState(ChessBoard board) {
+    public boolean testState(ChessBoard board) {
 //        System.out.println(board.getReader().toFEN());
         SolverImpossibleStateDetector detector;
         detector = StateDetectorFactory.getDetector(board);
@@ -436,5 +451,64 @@ public class Solver {
 
     public void setNumberOfSolutions(int numberOfSolutions) {
         this.numberOfSolutions = numberOfSolutions;
+    }
+
+    @Override
+    public void run() {
+
+    }
+    public void statest(int currentDepth) {
+
+    }
+
+    public List<String> iterateTwo(String startingFen, int depth, boolean any) throws InterruptedException {
+//        Map<String, CombinedPawnMap>
+
+        Map<Integer, LinkedList<String>> depthFen = new HashMap<>();
+        LinkedList<String> finalStates = new LinkedList<String>();
+        LinkedList<String> stateOne = new LinkedList<>();
+        startingFen = startingFen + "::";
+        stateOne.add(startingFen);
+        depthFen.put(0, stateOne);
+        List<SovlverRunnerTwo> runnerPool = new LinkedList<>();
+        while ((any && !finalStates.isEmpty()) || finalStates.size() < this.numberOfSolutions ) {
+//            System.out.println(any);
+            runnerPool.stream().filter(SovlverRunnerTwo::isFinished).toList().forEach(s -> {
+                finalStates.addAll(s.getFinalStates());
+                if (!depthFen.containsKey(s.currentDepth + 1)) {
+                    depthFen.put(s.currentDepth + 1, new LinkedList<>());
+                }
+                depthFen.get(s.currentDepth + 1).addAll(s.getNewStates());
+                runnerPool.remove(s);
+            });
+            if (depthFen.values().stream().flatMap(LinkedList::stream).toList().isEmpty() && runnerPool.isEmpty()) {
+                break;
+            }
+            if (any && !finalStates.isEmpty()) {
+                break;
+            }
+            depthFen.keySet().stream().filter(i -> i > depth).toList().stream().forEach(depthFen::remove);
+//                break;
+
+            // Get a state of the highest possible value
+            Map.Entry<Integer, LinkedList<String>> entry = depthFen.entrySet().stream()
+                    .filter(e -> !(e.getKey() > depth))
+                    .filter(e -> !e.getValue().isEmpty())
+                    .reduce((e, f) -> e.getKey() > f.getKey() ? e : f)
+                    .orElse(null);
+            if (entry == null) {
+//                System.out.println(depthFen);
+                continue;
+            }
+            int currentDepth = entry.getKey();
+            String fen = entry.getValue().pop();
+            SovlverRunnerTwo sovlverRunnerTwo = new SovlverRunnerTwo(this,
+                    this.legalFirst, this.additionalDepth, any, currentDepth, fen, depth, numberOfSolutions);
+            runnerPool.add(sovlverRunnerTwo);
+//            System.out.println("launching");
+            new Thread(sovlverRunnerTwo).start();
+//        System.out.println(currentDepth);
+        }
+        return finalStates;
     }
 }

@@ -47,12 +47,15 @@ public class PromotedPawnSquares extends AbstractDeduction{
                 return false;
             }
         }
+
         if (!emptyBlackOrigins.isEmpty()) {
+            System.out.println(emptyBlackOrigins);
             blackPaths = pathToFinalRank(board, true, emptyBlackOrigins);
             if (blackPaths.size() < emptyBlackOrigins.size()) {
                 this.state = false;
                 return false;
             }
+            // TODO put into promotions
         }
         return false;
     }

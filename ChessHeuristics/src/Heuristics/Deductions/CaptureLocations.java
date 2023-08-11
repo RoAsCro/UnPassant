@@ -218,7 +218,7 @@ public class CaptureLocations extends AbstractDeduction {
             // Might always be true
             if (pawnCaptures(otherPlayerPaths, !white)) {
                 int y = white ? WHITE_PIECE_Y : BLACK_PIECE_Y;
-                for (int x = 0 ; x < K_ROOK_X ; x++) {
+                for (int x = 0 ; x <= K_ROOK_X ; x++) {
                     Coordinate c = new Coordinate(x, y);
                     // If that origin has no pawn - should only be possible if there is a pawn missing
                     if ((white ? this.pawnMapWhite : this.pawnMapBlack).getPawnOrigins().values()

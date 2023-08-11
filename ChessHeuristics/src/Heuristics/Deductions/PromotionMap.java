@@ -309,7 +309,7 @@ public class PromotionMap extends AbstractDeduction {
             this.combinedPawnMap.deduce(board);
             this.state = this.promotionPawnMapWhite.getState() && this.promotionPawnMapBlack.state && this.combinedPawnMap.getState();
         }
-
+//        System.out.println(this.combinedPawnMap.getWhitePaths());
         return false;
     }
 
