@@ -13,6 +13,7 @@ public class Solver {
     private boolean legalFirstAlwaysTrue = false;
     private boolean legalFirst = false;
     private int additionalDepth = 2;
+    private int maxDepth;
     private int numberOfSolutions = 100;
 
     private final static List<String> PIECES = List.of("", "p", "r", "b", "n", "q");
@@ -33,6 +34,7 @@ public class Solver {
     }
 
     public List<String> solve(ChessBoard board, int depth) {
+        this.maxDepth = depth;
         if (this.legalFirst) {
             this.legalFirstAlwaysTrue = true;
         }
@@ -53,7 +55,14 @@ public class Solver {
         stateSizes.add(1);
         int currentDepth = 0;
 //        LinkedList<List<Coordinate>> statePieces
-        states.add(startingFen + ":");
+        startingFen = startingFen + "::";
+        if (any) {
+            startingFen = startingFen + this.maxDepth;
+        } else {
+            startingFen = startingFen + "0";
+        }
+        states.add(startingFen);
+
         while (!states.isEmpty()) {
             if (finalStates.size() >= this.numberOfSolutions) {
                 break;
@@ -100,6 +109,9 @@ public class Solver {
 //                    System.out.println(currentDepth);
 //                    System.out.println(stateSizes.size());
                     int finalCurrentDepth = currentDepth;
+                    if (any) {
+                        System.out.println(finalCurrentDepth + 1 + (any ? this.maxDepth : 0));
+                    }
                     newStates.forEach(s ->
                             states.push(s.split(":")[0]
                                     + ":"
@@ -190,7 +202,7 @@ public class Solver {
                 .values().stream().flatMap(Path::stream).toList();
     }
 
-    private List<String> iterateThroughMoves(ChessBoard board, Coordinate origin, String currentState, boolean any) {
+    public List<String> iterateThroughMoves(ChessBoard board, Coordinate origin, String currentState, boolean any) {
         // If piece is on final rank, allow it to be a pawn.
         List<String> states = new LinkedList<>();
 
@@ -268,6 +280,12 @@ public class Solver {
                     i = 2;
                     continueFlag = false;
                 }
+//                System.out.println("--------");
+//                System.out.println(moves.length);
+//                System.out.println(origin);
+//
+//                System.out.println(direction);
+//                System.out.println(i);
                 for (String piece : pieces) {
                     ChessBoard currentBoard = BoardBuilder.buildBoard(board);
 
@@ -282,6 +300,7 @@ public class Solver {
                             piece,
                             promotion,
                             enPassant)){
+//                        System.out.println("pass");
 //                        if (previousEnPassant) {
 //                            System.out.println("justMove");
 //                        }
@@ -314,12 +333,15 @@ public class Solver {
                         }
 //                        }
                     } else {
+//                        System.out.println("Fail");
                         // May break from creating a pawn
-                        if (!piece.equals("pawn")) {
+                        if (piece.equals("")) {
                             continueFlag = false;
                         }
                     }
                 }
+//                System.out.println(continueFlag);
+
                 if (!continueFlag) {
                     break;
                 }

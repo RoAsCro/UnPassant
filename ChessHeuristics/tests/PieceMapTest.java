@@ -96,7 +96,7 @@ public class PieceMapTest {
 
     @Test
     void testBishopAtNotStartLocation() {
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/2B5/8/2PPP3/PP2BPPP/RN1QK1NR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/2B5/8/2PPP3/PP2BPPP/RN1QK1NR w - - 0 1"));
 //        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
 //        this.pieceMap.deduce(boardInterface);
 //        Map<Coordinate, List<Path>> map = this.pieceMap.getStartLocations();
@@ -114,7 +114,7 @@ public class PieceMapTest {
 
     @Test
     void testBishopAtNotStartLocationBlack() {
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rn1qk1nr/pp2bppp/2ppp3/2B5/2b5/2PPP3/PP2BPPP/RN1QK1NR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rn1qk1nr/pp2bppp/2ppp3/2B5/2b5/2PPP3/PP2BPPP/RN1QK1NR w - - 0 1"));
 //        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
 //        this.pieceMap.deduce(boardInterface);
 //        Map<Coordinate, List<Path>> map = this.pieceMap.getStartLocations();
@@ -133,7 +133,7 @@ public class PieceMapTest {
 //
     @Test
     void testBishopNotCollidingWithPawns() {
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/pppppppp/8/2B2B2/8/P6P/P1PPPP1P/RN1QK1NR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/pppppppp/8/2B2B2/8/P6P/P1PPPP1P/RN1QK1NR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
 
         this.pawnMapWhite.deduce(boardInterface);
@@ -158,7 +158,7 @@ public class PieceMapTest {
 
     @Test
     void testBishopNotCollidingWithPawnsBlack() {
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r2qk2r/p1pppp1p/p6p/8/2b2b2/8/P1PPPP1P/R2QK1NR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r2qk2r/p1pppp1p/p6p/8/2b2b2/8/P1PPPP1P/R2QK1NR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
 
         this.pawnMapWhite.deduce(boardInterface);
@@ -183,7 +183,7 @@ public class PieceMapTest {
 //
     @Test
     void testBishopNotCollidingWithPawnsTwo() {
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r2qk2r/p1pppp1p/8/2B2B2/8/P1P2P1P/P2PP2P/RN1QK1NR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r2qk2r/p1pppp1p/8/2B2B2/8/P1P2P1P/P2PP2P/RN1QK1NR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
 
         this.pawnMapWhite.deduce(boardInterface);
@@ -632,7 +632,7 @@ public class PieceMapTest {
 
     @Test
     void testCagedRookNotPathedToByOtherRookStartTwo() {
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rBb1kbnr/p1pp1ppp/8/8/8/8/P1PPPPPP/R1BQKB1R w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rBb1kbnr/p1pp1ppp/8/8/8/8/P1PPPPPP/R1BQKB1R w - - 0 1"));
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
         test(boardInterface, start1, start2, 1, 1, true);
@@ -679,7 +679,7 @@ public class PieceMapTest {
 
     @Test
     void testBishopOpposingCageBoth() {
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rn1qkbBr/p2ppp1p/1p4p1/8/8/1P4P1/P1PPP2P/RbBQK1NR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rn1qkbBr/p2ppp1p/1p4p1/8/8/1P4P1/P1PPP2P/RbBQK1NR w - - 0 1"));
         Coordinate start1 = new Coordinate(2, 7);
         Coordinate start2 = new Coordinate(5, 0);
         test(boardInterface, start1, start2, 0, 0, true);
@@ -689,7 +689,7 @@ public class PieceMapTest {
     @Test
     void testRoyaltyOpposingCageBoth() {
         // IMPOSSIBLE BOARD STATE - may cause problems
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rn2kbQr/p2ppppp/1p6/8/8/6P1/PPPPP2P/RqB1K1NR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rn2kbQr/p2ppppp/1p6/8/8/6P1/PPPPP2P/RqB1K1NR w - - 0 1"));
         Coordinate start1 = new Coordinate(3, 7);
         Coordinate start2 = new Coordinate(3, 0);
         test(boardInterface, start1, start2, 0, 0, true);
@@ -699,7 +699,7 @@ public class PieceMapTest {
     @Test
     void testPromotionMapRook() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/p1pppppp/8/1p6/5R1P/8/1PPPPPP1/RNBQKBNR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/p1pppppp/8/1p6/5R1P/8/1PPPPPP1/RNBQKBNR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);
@@ -729,7 +729,7 @@ public class PieceMapTest {
     @Test
     void testPromotionMapRookTwo() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnb1k3/1ppp4/4pppp/p7/5R2/8/PPPPPPP1/RNBQKBNR w KQq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnb1k3/1ppp4/4pppp/p7/5R2/8/PPPPPPP1/RNBQKBNR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);
@@ -756,7 +756,7 @@ public class PieceMapTest {
     @Test
     void testPromotionMapRookThree() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb2/pppppppR/7p/8/8/7P/PPPPPP2/RNBQKBNR w KQq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb2/pppppppR/7p/8/8/7P/PPPPPP2/RNBQKBNR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);
@@ -783,7 +783,7 @@ public class PieceMapTest {
     @Test
     void testPromotionMapRookFour() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/pp2pppp/1p6/3p1R2/8/8/PP1PPPPP/R1BQKB1R w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/pp2pppp/1p6/3p1R2/8/8/PP1PPPPP/R1BQKB1R w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);
@@ -810,7 +810,7 @@ public class PieceMapTest {
     @Test
     void testPromotionMapRookFive() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/pRpppppp/1p6/2R5/8/8/PP1PPPPP/R1BQKB1R w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/pRpppppp/1p6/2R5/8/8/PP1PPPPP/R1BQKB1R w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);
@@ -837,7 +837,7 @@ public class PieceMapTest {
     @Test
     void testPromotionMapBishop() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/p1pppppp/1p6/6B1/3B4/3P4/PP2PPPP/RN1QKBNR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/p1pppppp/1p6/6B1/3B4/3P4/PP2PPPP/RN1QKBNR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);
@@ -865,7 +865,7 @@ public class PieceMapTest {
     @Test
     void testPromotionMapBishopTwo() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r3k2r/2p2ppp/p2pp3/1p4B1/3B2B1/4PB2/5PPP/RN1QK1NR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r3k2r/2p2ppp/p2pp3/1p4B1/3B2B1/4PB2/5PPP/RN1QK1NR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);
@@ -893,7 +893,7 @@ public class PieceMapTest {
     @Test
     void testPromotionMapBishopThree() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkb1r/ppppppp1/6p1/8/4B3/4P3/PPPP1PP1/R1BQKBNR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkb1r/ppppppp1/6p1/8/4B3/4P3/PPPP1PP1/R1BQKBNR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);
@@ -921,7 +921,7 @@ public class PieceMapTest {
     @Test
     void testPromotionMapBishopFour() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1b1kbnr/pp1ppppp/1p6/8/5B2/8/PP1PPPPP/R1BQKB1R w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1b1kbnr/pp1ppppp/1p6/8/5B2/8/PP1PPPPP/R1BQKB1R w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);
@@ -954,7 +954,7 @@ public class PieceMapTest {
     @Test
     void testPromotionMapBishopFive() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rBb1kbnr/p1pp1ppp/8/8/8/8/P1PPPPPP/R1BQKB1R w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rBb1kbnr/p1pp1ppp/8/8/8/8/P1PPPPPP/R1BQKB1R w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);
@@ -994,7 +994,7 @@ public class PieceMapTest {
     @Test
     void testPromotionMapKnight() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbn1/ppppppp1/4r3/3N2p1/4N3/6P1/PPPPPP2/R1BQK1NR w KQq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbn1/ppppppp1/4r3/3N2p1/4N3/6P1/PPPPPP2/R1BQK1NR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);
@@ -1087,7 +1087,7 @@ public class PieceMapTest {
     @Test
     void testPromotionMapRookTrapped() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbnr/1ppppppp/1p6/8/8/8/4PPPP/RNBQKBRR w KQk - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbnr/1ppppppp/1p6/8/8/8/4PPPP/RNBQKBRR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);
@@ -1118,7 +1118,7 @@ public class PieceMapTest {
     @Test
     void testPromotionMapRookNotTrapped() {
 
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbnr/1ppppppp/1p6/8/8/8/5PPP/RNBQKBRR w KQk - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbnr/1ppppppp/1p6/8/8/8/5PPP/RNBQKBRR w - - 0 1"));
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
         this.pawnMapBlack.deduce(boardInterface);

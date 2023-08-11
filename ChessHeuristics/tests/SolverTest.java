@@ -553,24 +553,6 @@ public class SolverTest {
     public void ChessMysteries17() {
         // pp89
         List<String> list = List.of(
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR w - - 0 1",
                 "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
                 "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
                 "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
@@ -581,24 +563,6 @@ public class SolverTest {
                 "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
                 "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
                 "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1"
-//                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1"
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
-//                "r1b1k2r/pppp1ppp/P1n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1"
         );
 
         int count = 0;
@@ -626,6 +590,152 @@ public class SolverTest {
             solver.setAdditionalDepth(1);
 //            System.out.println(count);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), count);
+//            Assertions.assertEquals(0, solutions.size());
+//            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
+        }
+        // Theoretically, this can be solved by the algorithm
+        // However, there is one solution out of thousands and it cannot be found in a timely manner
+
+    }
+
+    @Test
+    public void ChessMysteries18() {
+        // pp93
+        List<String> list = List.of(
+                "3qk2r/pP1pbp1p/1pp2np1/2nBpb2/8/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p1Ppbp1p/1pp2np1/2nBpb2/8/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbpPp/1pp2np1/2nBpb2/8/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/Ppp2np1/2nBpb2/8/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1ppP1np1/2nBpb2/8/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp1Pnp1/2nBpb2/8/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2npP/2nBpb2/8/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/P1nBpb2/8/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/1PnBpb2/8/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpbP1/8/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb1P/8/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/P7/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/1P6/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/2P5/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/4P3/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/5P2/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/6P1/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/7P/NP2PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/8/NPP1PN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/8/NP1PPN1P/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/8/NP2PNPP/P2P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/8/NP2PN1P/PP1P1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/8/NP2PN1P/P1PP1P1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/8/NP2PN1P/P2PPP1P/R2QK3 b Qk - 0 1",
+                "3qk2r/p2pbp1p/1pp2np1/2nBpb2/8/NP2PN1P/P2P1PPP/R2QK3 b Qk - 0 1"
+
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+            System.out.println(st);
+//            Solver solver = new Solver(
+////                    s -> {
+////                String move = s.split(":")[1];
+////                if (move.contains("x") && !(s.split(":")[2].equals("0") || s.split(" ")[1].contains("b"))) {
+////                    return false;
+////                }
+////                if (move.charAt(1) == 'R' || move.charAt(1) == 'K') {
+////                    return false;
+////                }
+////                return move.charAt(4) != 'R' && !(s.split(" ")[1].contains("b") && move.charAt(0) == 'N') ;
+////            }
+////                    ,d -> {
+//////                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
+////////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
+//////                }
+////                return d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty();
+////            }
+//            );
+//            solver.setNumberOfSolutions(1);
+//            solver.setAdditionalDepth(1);
+//            System.out.println(count);
+            System.out.println(StateDetectorFactory.getDetector(st).testState());
+//            Assertions.assertEquals(0, solutions.size());
+//            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
+        }
+        // Not a question of last n moves, however it is capable of eleminating most of the possibilities,
+        // But then it becomes a question of timing
+
+    }
+
+    @Test
+    public void ChessMysteries19() {
+        // pp89
+        List<String> list = List.of(
+                "r2qk2r/p1p2ppp/1pn2n2/1Nb1p1B1/5P2/2P1P2N/PPPQ2PP/2KR3R w - - "
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+            Solver solver = new Solver(
+                    s -> {
+                String move = s.split(":")[1];
+//                System.out.println(s.split(":")[2]);
+                if (s.split(":")[2].equals("0")) {
+                    System.out.println(s);
+                    return (move.charAt(0) == 'P' && move.endsWith("f4"));
+                }
+                return true ;
+            }
+                    ,d -> {
+//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
+////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
+//                }
+                return true;
+            }
+            );
+            solver.setNumberOfSolutions(100);
+            solver.setAdditionalDepth(1);
+//            System.out.println(count);
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 1);
+//            Assertions.assertEquals(0, solutions.size());
+//            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
+        }
+        // Theoretically, this can be solved by the algorithm
+        // However, there is one solution out of thousands and it cannot be found in a timely manner
+
+    }
+
+    @Test
+    public void ChessMysteries() {
+        // pp89
+        List<String> list = List.of(
+                "rnbqkbnr/pppppppp/8/8/7P/8/8/7K w kq - 0 1"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+            Solver solver = new Solver(
+                    s -> {
+                        String move = s.split(":")[1];
+//                System.out.println(s.split(":")[2]);
+                        if (s.split(":")[2].equals("0")) {
+//                            System.out.println(s);
+                            return !(move.charAt(0) == 'K');
+                        }
+                        return true ;
+                    }
+                    ,d -> {
+//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
+////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
+//                }
+                return true;
+            }
+            );
+            solver.setNumberOfSolutions(100);
+            solver.setAdditionalDepth(0);
+//            System.out.println(count);
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 1);
 //            Assertions.assertEquals(0, solutions.size());
 //            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
         }

@@ -70,4 +70,12 @@ public class BoardInterface {
         return this.board.getReader().inCheck(player.equals("white") ? this.whiteKing : this.blackKing);
     }
 
+    public boolean canKingMove(boolean white) {
+        return canMove(white, true) || canMove(white, false);
+    }
+
+    public boolean canMove(boolean white, boolean queenSide) {
+        return this.board.canCastle(queenSide ? "queen" : "king", white ? "white" : "black");
+    }
+
 }

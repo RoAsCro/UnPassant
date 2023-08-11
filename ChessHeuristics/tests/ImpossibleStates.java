@@ -45,43 +45,43 @@ public class ImpossibleStates {
 
     @Test
     void defaultBoard() {
-        Assertions.assertTrue(test("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertTrue(test("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"));
 
     }
 
     @Test
     void tooManyPawns() {
-        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/8/6P1/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/8/6P1/PPPPPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void tooManyPawnsFewerPieces() {
-        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/6P1/8/7P/PPPPPP1P/RNBQKB2 w Qkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/6P1/8/7P/PPPPPP1P/RNBQKB2 w - - 0 1"));
     }
 
     @Test
     void tooManyPawnsBlack() {
-        Assertions.assertFalse(test("rnbqkb1r/pppppppp/6p1/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkb1r/pppppppp/6p1/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void tooManyPieces() {
-        Assertions.assertFalse(test("rnbqk3/ppppp3/8/6N1/6N1/7N/PPPPPP2/RNBQKBNR w KQq - 0 1"));
+        Assertions.assertFalse(test("rnbqk3/ppppp3/8/6N1/6N1/7N/PPPPPP2/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void tooManyPiecesBlack() {
-        Assertions.assertFalse(test("rnbqkbnr/p2ppppp/8/2nn4/1n6/8/P2PPPPP/R2QKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/p2ppppp/8/2nn4/1n6/8/P2PPPPP/R2QKBNR w - - 0 1"));
     }
 
     @Test
     void impossiblePawnPosition() {
-        Assertions.assertFalse(test("r1bqkb2/ppppppp1/8/8/8/7P/PPPP1PPP/RNBQKBNR w KQq - 0 1"));
+        Assertions.assertFalse(test("r1bqkb2/ppppppp1/8/8/8/7P/PPPP1PPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void possiblePawnPosition() {
-        Assertions.assertTrue(test("r1bqkb2/ppppppp1/8/8/8/5P2/PPPP1PPP/RNBQKBNR w KQq - 0 1"));
+        Assertions.assertTrue(test("r1bqkb2/ppppppp1/8/8/8/5P2/PPPP1PPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
@@ -101,27 +101,27 @@ public class ImpossibleStates {
 
     @Test
     void impossiblePawnPositionCaptures() {
-        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/8/P7/P1PPPPPP/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/8/P7/P1PPPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void impossiblePawnPositionCapturesTwo() {
-        Assertions.assertFalse(test("r1bqkb1r/pppppppp/8/2P5/2P5/3P4/PP2P1PP/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("r1bqkb1r/pppppppp/8/2P5/2P5/3P4/PP2P1PP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void impossibleMap() {
-        Assertions.assertFalse(test("rnbqkbnr/1ppppppp/8/P7/p7/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/1ppppppp/8/P7/p7/8/1PPPPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void impossibleMapTwo() {
-        Assertions.assertFalse(test("rnbqkbnr/2pppppp/8/P7/p7/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/2pppppp/8/P7/p7/8/1PPPPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void possibleMap() {
-        Assertions.assertTrue(test("r1bqkb1r/1ppppppp/8/P7/p7/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertTrue(test("r1bqkb1r/1ppppppp/8/P7/p7/8/1PPPPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
@@ -136,12 +136,12 @@ public class ImpossibleStates {
 
     @Test
     void impossibleMapFour() {
-        Assertions.assertFalse(test("4k2r/2Pppp1p/1p1p2p1/p7/8/1P6/PP1PPPP1/RNBQKB1R w KQk - 0 1"));
+        Assertions.assertFalse(test("4k2r/2Pppp1p/1p1p2p1/p7/8/1P6/PP1PPPP1/RNBQKB1R w - - 0 1"));
     }
 
     @Test
     void impossibleMapFive() {
-        Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/8/3P4/3p4/8/PPP1PP1P/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/8/3P4/3p4/8/PPP1PP1P/RNBQKBNR w - - 0 1"));
     }
 
 //    @Test
@@ -151,17 +151,17 @@ public class ImpossibleStates {
 
     @Test
     void impossibleMapSeven() {
-        Assertions.assertFalse(test("rnbqkbnr/2p1pppp/P3p3/p7/8/8/1PPPPPPP/RNBQKB1R w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/2p1pppp/P3p3/p7/8/8/1PPPPPPP/RNBQKB1R w - - 0 1"));
     }
 
     @Test
     void possibleMapThree() {
-        Assertions.assertTrue(test("rnbqkbnr/2p1pppp/4p3/p7/8/8/PPPPPPPP/RNBQKB1R w KQkq - 0 1"));
+        Assertions.assertTrue(test("rnbqkbnr/2p1pppp/4p3/p7/8/8/PPPPPPPP/RNBQKB1R w - - 0 1"));
     }
 
     @Test
     void possibleMapFour() {
-        Assertions.assertTrue(test("rnbqkbnr/2p1pppp/P3p3/p7/8/8/1PPPPPPP/R1BQKB1R w KQkq - 0 1"));
+        Assertions.assertTrue(test("rnbqkbnr/2p1pppp/P3p3/p7/8/8/1PPPPPPP/R1BQKB1R w - - 0 1"));
     }
 
     @Test
@@ -171,17 +171,17 @@ public class ImpossibleStates {
 
     @Test
     void impossiblePieceMapBishop() {
-        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/2B5/8/2P1P3/PP1PBPPP/RN1QK1NR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/2B5/8/2P1P3/PP1PBPPP/RN1QK1NR w - - 0 1"));
     }
 
     @Test
     void impossiblePieceMapBishopTwo() {
-        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/5B2/8/8/PPPPPPPP/RNBQK1NR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/5B2/8/8/PPPPPPPP/RNBQK1NR w - - 0 1"));
     }
 
     @Test
     void impossiblePieceMapBishopThree() {
-        Assertions.assertFalse(test("rn1qk1nr/1p1pp1p1/2p2b1p/2b5/p4p2/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rn1qk1nr/1p1pp1p1/2p2b1p/2b5/p4p2/8/PPPPPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
@@ -211,17 +211,17 @@ public class ImpossibleStates {
 
     @Test
     void promotionOne() {
-        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/3P4/2P2PB1/PP2P1P1/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/3P4/2P2PB1/PP2P1P1/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void promotionTwo() {
-        Assertions.assertFalse(test("r1bqkb2/ppppppp1/7p/8/4R3/8/1PPPPP1P/RNBQKBNR w KQq - 0 1"));
+        Assertions.assertFalse(test("r1bqkb2/ppppppp1/7p/8/4R3/8/1PPPPP1P/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void promotionCaptureBishop() {
-        Assertions.assertFalse(test("rnbqk1nr/pppppppp/8/8/8/2P5/P1PPPPPP/RNBQKBNR w KQq - 0 1"));
+        Assertions.assertFalse(test("rnbqk1nr/pppppppp/8/8/8/2P5/P1PPPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
@@ -242,34 +242,34 @@ public class ImpossibleStates {
 
     @Test
     void promotionCaptureRookPossible() {
-        Assertions.assertTrue(test("2bqkbnr/pPpppppp/np6/8/8/8/PP1PPPPP/RNBQKBNR w KQk - 0 1"));
+        Assertions.assertTrue(test("2bqkbnr/pPpppppp/np6/8/8/8/PP1PPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void badColourBishop() {
-        Assertions.assertFalse(test("rn1qkbnr/p1pppppp/1p6/8/8/2P5/P1PPPPPP/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rn1qkbnr/p1pppppp/1p6/8/8/2P5/P1PPPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void badColourBishopTwo() {
-        Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/4p3/8/8/3P4/PPP1PPPP/RN1QKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/4p3/8/8/3P4/PPP1PPPP/RN1QKBNR w - - 0 1"));
     }
 
     @Test
     void badPromotion() {
-        Assertions.assertFalse(test("rnbqkbnr/p1pppppp/8/1pQ5/8/8/1PPPPPPP/RNBQKBNR w KQk - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/p1pppppp/8/1pQ5/8/8/1PPPPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void badPromotionLocation() {
-        Assertions.assertFalse(test("rnbqkbn1/ppppppp1/6p1/2PB4/P2P4/5P2/1P2P1P1/R1BQKBNR w KQq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbn1/ppppppp1/6p1/2PB4/P2P4/5P2/1P2P1P1/R1BQKBNR w - - 0 1"));
     }
 
 
 
     @Test
     void test() {
-        Assertions.assertTrue(test("rnbqkbn1/pppppp2/8/2PR4/P2P4/5PB1/1P2P3/RNBQKBNR w KQq - 0 1"));
+        Assertions.assertTrue(test("rnbqkbn1/pppppp2/8/2PR4/P2P4/5PB1/1P2P3/RNBQKBNR w - - 0 1"));
     }
 
     @Test
@@ -294,71 +294,71 @@ public class ImpossibleStates {
 
     @Test
     void test6() {
-        Assertions.assertTrue(test("rnBqkb1r/pp1ppp2/8/5B1p/8/8/PP1PPP1P/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertTrue(test("rnBqkb1r/pp1ppp2/8/5B1p/8/8/PP1PPP1P/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void test7() {
-        Assertions.assertTrue(test("3qkbnr/pp1ppppp/2p5/5P1P/3QP3/2P1Q1P1/8/RNBQKBNR w KQk - 0 1"));
+        Assertions.assertTrue(test("3qkbnr/pp1ppppp/2p5/5P1P/3QP3/2P1Q1P1/8/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void test7Simplified() {
-        Assertions.assertTrue(test("3qkbnr/p2ppppp/bpp5/8/1n1Q4/8/PPP1PPPP/RNBQKBNR w KQk - 0 1"));
+        Assertions.assertTrue(test("3qkbnr/p2ppppp/bpp5/8/1n1Q4/8/PPP1PPPP/RNBQKBNR w - - 0 1"));
     }
     @Test
     void test7SimplifiedTwo() {
-        Assertions.assertTrue(test("2bqkbnr/pp1ppppp/2p5/8/3Q4/8/PPP1PPPP/RNBQKBNR w KQk - 0 1"));
+        Assertions.assertTrue(test("2bqkbnr/pp1ppppp/2p5/8/3Q4/8/PPP1PPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void test7SimplifiedThree() {
-        Assertions.assertTrue(test("2bqkbnr/p1pppppp/1p6/8/1n1Q4/8/1PPPPPPP/RNBQKBNR w KQk - 0 1"));
+        Assertions.assertTrue(test("2bqkbnr/p1pppppp/1p6/8/1n1Q4/8/1PPPPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void multiplePSquaresOneValidOrigin() {
-        Assertions.assertFalse(test("3qkbnr/p1pppppp/p7/3Q4/3Q4/5br1/P1PPPPP1/RNBQKB1R w KQk - 0 1"));
+        Assertions.assertFalse(test("3qkbnr/p1pppppp/p7/3Q4/3Q4/5br1/P1PPPPP1/RNBQKB1R w - - 0 1"));
     }
 
     @Test
     void promotionOnSameSquare() {
-        Assertions.assertTrue(test("r1bqkbnr/p1pppppp/p7/4Q3/4Q3/8/P2PPPPP/RNBQKB1R w KQkq - 0 1"));
+        Assertions.assertTrue(test("r1bqkbnr/p1pppppp/p7/4Q3/4Q3/8/P2PPPPP/RNBQKB1R w - - 0 1"));
     }
     @Test
     void noEscapeFromPromotionSquare() {
-        Assertions.assertFalse(test("r1bqkbnr/p1pppppp/p7/4B3/8/8/P2PPPPP/RNBQKB1R w KQkq - 0 1"));
+        Assertions.assertFalse(test("r1bqkbnr/p1pppppp/p7/4B3/8/8/P2PPPPP/RNBQKB1R w - - 0 1"));
     }
 
     @Test
     void promotionSquareUnreachable() {
-        Assertions.assertFalse(test("r1bqkbnr/pp1ppppp/2p5/4B3/8/8/P1PPPPPP/RNBQKB1R w KQkq - 0 1"));
+        Assertions.assertFalse(test("r1bqkbnr/pp1ppppp/2p5/4B3/8/8/P1PPPPPP/RNBQKB1R w - - 0 1"));
     }
 
     @Test
     void singleCaptureThatMustHaveTakenPlace() {
-        Assertions.assertFalse(test("rnb1kb1r/ppp2ppp/2p5/8/6Bq/4P3/PPP1pPPP/RNBQKB1R w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnb1kb1r/ppp2ppp/2p5/8/6Bq/4P3/PPP1pPPP/RNBQKB1R w - - 0 1"));
     }
 
     @Test
     void singleCaptureThatMustHaveTakenPlaceTwo() {
-        Assertions.assertFalse(test("rnb1kb1r/ppp2ppp/P1p4P/7B/6Bq/8/1PP1pPP1/RNBQKB1R w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnb1kb1r/ppp2ppp/P1p4P/7B/6Bq/8/1PP1pPP1/RNBQKB1R w - - 0 1"));
     }
 
     @Test
     void singleCaptureThatMustHaveTakenPlaceTwoValid() {
-        Assertions.assertTrue(test("rnb1kb1r/ppp2ppp/P1p4P/7B/6Bq/8/1PP2PP1/RNBQKB1R w KQkq - 0 1"));
+        Assertions.assertTrue(test("rnb1kb1r/ppp2ppp/P1p4P/7B/6Bq/8/1PP2PP1/RNBQKB1R w - - 0 1"));
     }
 
 
     @Test
     void oneValidOrigin() {
-        Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/2p5/6Q1/6Q1/8/1PP1PPPP/RNBQKB1R w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/2p5/6Q1/6Q1/8/1PP1PPPP/RNBQKB1R w - - 0 1"));
     }
 
     @Test
     void oneValidDifferentPieces() {
-        Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/2p5/6R1/6Q1/8/1PP1PPPP/RNBQKB1R w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/2p5/6R1/6Q1/8/1PP1PPPP/RNBQKB1R w - - 0 1"));
     }
 
     @Test
@@ -388,17 +388,17 @@ public class ImpossibleStates {
 
     @Test
     void multipleValidMultiplePiecesCombinationValidTwo() {
-        Assertions.assertTrue(test("r1b1k3/2p1pp1p/1pp1pp2/3QqnQ1/2BB4/8/2P1PP1P/2BQKB2 w q - 0 1"));
+        Assertions.assertTrue(test("r1b1k3/2p1pp1p/1pp1pp2/3QqnQ1/2BB4/8/2P1PP1P/2BQKB2 w - - 0 1"));
     }
 
     @Test
     void twoValidOrigins() {
-        Assertions.assertTrue(test("rnbqkb1r/ppp1pppp/2p5/6Q1/6Q1/8/1PP2PPP/RNBQKB1R w KQkq - 0 1"));
+        Assertions.assertTrue(test("rnbqkb1r/ppp1pppp/2p5/6Q1/6Q1/8/1PP2PPP/RNBQKB1R w - - 0 1"));
     }
 
     @Test
     void impossiblePromotionNumbers() {
-        Assertions.assertFalse(test("2bqkbnr/1ppppppp/1pr5/2n5/1QQ5/8/2PPPPPP/RNBQKB1R w KQk - 0 1"));
+        Assertions.assertFalse(test("2bqkbnr/1ppppppp/1pr5/2n5/1QQ5/8/2PPPPPP/RNBQKB1R w - - 0 1"));
     }
 
     @Test
@@ -408,22 +408,22 @@ public class ImpossibleStates {
 
     @Test
     void wrongPieceTypes() {
-        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/5P2/6P1/PPPPP2P/RNBQKBBR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/5P2/6P1/PPPPP2P/RNBQKBBR w - - 0 1"));
     }
 
     @Test
     void wrongPieceTypesKnight() {
-        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNNQKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNNQKBNR w - - 0 1"));
     }
 
     @Test
     void noPathOut() {
-        Assertions.assertFalse(test("rnbqkb1r/ppppppp1/6p1/5B2/8/8/PPPPPPP1/RNBQKBNR w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkb1r/ppppppp1/6p1/5B2/8/8/PPPPPPP1/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void cagedRookCapture() {
-        Assertions.assertTrue(test("rnbqkbn1/pppppp2/6pp/8/4Q3/8/PPPPP1PP/RNBQKBNR w KQq - 0 1"));
+        Assertions.assertTrue(test("rnbqkbn1/pppppp2/6pp/8/4Q3/8/PPPPP1PP/RNBQKBNR w - - 0 1"));
     }
     @Test
     void cagedRookCaptureMirrorVertical() {
@@ -432,22 +432,22 @@ public class ImpossibleStates {
 
     @Test
     void cagedRookCaptureMirrorHorizontal() {
-        Assertions.assertTrue(test("rnbqkbnr/ppppp1pp/4q3/8/8/6PP/PPPPPP2/RNBQKBN1 w Qkq - 0 1"));
+        Assertions.assertTrue(test("rnbqkbnr/ppppp1pp/4q3/8/8/6PP/PPPPPP2/RNBQKBN1 w - - 0 1"));
     }
 
     @Test
     void badPieceNumberMissing() {
-        Assertions.assertFalse(test("rnbqkb1r/p1pppp1p/2p2p2/3Q4/3Q4/8/PP1PP1PP/R1BQKB1R w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkb1r/p1pppp1p/2p2p2/3Q4/3Q4/8/PP1PP1PP/R1BQKB1R w - - 0 1"));
     }
     @Test
     void promotionMapCombinedPawnMapWithCagedPieces() {
         // Later Checks Don't Account For Earlier Discovered Missing pawns
-        Assertions.assertFalse(test("1nbqk2r/pppppp1p/5n2/5q2/5Q2/5N2/PPPPPP1P/RNBQK2R w KQk - 0 1"));
+        Assertions.assertFalse(test("1nbqk2r/pppppp1p/5n2/5q2/5Q2/5N2/PPPPPP1P/RNBQK2R w - - 0 1"));
     }
 
     @Test
     void promotionMapCombinedPawnMapWithCagedPiecesCounterexample() {
-        Assertions.assertFalse(test("rnbqk2r/pppppp1p/5n2/5q2/5Q2/5N2/PPPPPP1P/RNBQK2R w KQkq - 0 1"));
+        Assertions.assertFalse(test("rnbqk2r/pppppp1p/5n2/5q2/5Q2/5N2/PPPPPP1P/RNBQK2R w - - 0 1"));
     }
 
     @Test
@@ -464,7 +464,7 @@ public class ImpossibleStates {
     @Test
     void r() {
 
-        System.out.println(test("r2qk1nr/pp2pppp/1pp5/5P2/8/6P1/PPPP2PP/R2QK1NR"));
+        System.out.println(test("r2qk2r/p1p2ppp/1pn2n2/1Nb1p1B1/8/2P1P2N/PPPQ1PPP/2KR3R"));
 
     }
 

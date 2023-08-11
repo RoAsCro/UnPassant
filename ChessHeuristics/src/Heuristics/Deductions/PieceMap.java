@@ -151,6 +151,7 @@ public class PieceMap extends AbstractDeduction{
         Map<String, Path> pieces = new TreeMap<>();
         Map<String, Integer> pieceNumber = new TreeMap<>();
 //        Map<String, Integer> quantities = new TreeMap<>();
+        configureCastling(board);
         for (int y  = 0 ; y < 8 ; y = y + 7) {
             for (int x = 0; x < 8; x++) {
                 Coordinate origin = new Coordinate(x, y);
@@ -319,6 +320,31 @@ public class PieceMap extends AbstractDeduction{
         }
 
         return false;
+    }
+
+    private void configureCastling(BoardInterface board) {
+//        System.out.println("tripped");
+        if (board.canKingMove(true)) {
+            this.caged.put(Coordinates.WHITE_KING, true);
+        }
+        if (board.canKingMove(false)) {
+            this.caged.put(Coordinates.BLACK_KING, true);
+        }
+        if (board.canMove(true, true)) {
+            this.caged.put(Coordinates.WHITE_QUEEN_ROOK, true);
+        }
+        if (board.canMove(true, false)) {
+            this.caged.put(Coordinates.WHITE_KING_ROOK, true);
+        }
+        if (board.canMove(false, true)) {
+            this.caged.put(Coordinates.BLACK_QUEEN_ROOK, true);
+        }
+        if (board.canMove(false, false)) {
+            this.caged.put(Coordinates.BLACK_KING_ROOK, true);
+        }
+//        System.out.println(this.caged);
+
+
     }
 
     private void kingMovementUpdate(BoardInterface board){
