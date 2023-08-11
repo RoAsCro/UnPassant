@@ -699,8 +699,46 @@ public class SolverTest {
 //            Assertions.assertEquals(0, solutions.size());
 //            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
         }
-        // Theoretically, this can be solved by the algorithm
-        // However, there is one solution out of thousands and it cannot be found in a timely manner
+        // This is again a question of timing
+
+    }
+
+    @Test
+    public void ChessMysteries20() {
+        // pp89
+        List<String> list = List.of(
+                "r3k3/P5P1/1P1P1P2/3PpK2/8/8/6B1/8 b q - 0 1"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+            Solver solver = new Solver(
+                    s -> {
+//                        String move = s.split(":")[1];
+////                System.out.println(s.split(":")[2]);
+//                        if (s.split(":")[2].equals("0")) {
+//                            System.out.println(s);
+//                            return (move.charAt(0) == 'P' && move.endsWith("f4"));
+//                        }
+                        return true ;
+                    }
+                    ,d -> {
+//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
+////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
+//                }
+                return true;
+            }
+            );
+            solver.setNumberOfSolutions(100);
+            solver.setAdditionalDepth(1);
+//            System.out.println(count);
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
+//            Assertions.assertEquals(0, solutions.size());
+//            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
+        }
+        // This is again a question of timing
 
     }
 

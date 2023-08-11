@@ -56,11 +56,11 @@ public class Solver {
         int currentDepth = 0;
 //        LinkedList<List<Coordinate>> statePieces
         startingFen = startingFen + "::";
-        if (any) {
-            startingFen = startingFen + this.maxDepth;
-        } else {
-            startingFen = startingFen + "0";
-        }
+//        if (any) {
+//            startingFen = startingFen + this.maxDepth;
+//        } else {
+//            startingFen = startingFen + "0";
+//        }
         states.add(startingFen);
 
         while (!states.isEmpty()) {
@@ -84,16 +84,22 @@ public class Solver {
 //                    System.out.println("A");
 //                }
                 List<Coordinate> pieces = allPieces(currentBoard);
+                List<SolverRunner> runnerPool = new LinkedList<>();
                 for (Coordinate piece : pieces) {
                     if (!currentBoard.getEnPassant().equals(Coordinates.NULL_COORDINATE)) {
-
                         if (!piece.equals(currentBoard.getEnPassant())){
-
                             continue;
                         }
                     }
 //                    if (currentState.equals("k1K5/3pQ3/8/2B1P3/3P4/7P/8/7B w - -")) {
 //                    }
+//                    for (int i = 0 ; i < 10 ; i++) {
+//                    SolverRunner runner = new SolverRunner(this, currentBoard, piece, state, any && currentDepth == depth - 1);
+//                    runnerPool.add(runner);
+//                    Thread thread = new Thread(runner);
+//                    thread.start();
+//                    }
+
                     List<String> newStates = iterateThroughMoves(currentBoard,
                             piece, state,
                             any && currentDepth == depth - 1);
@@ -109,9 +115,6 @@ public class Solver {
 //                    System.out.println(currentDepth);
 //                    System.out.println(stateSizes.size());
                     int finalCurrentDepth = currentDepth;
-                    if (any) {
-                        System.out.println(finalCurrentDepth + 1 + (any ? this.maxDepth : 0));
-                    }
                     newStates.forEach(s ->
                             states.push(s.split(":")[0]
                                     + ":"
@@ -249,6 +252,10 @@ public class Solver {
             Coordinate[] additionalMoves = new Coordinate[]{new Coordinate(x - 2, y), new Coordinate(x + 2, y)};
             states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, false, any, true));
 
+        } else if (type.equals("pawn")) {
+            Coordinate[] additionalMoves = new Coordinate[]{new Coordinate(x, y +  (white ? -2 : 2))};
+            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, false, any, false));
+
         }
         states.addAll(iterateThroughMovesHelper(board, moves, origin, currentState, false, false, any, false));
         return states;
@@ -335,7 +342,7 @@ public class Solver {
                     } else {
 //                        System.out.println("Fail");
                         // May break from creating a pawn
-                        if (piece.equals("")) {
+                        if (!piece.equals("pawn")) {
                             continueFlag = false;
                         }
                     }
