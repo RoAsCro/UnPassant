@@ -1,3 +1,5 @@
+package SolveAlgorithm;
+
 import Heuristics.Deduction;
 import Heuristics.Deductions.CombinedPawnMap;
 import Heuristics.Deductions.PawnMapBlack;

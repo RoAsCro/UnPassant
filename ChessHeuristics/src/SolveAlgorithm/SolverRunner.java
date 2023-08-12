@@ -1,9 +1,8 @@
-import StandardChess.BoardBuilder;
+package SolveAlgorithm;
+
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
-import StandardChess.Coordinates;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 

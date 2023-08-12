@@ -1,3 +1,6 @@
+import SolveAlgorithm.Solver;
+import SolveAlgorithm.SolverImpossibleStateDetector;
+import SolveAlgorithm.StateDetectorFactory;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
@@ -48,7 +51,7 @@ public class SolverTest {
         solver.setAdditionalDepth(2);
         solver.setNumberOfSolutions(100);
         Assertions.assertEquals(3, solver.solve(BoardBuilder.buildBoard(board2 + " w"), 1).size());
-//        new Solver().solve(BoardBuilder.buildBoard(board2 + " w"), 1);
+//        new SolveAlgorithm.Solver().solve(BoardBuilder.buildBoard(board2 + " w"), 1);
 
         // Only one scenario, after eliminating impossible board states, has valid moves
 
@@ -152,7 +155,7 @@ public class SolverTest {
 
     @Test
     public void chessMysteries5() {
-
+        // TODO fix test
         //pp 39
         List<String> list = List.of(
                 "r3k3/ppp3pp/6p1/P2Kp2P/1NB5/p5P1/PP3PP1/R7 w - - 0 1"
@@ -163,11 +166,13 @@ public class SolverTest {
                 ChessBoard b = BoardBuilder.buildBoard(s);
                 b.setTurn(b.getTurn().equals("white") ? "black" : "white");
                 // set max states to 100?
-                Solver solver = new Solver(string ->{
-                    SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(string.split(":")[0]);
-                    detector.testState();
-                    return detector.canCastle(false);
-                });
+                Solver solver = new Solver(
+//                        string ->{
+//                    SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(string.split(":")[0]);
+//                    detector.testState();
+//                    return detector.canCastle(false);
+//                }
+                );
                 solver.setNumberOfSolutions(1);
                 solver.setAdditionalDepth(2);
                 Assertions.assertEquals(0, solver.solve(b, 2).size());
@@ -223,15 +228,11 @@ public class SolverTest {
     @Test
     public void ChessMysteries6() {
         // pp45
-        Solver solver = new Solver(p -> {
-            SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(p.split(":")[0]);
-            detector.testState();
-            return detector.canCastle(false);
-        });
+        Solver solver = new Solver();
         solver.setNumberOfSolutions(1);
         solver.setNumberOfSolutions(2);
         solver.setAdditionalDepth(2);
-        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w - - 0 1"), 2).size());
+        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w k - 0 1"), 2).size());
 
         solver = new Solver(p -> {
             if (p.split(":")[1].endsWith("h8")) {
@@ -379,13 +380,7 @@ public class SolverTest {
         for (String st : list) {
             count++;
             Solver solver = new Solver( s ->{
-//                String move = s.split(":")[1];
-//                int xY = (Integer.parseInt(move.substring(move.length() - 1)) - 1) + (((int) move.charAt(move.length() - 2)) - 97);
-//                if (s.split(":")[1].contains("x") && (s.split(":")[1].charAt(4) == 'N' || s.split(":")[1].charAt(4) == 'R'  ||
-//                        (s.split(":")[1].contains("w") && s.split(":")[1].charAt(4) == 'B' && xY % 2 == 0))) {
-//                    return false;
-//                }
-//                System.out.println(s);
+
                 return !(s.split(":")[1].charAt(0) == 'P'
                         && (s.split(":")[1].endsWith("1")  || s.split(":")[1].endsWith("8")));
 
@@ -584,7 +579,48 @@ public class SolverTest {
             }
             );
             solver.setNumberOfSolutions(1);
-            solver.setAdditionalDepth(1);
+            solver.setAdditionalDepth(0);
+//            System.out.println(count);
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), count);
+//            Assertions.assertEquals(0, solutions.size());
+//            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
+        }
+        // Theoretically, this can be solved by the algorithm
+        // However, there is one solution out of thousands, and there is no way to eliminate possibilities before
+        //  getting to a depth of 15, therefore it cannot be found in a timely manner
+
+    }
+
+    @Test
+    public void ChessMysteries17B() {
+        // pp89
+        List<String> list = List.of(
+                "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1"
+        );
+
+        int count = 9;
+        for (String st : list) {
+            count++;
+            System.out.println(count);
+            Solver solver = new Solver(s -> {
+                String move = s.split(":")[1];
+                if (move.contains("x") && !(s.split(":")[2].equals("0") || s.split(" ")[1].contains("b"))) {
+                    return false;
+                }
+                if (move.charAt(1) == 'R' || move.charAt(1) == 'K') {
+                    return false;
+                }
+                return move.charAt(4) != 'R' && !(s.split(" ")[1].contains("b") && move.charAt(0) == 'N') ;
+            }
+                    ,d -> {
+//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
+////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
+//                }
+                return d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty();
+            }
+            );
+            solver.setNumberOfSolutions(1);
+            solver.setAdditionalDepth(0);
 //            System.out.println(count);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), count);
 //            Assertions.assertEquals(0, solutions.size());
@@ -655,7 +691,7 @@ public class SolverTest {
                 String move = s.split(":")[1];
 //                System.out.println(s.split(":")[2]);
                 if (s.split(":")[2].equals("0")) {
-                    System.out.println(s);
+//                    System.out.println(s);
                     return (move.charAt(0) == 'P' && move.endsWith("f4"));
                 }
                 return true ;
@@ -1153,7 +1189,60 @@ public class SolverTest {
                     );
                     solver.setNumberOfSolutions(1);
                     solver.setAdditionalDepth(1);
-//                    List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 3);
+                    List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 3);
+
+                    if (target.equals(new Coordinate(2, 7))) {
+                        Assertions.assertNotEquals(0, solutions.size());
+                    } else {
+                        Assertions.assertEquals(0, solutions.size());
+
+                    }
+                }
+            }
+        }
+        // Successfully finds that the only option is c8
+    }
+
+    @Test
+    public void ChessMysteries30B() {
+        //
+        //pp126
+
+        List<String> list = List.of(
+                "7r/pppppKpP/6P1/8/8/8/n7/8 w - -"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+
+                    ChessBoard board = BoardBuilder.buildBoard(st);
+                    Coordinate target = new Coordinate(4, 4);
+                    if (!board.at(target).getType().equals("null")) {
+                        continue;
+                    }
+                    board.place(target, StandardPieceFactory.getInstance().getPiece("k"));
+                    board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
+                    System.out.println(board.getReader().toFEN());
+                    if (!StateDetectorFactory.getDetector(board).testState()) {
+                        continue;
+                    }
+                    Solver solver = new Solver(
+                            s -> {
+//                        System.out.println(s);
+                                return true;
+                            }
+                            , d -> {
+//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
+//                    System.out.println(d.getPromotions());
+//                }
+                        return true;
+                    }
+                    );
+                    solver.setNumberOfSolutions(1);
+                    solver.setAdditionalDepth(0);
+                    List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 4);
 //
 //                    if (target.equals(new Coordinate(2, 7))) {
 //                        Assertions.assertNotEquals(0, solutions.size());
@@ -1161,9 +1250,8 @@ public class SolverTest {
 //                        Assertions.assertEquals(0, solutions.size());
 //
 //                    }
-                }
             }
-        }
+
         // Successfully finds that the only option is c8
     }
 
@@ -1341,7 +1429,7 @@ public class SolverTest {
 //        int count = 0;
 //        for (String st : list) {
 //            count++;
-//            Solver solver = new Solver();
+//            SolveAlgorithm.Solver solver = new SolveAlgorithm.Solver();
 //            solver.setNumberOfSolutions(3);
 //            solver.setAdditionalDepth(1);
 ////            if (count == 1) {

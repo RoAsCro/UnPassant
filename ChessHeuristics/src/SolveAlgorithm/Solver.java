@@ -1,3 +1,5 @@
+package SolveAlgorithm;
+
 import Heuristics.BoardInterface;
 import Heuristics.Path;
 import StandardChess.*;
@@ -15,6 +17,8 @@ public class Solver implements Runnable {
     private int additionalDepth = 2;
     private int maxDepth;
     private int numberOfSolutions = 100;
+    private StateComparator comparator = new StateComparator();
+    private StateLog stateLog = new StateLog();
 
 //    private LinkedList<String> finalStates = new LinkedList<>();
 
@@ -44,7 +48,7 @@ public class Solver implements Runnable {
         List<String> solutions = new LinkedList<>();
         try {
             board.setTurn(board.getTurn().equals("white") ? "black" : "white");
-            if (testState(board)) {
+            if (testAndRegisterState(board)) {
                 solutions = iterate(this.originalBoard, depth, false);
             }
 
@@ -95,22 +99,27 @@ public class Solver implements Runnable {
 //                    System.out.println("A");
 //                }
                 List<Coordinate> pieces = allPieces(currentBoard);
+
                 List<SolverRunner> runnerPool = new LinkedList<>();
-                for (Coordinate piece : pieces) {
-                    if (!currentBoard.getEnPassant().equals(Coordinates.NULL_COORDINATE)) {
-                        if (!piece.equals(currentBoard.getEnPassant())) {
-                            continue;
+                BoardInterface boardInterface = new BoardInterface(currentBoard);
+//                System.out.println("twr");
+                if (this.stateLog.test(boardInterface) != -1) {
+                    for (Coordinate piece : pieces) {
+                        if (!currentBoard.getEnPassant().equals(Coordinates.NULL_COORDINATE)) {
+                            if (!piece.equals(currentBoard.getEnPassant())) {
+                                continue;
+                            }
                         }
-                    }
 //                    if (currentState.equals("k1K5/3pQ3/8/2B1P3/3P4/7P/8/7B w - -")) {
 //                    }
 //                    for (int i = 0 ; i < 10 ; i++) {
 //                    System.out.println("launchingThread");
-                    SolverRunner runner = new SolverRunner(this, currentBoard, piece, state, any && currentDepth == depth - 1);
-                    runnerPool.add(runner);
-                    Thread thread = new Thread(runner);
-                    thread.start();
+                        SolverRunner runner = new SolverRunner(this, currentBoard, piece, state, any && currentDepth == depth - 1);
+                        runnerPool.add(runner);
+                        Thread thread = new Thread(runner);
+                        thread.start();
 //                    }
+                    }
                 }
                 int sleepCount = 0;
                 while (!runnerPool.stream().allMatch(SolverRunner::isFinished)) {
@@ -122,6 +131,9 @@ public class Solver implements Runnable {
 //                System.out.println("threads done");
 
                 List<String> newStates = runnerPool.stream().flatMap(r -> r.getStates().stream()).toList();
+                if (newStates.isEmpty()) {
+                    this.stateLog.register(new BoardInterface(currentBoard), false);
+                }
 //                    System.out.println(currentDepth);
 //                    System.out.println(depth);
                 toAdd = 0;
@@ -158,7 +170,7 @@ public class Solver implements Runnable {
 //                        System.out.println("C");
 //                    }
 
-                    if (!legalFirst || testState(currentBoard)) {
+                    if (!legalFirst || testAndRegisterState(currentBoard)) {
 //                        if (any && legalFirst) {
 //                            System.out.println("E");
 //                        }
@@ -339,12 +351,25 @@ public class Solver implements Runnable {
 //                        if (previousEnPassant) {
 //                            System.out.println("justMove");
 //                        }
-                        if (CheckUtil.check(new BoardInterface(currentBoard))) {
+                        String move = " :" + toLAN(currentBoard, origin, target, piece, castle);
+                        if (CheckUtil.check(new BoardInterface(currentBoard))
+                        && this.fenPredicate.test(move +
+                                (currentState.split(":").length > 1 ? (":" + currentState.split(":")[2])
+                                        : ":0"))) {
                             boolean pass = false;
+                            String movedPiece = currentBoard.at(target).getType();
+//                            System.out.println("?" + currentBoard.getReader().toFEN());
+//                            System.out.println(nonIntrosiveMovement(promotion, piece, movedPiece));
+
                             if (legalFirst) {
                                 pass = true;
-                            } else if (!(currentBoard.at(target).getType().charAt(0) == 'p')
-                                    && piece.equals("") && !promotion || testState(currentBoard)) {
+                            } else if (nonIntrosiveMovement(promotion, piece, movedPiece)) {
+                                pass = true;
+                                this.stateLog.register(new BoardInterface(currentBoard), true);
+
+                            } else if (testAndRegisterState(currentBoard
+//                                            new Move(board.getReader().toFEN(), origin, target, movedPiece, piece, enPassant)
+                                    )) {
                                 pass = true;
                             }
                             if (pass) {
@@ -353,12 +378,12 @@ public class Solver implements Runnable {
                                     currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
                                 }
                                 String boardAndMove = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece, castle);
-                                 if (this.fenPredicate.test(boardAndMove +
-                                         (currentState.split(":").length > 1 ? (":" + currentState.split(":")[2])
-                                                 : ":0"))) {
+//                                 if (this.fenPredicate.test(boardAndMove +
+//                                         (currentState.split(":").length > 1 ? (":" + currentState.split(":")[2])
+//                                                 : ":0"))) {
 //                                     System.out.println(boardAndMove);
                                      states.add(boardAndMove);
-                                 }
+//                                 }
                                 if (!legalFirst && any) {
                                     break;
                                 }
@@ -383,25 +408,44 @@ public class Solver implements Runnable {
         return states;
     }
 
+    private static boolean nonIntrosiveMovement(boolean promotion, String piece, String movedPiece) {
+        return !(movedPiece.charAt(0) == 'p')
+                && piece.equals("") && !promotion;
+    }
+
     public boolean makeMove(ChessBoard board, Coordinate origin, Coordinate target, String piece, boolean promotion, boolean enPassant) {
         boolean justMove = makeJustMove(board, origin, target, piece, promotion, enPassant);
         return justMove && testState(board);
     }
 
-    public boolean testState(ChessBoard board) {
+    private boolean testAndRegisterState(ChessBoard board) {
+//        System.out.println("-----------");
 //        System.out.println(board.getReader().toFEN());
+        boolean pass = false;
+//        int shortcut = this.comparator.findState(move);
+        int shortcut = this.stateLog.test(new BoardInterface(board));
+        if (shortcut == 0) {
+             pass = testState(board);
+//            if (pass) {
+//                comparator.registerState(move, pass);
+//            System.out.println("next");
+            this.stateLog.register(new BoardInterface(board), pass);
+//            }
+        }
+        return (shortcut == 0 && pass) || shortcut == 1;
+    }
+
+    public boolean testState(ChessBoard board) {
         SolverImpossibleStateDetector detector;
         detector = StateDetectorFactory.getDetector(board);
         boolean pass = detector.testState();
         if (pass) {
             pass = castleCheck(board, detector);
             if (pass) {
-            pass = this.detectorPredicate.test(detector);
+                pass = this.detectorPredicate.test(detector);
             }
         }
-        if (pass) {
-            //System.out.println(board.getReader().toFEN());
-        }
+
         return pass;
     }
 

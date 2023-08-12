@@ -103,4 +103,5 @@ public class BoardInterface {
         return this.board.canCastle(queenSide ? "queen" : "king", white ? "white" : "black");
     }
 
+
 }

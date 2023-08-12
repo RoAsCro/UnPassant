@@ -1,3 +1,4 @@
+import SolveAlgorithm.Solver;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;

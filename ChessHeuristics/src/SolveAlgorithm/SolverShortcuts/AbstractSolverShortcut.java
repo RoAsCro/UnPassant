@@ -1,6 +1,7 @@
-package SolverShortcuts;
+package SolveAlgorithm.SolverShortcuts;
 
 import StandardChess.Coordinate;
+import SolveAlgorithm.Move;
 
 public abstract class AbstractSolverShortcut {
     protected static int FINAL_RANK_Y = 7;
@@ -9,9 +10,8 @@ public abstract class AbstractSolverShortcut {
     protected static int WHITE_PAWN_Y = 1;
     protected static int BLACK_ESCAPE_Y = 5;
     protected static int WHITE_ESCAPE_Y = 2;
-    public abstract void set(Coordinate origin, Coordinate target, String movedPiece, String takenPiece, boolean promote, boolean whiteTurn);
-    public abstract boolean match(Coordinate origin, Coordinate target, String movedPiece, String takenPiece, boolean promote, boolean whiteTurn);
-    public abstract boolean test(Coordinate origin, Coordinate target, String movedPiece, String takenPiece, boolean promote, boolean whiteTurn);
+    public abstract boolean match(Move moveOne, Move moveTwo);
+    public abstract boolean test(Move move);
 
     protected boolean onGreaterBoard(Coordinate c) {
         return c.getY() >= WHITE_ESCAPE_Y && c.getY() <= BLACK_ESCAPE_Y;

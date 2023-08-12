@@ -1,3 +1,5 @@
+package SolveAlgorithm;
+
 import Heuristics.BoardInterface;
 
 public class CheckUtil {

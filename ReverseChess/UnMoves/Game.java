@@ -30,7 +30,7 @@ public class Game {
 //            // TODO
 //            return;
 //        }
-//        this.unMoveMaker = new UnMoveMaker(board);
+//        this.unMoveMaker = new StandardChess.UnMoveMaker(board);
     }
 
     private boolean trySetFEN(String fen) {

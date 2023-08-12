@@ -1,3 +1,5 @@
+package SolveAlgorithm;
+
 import Heuristics.BoardInterface;
 import Heuristics.Deduction;
 import Heuristics.Deductions.PieceMap;

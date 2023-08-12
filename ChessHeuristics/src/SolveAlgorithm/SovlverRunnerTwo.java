@@ -1,3 +1,5 @@
+package SolveAlgorithm;
+
 import Heuristics.BoardInterface;
 import Heuristics.Path;
 import StandardChess.BoardBuilder;
@@ -5,11 +7,8 @@ import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
 
 public class SovlverRunnerTwo implements Runnable {
 
