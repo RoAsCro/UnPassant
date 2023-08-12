@@ -27,7 +27,7 @@ public class BoardInterface {
     private void correctCastling() {
         Map<Coordinate,String> rookCoords = Map.of(Coordinates.WHITE_QUEEN_ROOK, "tt",
                 Coordinates.WHITE_KING_ROOK, "tf",
-                Coordinates.BLACK_QUEEN_ROOK, "ft", Coordinates.BLACK_KING_ROOK, "ft");
+                Coordinates.BLACK_QUEEN_ROOK, "ft", Coordinates.BLACK_KING_ROOK, "ff");
         rookCoords.forEach((c, s) -> {
             boolean white = s.charAt(0) == 't';
             boolean queen = s.charAt(1) == 't';

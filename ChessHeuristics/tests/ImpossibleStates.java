@@ -393,7 +393,7 @@ public class ImpossibleStates {
 
     @Test
     void twoValidOrigins() {
-        Assertions.assertTrue(test("rnbqkb1r/ppp1pppp/2p5/6Q1/6Q1/8/1PP2PPP/RNBQKB1R w - - 0 1"));
+        Assertions.assertTrue(test("rnbqk2r/ppp1pppp/2p5/6Q1/6Q1/8/1PP2PPP/RNBQKB1R w - - 0 1"));
     }
 
     @Test
@@ -462,16 +462,26 @@ public class ImpossibleStates {
     }
 
     @Test
+    void pawnsOnepromotedOneDidNot() {
+        Assertions.assertTrue(test("rnbqkbnr/2pppppp/8/P7/8/3R2P1/1PPPP1PP/2BQKBNR w Kkq - 0 1"));
+    }
+
+    @Test
     void r() {
 
-        System.out.println(test("5rk1/2p2ppp/ppnppn2/1q3bB1/1b2P3/1PNP1NP1/1P1Q1P1P/R3K1R1 w Q - 0 1"));
-        System.out.println(this.pm.getPromotionNumbers());
+        System.out.println(test("r3k3/8/8/8/8/8/5PP1/6bK b q - 0 1"));
+        System.out.println(BoardBuilder.buildBoard("r3k3/8/8/8/8/8/5PP1/6bK b q - 0 1").canCastle("queen", "black"));
+        System.out.println(BoardBuilder.buildBoard("r3k3/8/8/8/8/8/5PP1/6bK b q - 0 1").getReader().toFEN());
+
+        System.out.println(this.pm.getCaged());
 
 
     } @Test
     void r2() {
 
-        System.out.println(test("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R3K1R1 w Q - 0 1"));
+        System.out.println(test("r3kqR1/1p1pppp1/5B1P/6PN/4P2p/3Q1P2/2PK2pP/8 b q - 0 1"));
+//        System.out.println(test("r3kqR1/1p1pppp1/5B1P/6PN/4P2p/3Q1P2/2PK2pP/8 b q - 0 1"));
+
         System.out.println(this.pm.getPromotionNumbers());
 
 

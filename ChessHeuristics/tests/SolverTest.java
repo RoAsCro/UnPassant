@@ -299,9 +299,8 @@ public class SolverTest {
         // pp54
         List<String> list = List.of(
                 "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w q - 0 1",
-                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w Q - 0 1",
-                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 b q - 0 1",
                 "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 b Q - 0 1",
+
                 "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K3 w q - 0 1",
                 "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K3 b q - 0 1",
                 "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K3 w Q - 0 1",
@@ -325,8 +324,8 @@ public class SolverTest {
             }
             );
             solver.setNumberOfSolutions(1);
-            solver.setAdditionalDepth(1);
-            solver.solve(BoardBuilder.buildBoard(st), 1);
+            solver.setAdditionalDepth(0);
+            solver.solve(BoardBuilder.buildBoard(st), 2);
         }
 
         //This puzzle has two relevant parts, (a) and (b)
@@ -365,24 +364,12 @@ public class SolverTest {
             solver.solve(BoardBuilder.buildBoard(st), 1);
         }
 
-        //This puzzle has two relevant parts, (a) and (b)
-        // (a)
-        // This is not really a problem of last n moves AND the additional rules can't be accounted for in the deductions
-        // The first part can be spookfed by replacing the white bishop with a queen, resulting in it coming to
-        // the same conclusion as you would if a captured queen never left white - every piece that can have been captured
-        // by a black pawn was captured by a black pawn, which means the a2 pawn was either taken or promoted,
-        // and since it cannot have reached the square on which b6 makes it'scapture, it promoted, and it must have promoted
-        // on a8 as every white capture was carried out by the h6 pawn, resulting in the a8 rook being displaced
-        // The second part of the puzzle is a question of timing, which is beyond the scope of UnPassant, and not of last
-        // n moves
-        // (b)
-        // This is also not a last n moves question, but once again the first part can be solved -
-        // With the extra missing piece, there's now no reason to believe that a2 must have promoted or been captured by  the b6 pawn
+        //Timing puzzle
     }
 
    @Test
     public void ChessMysteries11() {
-        // pp58
+        // pp61
         List<String> list = List.of(
                 "2b5/pp1p4/PRP5/pR3N2/2K5/2P5/2k1PNP1/1nrnB3 b - - 0 1",
                 "2b5/pp1p4/PRP5/pR3N2/2K5/2P5/2k1PN1P/1nrnB3 b - - 0 1"
@@ -418,6 +405,7 @@ public class SolverTest {
                 Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard(st), 2).size());
             }
         }
+        // The above Tests the two possibilities, finding one has no solutions
         
     }
 
@@ -519,8 +507,7 @@ public class SolverTest {
     public void ChessMysteries15() {
         // pp78
         List<String> list = List.of(
-                "r3k3/8/8/8/8/8/5PP1/6bK b Q - 0 1",
-                "r3k3/8/8/8/8/8/5PP1/6bK w Q - 0 1");
+                "r3k3/8/8/8/8/8/5PP1/6bK w q - 0 1");
 
         int count = 0;
         for (String st : list) {
@@ -604,7 +591,8 @@ public class SolverTest {
 //            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
         }
         // Theoretically, this can be solved by the algorithm
-        // However, there is one solution out of thousands and it cannot be found in a timely manner
+        // However, there is one solution out of thousands, and there is no way to eliminate possibilities before
+        //  getting to a depth of 15, therefore it cannot be found in a timely manner
 
     }
 
@@ -644,30 +632,7 @@ public class SolverTest {
         for (String st : list) {
             count++;
             System.out.println(st);
-//            Solver solver = new Solver(
-////                    s -> {
-////                String move = s.split(":")[1];
-////                if (move.contains("x") && !(s.split(":")[2].equals("0") || s.split(" ")[1].contains("b"))) {
-////                    return false;
-////                }
-////                if (move.charAt(1) == 'R' || move.charAt(1) == 'K') {
-////                    return false;
-////                }
-////                return move.charAt(4) != 'R' && !(s.split(" ")[1].contains("b") && move.charAt(0) == 'N') ;
-////            }
-////                    ,d -> {
-//////                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-////////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
-//////                }
-////                return d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty();
-////            }
-//            );
-//            solver.setNumberOfSolutions(1);
-//            solver.setAdditionalDepth(1);
-//            System.out.println(count);
             System.out.println(StateDetectorFactory.getDetector(st).testState());
-//            Assertions.assertEquals(0, solutions.size());
-//            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
         }
         // Not a question of last n moves, however it is capable of eleminating most of the possibilities,
         // But then it becomes a question of timing
@@ -745,8 +710,32 @@ public class SolverTest {
             solver.setAdditionalDepth(1);
 //            System.out.println(count);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
-//            Assertions.assertEquals(0, solutions.size());
+            Assertions.assertNotEquals(0, solutions.size());
 //            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
+
+            solver = new Solver(
+                    s -> {
+                        String move = s.split(":")[1];
+//                System.out.println(s.split(":")[2]);
+                        if (s.split(":")[2].equals("0")) {
+                            System.out.println(s);
+                            return (move.charAt(0) == 'P' && move.endsWith("f4"));
+                        }
+                        return true ;
+                    }
+                    ,d -> {
+//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
+////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
+//                }
+                return true;
+            }
+            );
+            solver.setNumberOfSolutions(1);
+            solver.setAdditionalDepth(1);
+//            System.out.println(count);
+            solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
+            Assertions.assertEquals(0, solutions.size());
+
         }
         // This successfully uncovers that the only valid move while maintaining castling rights is a double pawn move
 
@@ -1119,14 +1108,14 @@ public class SolverTest {
 //            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 1);
         }
         // Another one where theoretically there should be no problem as it's a matter of iterating backwards
-    }@Test
+    }
+    @Test
     public void ChessMysteries30() {
         //
         //pp126
 
         List<String> list = List.of(
-                "7r/pppppKpP/6P1/8/8/8/n7/8 w - - 0 1",
-                "7r/pppppKpP/6P1/8/8/8/n7/8 b - - 0 1"
+                "7r/pppppKpP/6P1/8/8/8/n7/8 w - - 0 1"
         );
 
         int count = 0;
@@ -1164,15 +1153,68 @@ public class SolverTest {
                     );
                     solver.setNumberOfSolutions(1);
                     solver.setAdditionalDepth(1);
-                    List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 5);
+                    List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 3);
+
+                    if (target.equals(new Coordinate(2, y))) {
+                        Assertions.assertNotEquals(0, solutions.size());
+                    } else {
+                        Assertions.assertEquals(0, solutions.size());
+
+                    }
                 }
             }
         }
-        // Another one where theoretically there should be no problem as it's a matter of iterating backwards
+        // Successfully finds that the only option is c8
     }
-    String pp148b ="2b1k2r/1p1pppbp/pp3n2/8/3NB3/2P2P1P/P1PPP2P/RNB1K2R w KQk - 0 1";
-    String pp149a ="2bqk1nr/p3p1p1/1p1p1p2/3p1n1p/6BN/P1PP1P2/NP3PPP/R2QK2R w KQk - 0 1";
-    String pp149b ="r2qk2r/1ppbp1p1/1pn2n2/b2pP3/3P1N2/2N3P1/PPP2P2/R2QK2R w KQkq - 0 1";
+
+    @Test
+    public void ChessMysteries31() {
+        //
+        //pp150
+
+        List<String> list = List.of(
+                "r3kqR1/1p1ppp2/5BpP/6PN/4P2p/3Q1P2/2PK2pP/8 b q - 0 1",
+                "r3kqR1/1p1ppp2/5BpP/6PN/4P2p/3Q1P2/2PK2pP/8 b - - 0 1"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+            System.out.println(st);
+            ChessBoard board = BoardBuilder.buildBoard(st);
+            board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
+            if (!StateDetectorFactory.getDetector(board).testState()) {
+                continue;
+            }
+            Solver solver = new Solver(
+                    s -> {
+                        return true;
+                    }
+                    ,d -> {
+//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
+//                    System.out.println(d.getPromotions());
+//                }
+                return true;
+            }
+            );
+            solver.setNumberOfSolutions(1);
+            solver.setAdditionalDepth(1);
+
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 3);
+            if (count == 1) {
+                Assertions.assertEquals(0, solutions.size());
+            } else {
+                Assertions.assertNotEquals(0, solutions.size());
+            }
+        }
+        // After every possible move black could make, there reaches a state where a2 needs to promote
+        // It needs to do this by crossing a8
+        // After a second level of depth, it comes about that every move results in one fewer capture for white
+        // This means the promotion must take place without a capture
+        // This is not possible if black can castle
+        // The solver figures this out
+    }
     String pp150 ="r3kqR1/1p1ppp2/5BpP/6PN/4P2p/3Q1P2/2PK2pP/8 w q - 0 1";
 
 
@@ -1243,8 +1285,6 @@ public class SolverTest {
 //            Assertions.assertEquals(0, solutions.size());
 //            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
         }
-        // Theoretically, this can be solved by the algorithm
-        // However, there is one solution out of thousands and it cannot be found in a timely manner
 
     }
 
@@ -1295,98 +1335,6 @@ public class SolverTest {
                 .stream().anyMatch(s -> s.contains("r3k3/8/2K5/8/8/8/7P/8 w")));
     }
 
-
-
-
-//    @Test
-//    public void test() {
-//        // Simple
-//        new Solver().solve(BoardBuilder.buildBoard("4Q3/8/8/8/8/8/1rk5/K7 w - - 0 1"), 1);
-//    }
-//
-//    @Test
-//    public void test2() {
-//        // Simple
-//        SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector("rnbqkbnr/pppppppp/8/8/5P2/7N/PPPPP1PP/RNBQKB1R w KQkq - 0 1");
-//        detector.testState();
-//        SolverImpossibleStateDetector detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R b :Pf2-f4", detector);
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-//
-//
-//
-//        detector = StateDetectorFactory.getDetector("rnbqkbnr/pppppppp/8/8/5P2/7N/PPPPP1PP/RNBQKB1R w KQkq - 0 1");
-//        detector.testState();
-//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/pppppppp/8/8/5P2/8/PPPPPNPP/RNBQKB1R b :Rf2-f4", detector);
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-//
-//
-//        System.out.println("-------------------");
-//        detector = StateDetectorFactory.getDetector("rnbqkb1r/ppppp1pp/4n3/8/5PN1/8/PPPPP1PP/RNBQKB1R b KQkq - 0 1");
-//        detector.testState();
-//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"),"rnbqkb1r/ppppp1pp/8/2n5/5PN1/8/PPPPP1PP/RNBQKB1R w :Rc5-b2", detector);
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-//
-//        System.out.println("-------------------");
-//
-//        detector = StateDetectorFactory.getDetector("rnbqkb1r/ppp1p1pp/3p4/2n5/5PN1/8/PPPPP1PP/RNBQKB1R b KQkq - 0 1");
-//        detector.testState();
-//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"),"rnbqkb1r/ppppp1pp/8/2n5/5PN1/8/PPPPP1PP/RNBQKB1R w :Pd6-d7", detector);
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-//
-//        System.out.println("-------------------");
-//
-//        detector = StateDetectorFactory.getDetector("rnbq1bnr/pppppkpp/5N2/8/5P2/8/PPPPP1PP/RNBQKB1R w - - 0 1");
-//        detector.testState();
-//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/ppppp1pp/5p2/8/5PN1/8/PPPPP1PP/RNBQKB1R b :Rf6xPg4", detector);
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-//
-//        System.out.println("!-------------------!");
-//
-//        detector = StateDetectorFactory.getDetector("rnbq1bnr/pppppkpp/5N2/8/5P2/8/PPPPP1PP/RNBQKB1R b KQkq - 0 1");
-//        detector.testState();
-//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/ppppp1pp/5p2/8/5PN1/8/PPPPP1PP/RNBQKB1R w :Rf6xPg4", detector);
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-//
-//        System.out.println("!-------------------!");
-//
-//        detector = StateDetectorFactory.getDetector("rnbq1bnr/pppppkpp/5N2/8/5P2/8/PPPPP1PP/RNBQKB1R b KQkq - 0 1");
-//        detector.testState();
-//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/ppppp1pp/5p2/8/5PN1/8/PPPPP1PP/RNBQKB1R w :Rf6xBg4", detector);
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-//
-//        System.out.println("!-------------------!");
-//
-//        detector = StateDetectorFactory.getDetector("rnbq1bnr/pppppkpp/5N2/8/5P2/8/PPPPP1PP/RNBQKB1R w KQkq - 0 1");
-//        detector.testState();
-//        detectorTwo = DetectorUpdater.update(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/7N/PPPPPPPP/RNBQKB1R"), "rnbqkbnr/ppppp1pp/5p2/8/5PN1/8/PPPPP1PP/RNBQKB1R b :Rf6xBg4", detector);
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(1)).getPawnOrigins());
-//        System.out.println(((PawnMap) detectorTwo.getDeductions().get(2)).getPawnOrigins());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getWhitePaths());
-//        System.out.println(((CombinedPawnMap) detectorTwo.getDeductions().get(3)).getBlackPaths());
-//
-//
-//    }
 
 
 }

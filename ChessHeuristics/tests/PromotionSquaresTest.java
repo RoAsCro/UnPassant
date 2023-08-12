@@ -91,6 +91,12 @@ public class PromotionSquaresTest {
     }
 
     @Test
+    void promotionExtraMissingPawn() {
+        Assertions.assertTrue(test("rnbqkbnr/ppp1ppp1/2p3p1/8/8/8/1PP1PPPP/R1BQKBNR w - - 0 1"));
+        System.out.println(this.pps.getPromotionPaths(true));
+    }
+
+    @Test
     void promotionNoPath() {
         Assertions.assertFalse(test("rnbqkbnr/pppp1ppp/5p2/8/8/8/PPPPPP1P/RNBQKBNR w - - 0 1"));
         System.out.println(this.pps.getPromotionPaths(true));

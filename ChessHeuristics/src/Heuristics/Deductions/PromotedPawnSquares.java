@@ -8,6 +8,7 @@ import Heuristics.Pathfinder;
 import StandardChess.Coordinate;
 import StandardChess.StandardPieceFactory;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -41,22 +42,36 @@ public class PromotedPawnSquares extends AbstractDeduction{
         Path emptyBlackOrigins = findEmptyOrigins(false);
 
         if (!emptyWhiteOrigins.isEmpty()) {
+            //System.out.println("w-----------w");
+            //System.out.println(emptyWhiteOrigins);
+
             whitePaths = pathToFinalRank(board, false, emptyWhiteOrigins);
-            if (whitePaths.size() < emptyWhiteOrigins.size()) {
+            whitePaths = getCaptures(false, whitePaths);
+            //System.out.println(whitePaths);
+
+            if (whitePaths.size() < this.cl.getWhitePawnsCapturedByPawns()) {
                 this.state = false;
                 return false;
             }
         }
 
         if (!emptyBlackOrigins.isEmpty()) {
+            //System.out.println("b-----------b");
+            //System.out.println(emptyBlackOrigins);
+
 //            System.out.println(emptyBlackOrigins);
             blackPaths = pathToFinalRank(board, true, emptyBlackOrigins);
-            if (blackPaths.size() < emptyBlackOrigins.size()) {
+            //System.out.println(blackPaths);
+            //System.out.println(blackPaths.size());
+            blackPaths = getCaptures(true, blackPaths);
+
+            if (blackPaths.size() < this.cl.getBlackPawnsCapturedByPawns()) {
                 this.state = false;
                 return false;
             }
             // TODO put into promotions
         }
+
         return false;
     }
 
@@ -93,10 +108,12 @@ public class PromotedPawnSquares extends AbstractDeduction{
                                 p -> CombinedPawnMap.PATH_DEVIATION.apply(p) <= enemyCaptures)
                         .size() == 1)
                 .toList();
-        int currentCaptures = 0;
+//        int currentCaptures = 0;
 //        System.out.println("XD");
 //        System.out.println(forbidden);
         for (Coordinate origin : origins) {
+            //System.out.println(origin);
+
             Path shortest = Pathfinder.findShortestPawnPath(
                     StandardPieceFactory.getInstance().getPiece(notWhite ? "p" : "P"),
                     origin,
@@ -105,15 +122,35 @@ public class PromotedPawnSquares extends AbstractDeduction{
                     p -> CombinedPawnMap.PATH_DEVIATION.apply(p) <= captures,
                     (p1, p2) -> combinedPawnMap.exclusion(forbidden, p1, p2));
             if (shortest.isEmpty()) {
-                return new LinkedList<>();
+                continue;
             }
-            currentCaptures += CombinedPawnMap.PATH_DEVIATION.apply(shortest);
-            if (currentCaptures > captures) {
-                return new LinkedList<>();
-            }
+//            currentCaptures += CombinedPawnMap.PATH_DEVIATION.apply(shortest);
+//            if (currentCaptures > captures) {
+//                return new LinkedList<>();
+//            }
             paths.add(shortest);
         }
         return paths;
+    }
+
+    private List<Path> getCaptures(boolean notWhite, List<Path> paths) {
+        CombinedPawnMap combinedPawnMap = this.promotionMapInUse
+                ? this.combinedPawnMap
+                : this.promotionMap.getPromotionCombinedPawnMap();
+        int captures = (combinedPawnMap.getPawnMap(!notWhite).maxPieces - (!notWhite ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()))
+                - combinedPawnMap.minimumCaptures(!notWhite);
+        paths.sort(Comparator.comparingInt(CombinedPawnMap.PATH_DEVIATION::apply));
+        int currentCaptures = 0;
+        List<Path> legalPaths = new LinkedList<>();
+        for (Path path : paths) {
+            currentCaptures += CombinedPawnMap.PATH_DEVIATION.apply(path);
+            if (currentCaptures <= captures) {
+                legalPaths.add(path);
+            } else {
+                return legalPaths;
+            }
+        }
+        return legalPaths;
     }
 
     public List<Path> getPromotionPaths(boolean white) {

@@ -22,6 +22,8 @@ public class CaptureLocations extends AbstractDeduction {
     CombinedPawnMap combinedPawnMap;
     Path whiteCagedCaptures = new Path();
     Path blackCagedCaptures = new Path();
+    private int whitePawnsCapturedByPawns = 0;
+    private int blackPawnsCapturedByPawns = 0;
 
     private final Path promotedWhitePawns = new Path();
     private final Path promotedBlackPawns = new Path();
@@ -58,7 +60,7 @@ public class CaptureLocations extends AbstractDeduction {
         if (
                 whiteRemovals + blackRemovals != 0
         ) {
-//            System.out.println(whiteRemovals);
+            //System.out.println(whiteRemovals);
             this.pawnMapWhite.updateMaxCapturedPieces(whiteRemovals);
             this.pawnMapBlack.updateMaxCapturedPieces(blackRemovals);
             this.pawnMapWhite.deduce(board);
@@ -75,6 +77,7 @@ public class CaptureLocations extends AbstractDeduction {
         }
         this.promotedWhitePawns.addAll(pawnCaptureLocations(true));
         this.promotedBlackPawns.addAll(pawnCaptureLocations(false));
+        //System.out.println(promotedBlackPawns);
         return false ;
     }
 
@@ -191,6 +194,8 @@ public class CaptureLocations extends AbstractDeduction {
      * @return
      */
     private boolean pawnCaptures(Map<Coordinate, List<Path>> singlePawns, boolean white) {
+//        System.out.println(white);
+//        System.out.println(singlePawns);
         int otherValue = singlePawns.values().stream()
                 .map(pathList -> pathList
                         .stream().map(CombinedPawnMap.PATH_DEVIATION)
@@ -210,19 +215,53 @@ public class CaptureLocations extends AbstractDeduction {
 //        System.out.println(this.combinedPawnMap.capturesTwo(white ? "black" : "white"));
 
         // If every capture of the opponent has been made by pawns
-        if ((!white ? this.pawnMapWhite : this.pawnMapBlack).maxPieces - (white ? pieceNumber.getWhitePieces() : pieceNumber.getBlackPieces())
-                == this.combinedPawnMap.minimumCaptures(!white)) {
+        //System.out.println(white);
+
+        //System.out.println((!white ? this.pawnMapWhite : this.pawnMapBlack).maxPieces);
+        //System.out.println(white ? pieceNumber.getWhitePieces() : pieceNumber.getBlackPieces());
+        //System.out.println(this.combinedPawnMap.minimumCaptures(!white));
+        int maxPiecesOpponentCanTake = (!white ? this.pawnMapWhite : this.pawnMapBlack).maxPieces;
+        int numberOfPiecesPlayerHasRemaining = (white ? pieceNumber.getWhitePieces() : pieceNumber.getBlackPieces());
+        //System.out.println(this.pieceMap.getPromotionNumbers());
+        int numberOfPromotedPiecesPlayerHas = this.pieceMap.getPromotionNumbers().entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().charAt(entry.getKey().length()-1) == (white ? 'w' : 'b'))
+                .flatMap(entry -> entry.getValue().entrySet().stream())
+                .filter(entry -> entry.getKey() != null)
+                .map(entry -> entry.getKey().size() - entry.getValue())
+                .reduce(Integer::sum)
+                .orElse(0);
+        //System.out.println(numberOfPromotedPiecesPlayerHas);
+        int numberOfPawnsPlayerHasLost = (MAX_PAWNS - (white ? this.pawnNumber.getWhitePawns() : this.pawnNumber.getBlackPawns())) - numberOfPromotedPiecesPlayerHas;
+
+        // MINUS THE NUMBER OF PROMOTED PIECES ON THE BOARD
+        // I think the max pieces needs to be reversed
+        int nonPawnsPlayerHasLost = (maxPiecesOpponentCanTake - numberOfPiecesPlayerHasRemaining) -
+                (numberOfPawnsPlayerHasLost);
+        //System.out.println(nonPawnsPlayerHasLost);
+        int pCBP = (this.combinedPawnMap.minimumCaptures(!white) - nonPawnsPlayerHasLost);
+        if (pCBP > 0) {
+            //System.out.println("b");
+            //System.out.println(pCBP);
+
+
+
+
             // The deviation a pawn can make
             int unnaccountedCaptures = ((!white ? this.pawnMapBlack : this.pawnMapWhite).maxPieces - (white ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()))
                     - this.combinedPawnMap.minimumCaptures(white);
             List<BiPredicate<Coordinate, Coordinate>> pawnPredicates = new LinkedList<>();
             List<Coordinate> missingPawns = new LinkedList<>();
             Map<Coordinate, List<Path>> otherPlayerPaths = everySingularPawnPath(!white);
-            // Might always be true
-            if (pawnCaptures(otherPlayerPaths, !white)) {
+            // TODO
+            // Without the commented out if statement, this can easily produce false negatives - watch out when game testing
+//            if (pawnCaptures(otherPlayerPaths, !white)) {
+            // if (minimum captures equals max captures???)
                 int y = white ? WHITE_PIECE_Y : BLACK_PIECE_Y;
                 for (int x = 0 ; x <= K_ROOK_X ; x++) {
                     Coordinate c = new Coordinate(x, y);
+//                    System.out.println(c);
+//                    System.out.println(this.pawnMapBlack.getPawnOrigins());
                     // If that origin has no pawn - should only be possible if there is a pawn missing
                     if ((white ? this.pawnMapWhite : this.pawnMapBlack).getPawnOrigins().values()
                             .stream().flatMap(Path::stream).noneMatch(c::equals)) {
@@ -230,15 +269,28 @@ public class CaptureLocations extends AbstractDeduction {
                         missingPawns.add(c);
                     }
                 }
+                //System.out.println(pawnPredicates.size());
                 List<BiPredicate<Coordinate, Coordinate>> newPredicates = predicateIterate(!white, pawnPredicates);
+                //System.out.println(pawnPredicates.size());
+                if (Math.abs(pawnPredicates.size() - missingPawns.size()) >= pCBP) {
+                    return new LinkedList<>();
+                }
+                if (white) {
+                    this.whitePawnsCapturedByPawns = pCBP - Math.abs(pawnPredicates.size() - missingPawns.size());
+                } else {
+                    this.blackPawnsCapturedByPawns = pCBP - Math.abs(pawnPredicates.size() - missingPawns.size());
+                }
                 return missingPawns.stream().filter(c -> pawnPredicates.stream().anyMatch(p -> p.test(c, c))).toList();
-            }
+//            }
         }
         return new LinkedList<>();
     }
 
     private List<BiPredicate<Coordinate, Coordinate>> predicateIterate(boolean white, List<BiPredicate<Coordinate, Coordinate>> predicates) {
+
+
         Map<Coordinate, List<Path>> paths = everySingularPawnPath(white);
+        //System.out.println(paths);
         if (pawnCaptures(paths, white)) {
             for (List<Path> pathList : paths.values()) {
                 Path path = pathList.get(0);
@@ -254,6 +306,7 @@ public class CaptureLocations extends AbstractDeduction {
                 }
             }
         }
+//        System.out.println(predicates.size());
         return predicates;
     }
 
@@ -282,4 +335,11 @@ public class CaptureLocations extends AbstractDeduction {
         return white ? this.promotedWhitePawns : this.promotedBlackPawns;
     }
 
+    public int getWhitePawnsCapturedByPawns() {
+        return whitePawnsCapturedByPawns;
+    }
+
+    public int getBlackPawnsCapturedByPawns() {
+        return blackPawnsCapturedByPawns;
+    }
 }

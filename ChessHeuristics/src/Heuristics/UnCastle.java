@@ -109,6 +109,7 @@ public class UnCastle {
     }
 
     private void checkPromotedPawns(boolean white, Path promotionPaths) {
+        //System.out.println("??????????????");
         int y = white ? 6 : 1;
         int offSet = white ? 1 : -1;
         List<Coordinate> kingCoords = List.of(new Coordinate(3, y), new Coordinate(5, y), new Coordinate(4, y + offSet));
@@ -123,6 +124,7 @@ public class UnCastle {
                if (rookCoords.get(0).equals(c)) {
                    data[1] = true;
                } else if (rookCoords.get(1).equals(c)) {
+                   //System.out.println(white);
                    data[2] = true;
                }
         });

@@ -150,6 +150,7 @@ public class PieceMap extends AbstractDeduction{
         configureCastlingPartTwo(board);
 
 
+
         // For each start location, have each piece associated with it attempt to path to that start
         pathFromOtherDirection(board, this.startLocations);
 
