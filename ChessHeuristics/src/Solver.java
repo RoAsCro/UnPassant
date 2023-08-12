@@ -41,9 +41,13 @@ public class Solver implements Runnable {
             this.legalFirstAlwaysTrue = true;
         }
         this.originalBoard = board.getReader().toFEN();
-        List<String> solutions = null;
+        List<String> solutions = new LinkedList<>();
         try {
-            solutions = iterate(this.originalBoard, depth, false);
+            board.setTurn(board.getTurn().equals("white") ? "black" : "white");
+            if (testState(board)) {
+                solutions = iterate(this.originalBoard, depth, false);
+            }
+
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -173,6 +177,7 @@ public class Solver implements Runnable {
 
 //                        if (testState(currentBoard)) {
 //                        System.out.println(currentDepth);
+                        //System.out.println("Here");
                         finalStates.add(currentState + ":" + stateDescription[1]);
 //                            finalStates.add(currentState + ":" + stateDescription[1]);
 //                        }
@@ -296,6 +301,7 @@ public class Solver implements Runnable {
                     continue;
                 }
             }
+            // Revert the coordinate to directions
             Coordinate direction = Coordinates.add(currentMove, new Coordinate(-origin.getX(), -origin.getY()));
             List<String> pieces = PIECES;
             if (enPassant) {
@@ -314,6 +320,7 @@ public class Solver implements Runnable {
 //
 //                System.out.println(direction);
 //                System.out.println(i);
+                // For each UnTakeable piece
                 for (String piece : pieces) {
                     ChessBoard currentBoard = BoardBuilder.buildBoard(board);
 
@@ -392,6 +399,9 @@ public class Solver implements Runnable {
             pass = this.detectorPredicate.test(detector);
             }
         }
+        if (pass) {
+            //System.out.println(board.getReader().toFEN());
+        }
         return pass;
     }
 
@@ -430,9 +440,16 @@ public class Solver implements Runnable {
         for (int i = 0 ; i < 2 ; i++) {
             String piece = "king";
             for (int j = 0 ; j < 2 ; j++) {
+//                System.out.println(white);
+//                System.out.println(piece);
+//                System.out.println(board.canCastle(piece, white ? "white" : "black"));
+//                System.out.println(detector.canCastle(white));
+
                 if (board.canCastle(piece, white ? "white" : "black")) {
                     if (!detector.canCastle(white)) {
                         return false;
+                    } else if (white && piece.equals("queen")) {
+                        //System.out.println(board.getReader().toFEN());
                     }
                 }
                 piece = "queen";
@@ -441,7 +458,7 @@ public class Solver implements Runnable {
         }
 //        System.out.println(board.canCastle("queen", "white"));
 //
-//        System.out.println(detector.canCastle(true));
+        //System.out.println(board.getReader().toFEN());
         return true;
     }
 

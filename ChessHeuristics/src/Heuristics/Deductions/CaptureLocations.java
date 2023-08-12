@@ -118,7 +118,7 @@ public class CaptureLocations extends AbstractDeduction {
         // Check each rook can path to any opposing pawn
         if (!ofWhichRook.isEmpty()) {
             ofWhichRook.forEach(coordinate2 -> board.getBoardFacts().getCoordinates(white, "pawn")
-                    .stream().filter(coordinate -> white ? (coordinate.getY() >= BLACK_PIECE_Y)  : (coordinate.getY() <= WHITE_PIECE_Y))
+                    .stream().filter(coordinate -> white ? (coordinate.getY() >= BLACK_PAWN_Y)  : (coordinate.getY() <= WHITE_PAWN_Y))
                     .forEach(coordinate -> {
                         if (!this.pieceMap.findPath(board, "rook", white ? "r" : "R", coordinate2, coordinate).isEmpty()) {
                             reachable.get(coordinate2.getX()).add(coordinate);
@@ -257,7 +257,7 @@ public class CaptureLocations extends AbstractDeduction {
             // Without the commented out if statement, this can easily produce false negatives - watch out when game testing
 //            if (pawnCaptures(otherPlayerPaths, !white)) {
             // if (minimum captures equals max captures???)
-                int y = white ? WHITE_PIECE_Y : BLACK_PIECE_Y;
+                int y = white ? WHITE_PAWN_Y : BLACK_PAWN_Y;
                 for (int x = 0 ; x <= K_ROOK_X ; x++) {
                     Coordinate c = new Coordinate(x, y);
 //                    System.out.println(c);
@@ -317,7 +317,7 @@ public class CaptureLocations extends AbstractDeduction {
                 pathsInUse.entrySet().stream()
                 .filter(entry -> entry.getKey().getY() == (white ? WHITE_ESCAPE_Y : BLACK_ESCAPE_Y))
                 .filter(entry -> pathsInUse
-                        .containsKey(new Coordinate(entry.getKey().getX(), white ? WHITE_PIECE_Y : BLACK_PIECE_Y)))
+                        .containsKey(new Coordinate(entry.getKey().getX(), white ? WHITE_PAWN_Y : BLACK_PAWN_Y)))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
         );
 //        System.out.println(returnMap);

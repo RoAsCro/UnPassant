@@ -479,7 +479,7 @@ public class ImpossibleStates {
     } @Test
     void r2() {
 
-        System.out.println(test("r3kqR1/1p1pppp1/5B1P/6PN/4P2p/3Q1P2/2PK2pP/8 b q - 0 1"));
+        System.out.println(test("2k4r/pppppKpP/6P1/8/8/8/n7/8 b - -"));
 //        System.out.println(test("r3kqR1/1p1pppp1/5B1P/6PN/4P2p/3Q1P2/2PK2pP/8 b q - 0 1"));
 
         System.out.println(this.pm.getPromotionNumbers());

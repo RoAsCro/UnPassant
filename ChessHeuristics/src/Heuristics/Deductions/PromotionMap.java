@@ -725,7 +725,7 @@ public class PromotionMap extends AbstractDeduction {
             Map<Coordinate, Path> toAddTwo = new HashMap<>();
 
             int y = (white ? FINAL_RANK_Y : FIRST_RANK_Y);
-            Path targetsFiltered = Path.of(origins.stream().filter(coordinate -> coordinate.getY() == Math.abs(y - (BLACK_PIECE_Y))).toList());
+            Path targetsFiltered = Path.of(origins.stream().filter(coordinate -> coordinate.getY() == Math.abs(y - (BLACK_PAWN_Y))).toList());
             targets.stream().filter(coordinate -> coordinate.getY() == y)
                     .forEach(c -> toAddTwo.put(c, Path.of(targetsFiltered.stream()
                             .filter(cTwo -> Math.abs(c.getX() - cTwo.getX()) < K_ROOK_X).toList())));

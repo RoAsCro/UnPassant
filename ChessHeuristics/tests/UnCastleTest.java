@@ -146,6 +146,14 @@ public class UnCastleTest {
 
     }
 
+    @Test
+    void failedInSolverThree() {
+        System.out.println(this.detector.testState(new BoardInterface(BoardBuilder.buildBoard("r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w q - 0 1"))));
+        List<boolean[]> booleans = uc.hasMoved();
+        Assertions.assertTrue(booleans.get(1)[1]);
+
+    }
+
 
 
 

@@ -154,6 +154,22 @@ public class SolverSingleMovesTest {
                 true, "", false, false);
     }
 
+    @Test
+    public void castleViolation() {
+        // Should fail
+        makeMoveTest("r3kr2/1pp2p2/1pn2npP/3pp3/1bQ5/2N2NPP/1PPP1P2/R3K1R1 w q - 0 1",
+                new Coordinate(2, 3), new Coordinate(1, 4),
+                true, "", false, false);
+    }
+
+    @Test
+    public void castleViolation2() {
+        // Should fail
+        makeMoveTest("r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w q - 0 1",
+                new Coordinate(5, 2), new Coordinate(7, 1),
+                true, "", false, false);
+    }
+
 //    @Test
 //    public void unPassantBadPosition() {
 //        makeMoveTest("rnbqk1nr/pppp2pp/8/4P3/8/6P1/PPPP1P1P/RNBQK1NR w - - 0 1",

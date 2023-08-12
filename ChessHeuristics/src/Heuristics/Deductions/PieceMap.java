@@ -38,7 +38,7 @@ public class PieceMap extends AbstractDeduction{
 
     Predicate<Coordinate> secondRankCollision = coordinate -> {
         int y = coordinate.getY();
-        if ((y == WHITE_PIECE_Y || y == BLACK_PIECE_Y)) {
+        if ((y == WHITE_PAWN_Y || y == BLACK_PAWN_Y)) {
             Map<Coordinate, List<Path>> map = y == 1 ? this.pawnMap.getWhitePaths() : this.pawnMap.getBlackPaths();
             return !(map.containsKey(coordinate));
         }
