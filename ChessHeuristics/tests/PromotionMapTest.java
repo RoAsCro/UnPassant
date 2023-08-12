@@ -221,7 +221,7 @@ public class PromotionMapTest {
 
     @Test
     void testCollisionBothPawnsTheoreticalEnoughCaptures() {
-            BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/3q4/3Q4/8/1PPPPPPP/2BQKBNR w Kkq - 0 1"));
+            BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/3q4/3Q4/8/1PPPPPPP/2BQKBNR w - - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
@@ -251,7 +251,7 @@ public class PromotionMapTest {
 
     @Test
     void testCollisionBothPawnsTheoreticalOneCapture() {
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/3q4/3Q4/8/1PPPPPPP/R1BQKBNR w KQkq - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/3q4/3Q4/8/1PPPPPPP/R1BQKBNR w - - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);
@@ -366,7 +366,7 @@ public class PromotionMapTest {
 
     @Test
     void testCaptureQuantitiesAmbiguousOrigins() {
-        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("2b1k3/1pppp3/8/2B2p2/1B6/8/2PPPPPP/RNBQKBNR w KQ - 0 1"));
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("2b1k3/1pppp3/8/2B2p2/1B6/8/2PPPPPP/RNBQKBNR w - - 0 1"));
 
         pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
         this.pawnMapWhite.deduce(boardInterface);

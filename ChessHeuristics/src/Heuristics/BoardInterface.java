@@ -2,6 +2,7 @@ package Heuristics;
 
 import StandardChess.*;
 
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -20,6 +21,23 @@ public class BoardInterface {
         this.board = board;
         findKings();
         findPieces();
+        correctCastling();
+    }
+
+    private void correctCastling() {
+        Map<Coordinate,String> rookCoords = Map.of(Coordinates.WHITE_QUEEN_ROOK, "tt",
+                Coordinates.WHITE_KING_ROOK, "tf",
+                Coordinates.BLACK_QUEEN_ROOK, "ft", Coordinates.BLACK_KING_ROOK, "ft");
+        rookCoords.forEach((c, s) -> {
+            boolean white = s.charAt(0) == 't';
+            boolean queen = s.charAt(1) == 't';
+            Piece rook = board.at(c);
+            if (canMove(white, queen)) {
+                if (!rook.getType().equals("rook") || !rook.getColour().equals(white ? "white" : "black")) {
+                    board.setCastle(queen ? "queen" : "king", white ? "white" : "black", false);
+                }
+            }
+        });
     }
 
     private void iterateOverBoard(Predicate<Coordinate> condition, Consumer<Coordinate> function) {
@@ -67,7 +85,14 @@ public class BoardInterface {
 
 
     public boolean inCheck(String player) {
-        return this.board.getReader().inCheck(player.equals("white") ? this.whiteKing : this.blackKing);
+        Coordinate king = player.equals("white") ? this.whiteKing : this.blackKing;
+        if (king == null) {
+            findKings();
+            if (king == null) {
+                return false;
+            }
+        }
+        return this.board.getReader().inCheck(king);
     }
 
     public boolean canKingMove(boolean white) {

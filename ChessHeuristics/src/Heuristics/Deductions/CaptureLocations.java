@@ -260,11 +260,14 @@ public class CaptureLocations extends AbstractDeduction {
     private Map<Coordinate, List<Path>> everySingularPawnPath(boolean white) {
         Map<Coordinate, List<Path>> pathsInUse = (white ? this.combinedPawnMap.getWhitePaths() : this.combinedPawnMap.getBlackPaths());
 
-        HashMap<Coordinate, List<Path>> returnMap = new HashMap<Coordinate, List<Path>>(pathsInUse.entrySet().stream()
+        HashMap<Coordinate, List<Path>> returnMap = new HashMap<Coordinate, List<Path>>(
+                pathsInUse.entrySet().stream()
                 .filter(entry -> entry.getKey().getY() == (white ? WHITE_ESCAPE_Y : BLACK_ESCAPE_Y))
                 .filter(entry -> pathsInUse
-                        .containsKey(new Coordinate(entry.getKey().getX(), white ? WHITE_PIECE_Y + 1 : BLACK_PIECE_Y -1)))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                        .containsKey(new Coordinate(entry.getKey().getX(), white ? WHITE_PIECE_Y : BLACK_PIECE_Y)))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+        );
+//        System.out.println(returnMap);
         returnMap.putAll((white ? this.combinedPawnMap.getWhitePaths() : this.combinedPawnMap.getBlackPaths())
                 .entrySet()
                 .stream()

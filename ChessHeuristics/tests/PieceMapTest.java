@@ -9,6 +9,7 @@ import Heuristics.Path;
 import Heuristics.Pathfinder;
 import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
+import StandardChess.Coordinates;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -1442,6 +1443,105 @@ public class PieceMapTest {
         Assertions.assertFalse(pieceMap.getKingMovement(true));
         Assertions.assertFalse(pieceMap.getKingMovement(false));
 
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testRookCastlingRookIsCaged() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/1P6/P7/2N5/2PPPPPP/R1BQKBNR w KQkq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertTrue(pieceMap.getCaged().get(Coordinates.WHITE_QUEEN_ROOK));
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testRookCastlingKingIsCaged() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppp1ppp/8/4p3/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+
+        Assertions.assertTrue(pieceMap.getCaged().get(Coordinates.BLACK_KING));
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testQueenBlockedByCastlingKingIsCaged() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqk2r/pppp1ppp/3b1n2/4p3/5P2/8/PPPPP1PP/RNBQKBNR w KQkq - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+        System.out.println(pieceMap.getCaged());
+
+        Assertions.assertTrue(pieceMap.getCaged().get(new Coordinate(3, 0)));
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+    @Test
+    void testQueenNotBlockedByCastlingKingIsCaged() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/p1pp1pp1/1p3p2/7p/8/8/PPPP1PPP/RNBQKBNR w KQk - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+        System.out.println(pieceMap.getCaged());
+
+        Assertions.assertFalse(pieceMap.getCaged().get(new Coordinate(3, 0)));
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testRookBlockedByCastlingKingIsCaged() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/p1pp1ppp/1p3p2/8/8/8/PP1PPPPP/RNBQKBNR w q - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+        System.out.println(pieceMap.getCaged());
+
+        Assertions.assertTrue(pieceMap.getCaged().get(new Coordinate(7, 7)));
+        Assertions.assertTrue(pieceMap.getState());
+
+
+    }
+
+    @Test
+    void testQueenRookBlockedByCastlingKingIsCaged() {
+
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/p1pp1pp1/1p3p2/7p/8/8/PP1PPPPP/RNBQKBNR w k - 0 1"));
+        pieceMap.getObservations().forEach(observation -> observation.observe(boardInterface));
+        this.pawnMapWhite.deduce(boardInterface);
+        this.pawnMapBlack.deduce(boardInterface);
+        this.combinedPawnMap.deduce(boardInterface);
+        this.pieceMap.deduce(boardInterface);
+        System.out.println(pieceMap.getCaged());
+
+        Assertions.assertTrue(pieceMap.getCaged().get(new Coordinate(0, 7)));
         Assertions.assertTrue(pieceMap.getState());
 
 

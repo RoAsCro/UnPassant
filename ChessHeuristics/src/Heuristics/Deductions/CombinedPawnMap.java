@@ -111,6 +111,7 @@ public class CombinedPawnMap extends AbstractDeduction {
         }
 //        System.out.println(minimumCaptures(true));
 //        System.out.println(this.whitePaths);
+//        System.out.println(this.blackPaths);
 
         return false;
     }

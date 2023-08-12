@@ -86,17 +86,17 @@ public class ImpossibleStates {
 
     @Test
     void impossiblePawnPositionTwo() {
-        Assertions.assertFalse(test("3qkb2/3pppp1/8/8/8/P7/PP1PPPPP/RNBQKBNR w KQ - 0 1"));
+        Assertions.assertFalse(test("3qkb2/3pppp1/8/8/8/P7/PP1PPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void impossiblePawnPositionThree() {
-        Assertions.assertFalse(test("3qkb2/3pppp1/8/8/3P4/2P5/1P1PPPPP/RNBQKBNR w KQ - 0 1"));
+        Assertions.assertFalse(test("3qkb2/3pppp1/8/8/3P4/2P5/1P1PPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
     void possiblePawnPositionTwo() {
-        Assertions.assertTrue(test("3qkb2/3pppp1/8/8/3P4/2P5/P2PPPPP/RNBQKBNR w KQ - 0 1"));
+        Assertions.assertTrue(test("3qkb2/3pppp1/8/8/3P4/2P5/P2PPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
@@ -126,12 +126,12 @@ public class ImpossibleStates {
 
     @Test
     void impossibleMapThree() {
-        Assertions.assertFalse(test("r1b1kb1r/pp1ppppp/8/4P3/P4p2/8/1PPPPPP1/2BQKB1R w Kkq - 0 1"));
+        Assertions.assertFalse(test("r1b1kb1r/pp1ppppp/8/4P3/P4p2/8/1PPPPPP1/2BQKB1R w - - 0 1"));
     }
 
     @Test
     void possibleMapTwo() {
-        Assertions.assertTrue(test("r1b1kb1r/pp1pp1pp/8/4P3/P4p2/8/1PPPPPP1/2BQKB1R w Kkq - 0 1"));
+        Assertions.assertTrue(test("r1b1kb1r/pp1pp1pp/8/4P3/P4p2/8/1PPPPPP1/2BQKB1R w - - 0 1"));
     }
 
     @Test
@@ -166,7 +166,7 @@ public class ImpossibleStates {
 
     @Test
     void impossibleMapEight() {
-        Assertions.assertFalse(test("rnbqkbnr/2pppppp/P7/p7/4p3/6P1/1PPPPP1P/2BQK2R w Kkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/2pppppp/P7/p7/4p3/6P1/1PPPPP1P/2BQK2R w - - 0 1"));
     }
 
     @Test
@@ -186,12 +186,12 @@ public class ImpossibleStates {
 
     @Test
     void impossiblePieceMapRook() {
-        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/R6R/1P4PP/P1PPPP2/1NBQKBN1 w kq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/R6R/1P4PP/P1PPPP2/1NBQKBN1 w - - 0 1"));
     }
 
     @Test
     void impossiblePieceMapRookTwo() {
-        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/2P2PR1/8/PP1PP1PP/1NBQKBN1 w kq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/pppppppp/8/8/2P2PR1/8/PP1PP1PP/1NBQKBN1 w - - 0 1"));
     }
 
     @Test
@@ -227,17 +227,17 @@ public class ImpossibleStates {
     @Test
     void promotionCaptureRook() {
 //        Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPP4/4PPPP/1NBQKBNR w Kkq - 0 1"));
-        Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPPP3/5PPP/1NBQKBNR w Kkq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPPP3/5PPP/1NBQKBNR w - - 0 1"));
     }
 
     @Test
     void promotionCaptureRookTwo() {
-        Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPPP3/4RPPP/1NBQKBN1 w kq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPPP3/4RPPP/1NBQKBN1 w - - 0 1"));
     }
 
     @Test
     void promotionCaptureRookThree() {
-        Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPPPPPP/4R3/1NBQKBN1 w kq - 0 1"));
+        Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPPPPPP/4R3/1NBQKBN1 w - - 0 1"));
     }
 
     @Test
@@ -274,7 +274,7 @@ public class ImpossibleStates {
 
     @Test
     void test2() {
-        Assertions.assertTrue(test("rnbqkbnr/1p2p3/2p2pb1/p2p4/3r4/8/PPPPPP2/RNBQKBN1 w Qq - 0 1"));
+        Assertions.assertTrue(test("rnbqkbnr/1p2p3/2p2pb1/p2p4/3r4/8/PPPPPP2/RNBQKBN1 w - - 0 1"));
     }
 
     @Test
@@ -363,12 +363,12 @@ public class ImpossibleStates {
 
     @Test
     void multipleValidMultiplePiecesBadCombination() {
-        Assertions.assertFalse(test("2bqkbn1/1ppppp1r/1p3p1p/2r2B2/5Q2/6B1/2PPPP1P/R1BQKB1R w KQ - 0 1"));
+        Assertions.assertFalse(test("2bqkbn1/1ppppp1r/1p3p1p/2r2B2/5Q2/6B1/2PPPP1P/R1BQKB1R w - - 0 1"));
     }
 
     @Test
     void multipleValidMultiplePiecesBadCombinationTwo() {
-        Assertions.assertFalse(test("1nb1kb2/1pp1ppp1/1pp1B1p1/Qrq1B1rQ/8/8/1PP2PP1/R1BQKB2 w Q - 0 1"));
+        Assertions.assertFalse(test("1nb1kb2/1pp1ppp1/1pp1B1p1/Qrq1B1rQ/8/8/1PP2PP1/R1BQKB2 w - - 0 1"));
     }
 
     @Test
@@ -378,12 +378,12 @@ public class ImpossibleStates {
 
     @Test
     void multipleValidMultiplePiecesBadCombinationValid() {
-        Assertions.assertTrue(test("2bqkb2/1ppppp1r/1p3p1p/2r2B2/5Q2/6B1/2PPPP2/R1BQKB1R w KQ - 0 1"));
+        Assertions.assertTrue(test("2bqkb2/1ppppp1r/1p3p1p/2r2B2/5Q2/6B1/2PPPP2/R1BQKB1R w - - 0 1"));
     }
 
     @Test
     void multipleValidMultiplePiecesCombinationValid() {
-        Assertions.assertFalse(test("2bqkb2/1ppppp1r/1p3p1p/2r2B2/5Q1Q/6B1/2PPPP2/R1BQKB1R w KQ - 0 1"));
+        Assertions.assertFalse(test("2bqkb2/1ppppp1r/1p3p1p/2r2B2/5Q1Q/6B1/2PPPP2/R1BQKB1R w - - 0 1"));
     }
 
     @Test
@@ -403,7 +403,7 @@ public class ImpossibleStates {
 
     @Test
     void impossiblePromotion() {
-        Assertions.assertFalse(test("3qkbnQ/pp1ppppp/2p5/5P1P/3QP3/2P1Q1P1/8/RNBQKBNR w KQ - 0 1"));
+        Assertions.assertFalse(test("3qkbnQ/pp1ppppp/2p5/5P1P/3QP3/2P1Q1P1/8/RNBQKBNR w - - 0 1"));
     }
 
     @Test
@@ -427,7 +427,7 @@ public class ImpossibleStates {
     }
     @Test
     void cagedRookCaptureMirrorVertical() {
-        Assertions.assertTrue(test("1nbqkbnr/2pppppp/pp6/8/4Q3/8/PP1PPPPP/RNBQKBNR w KQ - 0 1"));
+        Assertions.assertTrue(test("1nbqkbnr/2pppppp/pp6/8/4Q3/8/PP1PPPPP/RNBQKBNR w - - 0 1"));
     }
 
     @Test
@@ -453,7 +453,7 @@ public class ImpossibleStates {
     @Test
     void promotionChangingBoardState() {
         //  Not supported
-//        Assertions.assertFalse(test("2bqkb1r/1pp1ppp1/8/p2P1q2/3p1Q2/5P2/PPP2P2/RNBQKBNR w KQk - 0 1"));
+//        Assertions.assertFalse(test("2bqkb1r/1pp1ppp1/8/p2P1q2/3p1Q2/5P2/PPP2P2/RNBQKBNR w - - 0 1"));
     }
 
     @Test
@@ -464,8 +464,15 @@ public class ImpossibleStates {
     @Test
     void r() {
 
-        System.out.println(test("8/p1p1p1p1/p1kP2p1/8/P1N1K1N1/1P1RP1PP/1Q1Pq2P/rb2n2B w - - 0 1"));
-        System.out.println(this.pm.getPromotedPieceMap());
+        System.out.println(test("5rk1/2p2ppp/ppnppn2/1q3bB1/1b2P3/1PNP1NP1/1P1Q1P1P/R3K1R1 w Q - 0 1"));
+        System.out.println(this.pm.getPromotionNumbers());
+
+
+    } @Test
+    void r2() {
+
+        System.out.println(test("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R3K1R1 w Q - 0 1"));
+        System.out.println(this.pm.getPromotionNumbers());
 
 
     }

@@ -158,6 +158,7 @@ public class Solver implements Runnable {
 //                        if (any && legalFirst) {
 //                            System.out.println("E");
 //                        }
+
                             finalStates.add(currentState + ":" + stateDescription[1]);
                             return finalStates;
 
@@ -259,17 +260,22 @@ public class Solver implements Runnable {
             states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, true, any, false));
 //            System.out.println(additionalMoves[0]);
 //            System.out.println(states);
-
             if (!legalFirst && any && !states.isEmpty()) {
                 return states;
             }
         } else if (king) {
             Coordinate[] additionalMoves = new Coordinate[]{new Coordinate(x - 2, y), new Coordinate(x + 2, y)};
             states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, false, any, true));
+            if (!legalFirst && any && !states.isEmpty()) {
+                return states;
+            }
 
         } else if (type.equals("pawn")) {
             Coordinate[] additionalMoves = new Coordinate[]{new Coordinate(x, y +  (white ? -2 : 2))};
             states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, false, any, false));
+            if (!legalFirst && any && !states.isEmpty()) {
+                return states;
+            }
 
         }
         states.addAll(iterateThroughMovesHelper(board, moves, origin, currentState, false, false, any, false));
@@ -334,8 +340,6 @@ public class Solver implements Runnable {
                                     && piece.equals("") && !promotion || testState(currentBoard)) {
                                 pass = true;
                             }
-//
-//
                             if (pass) {
                                 currentBoard.setTurn(white ? "black" : "white");
                                 if (previousEnPassant) {
