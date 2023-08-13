@@ -102,7 +102,7 @@ public class CombinedPawnMap extends AbstractDeduction {
     }
 
     public Path getSinglePath(boolean white, Coordinate coordinate) {
-        return this.detector.getSingPawnPaths(white).get(coordinate);
+        return this.detector.getSinglePawnPaths(white).get(coordinate);
     }
 
     /**
@@ -142,7 +142,7 @@ public class CombinedPawnMap extends AbstractDeduction {
             return false;
         }
 
-        singleOriginPawns.forEach(entry -> this.detector.getSingPawnPaths(!white).put(entry.getKey(), entry.getValue().get(0)));
+        singleOriginPawns.forEach(entry -> this.detector.getSinglePawnPaths(!white).put(entry.getKey(), entry.getValue().get(0)));
 
 
         List<Path> newPaths = new LinkedList<>();

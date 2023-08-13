@@ -31,7 +31,23 @@ public interface StateDetector {
     //CombinePawnMap stuff
     Map<Coordinate, List<Path>> getPawnPaths(boolean white);
 
-    Map<Coordinate, Path> getSingPawnPaths(boolean white);
+    Map<Coordinate, Path> getSinglePawnPaths(boolean white);
+
+    int minimumPawnCaptures(boolean white);
 
     void update();
+
+    boolean getKingMovement(boolean white);
+
+    void setKingMovement(boolean white, boolean moved);
+
+    boolean getRookMovement(boolean white, boolean queen);
+
+    void setRookMovement(boolean white, boolean queen, boolean moved);
+
+    Map<Coordinate, Map<Coordinate, Path>> getStartLocations();
+
+    Map<Coordinate, Boolean> getCaged();
+
+    Map<String, Map<Path, Integer>> getPromotionNumbers();
 }

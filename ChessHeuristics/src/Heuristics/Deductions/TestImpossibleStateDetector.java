@@ -9,6 +9,7 @@ import Heuristics.StateDetector;
 import StandardChess.Coordinate;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class TestImpossibleStateDetector implements StateDetector {
 
@@ -35,6 +36,21 @@ public class TestImpossibleStateDetector implements StateDetector {
     //CombinedPawnMapStuff
     private Map<Coordinate, List<Path>>[] pawnPaths = new Map[]{new TreeMap<Coordinate, List<Path>>(), new TreeMap<Coordinate, List<Path>>()};
     private final Map<Coordinate, Path>[] singlePawnPaths = new Map[]{new TreeMap<Coordinate, Path>(), new TreeMap<Coordinate, Path>()};
+    public static final Function<Path, Integer> PATH_DEVIATION = p -> p.stream()
+            .reduce(new Coordinate(p.get(0).getX(), 0), (c, d) -> {
+                if (c.getX() != d.getX()) {
+                    return new Coordinate(d.getX(), c.getY() + 1);
+                }
+                return c;
+            }).getY();
+
+    //PieceMap stuff
+    private boolean[][] kingRookMovement = new boolean[][]{{false, false, false}, {false, false, false}};
+    private boolean blackKingMoved = false;
+    private final Map<Coordinate, Map<Coordinate, Path>> startLocations = new TreeMap<>();
+    private final Map<Coordinate, Boolean> caged = new TreeMap<>();
+    private final Map<String, Map<Path, Integer>> promotionNumbers = new TreeMap<>();
+
 
     public TestImpossibleStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction ... deductions) {
         this.pawnNumber = pawnNumber;
@@ -76,7 +92,7 @@ public class TestImpossibleStateDetector implements StateDetector {
 
             deduction.deduce(board);
             if (!this.deductions.stream().allMatch(Deduction::getState)) {
-//                System.out.println(deduction);
+                System.out.println(deduction);
 
                 return false;
             }
@@ -138,15 +154,35 @@ public class TestImpossibleStateDetector implements StateDetector {
     }
 
 
-    //CombinePawnMap stuff
+    //CombinedPawnMap stuff
     @Override
     public Map<Coordinate, List<Path>> getPawnPaths(boolean white) {
         return pawnPaths[white ? WHITE : BLACK];
     }
 
     @Override
-    public Map<Coordinate, Path> getSingPawnPaths(boolean white) {
+    public Map<Coordinate, Path> getSinglePawnPaths(boolean white) {
         return this.singlePawnPaths[white ? WHITE : BLACK];
+    }
+
+    @Override
+    public int minimumPawnCaptures(boolean white) {
+        Map<Coordinate, List<Path>> player = getPawnPaths(white);
+        Path claimed = new Path();
+        int[] size = new int[]{0};
+        // With the claimed clause this will not work 100% of the time
+        player.values().stream().forEach(paths -> {
+                    size[0] = size[0] + paths.stream()
+                            .filter(p -> !claimed.contains(p.getFirst()))
+                            .reduce((integer, integer2) -> PATH_DEVIATION.apply(integer) < PATH_DEVIATION.apply(integer2) ? integer : integer2)
+                            .map(p -> {
+                                claimed.add(p.getFirst());
+                                return PATH_DEVIATION.apply(p);
+                            })
+                            .orElse(0);
+                }
+        );
+        return size[0];
     }
 
 
@@ -156,4 +192,34 @@ public class TestImpossibleStateDetector implements StateDetector {
     }
 
 
+    @Override
+    public boolean getKingMovement(boolean white) {
+        return kingRookMovement[white ? WHITE : BLACK][0];
+    }
+    @Override
+    public void setKingMovement(boolean white, boolean moved) {
+        this.kingRookMovement[white ? WHITE : BLACK][0] = moved;
+    }
+    @Override
+    public boolean getRookMovement(boolean white, boolean queen) {
+        return kingRookMovement[white ? WHITE : BLACK][queen ? 1 : 2];
+    }
+    @Override
+    public void setRookMovement(boolean white, boolean queen, boolean moved) {
+        this.kingRookMovement[white ? WHITE : BLACK][queen ? 1 : 2] = moved;
+    }
+    @Override
+    public Map<Coordinate, Map<Coordinate, Path>> getStartLocations() {
+        return startLocations;
+    }
+
+    @Override
+    public Map<Coordinate, Boolean> getCaged() {
+        return caged;
+    }
+    // <Type of piece, <potentially promoted pieces, how many are may not be promoted>
+    @Override
+    public Map<String, Map<Path, Integer>> getPromotionNumbers() {
+        return promotionNumbers;
+    }
 }
