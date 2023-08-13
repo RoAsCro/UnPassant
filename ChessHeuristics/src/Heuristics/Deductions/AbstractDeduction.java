@@ -1,6 +1,7 @@
 package Heuristics.Deductions;
 
 import Heuristics.Deduction;
+import Heuristics.StateDetector;
 
 import java.util.Map;
 
@@ -23,6 +24,8 @@ public abstract class AbstractDeduction implements Deduction {
     protected static int QUEEN_X = 3;
     protected static int KING_X = 4;
 
+    protected StateDetector detector;
+
     protected final static Map<Integer, String> STANDARD_STARTS = Map.of(
             0, "rook", 1, "knight", 2, "bishop", 3, "queen", 4,
             "king", 5, "bishop", 6, "knight", 7, "rook"
@@ -34,6 +37,16 @@ public abstract class AbstractDeduction implements Deduction {
     );
 
     protected Boolean state = true;
+
+    @Override
+    public String errorMessage(){
+        return this.getClass() + " deductions failed.";
+    }
+
+    @Override
+    public void registerDetector(StateDetector detector) {
+        this.detector = detector;
+    }
 
     @Override
     public Boolean getState() {

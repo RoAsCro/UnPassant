@@ -28,14 +28,10 @@ public abstract class PawnMap extends AbstractDeduction{
     protected boolean white;
 
     List<Observation> observations = new ArrayList<>();
-    PawnNumber pawnNumber;
-    PieceNumber pieceNumber;
 
     public PawnMap(PawnMap pawnMap) {
         this.white = pawnMap.white;
         this.observations = pawnMap.observations;
-        this.pawnNumber = pawnMap.pawnNumber;
-        this.pieceNumber = pawnMap.pieceNumber;
         pawnMap.pawnOrigins.forEach((k, v) -> this.pawnOrigins.put(k, Path.of(v)));
         this.captureSet.putAll(pawnMap.captureSet);
         this.originFree.putAll(pawnMap.originFree);
@@ -47,9 +43,7 @@ public abstract class PawnMap extends AbstractDeduction{
     public PawnMap(Boolean white, PawnNumber pawnNumber, PieceNumber pieceNumber) {
         this.white = white;
         this.observations.add(pawnNumber);
-        this.pawnNumber = pawnNumber;
         this.observations.add(pieceNumber);
-        this.pieceNumber = pieceNumber;
         for (int i = 0; i < 8 ; i++ ) {
             this.originFree.put(new Coordinate(i, Math.abs((this.white ? FIRST_RANK_Y : FINAL_RANK_Y) - 1)), true);
         }
@@ -72,7 +66,7 @@ public abstract class PawnMap extends AbstractDeduction{
     }
 
     private int capturablePieces(boolean white) {
-        return this.maxPieces - (white ? this.pieceNumber.getWhitePieces() : this.pieceNumber.getBlackPieces());
+        return this.maxPieces - (white ? this.detector.getPieceNumber().getWhitePieces() : this.detector.getPieceNumber().getBlackPieces());
     }
 
     public int capturablePieces() {
@@ -97,8 +91,8 @@ public abstract class PawnMap extends AbstractDeduction{
      */
     protected int capturedPieces(boolean white) {
         return this.maxPieces - (white
-                ? this.pieceNumber.getBlackPieces()
-                : this.pieceNumber.getWhitePieces());
+                ? this.detector.getPieceNumber().getBlackPieces()
+                : this.detector.getPieceNumber().getWhitePieces());
     }
 
     public Map<Coordinate, Boolean> getOriginFree() {

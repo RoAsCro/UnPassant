@@ -4,26 +4,32 @@ import Heuristics.BoardInterface;
 import Heuristics.Deduction;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
+import Heuristics.StateDetector;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class TestImpossibleStateDetector {
+public class TestImpossibleStateDetector implements StateDetector {
 
-    private static int MAX_PAWNS = 8;
-    private static int MAX_PIECES = 16;
+    private static final int MAX_PAWNS = 8;
+    private static final int MAX_PIECES = 16;
+
+    private static final int WHITE = 0;
+    private static final int BLACK = 1;
 
 
-    private PawnNumber pawnNumber;
-    private PieceNumber pieceNumber;
+    private final PawnNumber pawnNumber;
+    private final PieceNumber pieceNumber;
+
+    private int[] piecesTakableByPawns = new int[]{MAX_PIECES, MAX_PIECES}
 
     private List<Deduction> deductions;
-
 
     public TestImpossibleStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction ... deductions) {
         this.pawnNumber = pawnNumber;
         this.pieceNumber = pieceNumber;
         this.deductions = Arrays.stream(deductions).toList();
+        this.deductions.forEach(d -> d.registerDetector(this));
     }
 
 
@@ -66,4 +72,21 @@ public class TestImpossibleStateDetector {
         return this.deductions;
     }
 
+    public PawnNumber getPawnNumber() {
+        return this.pawnNumber;
+    }
+
+    @Override
+    public int pawnTakeablePieces(boolean white) {
+        return this.piecesTakableByPawns[white ? WHITE : BLACK];
+    }
+
+    @Override
+    public void setPawnTakeablePieces(boolean white, int subtrahend) {
+        this.piecesTakableByPawns[white ? WHITE : BLACK] -= subtrahend;
+    }
+
+    public PieceNumber getPieceNumber() {
+        return this.pieceNumber;
+    }
 }
