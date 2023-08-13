@@ -255,6 +255,7 @@ public class SolverTest {
         // pp46
         Solver solver = new Solver(
                 s -> {
+//                    System.out.println(s);
                     int depth = Integer.parseInt(s.split(":")[2]);
                     return depth >= 2 || !s.split(":")[1].contains("x");
                 }
@@ -272,8 +273,8 @@ public class SolverTest {
                 }
         );
         solver.setNumberOfSolutions(1);
-        solver.setAdditionalDepth(1);
-        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("4k2r/8/8/8/2p5/5P2/2P2PP1/3b1RK1 w k - 0 1"), 2).size());
+        solver.setAdditionalDepth(0);
+        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("4k2r/8/8/8/2p5/5P2/2P2PP1/3b1RK1 w k - 0 1"), 3).size());
 
         // The first here does not have any extra depth, checking that it comes to one of two valid solutions to the
         // first part of the problem, the only moves available with the given castling rights and the capture restrictions
@@ -598,19 +599,28 @@ public class SolverTest {
                 "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1"
         );
 
-        int count = 9;
+        int count = 11;
         for (String st : list) {
             count++;
             System.out.println(count);
             Solver solver = new Solver(s -> {
                 String move = s.split(":")[1];
-                if (move.contains("x") && !(s.split(":")[2].equals("0") || s.split(" ")[1].contains("b"))) {
+//                System.out.println(s);
+
+                if (move.contains("x") && !(move.charAt(4) == 'P')) {
+                    return false;
+                }
+//                System.out.println(move.charAt(0) == 'N');
+//                System.out.println((s.split(" ")[1]));
+
+                if (move.charAt(0) == 'N' && (s.split(" ")[1].contains("b"))) {
                     return false;
                 }
                 if (move.charAt(1) == 'R' || move.charAt(1) == 'K') {
                     return false;
                 }
-                return move.charAt(4) != 'R' && !(s.split(" ")[1].contains("b") && move.charAt(0) == 'N') ;
+//                System.out.println("succeeds");
+                return true;
             }
                     ,d -> {
 //                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
@@ -622,7 +632,7 @@ public class SolverTest {
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(0);
 //            System.out.println(count);
-            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), count);
+//            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), count);
 //            Assertions.assertEquals(0, solutions.size());
 //            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
         }

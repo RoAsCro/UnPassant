@@ -3,6 +3,7 @@ package SolveAlgorithm;
 import Heuristics.BoardInterface;
 import StandardChess.ChessBoard;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class BoardComparator implements Comparator<BoardInterface> {
             String[] o2Board = o2FEN[0].split("/");
             String o1CriticalRegion = o1Board[0] + o1Board[1] + o1Board[6] + o1Board[7];
             String o2CriticalRegion = o2Board[0] + o2Board[1] + o2Board[6] + o2Board[7];
-            equal = o1CriticalRegion.equals(o2CriticalRegion) && o1FEN[3].equals(o2FEN[3]);
+            equal = o1CriticalRegion.equals(o2CriticalRegion) && o1FEN[2].equals(o2FEN[2]);
         }
         int comparison = equal ? 0 : o1.hashCode() - o2.hashCode();
 //        System.out.println(equal);

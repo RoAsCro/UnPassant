@@ -3,6 +3,7 @@ package Heuristics;
 import StandardChess.*;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -103,5 +104,17 @@ public class BoardInterface {
         return this.board.canCastle(queenSide ? "queen" : "king", white ? "white" : "black");
     }
 
+//    @Override
+//    public int hashCode() {
+//        String[] o1FEN = getReader().toFEN().split(" ");
+//        String[] o1Board = o1FEN[0].split("/");
+//        String criticalRegion = o1Board[0] + o1Board[1] + o1Board[6] + o1Board[7];
+//
+//        return Objects.hash(criticalRegion, getBoardFacts().getCoordinates(true, "pawn"), getBoardFacts().getCoordinates(false, "pawn"),
+//                getBoardFacts().getCoordinates(false, "rook").size(), getBoardFacts().getCoordinates(false, "bishop").size(),
+//                getBoardFacts().getCoordinates(false, "knight").size(), getBoardFacts().getCoordinates(false, "queen").size(),
+//                getBoardFacts().getCoordinates(true, "rook").size(), getBoardFacts().getCoordinates(true, "bishop").size(),
+//                getBoardFacts().getCoordinates(true, "knight").size(), getBoardFacts().getCoordinates(true, "queen").size());
+//    }
 
 }

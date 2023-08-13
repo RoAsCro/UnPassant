@@ -1,7 +1,6 @@
 package StandardChess;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class StandardBoard implements ChessBoard{
 
@@ -89,5 +88,10 @@ public class StandardBoard implements ChessBoard{
         this.enPassant = coordinate;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(Arrays.deepHashCode(this.board), this.getReader().toFEN(), this.enPassant,
+        this.turn);
+    }
 
 }

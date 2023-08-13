@@ -351,7 +351,9 @@ public class Solver implements Runnable {
 //                        if (previousEnPassant) {
 //                            System.out.println("justMove");
 //                        }
-                        String move = " :" + toLAN(currentBoard, origin, target, piece, castle);
+                        currentBoard.setTurn(white ? "black" : "white");
+                        String move = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece, castle);
+                        currentBoard.setTurn(white ? "white" : "black");
                         if (CheckUtil.check(new BoardInterface(currentBoard))
                         && this.fenPredicate.test(move +
                                 (currentState.split(":").length > 1 ? (":" + currentState.split(":")[2])
