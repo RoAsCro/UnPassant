@@ -14,20 +14,17 @@ import java.util.List;
 import java.util.Map;
 
 public class PromotedPawnSquares extends AbstractDeduction{
-    private PieceNumber pieceNumber;
-    private PieceMap pieceMap;
-    private final PromotionMap promotionMap;
-    private final CaptureLocations cl;
+    private PromotionMap promotionMap;
     private CombinedPawnMap combinedPawnMap;
     private List<Path> whitePaths = new LinkedList<>();
     private List<Path> blackPaths = new LinkedList<>();
     private boolean promotionMapInUse = false;
     public PromotedPawnSquares(PieceNumber pieceNumber, PieceMap pieceMap, PromotionMap promotionMap, CaptureLocations cl, CombinedPawnMap combinedPawnMap) {
-        this.pieceNumber = pieceNumber;
-        this.pieceMap = pieceMap;
         this.promotionMap = promotionMap;
-        this.cl = cl;
         this.combinedPawnMap = combinedPawnMap;
+    }
+
+    public PromotedPawnSquares() {
     }
 
     @Override
@@ -42,21 +39,21 @@ public class PromotedPawnSquares extends AbstractDeduction{
         Path emptyBlackOrigins = findEmptyOrigins(false);
 
         if (!emptyWhiteOrigins.isEmpty()) {
-            //System.out.println("w-----------w");
+            System.out.println("w-----------w");
             //System.out.println(emptyWhiteOrigins);
 
             whitePaths = pathToFinalRank(board, false, emptyWhiteOrigins);
             whitePaths = getCaptures(false, whitePaths);
             //System.out.println(whitePaths);
 
-            if (whitePaths.size() < this.cl.getWhitePawnsCapturedByPawns()) {
+            if (whitePaths.size() < this.detector.getPawnsCapturedByPawns(true)) {
                 this.state = false;
                 return false;
             }
         }
 
         if (!emptyBlackOrigins.isEmpty()) {
-            //System.out.println("b-----------b");
+            System.out.println("b-----------b");
             //System.out.println(emptyBlackOrigins);
 
 //            System.out.println(emptyBlackOrigins);
@@ -65,7 +62,7 @@ public class PromotedPawnSquares extends AbstractDeduction{
             //System.out.println(blackPaths.size());
             blackPaths = getCaptures(true, blackPaths);
 
-            if (blackPaths.size() < this.cl.getBlackPawnsCapturedByPawns()) {
+            if (blackPaths.size() < this.detector.getPawnsCapturedByPawns(false)) {
                 this.state = false;
                 return false;
             }
@@ -76,10 +73,13 @@ public class PromotedPawnSquares extends AbstractDeduction{
     }
 
     private Path findEmptyOrigins(boolean white) {
-        Path promotedPawns = this.cl.getPromotedPawns(white);
+        Path promotedPawns = this.detector.getPromotedPawns(white);
+        System.out.println("promotedPawns");
+
+        System.out.println(promotedPawns);
         return Path.of(promotedPawns.stream().filter(c -> (!this.promotionMap.getPromotionPawnMap(white).getPawnOrigins().isEmpty()
-                        ? this.promotionMap.getPromotionPawnMap(white)
-                        : this.combinedPawnMap.getPawnMap(white)).getPawnOrigins()
+                        ? this.promotionMap.getPromotionPawnMap(white).getPawnOrigins()
+                        : this.detector.getPawnOrigins(white))
                     .values()
                     .stream().flatMap(Path::stream)
                     .noneMatch(c::equals))
@@ -91,9 +91,10 @@ public class PromotedPawnSquares extends AbstractDeduction{
         CombinedPawnMap combinedPawnMap = this.promotionMapInUse
                 ? this.combinedPawnMap
                 : this.promotionMap.getPromotionCombinedPawnMap();
-        int captures = (combinedPawnMap.getPawnMap(!notWhite).maxPieces - (!notWhite ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()))
+        System.out.println(this.promotionMapInUse);
+        int captures = (this.detector.pawnTakeablePieces(!notWhite) - (!notWhite ? this.detector.getPieceNumber().getBlackPieces() : this.detector.getPieceNumber().getWhitePieces()))
                 - combinedPawnMap.minimumCaptures(!notWhite);
-        int enemyCaptures = (combinedPawnMap.getPawnMap(notWhite).maxPieces - (notWhite ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()))
+        int enemyCaptures = (this.detector.pawnTakeablePieces(notWhite) - (notWhite ? this.detector.getPieceNumber().getBlackPieces() : this.detector.getPieceNumber().getWhitePieces()))
                 - combinedPawnMap.minimumCaptures(notWhite);
         List<Path> paths = new LinkedList<>();
 
@@ -137,7 +138,7 @@ public class PromotedPawnSquares extends AbstractDeduction{
         CombinedPawnMap combinedPawnMap = this.promotionMapInUse
                 ? this.combinedPawnMap
                 : this.promotionMap.getPromotionCombinedPawnMap();
-        int captures = (combinedPawnMap.getPawnMap(!notWhite).maxPieces - (!notWhite ? pieceNumber.getBlackPieces() : pieceNumber.getWhitePieces()))
+        int captures = (this.detector.pawnTakeablePieces(!notWhite) - (!notWhite ? this.detector.getPieceNumber().getBlackPieces() : this.detector.getPieceNumber().getWhitePieces()))
                 - combinedPawnMap.minimumCaptures(!notWhite);
         paths.sort(Comparator.comparingInt(CombinedPawnMap.PATH_DEVIATION::apply));
         int currentCaptures = 0;

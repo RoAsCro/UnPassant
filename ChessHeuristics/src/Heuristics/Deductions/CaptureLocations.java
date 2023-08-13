@@ -47,6 +47,7 @@ public class CaptureLocations extends AbstractDeduction {
         if (
                 whiteRemovals + blackRemovals != 0
         ) {
+            System.out.println("sdsds");
             this.detector.reducePawnTakeablePieces(true, whiteRemovals);
             this.detector.reducePawnTakeablePieces(false, blackRemovals);
             this.detector.reTest(board);
@@ -199,7 +200,7 @@ public class CaptureLocations extends AbstractDeduction {
         //System.out.println((!white ? this.pawnMapWhite : this.pawnMapBlack).maxPieces);
         //System.out.println(white ? pieceNumber.getWhitePieces() : pieceNumber.getBlackPieces());
         //System.out.println(this.combinedPawnMap.minimumCaptures(!white));
-        int maxPiecesOpponentCanTake = this.detector.pawnTakeablePieces(white);
+        int maxPiecesOpponentCanTake = this.detector.pawnTakeablePieces(!white);
         int numberOfPiecesPlayerHasRemaining = (white ? this.detector.getPieceNumber().getWhitePieces() : this.detector.getPieceNumber().getBlackPieces());
         //System.out.println(this.pieceMap.getPromotionNumbers());
         int numberOfPromotedPiecesPlayerHas = this.detector.getPromotionNumbers().entrySet()
@@ -210,8 +211,10 @@ public class CaptureLocations extends AbstractDeduction {
                 .map(entry -> entry.getKey().size() - entry.getValue())
                 .reduce(Integer::sum)
                 .orElse(0);
-        //System.out.println(numberOfPromotedPiecesPlayerHas);
+
+        System.out.println(numberOfPromotedPiecesPlayerHas);
         int numberOfPawnsPlayerHasLost = (MAX_PAWNS - this.detector.getPawnNumbers(white)) - numberOfPromotedPiecesPlayerHas;
+        System.out.println(numberOfPawnsPlayerHasLost);
 
         // MINUS THE NUMBER OF PROMOTED PIECES ON THE BOARD
         // I think the max pieces needs to be reversed
@@ -220,8 +223,11 @@ public class CaptureLocations extends AbstractDeduction {
         //System.out.println(nonPawnsPlayerHasLost);
         int pCBP = (this.detector.minimumPawnCaptures(!white) - nonPawnsPlayerHasLost);
         if (pCBP > 0) {
-            //System.out.println("b");
-            //System.out.println(pCBP);
+            System.out.println("bbbbb");
+            System.out.println(maxPiecesOpponentCanTake);
+            System.out.println(numberOfPiecesPlayerHasRemaining);
+            System.out.println(numberOfPawnsPlayerHasLost);
+            System.out.println(pCBP);
 
 
 

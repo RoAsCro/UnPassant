@@ -18,12 +18,12 @@ public class PromotionSquaresTest {
     public void setup() {
         this.pawnNumber = new PawnNumber();
         this.pieceNumber = new PieceNumber();
-        PawnMapWhite pmw = new PawnMapWhite(this.pawnNumber, this.pieceNumber);
-        PawnMapBlack pmb = new PawnMapBlack(this.pawnNumber, this.pieceNumber);
-        CombinedPawnMap cpm = new CombinedPawnMap(pmw, pmb);
-        PieceMap pm = new PieceMap(cpm);
-        CaptureLocations cl = new CaptureLocations(pmw, pmb, pm, cpm);
-        PromotionMap prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
+        PawnMapWhite pmw = new PawnMapWhite();
+        PawnMapBlack pmb = new PawnMapBlack();
+        CombinedPawnMap cpm = new CombinedPawnMap();
+        PieceMap pm = new PieceMap();
+        CaptureLocations cl = new CaptureLocations();
+        PromotionMap prm = new PromotionMap();
         this.pps = new PromotedPawnSquares(pieceNumber, pm, prm, cl, cpm);
         this.detector = new TestImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,

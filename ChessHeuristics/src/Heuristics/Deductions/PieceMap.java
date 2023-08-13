@@ -41,6 +41,11 @@ public class PieceMap extends AbstractDeduction{
     public void registerDetector(StateDetector detector) {
         super.registerDetector(detector);
         this.pathFinderUtil = new PiecePathFinderUtil(detector);
+        for (int y  = 0 ; y < 8 ; y = y + 7) {
+            for (int x = 0; x < 8; x++) {
+                this.detector.getPromotedPieceMap().put(new Coordinate(x, y), new Path());
+            }
+        }
     }
 
     public Map<String, Map<Path, Integer>> getPromotionNumbers() {
@@ -180,7 +185,7 @@ public class PieceMap extends AbstractDeduction{
         Path certainPromotionsPath = Path.of(certainPromotions.values().stream()
                         .filter(value -> !(value == null))
                 .flatMap(Collection::stream).toList());
-        this.promotedPieceMap.entrySet().stream().forEach(entry -> {
+        this.detector.getPromotedPieceMap().entrySet().stream().forEach(entry -> {
             Path coordinatesToRemove = new Path();
             entry.getValue().stream().forEach(origin -> {
                 String pieceName;
@@ -222,7 +227,7 @@ public class PieceMap extends AbstractDeduction{
                 .filter(entry -> !entry.getKey().equals("pawn"))
                 .filter(entry -> !entry.getKey().equals("knight"))
                 .flatMap(entry -> entry.getValue().stream()).toList());
-        List<Coordinate> accountedPieces = new ArrayList<>(this.promotedPieceMap.values().stream().flatMap(Path::stream).toList());
+        List<Coordinate> accountedPieces = new ArrayList<>(this.detector.getPromotedPieceMap().values().stream().flatMap(Path::stream).toList());
         accountedPieces.addAll(this.detector.getStartLocations().values().stream().map(Map::keySet).flatMap(Set::stream).toList());
         //system.out.println(allPieces);
         //system.out.println(accountedPieces);
@@ -235,7 +240,7 @@ public class PieceMap extends AbstractDeduction{
                 int promotions = this.detector.getPromotionNumbers().get(entry.getKey()).get(entry.getValue());
                 int potentiallyPromoted = 0;
                 for (Coordinate coordinate : entry.getValue()) {
-                    this.promotedPieceMap.values().stream().flatMap(Path::stream).anyMatch(c -> c.equals(coordinate));
+                    this.detector.getPromotedPieceMap().values().stream().flatMap(Path::stream).anyMatch(c -> c.equals(coordinate));
                     potentiallyPromoted++;
                 }
                 if (potentiallyPromoted < entry.getValue().size() - promotions) {
@@ -410,7 +415,7 @@ public class PieceMap extends AbstractDeduction{
 
     private void findPromotionPaths(BoardInterface board, Map<String, Path> potentialPromotions) {
         Map<String, Path> updatedPromotions = new TreeMap<>();
-        this.promotedPieceMap.entrySet().forEach(outerEntry -> {
+        this.detector.getPromotedPieceMap().entrySet().forEach(outerEntry -> {
             potentialPromotions.entrySet().forEach(entry -> {
                 if ((outerEntry.getKey().getY() == 0 && entry.getKey().charAt(entry.getKey().length() - 1) == 'w') ||
                         (outerEntry.getKey().getY() == FINAL_RANK_Y && entry.getKey().charAt(entry.getKey().length() - 1) == 'b')) {
@@ -443,7 +448,7 @@ public class PieceMap extends AbstractDeduction{
                             if (!updatedPromotions.get(entry.getKey()).contains(coordinate)){
                                 updatedPromotions.get(entry.getKey()).add(coordinate);
                             }
-                            this.promotedPieceMap.get(outerEntry.getKey()).add(coordinate);
+                            this.detector.getPromotedPieceMap().get(outerEntry.getKey()).add(coordinate);
                         });
             });
         });
@@ -554,7 +559,7 @@ public class PieceMap extends AbstractDeduction{
 
 
     public Map<Coordinate, Path> getPromotedPieceMap(){
-        return this.promotedPieceMap;
+        return this.detector.getPromotedPieceMap();
     }
 
     public boolean getKingMovement(boolean white) {

@@ -92,8 +92,12 @@ public class CombinedPawnMap extends AbstractDeduction {
         }
 
         if (this.detector.getPawnPaths(true).values().stream().anyMatch(List::isEmpty) || this.detector.getPawnPaths(false).values().stream().anyMatch(List::isEmpty)) {
+            System.out.println();
             this.state = false;
         }
+        System.out.println("CPM END");
+        System.out.println(this.detector.getPawnPaths(true));
+        System.out.println(this.detector.getPawnPaths(false));
 //        System.out.println(minimumCaptures(true));
 //        System.out.println(this.whitePaths);
 //        System.out.println(this.blackPaths);
@@ -138,7 +142,7 @@ public class CombinedPawnMap extends AbstractDeduction {
 
         if (singleOriginPawns.isEmpty()) {
             // New implementation may hugely impact performance here
-            this.detector.update();
+            updateP();
             return false;
         }
 
@@ -209,7 +213,7 @@ public class CombinedPawnMap extends AbstractDeduction {
         forRemoval.forEach(coordinates -> this.detector.getPawnOrigins(white).get(coordinates[0]).remove(coordinates[1]));
         //system.out.println(checkedPlayer.getPawnOrigins());
 //        //system.out.println("Updadting...");
-        this.detector.update();
+        updateP();
 //        //system.out.println("All paths 2: " + checkedPlayerPaths);
 //        System.out.println("B" + ((System.nanoTime() - start1) / 1000000));
 
@@ -221,6 +225,10 @@ public class CombinedPawnMap extends AbstractDeduction {
                         !newPaths.isEmpty()
 //                        || removed[0]
                 ;
+    }
+
+    protected void updateP() {
+        this.detector.update();
     }
 
     private Path makeExclusiveMaps(BoardInterface board, Path path, boolean white, List<Map.Entry<Coordinate, List<Path>>> forbiddenPaths) {

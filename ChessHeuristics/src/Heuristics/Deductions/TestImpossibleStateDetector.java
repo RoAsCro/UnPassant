@@ -50,6 +50,7 @@ public class TestImpossibleStateDetector implements StateDetector {
     private final Map<Coordinate, Map<Coordinate, Path>> startLocations = new TreeMap<>();
     private final Map<Coordinate, Boolean> caged = new TreeMap<>();
     private final Map<String, Map<Path, Integer>> promotionNumbers = new TreeMap<>();
+    private final Map<Coordinate, Path> promotedPieceMap = new TreeMap<>();
 
     //CaptureLocation Stuff
     private Path[] cagedCaptures = new Path[]{new Path(), new Path()};
@@ -96,6 +97,7 @@ public class TestImpossibleStateDetector implements StateDetector {
             deduction.deduce(board);
             if (!this.deductions.stream().allMatch(Deduction::getState)) {
                 System.out.println(deduction);
+                System.out.println("f");
                 return false;
             }
             this.finishedDeductions.add(deduction);
@@ -252,5 +254,10 @@ public class TestImpossibleStateDetector implements StateDetector {
     @Override
     public Path getPromotedPawns(boolean white) {
         return promotedPawns[white ? WHITE : BLACK];
+    }
+
+    @Override
+    public Map<Coordinate, Path> getPromotedPieceMap() {
+        return promotedPieceMap;
     }
 }
