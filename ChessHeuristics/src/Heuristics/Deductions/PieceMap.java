@@ -1,9 +1,6 @@
 package Heuristics.Deductions;
 
-import Heuristics.BoardInterface;
-import Heuristics.Observation;
-import Heuristics.Path;
-import Heuristics.Pathfinder;
+import Heuristics.*;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 import StandardChess.StandardPieceFactory;
@@ -16,61 +13,11 @@ public class PieceMap extends AbstractDeduction{
 
     // Get rid of the one usage of this
     private final Map<Coordinate, Path> promotedPieceMap;
-
-    Predicate<Coordinate> secondRankCollision = coordinate -> {
-        int y = coordinate.getY();
-        if ((y == WHITE_PAWN_Y || y == BLACK_PAWN_Y)) {
-            Map<Coordinate, List<Path>> map = this.detector.getPawnPaths(y == 1);
-            return !(map.containsKey(coordinate));
-        }
-        return true;
-    };
-
-    Predicate<Path> thirdRankCollision = path -> {
-        int y = path.getLast().getY();
-        if (y == WHITE_ESCAPE_Y || y == BLACK_ESCAPE_Y) {
-            boolean white = y == WHITE_ESCAPE_Y;
-            Path toCheck = this.detector.getSinglePawnPaths(white).get(path.getLast());
-            Map<Coordinate, List<Path>> map = this.detector.getPawnPaths(white);
-            return !(
-                    map.containsKey(path.getLast())
-                    && toCheck != null
-                    && Pathfinder.pathsExclusive(toCheck, Path.of(path, Coordinates.NULL_COORDINATE)));
-        }
-        return true;
-    };
-    Predicate<Path> firstRankCollision = path ->{
-        Coordinate coordinate = path.getLast();
-        return !(
-                (coordinate.getY() == 0 || coordinate.getY() == 7)
-                        && !STANDARD_STARTS.get(coordinate.getX()).equals("rook")
-                        && this.detector.getStartLocations().containsKey(coordinate)
-                        && !this.detector.getStartLocations().get(coordinate).isEmpty()
-                        && this.detector.getCaged().containsKey(coordinate)
-                        && this.detector.getCaged().get(coordinate));
-    };
+    private PiecePathFinderUtil pathFinderUtil;
 
     Predicate<Path> kingCollisionWhite = path -> !path.getLast().equals(Coordinates.WHITE_KING);
     Predicate<Path> kingCollisionBlack = path -> !path.getLast().equals(Coordinates.BLACK_KING);
 
-    private final Map<String, Predicate<Path>> pathConditions = Map.of(
-            //
-            "bishop", path ->
-                    secondRankCollision.test(path.getLast())
-                    && thirdRankCollision.test(path),
-            "rook", path ->
-                    secondRankCollision.test(path.getLast())
-                            && thirdRankCollision.test(path)
-                            && firstRankCollision.test(path),
-            "queen", path -> secondRankCollision.test(path.getLast())
-                    && thirdRankCollision.test(path)
-                    && firstRankCollision.test(path),
-            "king", path -> secondRankCollision.test(path.getLast())
-                    && thirdRankCollision.test(path)
-                    && firstRankCollision.test(path),
-            "knight", path -> true
-
-    );
 
     public PieceMap(CombinedPawnMap pawnMap) {
         this.promotedPieceMap = new TreeMap<>();
@@ -79,6 +26,7 @@ public class PieceMap extends AbstractDeduction{
                 this.promotedPieceMap.put(new Coordinate(x, y), new Path());
             }
         }
+
     }
 
     public PieceMap() {
@@ -88,6 +36,11 @@ public class PieceMap extends AbstractDeduction{
                 this.promotedPieceMap.put(new Coordinate(x, y), new Path());
             }
         }
+    }
+    @Override
+    public void registerDetector(StateDetector detector) {
+        super.registerDetector(detector);
+        this.pathFinderUtil = new PiecePathFinderUtil(detector);
     }
 
     public Map<String, Map<Path, Integer>> getPromotionNumbers() {
@@ -251,7 +204,7 @@ public class PieceMap extends AbstractDeduction{
                         ? pieceName.substring(0, 1).toUpperCase()
                         : pieceName.substring(0, 1).toLowerCase();
                 //system.out.println("FINDING PATH" + pieceName);
-                if (findPath(board, pieceName, pieceCode, origin, entry.getKey()).isEmpty()){
+                if (this.pathFinderUtil.findPath(board, pieceName, pieceCode, origin, entry.getKey()).isEmpty()){
                     //system.out.println("or" + origin);
                     //system.out.println("t" + entry.getKey());
 
@@ -446,7 +399,7 @@ public class PieceMap extends AbstractDeduction{
                     : pieceName.substring(0, 1).toLowerCase();
             entry.getValue().keySet().forEach(origin -> {
 
-                if (findPath(board, pieceName, pieceCode, origin, key).isEmpty()){
+                if (this.pathFinderUtil.findPath(board, pieceName, pieceCode, origin, key).isEmpty()){
                     coordinatesToRemove.add(origin);
                 }
             });
@@ -476,12 +429,12 @@ public class PieceMap extends AbstractDeduction{
                                     && Coordinates.light(origin) != Coordinates.light(coordinate)){
                                 return false;
                             }
-                            Path path = findPath(board, pieceName, pieceCode, origin, coordinate);
+                            Path path = this.pathFinderUtil.findPath(board, pieceName, pieceCode, origin, coordinate);
                             if (path.isEmpty()) {
                                 return false;
                             }
                             // First coordinate is never tested normally
-                            return this.firstRankCollision.test(Path.of(path.getFirst()));
+                            return this.pathFinderUtil.firstRankCollision.test(Path.of(path.getFirst()));
                         })
                         .forEach(coordinate -> {
                             if (!updatedPromotions.containsKey(entry.getKey())) {
@@ -509,7 +462,7 @@ public class PieceMap extends AbstractDeduction{
         Map<Coordinate, Path> candidatePaths = new TreeMap<>();
         Path pieces = new Path();
         if (cage) {
-            this.detector.getCaged().put(start, findPath(board, pieceName, pieceCode, start, Coordinates.NULL_COORDINATE).isEmpty());
+            this.detector.getCaged().put(start, this.pathFinderUtil.findPath(board, pieceName, pieceCode, start, Coordinates.NULL_COORDINATE).isEmpty());
         } else {
             for (Coordinate target : candidatePieces) {
 
@@ -521,7 +474,7 @@ public class PieceMap extends AbstractDeduction{
                 if (pieceName.equals("bishop") && Coordinates.light(start) != Coordinates.light(target)) {
                     continue;
                 }
-                Path foundPath = findPath(board, pieceName, pieceCode, start, target);
+                Path foundPath = this.pathFinderUtil.findPath(board, pieceName, pieceCode, start, target);
                 if (!foundPath.isEmpty()) {
                     candidatePaths.put(target, foundPath);
                     pieces.add(target);
@@ -593,28 +546,12 @@ public class PieceMap extends AbstractDeduction{
                               Coordinate target, boolean white) {
 
         if (white) {
-            return !this.detector.getKingMovement(true) && findPath(board, pieceName, pieceCode, start, target, kingCollisionWhite).isEmpty();
+            return !this.detector.getKingMovement(true) && this.pathFinderUtil.findPath(board, pieceName, pieceCode, start, target, kingCollisionWhite).isEmpty();
         } else {
-            return !this.detector.getKingMovement(false) && findPath(board, pieceName, pieceCode, start, target, kingCollisionBlack).isEmpty();
+            return !this.detector.getKingMovement(false) && this.pathFinderUtil.findPath(board, pieceName, pieceCode, start, target, kingCollisionBlack).isEmpty();
         }
     }
-    public Path findPath(BoardInterface board, String pieceName,
-                         String pieceCode, Coordinate start,
-                         Coordinate target) {
-        return findPath(board, pieceName, pieceCode, start, target, p -> true);
-    }
 
-    private Path findPath(BoardInterface board, String pieceName,
-                          String pieceCode, Coordinate start,
-                          Coordinate target,
-                         Predicate<Path> additionalCondition){
-        return Pathfinder.findShortestPath(
-                StandardPieceFactory.getInstance().getPiece(pieceCode),
-                start,
-                (b, c) -> c.equals(target) || (c.getY() >= WHITE_ESCAPE_Y && c.getY() <= BLACK_ESCAPE_Y),
-                board,
-                p -> this.pathConditions.get(pieceName).test(p) && additionalCondition.test(p));
-    }
 
     public Map<Coordinate, Path> getPromotedPieceMap(){
         return this.promotedPieceMap;

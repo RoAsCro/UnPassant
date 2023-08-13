@@ -26,7 +26,7 @@ public abstract class AbstractDeduction implements Deduction {
 
     protected StateDetector detector;
 
-    protected final static Map<Integer, String> STANDARD_STARTS = Map.of(
+    public final static Map<Integer, String> STANDARD_STARTS = Map.of(
             0, "rook", 1, "knight", 2, "bishop", 3, "queen", 4,
             "king", 5, "bishop", 6, "knight", 7, "rook"
     );

@@ -23,6 +23,8 @@ public class PromotionMap extends AbstractDeduction {
     private final static int HIGH_NUMBER = 99;
     private final PieceNumber pieceNumber;
     private final PawnNumber pawnNumber;
+    private final PiecePathFinderUtil pathFinderUtil = new PiecePathFinderUtil(detector);
+
 
     boolean inDepth = true;
 
@@ -623,7 +625,7 @@ public class PromotionMap extends AbstractDeduction {
         for (Coordinate checkedCoord : forChecking) {
             Path forRemoval = new Path();
             for (Coordinate rookLocation : cagedCaptures) {
-                if (!pieceMap.findPath(board, "rook", white ? "r" : "R", rookLocation, checkedCoord).isEmpty()) {
+                if (!this.pathFinderUtil.findPath(board, "rook", white ? "r" : "R", rookLocation, checkedCoord).isEmpty()) {
                     //system.out.println("Pathed succ");
                     forRemoval.add(rookLocation);
                     break;

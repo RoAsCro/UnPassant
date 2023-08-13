@@ -51,6 +51,11 @@ public class TestImpossibleStateDetector implements StateDetector {
     private final Map<Coordinate, Boolean> caged = new TreeMap<>();
     private final Map<String, Map<Path, Integer>> promotionNumbers = new TreeMap<>();
 
+    //CaptureLocation Stuff
+    private Path[] cagedCaptures = new Path[]{new Path(), new Path()};
+    private int[] pawnsCapturedByPawns = new int[]{0, 0};
+    private final Path[] promotedPawns = new Path[]{new Path(), new Path()};
+
 
     public TestImpossibleStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction ... deductions) {
         this.pawnNumber = pawnNumber;
@@ -62,8 +67,6 @@ public class TestImpossibleStateDetector implements StateDetector {
             originFree[BLACK].put(new Coordinate(i, 6), true);
         }
     }
-
-
 
     public boolean testState(BoardInterface board) {
 
@@ -93,7 +96,6 @@ public class TestImpossibleStateDetector implements StateDetector {
             deduction.deduce(board);
             if (!this.deductions.stream().allMatch(Deduction::getState)) {
                 System.out.println(deduction);
-
                 return false;
             }
             this.finishedDeductions.add(deduction);
@@ -101,13 +103,16 @@ public class TestImpossibleStateDetector implements StateDetector {
         return true;
     }
 
+
+
     public List<Deduction> getDeductions() {
         return this.deductions;
     }
 
 
-    public PawnNumber getPawnNumber() {
-        return this.pawnNumber;
+    @Override
+    public int getPawnNumbers(boolean white) {
+        return white ? this.pawnNumber.getWhitePawns() : this.pawnNumber.getBlackPawns();
     }
     @Override
     public PieceNumber getPieceNumber() {
@@ -121,7 +126,7 @@ public class TestImpossibleStateDetector implements StateDetector {
     }
 
     @Override
-    public void setPawnTakeablePieces(boolean white, int subtrahend) {
+    public void reducePawnTakeablePieces(boolean white, int subtrahend) {
         this.piecesTakableByPawns[white ? WHITE : BLACK] -= subtrahend;
     }
 
@@ -191,6 +196,12 @@ public class TestImpossibleStateDetector implements StateDetector {
         this.finishedDeductions.forEach(Deduction::update);
     }
 
+    @Override
+    public void reTest(BoardInterface boardInterface) {
+        System.out.println(finishedDeductions.size());
+        this.finishedDeductions.forEach(d -> d.deduce(boardInterface));
+    }
+
 
     @Override
     public boolean getKingMovement(boolean white) {
@@ -221,5 +232,25 @@ public class TestImpossibleStateDetector implements StateDetector {
     @Override
     public Map<String, Map<Path, Integer>> getPromotionNumbers() {
         return promotionNumbers;
+    }
+
+    @Override
+    public Path getCagedCaptures(boolean white) {
+        return cagedCaptures[white ? WHITE : BLACK];
+    }
+
+    @Override
+    public void setPawnsCapturedByPawns(boolean white, int pawnsCapturedByPawns) {
+        this.pawnsCapturedByPawns[white ? WHITE : BLACK] = pawnsCapturedByPawns;
+    }
+
+    @Override
+    public int getPawnsCapturedByPawns(boolean white) {
+        return pawnsCapturedByPawns[white ? WHITE : BLACK];
+    }
+
+    @Override
+    public Path getPromotedPawns(boolean white) {
+        return promotedPawns[white ? WHITE : BLACK];
     }
 }

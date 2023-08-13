@@ -1,6 +1,5 @@
 package Heuristics;
 
-import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import StandardChess.Coordinate;
 
@@ -10,11 +9,11 @@ import java.util.Map;
 public interface StateDetector {
     public PieceNumber getPieceNumber();
 
-    PawnNumber getPawnNumber();
+    int getPawnNumbers(boolean white);
 
     int pawnTakeablePieces(boolean white);
 
-    void setPawnTakeablePieces(boolean white, int subtrahend);
+    void reducePawnTakeablePieces(boolean white, int subtrahend);
 
     Map<Coordinate, Integer> getCaptureSet(boolean white);
 
@@ -37,6 +36,8 @@ public interface StateDetector {
 
     void update();
 
+    void reTest(BoardInterface boardInterface);
+
     boolean getKingMovement(boolean white);
 
     void setKingMovement(boolean white, boolean moved);
@@ -50,4 +51,12 @@ public interface StateDetector {
     Map<Coordinate, Boolean> getCaged();
 
     Map<String, Map<Path, Integer>> getPromotionNumbers();
+
+    Path getCagedCaptures(boolean white);
+
+    void setPawnsCapturedByPawns(boolean white, int pawnsCapturedByPawns);
+
+    int getPawnsCapturedByPawns(boolean white);
+
+    Path getPromotedPawns(boolean white);
 }
