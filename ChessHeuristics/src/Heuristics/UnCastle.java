@@ -129,7 +129,7 @@ public class UnCastle {
 
     private void checkPromotionMap(boolean white) {
         PawnMap pawnMap = white ? this.pawnMapWhite : this.pawnMapBlack;
-        OldPawnMap promoPawnMap = this.promotionMap.getPromotionPawnMap(white) ;
+        PawnMap promoPawnMap = this.promotionMap.getPromotionPawnMap(white) ;
         int y = white ? 6 : 1;
         int offSet = white ? 1 : -1;
         Map<Coordinate, List<Path>> pawnPaths = white ? this.promotionMap.getPromotionCombinedPawnMap().getWhitePaths()

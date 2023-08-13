@@ -61,7 +61,7 @@ public abstract class PawnMap extends AbstractDeduction{
 
     private int capturablePieces(boolean white) {
         //maxPieces
-        return this.detector.pawnTakeablePieces(this.white) - (white ? this.detector.getPieceNumber().getWhitePieces() : this.detector.getPieceNumber().getBlackPieces());
+        return this.detector.pawnTakeablePieces(this.white) - (white ? this.detector.getPieceNumber().getBlackPieces() : this.detector.getPieceNumber().getWhitePieces());
     }
 
     public int capturablePieces() {
@@ -84,6 +84,11 @@ public abstract class PawnMap extends AbstractDeduction{
      * @return the max number of pieces minus the number of pieces the opponent is missing
      */
     protected int capturedPieces(boolean white) {
+        //Sys tem.out.println("CPCP");
+        //Sys tem.out.println(this.detector.pawnTakeablePieces(white));
+        //Sys tem.out.println((white
+//                ? this.detector.getPieceNumber().getBlackPieces()
+//                : this.detector.getPieceNumber().getWhitePieces()));
         return this.detector.pawnTakeablePieces(white) - (white
                 ? this.detector.getPieceNumber().getBlackPieces()
                 : this.detector.getPieceNumber().getWhitePieces());
@@ -138,6 +143,8 @@ public abstract class PawnMap extends AbstractDeduction{
                 }
             });
         }
+        //Sys tem.out.println("?!?!");
+        //Sys tem.out.println(this.detector.getPawnOrigins(white));
     }
 
     /**
@@ -161,6 +168,8 @@ public abstract class PawnMap extends AbstractDeduction{
     }
 
     protected void updateCaptureSet(boolean white) {
+        //Sys tem.out.println(this.detector.getPawnOrigins(white));
+        //Sys tem.out.println(capturedPieces(white));
         int maxOffset = capturedPieces(white) -
                 this.detector.getPawnOrigins(white).entrySet().stream()
                         .map(entry -> {
@@ -176,7 +185,10 @@ public abstract class PawnMap extends AbstractDeduction{
                                     })
                                     .orElse(Coordinates.NULL_COORDINATE);
 
+                            //Sys tem.out.println(entry.getKey());
+
                             int minCaptures = Math.abs(x - coordinate.getX());
+                            //Sys tem.out.println(minCaptures);
                             this.detector.getCaptureSet(white).put(entry.getKey(), minCaptures);
                             return minCaptures;})
                         .reduce(Integer::sum)
@@ -184,6 +196,8 @@ public abstract class PawnMap extends AbstractDeduction{
         if (maxOffset < 0) {
             this.state = false;
         }
+        //Sys tem.out.println("MXOFF" + maxOffset);
+
         this.detector.setCapturedPieces(white, maxOffset);
 
     }
@@ -193,6 +207,8 @@ public abstract class PawnMap extends AbstractDeduction{
                 .flatMap(f -> f.getValue().stream())
                 .collect(Collectors.toSet())
                 .stream().toList();
+        //Sys tem.out.println("reducing" + origins);
+
         if (!origins.isEmpty()) {
             List<Coordinate> originsTwo = new LinkedList<>(origins);
             boolean change = true;

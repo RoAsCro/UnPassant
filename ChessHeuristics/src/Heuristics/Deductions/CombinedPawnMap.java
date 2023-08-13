@@ -79,6 +79,8 @@ public class CombinedPawnMap extends AbstractDeduction {
 
             makeMaps(board, false);
             makeMaps(board, true);
+            //System.out.println("chan" + this.detector.getPawnPaths(true));
+            //System.out.println("chan" + this.detector.getPawnPaths(false));
             if ((!exclude(board, true) & !exclude(board, false))
                     || (startingWhite.containsAll(new HashSet<>(this.detector.getPawnPaths(true).values()))
                     && startingBlack.containsAll(new HashSet<>(this.detector.getPawnPaths(false).values())))
@@ -138,7 +140,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 .toList());
         singleOriginPawns.addAll(opposingPlayerPaths.entrySet()
                 .stream().filter(entry ->entry.getValue().size() == 1 && entry.getValue().get(0).size() == 1).toList());
-//        System.out.println(singleOriginPawns);
+        //System.out.println("SOP" + singleOriginPawns);
 
         if (singleOriginPawns.isEmpty()) {
             // New implementation may hugely impact performance here
@@ -174,6 +176,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                                     .forEach(path -> {
                                         //system.out.println("checking..." + path);
                                         //system.out.println("entry..." + entry);
+                                        //System.out.println("pppp" + path);
 
                                         Path toPut = makeExclusiveMaps(board, path, white, singleOriginPawns);
                                         if (toPut.isEmpty()) {
@@ -181,6 +184,8 @@ public class CombinedPawnMap extends AbstractDeduction {
                                             toPut.add(Coordinates.NULL_COORDINATE);
                                             toPut.add(innerEntry.getKey());
                                         }
+                                        //System.out.println("tp" + toPut);
+
                                         newPaths.add(toPut);
                                     });
                         }));
@@ -228,7 +233,14 @@ public class CombinedPawnMap extends AbstractDeduction {
     }
 
     protected void updateP() {
+        //System.out.println("www");
+
+        //System.out.println(this.detector.getPawnOrigins(true));
+        //System.out.println(this.detector.getPawnOrigins(false));
         this.detector.update();
+        //System.out.println("www");
+        //System.out.println(this.detector.getPawnOrigins(true));
+        //System.out.println(this.detector.getPawnOrigins(false));
     }
 
     private Path makeExclusiveMaps(BoardInterface board, Path path, boolean white, List<Map.Entry<Coordinate, List<Path>>> forbiddenPaths) {
@@ -238,7 +250,7 @@ public class CombinedPawnMap extends AbstractDeduction {
 //                : this.white;
 
         //TODO current forbidden paths won't contain paths that are one coordinate long
-//        //system.out.println("forbidden:" + forbiddenPaths);
+        //System.out.println("forbidden:" + forbiddenPaths);
         Path newPath = Pathfinder.findShortestPawnPath(StandardPieceFactory.getInstance().getPiece(!white ? "p" : "P"),
                 path.getFirst(),
                 (b, c) -> c.equals(path.getLast()),
@@ -264,18 +276,25 @@ public class CombinedPawnMap extends AbstractDeduction {
                     List<Path> paths = new LinkedList<>();
                     entry.getValue().stream()
                             .forEach(coordinate -> {
+                                //System.out.println(entry.getKey());
+                                //System.out.println(this.detector.getMaxCaptures(white, entry.getKey()));
+
                                 Path path = Pathfinder.findShortestPath(
                                         StandardPieceFactory.getInstance().getPiece(white ? "P" : "p"),
                                         coordinate,
                                         (b, c) -> c.equals(entry.getKey()),
                                         board,
+                                        // TODO assign maxcaptures to a variable
                                         p -> PATH_DEVIATION.apply(p) <= this.detector.getMaxCaptures(white, entry.getKey()),
                                         (p1, p2) -> PATH_DEVIATION.apply(p1) < PATH_DEVIATION.apply(p2)
                                 );
                                 if (!path.isEmpty()) {
+
                                     paths.add(path);
                                 }
                             });
+                    //System.out.println("Pathpath" + paths);
+
                     this.detector.getPawnPaths(white).put(entry.getKey(), paths);
                 });
     }
