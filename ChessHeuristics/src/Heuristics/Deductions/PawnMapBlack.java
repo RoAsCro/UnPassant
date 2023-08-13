@@ -11,6 +11,9 @@ public class PawnMapBlack extends PawnMap{
     public PawnMapBlack(PawnNumber pawnNumber, PieceNumber pieceNumber) {
         super(false, pawnNumber, pieceNumber);
     }
+    public PawnMapBlack() {
+        super(false);
+    }
 
     @Override
     public void update() {

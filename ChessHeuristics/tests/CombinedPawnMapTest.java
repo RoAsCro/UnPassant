@@ -29,8 +29,8 @@ public class CombinedPawnMapTest {
         map.deduce(board);
         blackMap.deduce(board);
         map.deduce(board);
-blackMap.deduce(board);
-combinedPawnMap.deduce(board);
+        blackMap.deduce(board);
+        combinedPawnMap.deduce(board);
         System.out.println(map.getPawnOrigins());
         System.out.println(combinedPawnMap.getWhitePaths());
         System.out.println(combinedPawnMap.getBlackPaths());

@@ -11,6 +11,9 @@ public class PawnMapWhite extends PawnMap{
     public PawnMapWhite(PawnNumber pawnNumber, PieceNumber pieceNumber) {
         super(true, pawnNumber, pieceNumber);
     }
+    public PawnMapWhite() {
+        super(true);
+    }
 
 
     @Override
