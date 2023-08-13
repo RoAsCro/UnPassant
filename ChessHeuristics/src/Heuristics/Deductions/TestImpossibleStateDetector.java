@@ -69,6 +69,7 @@ public class TestImpossibleStateDetector implements StateDetector {
         }
     }
 
+    @Override
     public boolean testState(BoardInterface board) {
 
         this.pieceNumber.observe(board);

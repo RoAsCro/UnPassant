@@ -26,11 +26,11 @@ public class UnCastleTest {
     public void setup() {
         this.pawnNumber = new PawnNumber();
         this.pieceNumber = new PieceNumber();
-        this.pmw = new PawnMapWhite(this.pawnNumber, this.pieceNumber);
-        this.pmb = new PawnMapBlack(this.pawnNumber, this.pieceNumber);
-        CombinedPawnMap cpm = new CombinedPawnMap(pmw, pmb);
-        this.pm = new PieceMap(cpm);
-        CaptureLocations cl = new CaptureLocations(pmw, pmb, pm, cpm);
+        this.pmw = new PawnMapWhite();
+        this.pmb = new PawnMapBlack();
+        CombinedPawnMap cpm = new CombinedPawnMap();
+        this.pm = new PieceMap();
+        CaptureLocations cl = new CaptureLocations();
         this.prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
         this.pps = new PromotedPawnSquares(pieceNumber, pm, prm, cl, cpm);
         this.uc = new UnCastle(pmw, pmb, pm, prm, pps);
@@ -55,7 +55,7 @@ public class UnCastleTest {
 
     @Test
     public void startingPositionMovedRookAndQueen() {
-        this.detector.testState(new BoardInterface(BoardBuilder.buildBoard("rnbqkbn1/pppprppp/4p3/8/8/5PQ1/PPPPP1PP/RNB1KBNR w KQq - 0 1")));
+        this.detector.testState(new BoardInterface(BoardBuilder.buildBoard("rnbqkbn1/pppprppp/4p3/8/8/5PQ1/PPPPP1PP/RNB1KBNR w - - 0 1")));
         List<boolean[]> booleans = uc.hasMoved();
         Assertions.assertTrue(booleans.get(0)[0]);
         Assertions.assertTrue(booleans.get(1)[0]);

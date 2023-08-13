@@ -1,9 +1,6 @@
 package Heuristics;
 
-import Heuristics.Deductions.PawnMap;
-import Heuristics.Deductions.PieceMap;
-import Heuristics.Deductions.PromotedPawnSquares;
-import Heuristics.Deductions.PromotionMap;
+import Heuristics.Deductions.*;
 import StandardChess.Coordinate;
 
 import java.util.Collection;
@@ -132,7 +129,7 @@ public class UnCastle {
 
     private void checkPromotionMap(boolean white) {
         PawnMap pawnMap = white ? this.pawnMapWhite : this.pawnMapBlack;
-        PawnMap promoPawnMap = this.promotionMap.getPromotionPawnMap(white) ;
+        OldPawnMap promoPawnMap = this.promotionMap.getPromotionPawnMap(white) ;
         int y = white ? 6 : 1;
         int offSet = white ? 1 : -1;
         Map<Coordinate, List<Path>> pawnPaths = white ? this.promotionMap.getPromotionCombinedPawnMap().getWhitePaths()

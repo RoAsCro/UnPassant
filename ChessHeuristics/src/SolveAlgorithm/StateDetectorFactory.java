@@ -32,15 +32,15 @@ public class StateDetectorFactory {
             }
         }
 //        System.out.println(pmw);
-        pmw = pmw == null ? new PawnMapWhite(pawnNumber, pieceNumber) : pmw;
-        pmb = pmb == null ? new PawnMapBlack(pawnNumber, pieceNumber) : pmb;
-        cpm = cpm == null ? new CombinedPawnMap(pmw, pmb) : cpm;
+        pmw = pmw == null ? new PawnMapWhite() : pmw;
+        pmb = pmb == null ? new PawnMapBlack() : pmb;
+        cpm = cpm == null ? new CombinedPawnMap() : cpm;
 
 //        System.out.println(pmw.getPawnOrigins());
 
         PawnPositions pp = new PawnPositions();
-        PieceMap pm = new PieceMap(cpm);
-        CaptureLocations cl = new CaptureLocations(pmw, pmb, pm, cpm);
+        PieceMap pm = new PieceMap();
+        CaptureLocations cl = new CaptureLocations();
         PromotionMap prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
         PromotedPawnSquares pps = new PromotedPawnSquares(pieceNumber, pm, prm, cl, cpm);
 //        Deduction[] deductions1 = new Deduction[]{};

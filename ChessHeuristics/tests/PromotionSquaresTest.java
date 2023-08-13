@@ -23,7 +23,7 @@ public class PromotionSquaresTest {
         CombinedPawnMap cpm = new CombinedPawnMap();
         PieceMap pm = new PieceMap();
         CaptureLocations cl = new CaptureLocations();
-        PromotionMap prm = new PromotionMap();
+        PromotionMap prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
         this.pps = new PromotedPawnSquares(pieceNumber, pm, prm, cl, cpm);
         this.detector = new TestImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,

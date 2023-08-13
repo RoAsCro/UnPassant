@@ -9,6 +9,8 @@ import java.util.Map;
 public interface StateDetector {
     public PieceNumber getPieceNumber();
 
+    boolean testState(BoardInterface board);
+
     int getPawnNumbers(boolean white);
 
     int pawnTakeablePieces(boolean white);

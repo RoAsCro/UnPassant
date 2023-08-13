@@ -88,17 +88,21 @@ public class PromotedPawnSquares extends AbstractDeduction{
 
     private List<Path> pathToFinalRank(BoardInterface board, boolean notWhite, Path origins) {
 
-        CombinedPawnMap combinedPawnMap = this.promotionMapInUse
-                ? this.combinedPawnMap
-                : this.promotionMap.getPromotionCombinedPawnMap();
         System.out.println(this.promotionMapInUse);
         int captures = (this.detector.pawnTakeablePieces(!notWhite) - (!notWhite ? this.detector.getPieceNumber().getBlackPieces() : this.detector.getPieceNumber().getWhitePieces()))
-                - combinedPawnMap.minimumCaptures(!notWhite);
+                -
+
+                (this.promotionMapInUse ? this.combinedPawnMap.minimumCaptures(!notWhite) : this.promotionMap.getPromotionCombinedPawnMap().minimumCaptures(!notWhite));
+
+
         int enemyCaptures = (this.detector.pawnTakeablePieces(notWhite) - (notWhite ? this.detector.getPieceNumber().getBlackPieces() : this.detector.getPieceNumber().getWhitePieces()))
-                - combinedPawnMap.minimumCaptures(notWhite);
+                -
+                (this.promotionMapInUse ? this.combinedPawnMap.minimumCaptures(notWhite) : this.promotionMap.getPromotionCombinedPawnMap().minimumCaptures(notWhite));
         List<Path> paths = new LinkedList<>();
 
-        List<Map.Entry<Coordinate, List<Path>>> forbidden = (notWhite ? combinedPawnMap.getWhitePaths() : combinedPawnMap.getBlackPaths()).entrySet()
+        List<Map.Entry<Coordinate, List<Path>>> forbidden = (notWhite ?
+                (this.promotionMapInUse ? this.combinedPawnMap.getWhitePaths() : this.promotionMap.getPromotionCombinedPawnMap().getWhitePaths())
+                : (this.promotionMapInUse ? this.combinedPawnMap.getBlackPaths() : this.promotionMap.getPromotionCombinedPawnMap().getBlackPaths())).entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() == 1)
                 .filter(entry -> Pathfinder.findAllPawnPaths(
@@ -121,7 +125,10 @@ public class PromotedPawnSquares extends AbstractDeduction{
                     (b, c) -> c.getY() == (notWhite ? FIRST_RANK_Y : FINAL_RANK_Y),
                     board,
                     p -> CombinedPawnMap.PATH_DEVIATION.apply(p) <= captures,
-                    (p1, p2) -> combinedPawnMap.exclusion(forbidden, p1, p2));
+                    (p1, p2) ->
+                            (this.promotionMapInUse
+                                    ? this.combinedPawnMap.exclusion(forbidden, p1, p2)
+                                    : this.promotionMap.getPromotionCombinedPawnMap().exclusion(forbidden, p1, p2)));
             if (shortest.isEmpty()) {
                 continue;
             }
@@ -135,11 +142,11 @@ public class PromotedPawnSquares extends AbstractDeduction{
     }
 
     private List<Path> getCaptures(boolean notWhite, List<Path> paths) {
-        CombinedPawnMap combinedPawnMap = this.promotionMapInUse
-                ? this.combinedPawnMap
-                : this.promotionMap.getPromotionCombinedPawnMap();
         int captures = (this.detector.pawnTakeablePieces(!notWhite) - (!notWhite ? this.detector.getPieceNumber().getBlackPieces() : this.detector.getPieceNumber().getWhitePieces()))
-                - combinedPawnMap.minimumCaptures(!notWhite);
+                -
+                (this.promotionMapInUse
+                        ? this.combinedPawnMap.minimumCaptures(!notWhite)
+                        : this.promotionMap.getPromotionCombinedPawnMap().minimumCaptures(!notWhite));
         paths.sort(Comparator.comparingInt(CombinedPawnMap.PATH_DEVIATION::apply));
         int currentCaptures = 0;
         List<Path> legalPaths = new LinkedList<>();
