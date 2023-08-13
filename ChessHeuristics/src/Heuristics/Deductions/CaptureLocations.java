@@ -47,7 +47,7 @@ public class CaptureLocations extends AbstractDeduction {
         if (
                 whiteRemovals + blackRemovals != 0
         ) {
-            System.out.println("sdsds");
+            System.out.println("sdsds" + whiteRemovals + " " + blackRemovals);
             this.detector.reducePawnTakeablePieces(true, whiteRemovals);
             this.detector.reducePawnTakeablePieces(false, blackRemovals);
             this.detector.reTest(board);

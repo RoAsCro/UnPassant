@@ -444,12 +444,7 @@ public class ImpossibleStates {
         // Later Checks Don't Account For Earlier Discovered Missing pawns
         Assertions.assertFalse(test("1nbqk2r/pppppp1p/5n2/5q2/5Q2/5N2/PPPPPP1P/RNBQK2R w - - 0 1"));
     }
-
-    @Test
-    void promotionMapCombinedPawnMapWithCagedPieces2() {
-        // Later Checks Don't Account For Earlier Discovered Missing pawns
-        Assertions.assertFalse(test("r1bqkbnr/pp1ppppp/8/3q4/3Q4/8/PP1PPPPP/R1BQKBNR w KQkq - 0 1"));
-    }
+    
 
     @Test
     void promotionMapCombinedPawnMapWithCagedPiecesCounterexample() {

@@ -85,9 +85,9 @@ public class OldCombinedPawnMap extends AbstractDeduction {
 
     @Override
     public boolean deduce(BoardInterface board) {
-        System.out.println("deducing");
-        System.out.println(this.white.getPawnOrigins() );
-        System.out.println(this.black.getPawnOrigins() );
+//        System.out.println("deducing");
+//        System.out.println(this.white.getPawnOrigins() );
+//        System.out.println(this.black.getPawnOrigins() );
 
         boolean changed = true;
         boolean another = true;
@@ -108,14 +108,15 @@ public class OldCombinedPawnMap extends AbstractDeduction {
                 }
             }
         }
+//        System.out.println(this.whitePaths);
+//        System.out.println(this.blackPaths);
 
         if (this.whitePaths.values().stream().anyMatch(List::isEmpty) || this.blackPaths.values().stream().anyMatch(List::isEmpty)
                 || !this.white.getState() || ! this.black.getState()) {
             this.state = false;
         }
 //        System.out.println(minimumCaptures(true));
-//        System.out.println(this.whitePaths);
-//        System.out.println(this.blackPaths);
+
         System.out.println(this.blackPaths);
         System.out.println(this.whitePaths);
 
@@ -160,6 +161,7 @@ public class OldCombinedPawnMap extends AbstractDeduction {
         singleOriginPawns.addAll(opposingPlayerPaths.entrySet()
                 .stream().filter(entry ->entry.getValue().size() == 1 && entry.getValue().get(0).size() == 1).toList());
 //        System.out.println(singleOriginPawns);
+        System.out.println("SOP" + singleOriginPawns);
 
         if (singleOriginPawns.isEmpty()) {
             checkedPlayer.update();
@@ -194,13 +196,14 @@ public class OldCombinedPawnMap extends AbstractDeduction {
                                     .forEach(path -> {
                                         //system.out.println("checking..." + path);
                                         //system.out.println("entry..." + entry);
-
+                                        System.out.println("pppp" + path);
                                         Path toPut = makeExclusiveMaps(board, path, white, singleOriginPawns);
                                         if (toPut.isEmpty()) {
                                             toPut.add(path.getFirst());
                                             toPut.add(Coordinates.NULL_COORDINATE);
                                             toPut.add(innerEntry.getKey());
                                         }
+                                        System.out.println("tp" + toPut);
                                         newPaths.add(toPut);
                                     });
                         }));
@@ -209,6 +212,7 @@ public class OldCombinedPawnMap extends AbstractDeduction {
 
         List<Coordinate[]> forRemoval = new LinkedList<>();
         //system.out.println("paths " + newPaths);
+        System.out.println("paths " + newPaths);
 
         newPaths.stream().forEach(path -> {
             List<Path> pathList = checkedPlayerPaths.get(path.getLast());
@@ -254,6 +258,7 @@ public class OldCombinedPawnMap extends AbstractDeduction {
 
         //TODO current forbidden paths won't contain paths that are one coordinate long
 //        //system.out.println("forbidden:" + forbiddenPaths);
+        System.out.println("fbb" + player.maxPieces);
         Path newPath = Pathfinder.findShortestPawnPath(StandardPieceFactory.getInstance().getPiece(!white ? "p" : "P"),
                 path.getFirst(),
                 (b, c) -> c.equals(path.getLast()),

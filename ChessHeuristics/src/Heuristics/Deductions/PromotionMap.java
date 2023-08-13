@@ -92,7 +92,7 @@ public class PromotionMap extends AbstractDeduction {
 
 //        this.captureLocations.deduce(board);
 
-        //system.out.println("FIRSTOFALL" + this.pieceMap.getPromotedPieceMap());
+        System.out.println("FIRSTOFALL" + this.detector.getPromotedPieceMap());
         if (this.detector.getPromotedPieceMap().values().stream().allMatch(AbstractCollection::isEmpty)) {
             this.state = true;
             return true;
@@ -113,7 +113,7 @@ public class PromotionMap extends AbstractDeduction {
                 .map(Map.Entry::getKey)
                 .toList());
 
-
+        System.out.println("ORIGINS1" + this.origins);
 
         // May have duplicates
         this.targets = Path.of(this.detector.getPromotedPieceMap().entrySet()
@@ -121,6 +121,7 @@ public class PromotionMap extends AbstractDeduction {
 //                        .filter(entry -> entry.getKey().getY() == 7)
                 .map(Map.Entry::getKey)
                 .toList());
+        System.out.println("Targets" + this.targets);
 //        System.out.println(this.targets);
 
         List<Path> forbiddenWhitePaths = this.detector.getPawnPaths(true).values().stream()
@@ -131,6 +132,8 @@ public class PromotionMap extends AbstractDeduction {
                 .filter(list -> list.size() == 1)
                 .map(list -> list.get(0))
                 .toList();
+        System.out.println("fwp" + forbiddenWhitePaths);
+        System.out.println("fbp" + forbiddenBlackPaths);
 
 //        reduce(this.origins, this.targets, board, forbiddenWhitePaths, forbiddenBlackPaths);
 //        reduce(this.targets, this.origins, board, forbiddenWhitePaths, forbiddenBlackPaths);
@@ -164,6 +167,10 @@ public class PromotionMap extends AbstractDeduction {
         )));
 //        System.out.println((System.nanoTime() - start) / 1000);
 
+        System.out.println(whiteOrigins);
+        System.out.println(whiteTargets);
+        System.out.println(blackOrigins);
+        System.out.println(blackTargets);
 
         Map<Path, List<Path>> pieceSquareOriginWhite = new HashMap<>(updates(true));
         Map<Path, List<Path>> pieceSquareOriginBlack = new HashMap<>(updates(false));
@@ -220,6 +227,8 @@ public class PromotionMap extends AbstractDeduction {
                 .stream()
                 .flatMap(map -> map.keySet().stream())
                 .collect(Collectors.toSet()));
+        System.out.println("Origins 2" + this.origins);
+
         whiteOrigins = this.origins.stream().filter(coordinate -> coordinate.getY() == 1).toList();
         blackOrigins = this.origins.stream().filter(coordinate -> coordinate.getY() == 6).toList();
         this.targets = Path.of(this.goalOrigins.keySet());
@@ -243,7 +252,7 @@ public class PromotionMap extends AbstractDeduction {
                 .flatMap(map -> map.entrySet().stream())
                 .filter(entry -> entry.getKey() != null)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
+        System.out.println(pathIntegerMap);
 
         Map<Coordinate, Path> pieceOriginWhite = pieceSquareOriginWhite.entrySet()
                 .stream()
@@ -273,7 +282,7 @@ public class PromotionMap extends AbstractDeduction {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
 
-        //system.out.println("POW" + pieceOriginWhite);
+        System.out.println("POW" + pieceOriginWhite);
         //system.out.println(pathIntegerMap);
         TheoreticalPawnMap tPMW = new TheoreticalPawnMap(true);
         tPMW.registerDetector(new TestImpossibleStateDetector(pawnNumber, pieceNumber, tPMW));
@@ -299,7 +308,7 @@ public class PromotionMap extends AbstractDeduction {
             Map<Path, Path> pieceOriginWhiteTwo = pieceSquareOriginWhite.entrySet()
                     .stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> Path.of(entry.getValue().stream().map(Path::getLast).collect(Collectors.toSet()).stream().toList())));
 
-
+            System.out.println("origin claim start" + pieceOriginWhiteTwo);
             originClaimIteratorHelperStarter(pathIntegerMap, originPool, pieceOriginWhiteTwo, claims, true);
 
             originPool = Path.of(this.origins.stream().filter(c -> c.getY() == 6).toList());
@@ -363,6 +372,8 @@ public class PromotionMap extends AbstractDeduction {
 
 
     private boolean stateUpdate(BoardInterface board, List<Map<Path, Path>> originList) {
+        System.out.println("OL" +originList);
+
         if (!originList.isEmpty()) {
             this.origins = new Path();
         }
@@ -378,10 +389,16 @@ public class PromotionMap extends AbstractDeduction {
         System.out.println(originList);
         System.out.println(this.targets);
         stateDetector.testState(board);
+        System.out.println(this.promotionPawnMapWhite.getState());
+        System.out.println(this.promotionPawnMapBlack.getState());
+        System.out.println(this.combinedPawnMap.getState());
         if (this.promotionPawnMapBlack.state && this.promotionPawnMapWhite.state && this.combinedPawnMap.state) {
             this.detector.getPawnOrigins(true).putAll(stateDetector.getPawnOrigins(true));
             this.detector.getPawnOrigins(false).putAll(stateDetector.getPawnOrigins(false));
             this.state = true;
+            System.out.println("GGGG");
+            System.out.println(originList);
+            System.out.println(this.targets);
             return true;
         }
         return false;
@@ -622,10 +639,10 @@ public class PromotionMap extends AbstractDeduction {
     }
 
     private void pathCagedCaptures(int y, int change, Path path, Path cagedCaptures, BoardInterface board, boolean white) {
-        //system.out.println("Pathing...");
-        //system.out.println(cagedCaptures);
-        //system.out.println(path);
-        //system.out.println(y);
+        System.out.println("Pathing...");
+        System.out.println(cagedCaptures);
+        System.out.println(path);
+        System.out.println(y);
         Coordinate c1 = path.stream().filter(c -> c.getY() == y).findAny().orElse(Coordinates.NULL_COORDINATE);
         Coordinate c2 = path.stream().filter(c -> c.getY() == y + change).findAny().orElse(Coordinates.NULL_COORDINATE);
         Coordinate c3 = path.stream().filter(c -> c.getY() == y + change * 2).findAny().orElse(Coordinates.NULL_COORDINATE);
@@ -652,6 +669,8 @@ public class PromotionMap extends AbstractDeduction {
                 }
 
             }
+            System.out.println("frem");
+            System.out.println(forRemoval);
             if (!forRemoval.isEmpty()) {
                 if (white) {
 //                    this.captureSquaresWhite.add(checkedCoord);
@@ -680,7 +699,21 @@ public class PromotionMap extends AbstractDeduction {
     private class PromotionCombinedPawnMap extends OldCombinedPawnMap {
         public PromotionCombinedPawnMap(PromotionPawnMap white, PromotionPawnMap black) {
             super(white, black);
+            System.out.println("bobobo");
 
+        }
+        @Override
+        public boolean deduce(BoardInterface boardInterface){
+            System.out.println("-----------------------");
+
+            System.out.println(this.getPawnMap(true).getPawnOrigins());
+            System.out.println(this.getPawnMap(false).getPawnOrigins());
+            boolean r = super.deduce(boardInterface);
+            System.out.println("???");
+
+            System.out.println(this.getWhitePaths());
+            System.out.println(this.getBlackPaths());
+            return r;
         }
     }
 
@@ -692,8 +725,14 @@ public class PromotionMap extends AbstractDeduction {
         public boolean deduce(BoardInterface board) {
             if (this.maxPieces == MAX_PIECES) {
                 int subtrahend = white
-                        ? PromotionMap.this.pawnMapWhite.maxPieces + PromotionMap.this.additionalCapturesWhite
-                        : PromotionMap.this.pawnMapBlack.maxPieces + PromotionMap.this.additionalCapturesBlack;
+                        ? PromotionMap.this.detector.pawnTakeablePieces(true) + PromotionMap.this.additionalCapturesWhite
+                        : PromotionMap.this.detector.pawnTakeablePieces(false) + PromotionMap.this.additionalCapturesBlack;
+                System.out.println("subtrahend" + subtrahend);
+                System.out.println("subtrahend" + PromotionMap.this.additionalCapturesWhite);
+                System.out.println("subtrahend" + PromotionMap.this.additionalCapturesBlack);
+                System.out.println("subtrahend" + PromotionMap.this.pawnMapWhite.maxPieces);
+                System.out.println("subtrahend" + PromotionMap.this.pawnMapBlack.maxPieces);
+
                 updateMaxCapturedPieces(MAX_PIECES - subtrahend);
 
 

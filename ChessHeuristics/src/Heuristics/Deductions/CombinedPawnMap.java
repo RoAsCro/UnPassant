@@ -92,12 +92,12 @@ public class CombinedPawnMap extends AbstractDeduction {
         }
 
         if (this.detector.getPawnPaths(true).values().stream().anyMatch(List::isEmpty) || this.detector.getPawnPaths(false).values().stream().anyMatch(List::isEmpty)) {
-            System.out.println();
+            //System.out.println();
             this.state = false;
         }
-        System.out.println("CPM END");
-        System.out.println(this.detector.getPawnPaths(true));
-        System.out.println(this.detector.getPawnPaths(false));
+        //System.out.println("CPM END");
+        //System.out.println(this.detector.getPawnPaths(true));
+        //System.out.println(this.detector.getPawnPaths(false));
 //        System.out.println(minimumCaptures(true));
 //        System.out.println(this.whitePaths);
 //        System.out.println(this.blackPaths);
