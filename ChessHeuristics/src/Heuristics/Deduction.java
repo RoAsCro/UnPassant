@@ -14,4 +14,5 @@ public interface Deduction {
     public Boolean getState();
 
     String errorMessage();
+    void update();
 }

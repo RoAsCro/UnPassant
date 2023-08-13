@@ -53,4 +53,9 @@ public abstract class AbstractDeduction implements Deduction {
         return this.state;
     }
 
+    @Override
+    public void update() {
+
+    }
+
 }

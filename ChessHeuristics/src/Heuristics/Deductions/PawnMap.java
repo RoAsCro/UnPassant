@@ -69,11 +69,10 @@ public abstract class PawnMap extends AbstractDeduction{
     }
 
 
-
     protected void update(boolean white) {
         reduce(white);
     }
-
+    @Override
     public abstract void update();
 
     public void removeOrigins(Coordinate piece, Coordinate origin) {

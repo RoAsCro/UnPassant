@@ -8,10 +8,7 @@ import Heuristics.Path;
 import Heuristics.StateDetector;
 import StandardChess.Coordinate;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class TestImpossibleStateDetector implements StateDetector {
 
@@ -25,13 +22,19 @@ public class TestImpossibleStateDetector implements StateDetector {
     private final PawnNumber pawnNumber;
     private final PieceNumber pieceNumber;
 
+    private List<Deduction> deductions;
+    private List<Deduction> finishedDeductions = new LinkedList();
+
     //PawnMap stuff
     private int[] piecesTakableByPawns = new int[]{MAX_PIECES, MAX_PIECES};
     private final Map<Coordinate, Integer>[] captureSet = new Map[]{new TreeMap<Coordinate, Path>(), new TreeMap<Coordinate, Path>()};
     private Map<Coordinate, Path>[] pawnOrigins = new Map[]{new TreeMap<Coordinate, Path>(), new TreeMap<Coordinate, Path>()};
-    private List<Deduction> deductions;
     private Map<Coordinate, Boolean>[] originFree = new Map[]{new TreeMap<Coordinate, Boolean>(), new TreeMap<Coordinate, Boolean>()};
     private int[] capturedPieces = new int[]{0, 0};
+
+    //CombinedPawnMapStuff
+    private Map<Coordinate, List<Path>>[] pawnPaths = new Map[]{new TreeMap<Coordinate, List<Path>>(), new TreeMap<Coordinate, List<Path>>()};
+    private final Map<Coordinate, Path>[] singlePawnPaths = new Map[]{new TreeMap<Coordinate, Path>(), new TreeMap<Coordinate, Path>()};
 
     public TestImpossibleStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction ... deductions) {
         this.pawnNumber = pawnNumber;
@@ -72,11 +75,12 @@ public class TestImpossibleStateDetector implements StateDetector {
 
 
             deduction.deduce(board);
-            if (!deduction.getState()) {
+            if (!this.deductions.stream().allMatch(Deduction::getState)) {
 //                System.out.println(deduction);
 
                 return false;
             }
+            this.finishedDeductions.add(deduction);
         }
         return true;
     }
@@ -128,4 +132,28 @@ public class TestImpossibleStateDetector implements StateDetector {
     public void setCapturedPieces(boolean white, int capturedPieces) {
         this.capturedPieces[white ? WHITE : BLACK] = capturedPieces;
     }
+    @Override
+    public int getMaxCaptures(boolean white, Coordinate coordinate) {
+        return getCapturedPieces(white) + getCaptureSet(white).get(coordinate);
+    }
+
+
+    //CombinePawnMap stuff
+    @Override
+    public Map<Coordinate, List<Path>> getPawnPaths(boolean white) {
+        return pawnPaths[white ? WHITE : BLACK];
+    }
+
+    @Override
+    public Map<Coordinate, Path> getSingPawnPaths(boolean white) {
+        return this.singlePawnPaths[white ? WHITE : BLACK];
+    }
+
+
+    @Override
+    public void update() {
+        this.finishedDeductions.forEach(Deduction::update);
+    }
+
+
 }
