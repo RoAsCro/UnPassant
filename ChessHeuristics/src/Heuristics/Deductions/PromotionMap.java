@@ -30,8 +30,8 @@ public class PromotionMap extends AbstractDeduction {
     private Path origins;
     private Path targets;
 
-    private PromotionPawnMapWhite promotionPawnMapWhite;
-    private PromotionPawnMapBlack promotionPawnMapBlack;
+    private PromotionPawnMap promotionPawnMapWhite;
+    private PromotionPawnMap promotionPawnMapBlack;
     private PromotionCombinedPawnMap combinedPawnMap;
 
     // <Promotion square, <Origin square, Number of captures>>
@@ -40,8 +40,8 @@ public class PromotionMap extends AbstractDeduction {
 
     public PromotionMap() {
         super("A promoted piece cannot reach its current location from an open pawn start");
-        this.promotionPawnMapWhite = new PromotionPawnMapWhite();
-        this.promotionPawnMapBlack = new PromotionPawnMapBlack();
+        this.promotionPawnMapWhite = new PromotionPawnMap(true);
+        this.promotionPawnMapBlack = new PromotionPawnMap(false);
     }
 
 
@@ -289,8 +289,8 @@ public class PromotionMap extends AbstractDeduction {
             this.origins = new Path();
         }
         originList.forEach(map -> this.origins.addAll(map.values().stream().flatMap(Path::stream).toList()));
-        this.promotionPawnMapWhite = new PromotionPawnMapWhite();
-        this.promotionPawnMapBlack = new PromotionPawnMapBlack();
+        this.promotionPawnMapWhite = new PromotionPawnMap(true);
+        this.promotionPawnMapBlack = new PromotionPawnMap(false);
         this.combinedPawnMap = new PromotionCombinedPawnMap();
         StateDetector stateDetector = new StandardStateDetector(new PawnNumber(), this.detector.getPieceNumber(), promotionPawnMapWhite, promotionPawnMapBlack, combinedPawnMap);
         this.promotionPawnMapWhite.registerDetector(stateDetector);
@@ -527,7 +527,7 @@ public class PromotionMap extends AbstractDeduction {
         }
     }
 
-    private abstract class PromotionPawnMap extends PawnMap {
+    private class PromotionPawnMap extends PawnMap {
         public PromotionPawnMap(boolean white) {
             super(white);
         }
@@ -631,30 +631,6 @@ public class PromotionMap extends AbstractDeduction {
 
             return reduction;
 
-        }
-
-    }
-    private class PromotionPawnMapWhite extends PromotionPawnMap {
-        public PromotionPawnMapWhite() {
-            super(true);
-        }
-
-
-        @Override
-        public void update() {
-            super.update();
-        }
-    }
-
-    private class PromotionPawnMapBlack extends PromotionPawnMap {
-        public PromotionPawnMapBlack() {
-            super(false);
-
-        }
-
-        @Override
-        public void update() {
-            super.update();
         }
 
     }
