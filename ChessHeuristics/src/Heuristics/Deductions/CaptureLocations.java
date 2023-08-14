@@ -34,7 +34,7 @@ public class CaptureLocations extends AbstractDeduction {
         if (
                 whiteRemovals + blackRemovals != 0
         ) {
-            System.out.println("sdsds" + whiteRemovals + " " + blackRemovals);
+            //System.out.println("sdsds" + whiteRemovals + " " + blackRemovals);
             this.detector.reducePawnTakeablePieces(true, whiteRemovals);
             this.detector.reducePawnTakeablePieces(false, blackRemovals);
             this.detector.reTest(board);
@@ -167,18 +167,18 @@ public class CaptureLocations extends AbstractDeduction {
                 .reduce(Integer::sum)
                 .orElse(0);
 
-        System.out.println(numberOfPromotedPiecesPlayerHas);
+        //System.out.println(numberOfPromotedPiecesPlayerHas);
         int numberOfPawnsPlayerHasLost = (MAX_PAWNS - this.detector.getPawnNumbers(white)) - numberOfPromotedPiecesPlayerHas;
-        System.out.println(numberOfPawnsPlayerHasLost);
+        //System.out.println(numberOfPawnsPlayerHasLost);
 
         // MINUS THE NUMBER OF PROMOTED PIECES ON THE BOARD
         // I think the max pieces needs to be reversed? Maybe not
         int nonPawnsPlayerHasLost = (maxPiecesOpponentCanTake - numberOfPiecesPlayerHasRemaining) -
                 (numberOfPawnsPlayerHasLost);
         int pCBP = (this.detector.minimumPawnCaptures(!white) - nonPawnsPlayerHasLost);
-        System.out.println(white);
+        //System.out.println(white);
 
-        System.out.println(pCBP);
+        //System.out.println(pCBP);
         if (pCBP > 0) {
 
 

@@ -71,4 +71,6 @@ public interface StateDetector {
     Map<Coordinate, Path> getPromotedPieceMap();
 
     int capturedPieces(boolean white);
+
+    String getErrorMessage();
 }

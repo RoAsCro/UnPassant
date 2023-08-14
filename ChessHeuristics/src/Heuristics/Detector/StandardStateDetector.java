@@ -63,6 +63,7 @@ public class StandardStateDetector implements StateDetector {
     private boolean state = false;
     private List<Path> whitePromotionPaths = new LinkedList<>();
     private List<Path> blackPromotionPaths = new LinkedList<>();
+    private String errorMessage;
 
 
     public StandardStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction ... deductions) {
@@ -115,15 +116,11 @@ public class StandardStateDetector implements StateDetector {
         }
 
         for (Deduction deduction : this.deductions) {
-            System.out.println("X");
-
 
             deduction.deduce(board);
             if (!this.deductions.stream().allMatch(Deduction::getState)) {
-                System.out.println(deduction);
-                System.out.println("f");
                 this.state = false;
-
+                this.errorMessage = deduction.errorMessage();
                 return false;
             }
             this.finishedDeductions.add(deduction);
@@ -233,7 +230,6 @@ public class StandardStateDetector implements StateDetector {
 
     @Override
     public void reTest(BoardInterface boardInterface) {
-        System.out.println(finishedDeductions.size());
         this.finishedDeductions.forEach(d -> d.deduce(boardInterface));
     }
 
@@ -306,5 +302,10 @@ public class StandardStateDetector implements StateDetector {
     @Override
     public String toString() {
         return this.board.getReader().toFEN();
+    }
+
+    @Override
+    public String getErrorMessage() {
+        return this.errorMessage;
     }
 }

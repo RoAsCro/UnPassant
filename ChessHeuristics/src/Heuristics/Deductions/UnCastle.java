@@ -39,7 +39,7 @@ public class UnCastle {
                 checkPromotionMap(false);
             }
         }
-        System.out.println("---");
+        //System.out.println("---");
 
         if (!this.blackData[0]) {
             this.stateDetector.getPromotionPaths(true)
@@ -66,8 +66,8 @@ public class UnCastle {
         if (this.whiteData[1] && this.whiteData[2]) {
             this.whiteData[0] = true;
         }
-        System.out.println("LLL");
-        System.out.println(blackData[0]);
+        //System.out.println("LLL");
+        //System.out.println(blackData[0]);
         this.stateDetector.setKingMovement(false, this.blackData[0]);
         this.stateDetector.setRookMovement(false, true, this.blackData[1]);
         this.stateDetector.setRookMovement(false, false, this.blackData[2]);
@@ -111,7 +111,7 @@ public class UnCastle {
         List<Coordinate> kingCoords = List.of(new Coordinate(3, y), new Coordinate(5, y), new Coordinate(4, y + offSet));
         List<Coordinate> rookCoords = List.of(new Coordinate(0, y + offSet), new Coordinate(7, y + offSet));
         boolean[] data = !white ? this.whiteData : this.blackData;
-        System.out.println(promotionPaths);
+        //System.out.println(promotionPaths);
         promotionPaths.forEach(c -> {
                 if (kingCoords.contains(c)) {
                     data[0] = true;

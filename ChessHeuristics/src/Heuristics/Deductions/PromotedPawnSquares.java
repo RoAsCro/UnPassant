@@ -54,7 +54,7 @@ public class PromotedPawnSquares extends AbstractDeduction{
     }
 
     private List<Path> pathToFinalRank(BoardInterface board, boolean notWhite, Path origins) {
-        System.out.println(origins);
+        //System.out.println(origins);
         int captures = (this.detector.pawnTakeablePieces(!notWhite) - (!notWhite ? this.detector.getPieceNumber().getBlackPieces() : this.detector.getPieceNumber().getWhitePieces()))
                 - (this.detector.minimumPawnCaptures(!notWhite));
         int enemyCaptures = (this.detector.pawnTakeablePieces(notWhite) - (notWhite ? this.detector.getPieceNumber().getBlackPieces() : this.detector.getPieceNumber().getWhitePieces()))
