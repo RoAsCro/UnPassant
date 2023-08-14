@@ -1,6 +1,7 @@
 package SolveAlgorithm.SolverShortcuts;
 
 import SolveAlgorithm.Move;
+
 import java.util.Objects;
 
 /**

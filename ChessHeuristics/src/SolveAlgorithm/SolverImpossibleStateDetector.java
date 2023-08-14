@@ -2,11 +2,10 @@ package SolveAlgorithm;
 
 import Heuristics.BoardInterface;
 import Heuristics.Deduction;
-import Heuristics.Deductions.PieceMap;
 import Heuristics.Deductions.TestImpossibleStateDetector;
+import Heuristics.Deductions.UnCastle;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
-import Heuristics.Deductions.UnCastle;
 import StandardChess.Coordinate;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class SolverImpossibleStateDetector extends TestImpossibleStateDetector {
     }
 
     public Map<String, List<Coordinate>> getPromotions() {
-        return ((PieceMap) getDeductions().get(StateDetectorFactory.pmPosition)).getPromotionNumbers()
+        return getPromotionNumbers()
                 .entrySet().stream()
                 .filter(entry -> !entry.getValue().isEmpty())
                 .collect(Collectors.toMap(Map.Entry::getKey, (k) -> k.getValue().entrySet()

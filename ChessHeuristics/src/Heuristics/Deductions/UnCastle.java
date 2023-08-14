@@ -1,6 +1,5 @@
 package Heuristics.Deductions;
 
-import Heuristics.Deductions.*;
 import Heuristics.Path;
 import Heuristics.StateDetector;
 import StandardChess.Coordinate;

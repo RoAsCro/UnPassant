@@ -1,12 +1,9 @@
 package SolveAlgorithm;
 
 import Heuristics.BoardInterface;
-import StandardChess.Coordinate;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class StateLog {
     Map<Integer, Boolean> log = new HashMap<>();

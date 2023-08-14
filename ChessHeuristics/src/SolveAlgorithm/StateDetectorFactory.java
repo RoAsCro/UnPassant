@@ -5,7 +5,6 @@ import Heuristics.Deduction;
 import Heuristics.Deductions.*;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
-import Heuristics.Deductions.UnCastle;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 

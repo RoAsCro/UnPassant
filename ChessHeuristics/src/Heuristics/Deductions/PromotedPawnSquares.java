@@ -12,14 +12,10 @@ import java.util.Map;
 import static Heuristics.Deductions.PiecePathFinderUtil.PATH_DEVIATION;
 
 public class PromotedPawnSquares extends AbstractDeduction{
-    private List<Path> whitePaths = new LinkedList<>();
-    private List<Path> blackPaths = new LinkedList<>();
-    private boolean promotionMapInUse = false;
     public PromotedPawnSquares() {}
 
     @Override
     public boolean deduce(BoardInterface board) {
-        this.promotionMapInUse = true;
         Path emptyWhiteOrigins = findEmptyOrigins(true);
         Path emptyBlackOrigins = findEmptyOrigins(false);
 
@@ -28,7 +24,7 @@ public class PromotedPawnSquares extends AbstractDeduction{
             //System.out.println(emptyWhiteOrigins);
 
             List<Path> tempWhitePaths = pathToFinalRank(board, false, emptyWhiteOrigins);
-            whitePaths = getCaptures(false, tempWhitePaths);
+            List<Path> whitePaths = getCaptures(false, tempWhitePaths);
             //System.out.println(whitePaths);
 
             if (whitePaths.size() < this.detector.getPawnsCapturedByPawns(true)) {
@@ -46,7 +42,7 @@ public class PromotedPawnSquares extends AbstractDeduction{
             List<Path> tempBlackPaths = pathToFinalRank(board, true, emptyBlackOrigins);
             //System.out.println(blackPaths);
             //System.out.println(blackPaths.size());
-            blackPaths = getCaptures(true, tempBlackPaths);
+            List<Path> blackPaths = getCaptures(true, tempBlackPaths);
 
             if (blackPaths.size() < this.detector.getPawnsCapturedByPawns(false)) {
                 this.state = false;

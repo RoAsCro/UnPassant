@@ -1,12 +1,9 @@
 package SolveAlgorithm;
 
 import Heuristics.BoardInterface;
-import StandardChess.ChessBoard;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 public class BoardComparator implements Comparator<BoardInterface> {
 

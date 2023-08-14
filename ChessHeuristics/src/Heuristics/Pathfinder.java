@@ -4,7 +4,6 @@ import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 import StandardChess.Piece;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiPredicate;

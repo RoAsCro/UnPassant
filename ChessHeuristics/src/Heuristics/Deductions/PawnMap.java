@@ -1,7 +1,6 @@
 package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
-import Heuristics.Observation;
 import Heuristics.Path;
 import StandardChess.BoardReader;
 import StandardChess.Coordinate;

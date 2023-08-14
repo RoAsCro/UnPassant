@@ -1,8 +1,10 @@
 package Heuristics.Deductions;
 
-import Heuristics.*;
+import Heuristics.BoardInterface;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
+import Heuristics.Path;
+import Heuristics.StateDetector;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 
@@ -21,7 +23,6 @@ public class PromotionMap extends AbstractDeduction {
 
     private int additionalCapturesWhite = 0;
     private int additionalCapturesBlack = 0;
-
 
     private Path origins;
     private Path targets;
@@ -684,14 +685,6 @@ public class PromotionMap extends AbstractDeduction {
         }
     }
 
-    public PawnMap getPromotionPawnMap(boolean white) {
-        return white ? promotionPawnMapWhite : promotionPawnMapBlack;
-    }
-
-    public CombinedPawnMap getPromotionCombinedPawnMap() {
-        return this.combinedPawnMap;
-    }
-
     private class PromotionCombinedPawnMap extends CombinedPawnMap {
         public PromotionCombinedPawnMap() {
             super();
@@ -907,8 +900,7 @@ public class PromotionMap extends AbstractDeduction {
         }
 
         @Override
-        protected void reduceIterHelperStart(Map<Coordinate, Path> map) {
-        }
+        protected void reduceIterHelperStart(Map<Coordinate, Path> map) {}
 
         @Override
         public void update() {

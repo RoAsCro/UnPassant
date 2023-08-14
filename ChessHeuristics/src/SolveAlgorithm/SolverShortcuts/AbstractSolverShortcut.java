@@ -1,7 +1,7 @@
 package SolveAlgorithm.SolverShortcuts;
 
-import StandardChess.Coordinate;
 import SolveAlgorithm.Move;
+import StandardChess.Coordinate;
 
 public abstract class AbstractSolverShortcut {
     protected static int FINAL_RANK_Y = 7;

@@ -2,9 +2,11 @@ package SolveAlgorithm;
 
 import SolveAlgorithm.SolverShortcuts.AbstractSolverShortcut;
 import SolveAlgorithm.SolverShortcuts.GreaterBoardShortcut;
-import StandardChess.Coordinate;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class StateComparator {
     List<AbstractSolverShortcut> shortcuts = List.of(new GreaterBoardShortcut());

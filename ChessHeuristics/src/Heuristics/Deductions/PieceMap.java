@@ -1,6 +1,8 @@
 package Heuristics.Deductions;
 
-import Heuristics.*;
+import Heuristics.BoardInterface;
+import Heuristics.Path;
+import Heuristics.StateDetector;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 
@@ -11,19 +13,11 @@ import java.util.stream.Collectors;
 public class PieceMap extends AbstractDeduction{
 
     // Get rid of the one usage of this
-    private final Map<Coordinate, Path> promotedPieceMap;
     private PiecePathFinderUtil pathFinderUtil;
-
     Predicate<Path> kingCollisionWhite = path -> !path.getLast().equals(Coordinates.WHITE_KING);
     Predicate<Path> kingCollisionBlack = path -> !path.getLast().equals(Coordinates.BLACK_KING);
 
     public PieceMap() {
-        this.promotedPieceMap = new TreeMap<>();
-        for (int y  = 0 ; y < 8 ; y = y + 7) {
-            for (int x = 0; x < 8; x++) {
-                this.promotedPieceMap.put(new Coordinate(x, y), new Path());
-            }
-        }
     }
     @Override
     public void registerDetector(StateDetector detector) {
@@ -36,23 +30,8 @@ public class PieceMap extends AbstractDeduction{
         }
     }
 
-    public Map<String, Map<Path, Integer>> getPromotionNumbers() {
-        return this.detector.getPromotionNumbers();
-    }
-
-
-    public Map<Coordinate, Map<Coordinate, Path>> getStartLocations() {
-        return this.detector.getStartLocations();
-    }
-    public Map<Coordinate, Boolean> getCaged() {
-        return this.detector.getCaged();
-    }
-
     @Override
     public boolean deduce(BoardInterface board) {
-//        pawnMap.deduce(board);
-        // bishops -> royalty -> rooks
-
         Arrays.stream(new int[]{2, 5, 4, 3, 0, 7}).forEach(x -> {
             findFromOrigin(board, x, true, false);
             findFromOrigin(board, x, false, false);
@@ -63,8 +42,6 @@ public class PieceMap extends AbstractDeduction{
         });
         configureCastlingPartTwo(board);
 
-
-
         // For each start location, have each piece associated with it attempt to path to that start
         pathFromOtherDirection(board, this.detector.getStartLocations());
 
@@ -72,7 +49,6 @@ public class PieceMap extends AbstractDeduction{
         kingMovementUpdate(board);
 
         // Every piece for which there are more of the type associated with a start location than there are by default
-        //system.out.println("HERERE");
         Map<String, Path> pieces = new TreeMap<>();
         Map<String, Integer> pieceNumber = new TreeMap<>();
 //        Map<String, Integer> quantities = new TreeMap<>();
@@ -159,12 +135,9 @@ public class PieceMap extends AbstractDeduction{
             } else {
                 this.detector.getPromotionNumbers().get(key).put(value, 0);
             }
-//            Map<Path, Integer> map =
-//            if (!(map == null)) {
-//                map.put(value, 1);
-//            }
+
         });
-//        pathFromOtherDirection(board, this.promotedPieceMap);
+
         // Map pieces to their promotion origins
         Path certainPromotionsPath = Path.of(certainPromotions.values().stream()
                         .filter(value -> !(value == null))
@@ -540,19 +513,5 @@ public class PieceMap extends AbstractDeduction{
             return !this.detector.getKingMovement(false) && this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, start, target, kingCollisionBlack).isEmpty();
         }
     }
-
-
-    public Map<Coordinate, Path> getPromotedPieceMap(){
-        return this.detector.getPromotedPieceMap();
-    }
-
-    public boolean getKingMovement(boolean white) {
-        return this.detector.getKingMovement(white);
-    }
-
-    public boolean getRookMovement(boolean white, boolean kingside) {
-        return this.detector.getRookMovement(white, !kingside);
-    }
-
 
 }
