@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 
 public class PromotionMapTest {
 
-    PawnMapWhite pawnMapWhite;
-    PawnMapBlack pawnMapBlack;
+    PawnMap pawnMapWhite;
+    PawnMap pawnMapBlack;
     CombinedPawnMap combinedPawnMap;
     PieceMap pieceMap;
     PromotionMap promotionMap;
@@ -24,8 +24,8 @@ public class PromotionMapTest {
         PawnNumber pawnNumber = new PawnNumber();
         PieceNumber pieceNumber = new PieceNumber();
 
-        pawnMapWhite = new PawnMapWhite();
-        pawnMapBlack = new PawnMapBlack();
+        pawnMapWhite = new PawnMap(true);
+        pawnMapBlack = new PawnMap(false);
         combinedPawnMap = new CombinedPawnMap();
         pieceMap = new PieceMap();
         captureLocations = new CaptureLocations();

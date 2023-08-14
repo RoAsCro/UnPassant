@@ -19,8 +19,8 @@ public class PromotionSquaresTest {
     public void setup() {
         this.pawnNumber = new PawnNumber();
         this.pieceNumber = new PieceNumber();
-        PawnMapWhite pmw = new PawnMapWhite();
-        PawnMapBlack pmb = new PawnMapBlack();
+        PawnMap pmw = new PawnMap(true);
+        PawnMap pmb = new PawnMap(false);
         CombinedPawnMap cpm = new CombinedPawnMap();
         PieceMap pm = new PieceMap();
         CaptureLocations cl = new CaptureLocations();

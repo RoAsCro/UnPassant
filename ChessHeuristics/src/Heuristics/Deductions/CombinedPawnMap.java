@@ -8,6 +8,9 @@ import StandardChess.Coordinates;
 
 import java.util.*;
 
+import static Heuristics.HeuristicsUtil.FINAL_RANK_Y;
+import static Heuristics.HeuristicsUtil.FIRST_RANK_Y;
+
 public class CombinedPawnMap extends AbstractDeduction {
     public CombinedPawnMap(){
         super("Illegal pawn structure - pawns cannot reach their current position.");

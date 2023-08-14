@@ -10,6 +10,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static Heuristics.HeuristicsUtil.*;
+
 public class PieceMap extends AbstractDeduction{
 
     // Get rid of the one usage of this

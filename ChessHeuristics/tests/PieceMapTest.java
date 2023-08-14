@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 public class PieceMapTest {
-    PawnMapWhite pawnMapWhite;
-    PawnMapBlack pawnMapBlack;
+    PawnMap pawnMapWhite;
+    PawnMap pawnMapBlack;
     CombinedPawnMap combinedPawnMap;
     PieceMap pieceMap;
     StandardStateDetector standardStateDetector;
@@ -26,9 +26,9 @@ public class PieceMapTest {
         PawnNumber pawnNumber = new PawnNumber();
         PieceNumber pieceNumber = new PieceNumber();
 
-        pawnMapWhite = new PawnMapWhite();
+        pawnMapWhite = new PawnMap(true);
         //
-        pawnMapBlack = new PawnMapBlack();
+        pawnMapBlack = new PawnMap(false);
         //
         combinedPawnMap = new CombinedPawnMap();
         //

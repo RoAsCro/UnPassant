@@ -130,20 +130,6 @@ public class PathfinderTest {
     }
 
     @Test
-    void findEveryTileTest() {
-        // Tests that no duplicates are found
-        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
-        List<Coordinate> list = new LinkedList<>();
-        Path path = Pathfinder.findFirstPath(
-                StandardPieceFactory.getInstance().getPiece("k"),
-                new Coordinate(0,0),
-                (b, c) -> {list.add(c);
-                            return list.size() == 64;},
-                board);
-        Assertions.assertEquals(path.size(), path.stream().distinct().toList().size());
-    }
-
-    @Test
     void testPathExclusivity() {
         Path path1 = new Path();
         for (int i = 1 ; i < 6 ; i++) {

@@ -14,14 +14,9 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class PiecePathFinderUtil {
+import static Heuristics.HeuristicsUtil.*;
 
-    protected static int FINAL_RANK_Y = 7;
-    protected static int FIRST_RANK_Y = 0;
-    protected static int BLACK_PAWN_Y = 6;
-    protected static int WHITE_PAWN_Y = 1;
-    protected static int BLACK_ESCAPE_Y = 5;
-    protected static int WHITE_ESCAPE_Y = 2;
+public class PiecePathFinderUtil {
     private StateDetector detector;
 
     public static final Function<Path, Integer> PATH_DEVIATION = p -> p.stream()
@@ -58,7 +53,7 @@ public class PiecePathFinderUtil {
         Coordinate coordinate = path.getLast();
         return !(
                 (coordinate.getY() == 0 || coordinate.getY() == 7)
-                        && !AbstractDeduction.STANDARD_STARTS.get(coordinate.getX()).equals("rook")
+                        && !STANDARD_STARTS.get(coordinate.getX()).equals("rook")
                         && this.detector.getStartLocations().containsKey(coordinate)
                         && !this.detector.getStartLocations().get(coordinate).isEmpty()
                         && this.detector.getCaged().containsKey(coordinate)

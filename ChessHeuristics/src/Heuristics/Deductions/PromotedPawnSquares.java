@@ -7,6 +7,8 @@ import StandardChess.Coordinate;
 import java.util.*;
 
 import static Heuristics.Deductions.PiecePathFinderUtil.PATH_DEVIATION;
+import static Heuristics.HeuristicsUtil.FINAL_RANK_Y;
+import static Heuristics.HeuristicsUtil.FIRST_RANK_Y;
 
 public class PromotedPawnSquares extends AbstractDeduction{
     public PromotedPawnSquares() {

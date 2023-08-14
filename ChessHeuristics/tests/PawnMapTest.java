@@ -1,6 +1,5 @@
 import Heuristics.BoardInterface;
-import Heuristics.Deductions.PawnMapBlack;
-import Heuristics.Deductions.PawnMapWhite;
+import Heuristics.Deductions.PawnMap;
 import Heuristics.Detector.StandardStateDetector;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
@@ -11,13 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class PawnMapTest {
-    PawnMapWhite pawnMapWhite;
-    PawnMapBlack pawnMapBlack;
+    PawnMap pawnMapWhite;
+    PawnMap pawnMapBlack;
     StandardStateDetector standardStateDetector;
     @BeforeEach
     void setup() {
-        this.pawnMapWhite = new PawnMapWhite();
-        this.pawnMapBlack = new PawnMapBlack();
+        this.pawnMapWhite = new PawnMap(true);
+        this.pawnMapBlack = new PawnMap(false);
         standardStateDetector = new StandardStateDetector(new PawnNumber(), new PieceNumber(), pawnMapWhite, pawnMapBlack);
     }
 

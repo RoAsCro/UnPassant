@@ -12,9 +12,7 @@ import java.util.function.Predicate;
 
 public class Pathfinder {
 
-
-    private static int MAX_DEPTH = 64;
-
+    private static final int MAX_DEPTH = 64;
     protected static int FINAL_RANK = 7;
     protected static int FIRST_RANK = 0;
 
@@ -23,20 +21,16 @@ public class Pathfinder {
                                         BoardInterface board) {
         Path shortestPath = new Path();
         shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, true, p -> true, (c, d) -> true);
-//        System.out.println(possibles);
         return shortestPath;
     }
-
 
     public static Path findShortestPath(Piece piece, Coordinate origin,
                                         BiPredicate<BoardInterface, Coordinate> endCondition,
                                         BoardInterface board, Predicate<Path> pathCondition) {
         Path shortestPath = new Path();
         shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, true, pathCondition, (c, d) -> true);
-//        System.out.println(possibles);
         return shortestPath;
     }
-
     public static Path findShortestPath(Piece piece, Coordinate origin,
                                         BiPredicate<BoardInterface, Coordinate> endCondition,
                                         BoardInterface board, Predicate<Path> pathCondition,
@@ -49,16 +43,26 @@ public class Pathfinder {
         return shortestPath;
     }
 
-    public static Path findFirstPath(Piece piece, Coordinate origin,
-                                     BiPredicate<BoardInterface, Coordinate> endCondition,
-                                     BoardInterface board) {
-
-        Path shortestPath = new Path();
-        shortestPath = findPathIter(piece, origin, endCondition, shortestPath, board, MAX_DEPTH, false, p -> true, (c, d) -> true);
-//        System.out.println(possibles);
-        return shortestPath;
-    }
-
+    /**
+     * Recursively iterates across the board one Coordinate at a time
+     * from the origin using the pieces moveset until the end condition is reached.
+     * The path condition is a check on the Path performed at every iteration, i.e. on every coordinate passed over.
+     * The 'shortest' boolean specifies whether the shortest or first Path should be found.
+     * The reduction condition is an additional comparison that can be made between found paths to choose which
+     * is returned.
+     * A found Path will never contain the same Coordinate twice
+     * @param piece the piece whose moveset is to be used
+     * @param origin the starting Coordinate
+     * @param endCondition the condition to be satisfied for a Path to be considered valid
+     * @param path the initial, likely empty, Path to be used to start the recursion
+     * @param board the Board Interface to be iterated across
+     * @param depth the current depth of the recursion
+     * @param shortest whether the shortest Path satisfying the conditions is to be found
+     * @param pathCondition the condition, checked at every iteration, that a Path must satisfy
+     * @param reductionCondition the condition by which the method decides between two Paths that satisfy the
+     *                           given conditions
+     * @return a Path that satisfies all given conditions, or an empty Path if none can be found
+     */
     private static Path findPathIter(Piece piece, Coordinate origin,
                                      BiPredicate<BoardInterface, Coordinate> endCondition, Path path,
                                      BoardInterface board, int depth,
@@ -68,11 +72,10 @@ public class Pathfinder {
         if (endCondition.test(board, origin)) {
             return path;
         }
-        Path shortestPath = new Path();
 
+        Path shortestPath = new Path();
         Coordinate[] moves = piece.getMoves(origin);
         for (Coordinate target : moves) {
-//            System.out.println(path);
             if (depth != 0 && path.size() + 1 > depth) {
                 shortestPath.addAll(path);
                 shortestPath.add(target);

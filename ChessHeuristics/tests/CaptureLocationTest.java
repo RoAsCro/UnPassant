@@ -10,8 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class CaptureLocationTest {
-    PawnMapWhite pawnMapWhite;
-    PawnMapBlack pawnMapBlack;
+    PawnMap pawnMapWhite;
+    PawnMap pawnMapBlack;
     CombinedPawnMap combinedPawnMap;
     PieceMap pieceMap;
     StandardStateDetector standardStateDetector;
@@ -21,8 +21,8 @@ public class CaptureLocationTest {
     void setup() {
         PawnNumber pawnNumber = new PawnNumber();
         PieceNumber pieceNumber = new PieceNumber();
-        pawnMapWhite = new PawnMapWhite();
-        pawnMapBlack = new PawnMapBlack();
+        pawnMapWhite = new PawnMap(true);
+        pawnMapBlack = new PawnMap(false);
         combinedPawnMap = new CombinedPawnMap();
         pieceMap = new PieceMap();
         captureLocations = new CaptureLocations();

@@ -18,8 +18,8 @@ public class UnCastleTest {
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;
     StandardStateDetector detector;
-    PawnMapWhite pmw;
-    PawnMapBlack pmb;
+    PawnMap pmw;
+    PawnMap pmb;
     PieceMap pm;
     PromotionMap prm;
     UnCastle uc;
@@ -29,8 +29,8 @@ public class UnCastleTest {
     public void setup() {
         this.pawnNumber = new PawnNumber();
         this.pieceNumber = new PieceNumber();
-        this.pmw = new PawnMapWhite();
-        this.pmb = new PawnMapBlack();
+        this.pmw = new PawnMap(true);
+        this.pmb = new PawnMap(false);
         CombinedPawnMap cpm = new CombinedPawnMap();
         this.pm = new PieceMap();
         CaptureLocations cl = new CaptureLocations();

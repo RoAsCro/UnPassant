@@ -10,6 +10,8 @@ import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
+import static Heuristics.HeuristicsUtil.*;
+
 public class CaptureLocations extends AbstractDeduction {
     private PiecePathFinderUtil pathFinderUtil;
     private static final BiPredicate<Coordinate, Coordinate> DARK_TEST =

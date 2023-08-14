@@ -21,8 +21,8 @@ public class ImpossibleStates {
     public void setup() {
         this.pawnNumber = new PawnNumber();
         this.pieceNumber = new PieceNumber();
-        PawnMapWhite pmw = new PawnMapWhite();
-        PawnMapBlack pmb = new PawnMapBlack();
+        PawnMap pmw = new PawnMap(true);
+        PawnMap pmb = new PawnMap(false);
         CombinedPawnMap cpm = new CombinedPawnMap();
         this.pm = new PieceMap();
         CaptureLocations cl = new CaptureLocations();

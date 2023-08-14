@@ -19,13 +19,13 @@ public class StateDetectorFactory {
     public static final int ppsPosition = 7;
 
     private static Deduction[] getDeductions() {
-        PawnMapWhite pmw;
-        PawnMapBlack pmb;
+        PawnMap pmw;
+        PawnMap pmb;
         CombinedPawnMap cpm;
 //        System.out.println(Arrays.stream(deductions).toList());
 //        System.out.println(pmw);
-        pmw = new PawnMapWhite();
-        pmb = new PawnMapBlack();
+        pmw = new PawnMap(true);
+        pmb = new PawnMap(false);
         cpm = new CombinedPawnMap();
 
 //        System.out.println(pmw.getPawnOrigins());
