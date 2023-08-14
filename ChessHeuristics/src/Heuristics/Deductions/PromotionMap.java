@@ -37,6 +37,7 @@ public class PromotionMap extends AbstractDeduction {
 //    private final Map<>
 
     public PromotionMap() {
+        super("A promoted piece cannot reach its current location from an open pawn start");
         this.promotionPawnMapWhite = new PromotionPawnMapWhite();
         this.promotionPawnMapBlack = new PromotionPawnMapBlack();
     }
@@ -141,8 +142,6 @@ public class PromotionMap extends AbstractDeduction {
 
         // Fail if a piece has no valid origin
         if (pieceSquareOriginWhite.containsValue(List.of()) || pieceSquareOriginBlack.containsValue(List.of())) {
-//            System.out.println("j");
-
             this.state = false;
             return false;
         }
@@ -168,7 +167,6 @@ public class PromotionMap extends AbstractDeduction {
                                                 .map(LinkedList::getLast)
                                                 .collect(Collectors.toSet())
                                                 .size()))) {
-
             this.state = false;
             return false;
         }
@@ -202,12 +200,6 @@ public class PromotionMap extends AbstractDeduction {
 
 
         // Fail if there are more promotions than valid origins
-        //system.out.println("INFO2");
-        //system.out.println(promotionsWhite);
-        //system.out.println(whiteOrigins);
-        //system.out.println(pieceSquareOriginBlack);
-
-
         if (promotionsWhite > whiteOrigins.size() || promotionsBlack > blackOrigins.size()) {
             this.state = false;
             return false;

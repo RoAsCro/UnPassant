@@ -17,7 +17,9 @@ public class CaptureLocations extends AbstractDeduction {
     private static final BiPredicate<Coordinate, Coordinate> LIGHT_TEST =
             (c1, c2) -> c2.getX() != c1.getX() && Coordinates.light(c1);
 
-    public CaptureLocations() {}
+    public CaptureLocations() {
+        super("Too many pawn captures - not all missing pieces are reachable.");
+    }
 
     @Override
     public void registerDetector(StateDetector detector) {

@@ -9,7 +9,9 @@ import java.util.*;
 import static Heuristics.Deductions.PiecePathFinderUtil.PATH_DEVIATION;
 
 public class PromotedPawnSquares extends AbstractDeduction{
-    public PromotedPawnSquares() {}
+    public PromotedPawnSquares() {
+        super("Promoted piece cannot reach a promotion square.");
+    }
 
     @Override
     public boolean deduce(BoardInterface board) {

@@ -8,6 +8,10 @@ import java.util.function.Predicate;
 public class PawnPositions extends AbstractDeduction {
     private final static Predicate<Coordinate> pawnCheck = c -> c.getY() == 0 || c.getY() == 7;
 
+    public PawnPositions() {
+        super("Pawns in illegal position.");
+    }
+
     @Override
     public boolean deduce(BoardInterface board) {
         this.state = board.getBoardFacts().getCoordinates(true, "pawn").stream().noneMatch(pawnCheck)

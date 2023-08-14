@@ -17,6 +17,7 @@ public abstract class PawnMap extends AbstractDeduction{
     protected boolean white;
 
     public PawnMap(Boolean white) {
+        super("Illegal pawn structure.");
         this.white = white;
     }
 
@@ -125,6 +126,7 @@ public abstract class PawnMap extends AbstractDeduction{
                         .reduce(Integer::sum)
                         .orElse(0);
         if (maxOffset < 0) {
+            this.errorMessage = "Too many pawn captures.";
             this.state = false;
         }
         this.detector.setCapturedPieces(white, maxOffset);

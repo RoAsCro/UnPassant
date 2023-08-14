@@ -9,7 +9,9 @@ import StandardChess.Coordinates;
 import java.util.*;
 
 public class CombinedPawnMap extends AbstractDeduction {
-    public CombinedPawnMap(){};
+    public CombinedPawnMap(){
+        super("Illegal pawn structure - pawns cannot reach their current position.");
+    };
 
     @Override
     public boolean deduce(BoardInterface board) {
@@ -33,11 +35,24 @@ public class CombinedPawnMap extends AbstractDeduction {
             }
         }
 
-        if (this.detector.getPawnPaths(true).values().stream().anyMatch(List::isEmpty) || this.detector.getPawnPaths(false).values().stream().anyMatch(List::isEmpty)) {
-            //System.out.println();
+        if (this.detector.getPawnPaths(true).values().stream().anyMatch(List::isEmpty)) {
+            this.errorMessage = generateErrorMessage(this.detector.getPawnPaths(true));
             this.state = false;
+        } else if (this.detector.getPawnPaths(false).values().stream().anyMatch(List::isEmpty)) {
+            this.errorMessage = generateErrorMessage(this.detector.getPawnPaths(false));
+            this.state = false;
+
         }
         return false;
+    }
+
+    private String generateErrorMessage(Map<Coordinate, List<Path>> paths) {
+        return "Illegal pawn structure - pawn at " + paths.entrySet()
+                .stream().filter(e -> e.getValue().isEmpty())
+                .map(Map.Entry::getKey)
+                .findAny()
+                .orElse(Coordinates.NULL_COORDINATE)
+                .toString() + " cannot reach its position.";
     }
 
 

@@ -23,6 +23,7 @@ public abstract class AbstractDeduction implements Deduction {
     protected static int K_BISHOP_X = 5;
     protected static int QUEEN_X = 3;
     protected static int KING_X = 4;
+    protected String errorMessage = "Position not legal.";
 
     protected StateDetector detector;
 
@@ -38,9 +39,13 @@ public abstract class AbstractDeduction implements Deduction {
 
     protected Boolean state = true;
 
+    public AbstractDeduction(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
     @Override
     public String errorMessage(){
-        return this.getClass() + " deductions failed.";
+        return this.errorMessage;
     }
 
     @Override

@@ -18,6 +18,7 @@ public class PieceMap extends AbstractDeduction{
     Predicate<Path> kingCollisionBlack = path -> !path.getLast().equals(Coordinates.BLACK_KING);
 
     public PieceMap() {
+        super("Illegal piece positions.");
     }
     @Override
     public void registerDetector(StateDetector detector) {
@@ -214,6 +215,11 @@ public class PieceMap extends AbstractDeduction{
 
 
         if (!certainPromotionCheck || accountedPromotions != numberOfPotentialPromotions){
+            if (!certainPromotionCheck) {
+                this.errorMessage = "Not all promoted pieces can path from a promotion square.";
+            } else {
+                this.errorMessage = "Too many promotions.";
+            }
             this.state = false;
         }
 

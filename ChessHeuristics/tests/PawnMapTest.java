@@ -248,11 +248,8 @@ public class PawnMapTest {
     @Test
     void p() {
 
-        //NOT A TEST
-        BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rn2k3/ppp3pp/3p4/8/P7/1P1P4/P2P1PPP/RNBQKBNR w KQq - 0 1"));
-//        board = new BoardInterface(BoardBuilder.buildBoard("r3k2r/p7/1pp5/2p5/2P5/1PP5/P7/4K3 w kq - 0 1"));
-        this.standardStateDetector.testState(board);
-        System.out.println(this.standardStateDetector.getPawnOrigins(true));
+        //NOT A TESt
+        System.out.println(pawnMapWhite.errorMessage());
     }
 
 }
