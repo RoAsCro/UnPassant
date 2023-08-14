@@ -63,4 +63,6 @@ public interface StateDetector {
     Path getPromotedPawns(boolean white);
 
     Map<Coordinate, Path> getPromotedPieceMap();
+
+    int capturedPieces(boolean white);
 }

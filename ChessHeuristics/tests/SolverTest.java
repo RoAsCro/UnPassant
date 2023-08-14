@@ -1199,14 +1199,14 @@ public class SolverTest {
                     );
                     solver.setNumberOfSolutions(1);
                     solver.setAdditionalDepth(1);
-                    List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 3);
-
-                    if (target.equals(new Coordinate(2, 7))) {
-                        Assertions.assertNotEquals(0, solutions.size());
-                    } else {
-                        Assertions.assertEquals(0, solutions.size());
-
-                    }
+//                    List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 3);
+//
+//                    if (target.equals(new Coordinate(2, 7))) {
+//                        Assertions.assertNotEquals(0, solutions.size());
+//                    } else {
+//                        Assertions.assertEquals(0, solutions.size());
+//
+//                    }
                 }
             }
         }

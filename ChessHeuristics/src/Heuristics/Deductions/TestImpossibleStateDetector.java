@@ -261,4 +261,17 @@ public class TestImpossibleStateDetector implements StateDetector {
     public Map<Coordinate, Path> getPromotedPieceMap() {
         return promotedPieceMap;
     }
+
+
+    @Override
+    public int capturedPieces(boolean white) {
+        //Sys tem.out.println("CPCP");
+        //Sys tem.out.println(this.detector.pawnTakeablePieces(white));
+        //Sys tem.out.println((white
+//                ? this.detector.getPieceNumber().getBlackPieces()
+//                : this.detector.getPieceNumber().getWhitePieces()));
+        return pawnTakeablePieces(white) - (white
+                ? getPieceNumber().getBlackPieces()
+                : getPieceNumber().getWhitePieces());
+    }
 }
