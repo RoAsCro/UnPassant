@@ -301,4 +301,10 @@ public class StandardStateDetector implements StateDetector {
                 ? getPieceNumber().getBlackPieces()
                 : getPieceNumber().getWhitePieces());
     }
+
+
+    @Override
+    public String toString() {
+        return this.board.getReader().toFEN();
+    }
 }

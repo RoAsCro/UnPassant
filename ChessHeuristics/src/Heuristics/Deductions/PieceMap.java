@@ -424,7 +424,9 @@ public class PieceMap extends AbstractDeduction{
         Map<Coordinate, Path> candidatePaths = new TreeMap<>();
         Path pieces = new Path();
         if (cage) {
-            this.detector.getCaged().put(start, this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, start, Coordinates.NULL_COORDINATE).isEmpty());
+            if (!(this.detector.getCaged().containsKey(start) && this.detector.getCaged().get(start))) {
+                this.detector.getCaged().put(start, this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, start, Coordinates.NULL_COORDINATE).isEmpty());
+            }
         } else {
             for (Coordinate target : candidatePieces) {
 

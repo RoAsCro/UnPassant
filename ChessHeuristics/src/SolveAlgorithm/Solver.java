@@ -9,10 +9,11 @@ import StandardChess.*;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class Solver implements Runnable {
+public class Solver {
 
     Predicate<String> fenPredicate = p -> true;
     private Predicate<DetectorInterface> detectorPredicate = d -> true;
+    private boolean allowNonIntrusiveMovement = true;
     String originalBoard;
     private boolean legalFirstAlwaysTrue = false;
     private boolean legalFirst = false;
@@ -32,13 +33,14 @@ public class Solver implements Runnable {
     public Solver(Predicate<String> fenPredicate, Predicate<DetectorInterface> detectorPredicate){
         this.fenPredicate = fenPredicate;
         this.detectorPredicate = detectorPredicate;
+        this.allowNonIntrusiveMovement = false;
     }
 
     public Solver(Predicate<String> fenPredicate){
         this.fenPredicate = fenPredicate;
     }
 
-    public List<String> solve(ChessBoard board, int depth) {
+    public List<String> solve(ChessBoard board, int depth) throws IllegalArgumentException {
         this.maxDepth = depth;
         if (this.legalFirst) {
             this.legalFirstAlwaysTrue = true;
@@ -360,11 +362,11 @@ public class Solver implements Runnable {
                             boolean pass = false;
                             String movedPiece = currentBoard.at(target).getType();
 //                            System.out.println("?" + currentBoard.getReader().toFEN());
-//                            System.out.println(nonIntrosiveMovement(promotion, piece, movedPiece));
+//                            System.out.println(nonIntrusiveMovement(promotion, piece, movedPiece));
 
                             if (legalFirst) {
                                 pass = true;
-                            } else if (nonIntrosiveMovement(promotion, piece, movedPiece)) {
+                            } else if (this.allowNonIntrusiveMovement && nonIntrusiveMovement(promotion, piece, movedPiece)) {
                                 pass = true;
                                 this.stateLog.register(new BoardInterface(currentBoard), true);
 
@@ -409,7 +411,7 @@ public class Solver implements Runnable {
         return states;
     }
 
-    private static boolean nonIntrosiveMovement(boolean promotion, String piece, String movedPiece) {
+    private static boolean nonIntrusiveMovement(boolean promotion, String piece, String movedPiece) {
         return !(movedPiece.charAt(0) == 'p')
                 && piece.equals("") && !promotion;
     }
@@ -432,6 +434,9 @@ public class Solver implements Runnable {
 //            System.out.println("next");
             this.stateLog.register(new BoardInterface(board), pass);
 //            }
+        }
+        if (shortcut == 1) {
+            System.out.println("YY" + board.getReader().toFEN());
         }
         return (shortcut == 0 && pass) || shortcut == 1;
     }
@@ -464,34 +469,20 @@ public class Solver implements Runnable {
             moveMaker.setCapturePiece(StandardPieceFactory.getInstance()
                     .getPiece(board.getTurn().equals("white") ? piece.toLowerCase() : piece.toUpperCase()));
         }
-//        String original = board.getReader().toFEN();
-        //        if (s) {
-//            System.out.println("::");
-//            System.out.println(original);
-//            System.out.println(board.getReader().toFEN());
-//
-//        }
-//        if (origin.equals(new Coordinate(3, 4))) {
-//            System.out.println(target);
-//        }
-
         return moveMaker.makeUnMove(origin, target);
     }
 
     private boolean castleCheck(ChessBoard board, DetectorInterface detector) {
-
-
         boolean white = true;
         for (int i = 0 ; i < 2 ; i++) {
             String piece = "king";
             for (int j = 0 ; j < 2 ; j++) {
-//                System.out.println(white);
-//                System.out.println(piece);
-//                System.out.println(board.canCastle(piece, white ? "white" : "black"));
-//                System.out.println(detector.canCastle(white));
-
                 if (board.canCastle(piece, white ? "white" : "black")) {
                     if (!detector.canCastle(white)) {
+                        System.out.println(board.getReader().toFEN());
+                        System.out.println(white);
+
+                        System.out.println("CAN:T CASTLE");
                         return false;
                     } else if (white && piece.equals("queen")) {
                         //System.out.println(board.getReader().toFEN());
@@ -501,9 +492,6 @@ public class Solver implements Runnable {
             }
             white = false;
         }
-//        System.out.println(board.canCastle("queen", "white"));
-//
-        //System.out.println(board.getReader().toFEN());
         return true;
     }
 
@@ -519,62 +507,4 @@ public class Solver implements Runnable {
         this.numberOfSolutions = numberOfSolutions;
     }
 
-    @Override
-    public void run() {
-
-    }
-    public void statest(int currentDepth) {
-
-    }
-
-    public List<String> iterateTwo(String startingFen, int depth, boolean any) throws InterruptedException {
-//        Map<String, CombinedPawnMap>
-
-        Map<Integer, LinkedList<String>> depthFen = new HashMap<>();
-        LinkedList<String> finalStates = new LinkedList<String>();
-        LinkedList<String> stateOne = new LinkedList<>();
-        startingFen = startingFen + "::";
-        stateOne.add(startingFen);
-        depthFen.put(0, stateOne);
-        List<SovlverRunnerTwo> runnerPool = new LinkedList<>();
-        while ((any && !finalStates.isEmpty()) || finalStates.size() < this.numberOfSolutions ) {
-//            System.out.println(any);
-            runnerPool.stream().filter(SovlverRunnerTwo::isFinished).toList().forEach(s -> {
-                finalStates.addAll(s.getFinalStates());
-                if (!depthFen.containsKey(s.currentDepth + 1)) {
-                    depthFen.put(s.currentDepth + 1, new LinkedList<>());
-                }
-                depthFen.get(s.currentDepth + 1).addAll(s.getNewStates());
-                runnerPool.remove(s);
-            });
-            if (depthFen.values().stream().flatMap(LinkedList::stream).toList().isEmpty() && runnerPool.isEmpty()) {
-                break;
-            }
-            if (any && !finalStates.isEmpty()) {
-                break;
-            }
-            depthFen.keySet().stream().filter(i -> i > depth).toList().stream().forEach(depthFen::remove);
-//                break;
-
-            // Get a state of the highest possible value
-            Map.Entry<Integer, LinkedList<String>> entry = depthFen.entrySet().stream()
-                    .filter(e -> !(e.getKey() > depth))
-                    .filter(e -> !e.getValue().isEmpty())
-                    .reduce((e, f) -> e.getKey() > f.getKey() ? e : f)
-                    .orElse(null);
-            if (entry == null) {
-//                System.out.println(depthFen);
-                continue;
-            }
-            int currentDepth = entry.getKey();
-            String fen = entry.getValue().pop();
-            SovlverRunnerTwo sovlverRunnerTwo = new SovlverRunnerTwo(this,
-                    this.legalFirst, this.additionalDepth, any, currentDepth, fen, depth, numberOfSolutions);
-            runnerPool.add(sovlverRunnerTwo);
-//            System.out.println("launching");
-            new Thread(sovlverRunnerTwo).start();
-//        System.out.println(currentDepth);
-        }
-        return finalStates;
-    }
 }

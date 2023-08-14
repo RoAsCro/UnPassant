@@ -13,23 +13,12 @@ import java.util.stream.Collectors;
 
 public class SolverImpossibleStateDetector extends StandardStateDetector {
 
-    private final BoardInterface boardInterface;
-    private final UnCastle unCastle;
 
     public SolverImpossibleStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, UnCastle unCastle, BoardInterface board, Deduction... deductions) {
-        super(pawnNumber, pieceNumber, deductions);
-        this.boardInterface = board;
-        this.unCastle = unCastle;
-        this.unCastle.registerStateDetector(this);
+        super(pawnNumber, pieceNumber, board, deductions);
+
     }
 
-    public boolean testState() {
-        return testState(this.boardInterface);
-    }
-
-    public boolean canCastle(boolean white) {
-        return !unCastle.hasMoved().get(white ? 0 : 1)[0];
-    }
 
     public Map<String, List<Coordinate>> getPromotions() {
         return getPromotionNumbers()

@@ -44,6 +44,11 @@ public class StandardDetectorInterface implements DetectorInterface {
 
     @Override
     public boolean canCastle(boolean white) {
-        return !this.detector.getKingMovement(white) && !(this.detector.getRookMovement(white, true) && this.detector.getRookMovement(white, false));
+        return !(this.detector.getKingMovement(white) || (this.detector.getRookMovement(white, true) && this.detector.getRookMovement(white, false)));
+    }
+
+    @Override
+    public String toString() {
+        return this.detector.toString();
     }
 }

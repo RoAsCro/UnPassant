@@ -66,7 +66,8 @@ public class UnCastle {
         if (this.whiteData[1] && this.whiteData[2]) {
             this.whiteData[0] = true;
         }
-
+        System.out.println("LLL");
+        System.out.println(blackData[0]);
         this.stateDetector.setKingMovement(false, this.blackData[0]);
         this.stateDetector.setRookMovement(false, true, this.blackData[1]);
         this.stateDetector.setRookMovement(false, false, this.blackData[2]);

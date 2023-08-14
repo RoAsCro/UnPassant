@@ -1,6 +1,8 @@
 import Heuristics.BoardInterface;
 import Heuristics.Deductions.*;
 import Heuristics.Detector.StandardStateDetector;
+import Heuristics.Detector.StateDetectorFactory;
+import Heuristics.DetectorInterface;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import Heuristics.Deductions.UnCastle;
@@ -154,6 +156,15 @@ public class UnCastleTest {
         List<boolean[]> booleans = uc.hasMoved();
         Assertions.assertTrue(booleans.get(1)[1]);
 
+    }
+
+    @Test
+    void failedInSolverFour() {
+        System.out.println(this.detector.testState(new BoardInterface(BoardBuilder.buildBoard("r7/pppk2pp/6p1/P3p2P/1NB1K3/p5P1/PP3PP1/R7 w - - 0 1"))));
+        Assertions.assertTrue(this.detector.getKingMovement(false));
+        DetectorInterface detectorInterface = StateDetectorFactory.getDetectorInterface(BoardBuilder.buildBoard("r7/pppk2pp/6p1/P3p2P/1NB1K3/p5P1/PP3PP1/R7 w - - 0 1"));
+        detectorInterface.testState();
+        Assertions.assertFalse(detectorInterface.canCastle(false));
     }
 
 

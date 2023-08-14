@@ -166,12 +166,13 @@ public class SolverTest {
                 ChessBoard b = BoardBuilder.buildBoard(s);
                 b.setTurn(b.getTurn().equals("white") ? "black" : "white");
                 // set max states to 100?
-                Solver solver = new Solver(
-//                        string ->{
-//                    SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(string.split(":")[0]);
-//                    detector.testState();
-//                    return detector.canCastle(false);
-//                }
+                Solver solver = new Solver(string -> true, detectorInterface -> {
+                    if (detectorInterface.canCastle(false)) {
+                        System.out.println("XXX" + detectorInterface);
+                        return true;
+                    }
+                    return false;
+                }
                 );
                 solver.setNumberOfSolutions(1);
                 solver.setAdditionalDepth(2);
@@ -187,23 +188,20 @@ public class SolverTest {
                 System.out.println("Finished 2");
 
                 System.out.println("Testing alternative... r3k3/ppp3pp/N5p1/P2Kp2P/2B5/p5P1/PP3PP1/R7 w - - 0 1");
-                solver = new Solver(string ->{
-                    SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(string.split(":")[0]);
-                    detector.testState();
-                    return detector.canCastle(false);
-                });
+                solver = new Solver(string -> !(Integer.parseInt(string.split(":")[2]) == 0) || string.split(":")[1].charAt(0) == 'N',
+                        detectorInterface -> detectorInterface.canCastle(false));
                 solver.setNumberOfSolutions(1);
                 solver.setAdditionalDepth(2);
-                b = BoardBuilder.buildBoard("r3k3/ppp3pp/N5p1/P2Kp2P/2B5/p5P1/PP3PP1/R7 w - - 0 1");
+                b = BoardBuilder.buildBoard("r3k3/ppp3pp/6p1/P2Kp2P/1NB5/p5P1/PP3PP1/R7 b - - 0 1");
                 b.setTurn(b.getTurn().equals("white") ? "black" : "white");
-                Assertions.assertNotEquals(0, solver.solve(b, 2).size());
+                Assertions.assertNotEquals(0, solver.solve(b, 3).size());
                 System.out.println("Finished 3");
 
             }
         }
         // The original puzzle is actually created incorrectly - with the knight moved as the last white move,
         // the pawn can move more freely than the apparent solution allows for
-        // In the above, the first tests an amended version of the puzzle, with an extra check that black can castle
+        // In the above, the first tests an amended version of the puzzle, the knight having not moved, with an extra check that black can castle
         // The second does the same without the check for castling, therefore a line is found
         // The third tries the puzzle under the original parameters, with the castling check and therefore finds alternative lines
 
@@ -232,20 +230,13 @@ public class SolverTest {
         solver.setNumberOfSolutions(1);
         solver.setNumberOfSolutions(2);
         solver.setAdditionalDepth(2);
-        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w k - 0 1"), 2).size());
+        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w - - 0 1"), 2).size());
 
-        solver = new Solver(p -> {
-            if (p.split(":")[1].endsWith("h8")) {
-                return false;
-            }
-            SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(p.split(":")[0]);
-            detector.testState();
-            return detector.canCastle(false);
-        });
+        solver = new Solver();
         solver.setNumberOfSolutions(1);
         solver.setNumberOfSolutions(2);
         solver.setAdditionalDepth(2);
-        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w - - 0 1"), 3).size());
+        Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w k - 0 1"), 3).size());
 
         // This is entirely a matter of iterating through valid moves
     }
@@ -434,9 +425,6 @@ public class SolverTest {
 
             },
                     d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-//                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
-//                }
                         return d.getPromotions(true).values()
                                 .stream().flatMap(m -> m.keySet().stream())
                                 .toList().isEmpty()
@@ -769,20 +757,13 @@ public class SolverTest {
 //                        }
                         return true ;
                     }
-                    ,d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
-//                }
-                return true;
-            }
+
             );
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
 //            System.out.println(count);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
             Assertions.assertNotEquals(0, solutions.size());
-//            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
-
             solver = new Solver(
                     s -> {
                         String move = s.split(":")[1];
@@ -820,34 +801,13 @@ public class SolverTest {
         SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(list.get(0));
 
         System.out.println(detector.testState());
-        //TODO
-        // Once the detector is made its own object
-        // Consider - if a bishop exists and the noly pawn capture was a bishop of the same colour...
         System.out.println(detector.getPromotions().values().stream().flatMap(s -> s.stream()).toList());
         Assertions.assertFalse(detector.getPromotions().values().stream().flatMap(s -> s.stream()).toList().isEmpty());
-
-        // This successfully uncovers that the only valid move while maintaining castling rights is a double pawn move
-
+        // Simply checking there has been a promotion
     }
 
-    @Test
-    public void ChessMysteries22() {
-        // pp105
-        List<String> list = List.of(
-                "r2qk2r/ppp2p2/2np1np1/2b1p1B1/N5B1/P1P2NP1/P2PPP2/R4RK1 w - - 0 1"
-        );
-        SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(list.get(0));
-        detector.testState();
-        System.out.println(detector.getPromotions());
-        //TODO
-        // Once the detector is made its own object
-        // Consider - if a bishop exists and the noly pawn capture was a bishop of the same colour...
-        Assertions.assertFalse(detector.getPromotions().values().stream().flatMap(s -> s.stream()).toList().isEmpty());
-
-        // This successfully uncovers that the only valid move while maintaining castling rights is a double pawn move
-
-    }
-
+    //TODO
+    //Note the numbers
     @Test
     public void ChessMysteries23() {
         // pp113

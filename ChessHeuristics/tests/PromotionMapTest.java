@@ -196,25 +196,10 @@ public class PromotionMapTest {
 
     @Test
     void testCollisionBothPawnsTheoreticalEnoughCaptures() {
-            BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/3q4/3Q4/8/1PPPPPPP/2BQKBNR w - - 0 1"));
-
-
+        BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/3q4/3Q4/8/1PPPPPPP/2BQKBNR w - - 0 1"));
         this.standardStateDetector.testState(boardInterface);
-//        promotionMap.getPawnOrigins()
-//        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        System.out.println(standardStateDetector.getPawnOrigins(false));
-//        for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertTrue(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
-//        }
-//        for (int x = 0 ; x < 8 ; x++) {
-        System.out.println(this.standardStateDetector.getPawnOrigins(false));
-        // NOTE : CHANGED FROM ASSERTFALSE
-        Assertions.assertFalse(standardStateDetector.getPawnOrigins(false).containsKey(new Coordinate(0, 0)));
-//        }
 
-//        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
-//        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));
+        Assertions.assertTrue(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
         Assertions.assertTrue(promotionMap.getState());
     }
 

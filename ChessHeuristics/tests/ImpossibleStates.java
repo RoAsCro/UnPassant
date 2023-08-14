@@ -481,10 +481,14 @@ public class ImpossibleStates {
     } @Test
     void r2() {
 
-        System.out.println(test("2k4r/pppppKpP/6P1/8/8/8/n7/8 b - -"));
+        System.out.println(test("rn1qk1nr/p1pp1pp1/1p6/2b1p3/2B1P1P1/N1P3N1/P1PP1P1P/R2QK2R w KQkq - 0 1"));
 //        System.out.println(test("r3kqR1/1p1pppp1/5B1P/6PN/4P2p/3Q1P2/2PK2pP/8 b q - 0 1"));
 
         System.out.println(this.detector.getPromotionNumbers());
+        System.out.println(this.detector.getPromotedPieceMap());
+        System.out.println(this.detector.getPromotedPawns(false));
+        System.out.println(this.detector.getPromotionPaths(false));
+
 
 
     }
