@@ -1,6 +1,7 @@
 package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
+import Heuristics.Detector.StandardStateDetector;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
@@ -250,10 +251,10 @@ public class PromotionMap extends AbstractDeduction {
         //System.out.println("POW" + pieceOriginWhite);
         //system.out.println(pathIntegerMap);
         TheoreticalPawnMap tPMW = new TheoreticalPawnMap(true);
-        tPMW.registerDetector(new TestImpossibleStateDetector(new PawnNumber(), new PieceNumber(), tPMW));
+        tPMW.registerDetector(new StandardStateDetector(new PawnNumber(), new PieceNumber(), tPMW));
         tPMW.reduce(pieceOriginWhite);
         TheoreticalPawnMap tPMB = new TheoreticalPawnMap(false);
-        tPMB.registerDetector(new TestImpossibleStateDetector(new PawnNumber(), new PieceNumber(), tPMB));
+        tPMB.registerDetector(new StandardStateDetector(new PawnNumber(), new PieceNumber(), tPMB));
 
         tPMB.reduce(pieceOriginBlack);
         //system.out.println("POW" + pieceOriginWhite);
@@ -349,7 +350,7 @@ public class PromotionMap extends AbstractDeduction {
         this.promotionPawnMapWhite = new PromotionPawnMapWhite();
         this.promotionPawnMapBlack = new PromotionPawnMapBlack();
         this.combinedPawnMap = new PromotionCombinedPawnMap();
-        StateDetector stateDetector = new TestImpossibleStateDetector(new PawnNumber(), this.detector.getPieceNumber(), promotionPawnMapWhite, promotionPawnMapBlack, combinedPawnMap);
+        StateDetector stateDetector = new StandardStateDetector(new PawnNumber(), this.detector.getPieceNumber(), promotionPawnMapWhite, promotionPawnMapBlack, combinedPawnMap);
         this.promotionPawnMapWhite.registerDetector(stateDetector);
         this.promotionPawnMapBlack.registerDetector(stateDetector);
         this.combinedPawnMap.registerDetector(stateDetector);

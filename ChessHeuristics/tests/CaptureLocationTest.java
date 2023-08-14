@@ -1,5 +1,6 @@
 import Heuristics.BoardInterface;
 import Heuristics.Deductions.*;
+import Heuristics.Detector.StandardStateDetector;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import StandardChess.BoardBuilder;
@@ -13,7 +14,7 @@ public class CaptureLocationTest {
     PawnMapBlack pawnMapBlack;
     CombinedPawnMap combinedPawnMap;
     PieceMap pieceMap;
-    TestImpossibleStateDetector testImpossibleStateDetector;
+    StandardStateDetector standardStateDetector;
 
     CaptureLocations captureLocations;
     @BeforeEach
@@ -25,7 +26,7 @@ public class CaptureLocationTest {
         combinedPawnMap = new CombinedPawnMap();
         pieceMap = new PieceMap();
         captureLocations = new CaptureLocations();
-        this.testImpossibleStateDetector = new TestImpossibleStateDetector(pawnNumber, pieceNumber,
+        this.standardStateDetector = new StandardStateDetector(pawnNumber, pieceNumber,
                 pawnMapWhite, pawnMapBlack, combinedPawnMap, pieceMap, captureLocations);
 
     }
@@ -39,9 +40,9 @@ public class CaptureLocationTest {
 //        this.pawnMapBlack.deduce(boardInterface);
 //        this.combinedPawnMap.deduce(boardInterface);
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
-        Assertions.assertEquals(1, testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(2, 3)).size());
+        this.standardStateDetector.testState(boardInterface);
+        System.out.println(standardStateDetector.getPawnOrigins(true));
+        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(true).get(new Coordinate(2, 3)).size());
         Assertions.assertTrue(this.captureLocations.getState());
 
     }
@@ -50,9 +51,9 @@ public class CaptureLocationTest {
     void testUntakeableBlack() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/ppppp2p/8/4p3/8/8/PPPPPPPP/RNBQK2R w - - 0 1"));
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapBlack.getPawnOrigins());
-        Assertions.assertEquals(1, testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(4, 4)).size());
+        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(false).get(new Coordinate(4, 4)).size());
         Assertions.assertTrue(this.captureLocations.getState());
 
 
@@ -65,9 +66,9 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapWhite.getPawnOrigins());
-        Assertions.assertEquals(1, testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(2, 3)).size());
+        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(true).get(new Coordinate(2, 3)).size());
         Assertions.assertTrue(this.captureLocations.getState());
 
 
@@ -80,9 +81,9 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapBlack.getPawnOrigins());
-        Assertions.assertEquals(1, testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(4, 4)).size());
+        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(false).get(new Coordinate(4, 4)).size());
 
     }
 
@@ -93,9 +94,9 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapWhite.getPawnOrigins());
-        Assertions.assertEquals(1, testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(1, 6)).size());
+        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(true).get(new Coordinate(1, 6)).size());
 
     }
 
@@ -106,9 +107,9 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapBlack.getPawnOrigins());
-        Assertions.assertEquals(1, testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(1, 1)).size());
+        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(false).get(new Coordinate(1, 1)).size());
 
     }
 
@@ -119,9 +120,9 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapWhite.getPawnOrigins());
-        Assertions.assertEquals(1, testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(6, 6)).size());
+        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(true).get(new Coordinate(6, 6)).size());
 
     }
 
@@ -132,9 +133,9 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapBlack.getPawnOrigins());
-        Assertions.assertEquals(1, testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(6, 1)).size());
+        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(false).get(new Coordinate(6, 1)).size());
 
     }
 
@@ -145,10 +146,10 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapWhite.getPawnOrigins());
         //system.out.println(combinedPawnMap.getWhitePaths());
-        Assertions.assertEquals(0, testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(3, 3)).size());
+        Assertions.assertEquals(0, standardStateDetector.getPawnOrigins(true).get(new Coordinate(3, 3)).size());
 
     }
 
@@ -159,10 +160,10 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapBlack.getPawnOrigins());
         //system.out.println(combinedPawnMap.getBlackPaths());
-        Assertions.assertEquals(0, testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(3, 4)).size());
+        Assertions.assertEquals(0, standardStateDetector.getPawnOrigins(false).get(new Coordinate(3, 4)).size());
 
     }
 
@@ -173,10 +174,10 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapWhite.getPawnOrigins());
         //system.out.println(combinedPawnMap.getWhitePaths());
-        Assertions.assertEquals(0, testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(4, 3)).size());
+        Assertions.assertEquals(0, standardStateDetector.getPawnOrigins(true).get(new Coordinate(4, 3)).size());
 
     }
 
@@ -187,10 +188,10 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapWhite.getPawnOrigins());
         //system.out.println(combinedPawnMap.getWhitePaths());
-        Assertions.assertEquals(1, testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(5, 2)).size());
+        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(true).get(new Coordinate(5, 2)).size());
 
     }
 
@@ -201,10 +202,10 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapWhite.getPawnOrigins());
         //system.out.println(combinedPawnMap.getWhitePaths());
-        Assertions.assertEquals(0, testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(5, 2)).size());
+        Assertions.assertEquals(0, standardStateDetector.getPawnOrigins(true).get(new Coordinate(5, 2)).size());
         Assertions.assertFalse(pawnMapWhite.getState());
 
 
@@ -217,10 +218,10 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapWhite.getPawnOrigins());
         //system.out.println(combinedPawnMap.getWhitePaths());
-        Assertions.assertEquals(1, testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(5, 2)).size());
+        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(true).get(new Coordinate(5, 2)).size());
         Assertions.assertTrue(pawnMapWhite.getState());
 
 
@@ -233,10 +234,10 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapWhite.getPawnOrigins());
         //system.out.println(combinedPawnMap.getWhitePaths());
-        Assertions.assertEquals(1, testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(5, 3)).size());
+        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(true).get(new Coordinate(5, 3)).size());
         Assertions.assertTrue(pawnMapWhite.getState());
 
 
@@ -249,10 +250,10 @@ public class CaptureLocationTest {
         
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
         //system.out.println(pawnMapBlack.getPawnOrigins());
         //system.out.println(combinedPawnMap.getBlackPaths());
-        Assertions.assertEquals(0, testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(4, 4)).size());
+        Assertions.assertEquals(0, standardStateDetector.getPawnOrigins(false).get(new Coordinate(4, 4)).size());
 
     }
 
@@ -264,7 +265,7 @@ public class CaptureLocationTest {
 //        this.pieceMap.deduce(boardInterface);
         this.pawnMapWhite.deduce(boardInterface);
 
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
         //system.out.println(this.pawnMapWhite.getPawnOrigins());
         //system.out.println(this.pawnMapWhite.getState());

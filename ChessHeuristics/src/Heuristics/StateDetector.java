@@ -11,6 +11,8 @@ public interface StateDetector {
 
     boolean getState();
 
+    boolean testState();
+
     boolean testState(BoardInterface board);
 
     List<Path> getPromotionPaths(boolean white);

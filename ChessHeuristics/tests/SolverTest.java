@@ -1,6 +1,6 @@
 import SolveAlgorithm.Solver;
-import SolveAlgorithm.SolverImpossibleStateDetector;
-import SolveAlgorithm.StateDetectorFactory;
+import Heuristics.Detector.SolverImpossibleStateDetector;
+import Heuristics.Detector.StateDetectorFactory;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
@@ -390,7 +390,13 @@ public class SolverTest {
 //                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
 //                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
 //                }
-                return d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty();
+                return d.getPromotions(true).values()
+                        .stream().flatMap(m -> m.keySet().stream())
+                        .toList().isEmpty()
+                        &&
+                        d.getPromotions(false).values()
+                                .stream().flatMap(m -> m.keySet().stream())
+                                .toList().isEmpty();
                     }
             );
             solver.setNumberOfSolutions(1);
@@ -431,7 +437,13 @@ public class SolverTest {
 //                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
 //                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
 //                }
-                        return d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty();
+                        return d.getPromotions(true).values()
+                                .stream().flatMap(m -> m.keySet().stream())
+                                .toList().isEmpty()
+                                &&
+                                d.getPromotions(false).values()
+                                        .stream().flatMap(m -> m.keySet().stream())
+                                        .toList().isEmpty();
                     }
             );
             solver.setNumberOfSolutions(3);
@@ -576,7 +588,13 @@ public class SolverTest {
 //                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
 ////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
 //                }
-                return d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty();
+                return d.getPromotions(true).values()
+                        .stream().flatMap(m -> m.keySet().stream())
+                        .toList().isEmpty()
+                        &&
+                        d.getPromotions(false).values()
+                                .stream().flatMap(m -> m.keySet().stream())
+                                .toList().isEmpty();
             }
             );
             solver.setNumberOfSolutions(1);
@@ -626,7 +644,13 @@ public class SolverTest {
 //                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
 ////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
 //                }
-                return d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty();
+                return d.getPromotions(true).values()
+                        .stream().flatMap(m -> m.keySet().stream())
+                        .toList().isEmpty()
+                        &&
+                        d.getPromotions(false).values()
+                                .stream().flatMap(m -> m.keySet().stream())
+                                .toList().isEmpty();
             }
             );
             solver.setNumberOfSolutions(1);
@@ -799,6 +823,7 @@ public class SolverTest {
         //TODO
         // Once the detector is made its own object
         // Consider - if a bishop exists and the noly pawn capture was a bishop of the same colour...
+        System.out.println(detector.getPromotions().values().stream().flatMap(s -> s.stream()).toList());
         Assertions.assertFalse(detector.getPromotions().values().stream().flatMap(s -> s.stream()).toList().isEmpty());
 
         // This successfully uncovers that the only valid move while maintaining castling rights is a double pawn move

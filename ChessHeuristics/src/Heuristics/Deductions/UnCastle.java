@@ -67,6 +67,12 @@ public class UnCastle {
             this.whiteData[0] = true;
         }
 
+        this.stateDetector.setKingMovement(false, this.blackData[0]);
+        this.stateDetector.setRookMovement(false, true, this.blackData[1]);
+        this.stateDetector.setRookMovement(false, false, this.blackData[2]);
+        this.stateDetector.setKingMovement(true, this.whiteData[0]);
+        this.stateDetector.setRookMovement(true, true, this.whiteData[1]);
+        this.stateDetector.setRookMovement(true, false, this.whiteData[2]);
         return List.of(this.whiteData, this.blackData);
     }
 

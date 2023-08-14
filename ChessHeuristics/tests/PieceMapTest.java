@@ -1,5 +1,6 @@
 import Heuristics.BoardInterface;
 import Heuristics.Deductions.*;
+import Heuristics.Detector.StandardStateDetector;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
@@ -18,7 +19,7 @@ public class PieceMapTest {
     PawnMapBlack pawnMapBlack;
     CombinedPawnMap combinedPawnMap;
     PieceMap pieceMap;
-    TestImpossibleStateDetector testImpossibleStateDetector;
+    StandardStateDetector standardStateDetector;
 
     @BeforeEach
     void setup() {
@@ -33,15 +34,15 @@ public class PieceMapTest {
         //
         pieceMap = new PieceMap();
         //
-        this.testImpossibleStateDetector = new TestImpossibleStateDetector(pawnNumber, pieceNumber, pawnMapWhite, pawnMapBlack, combinedPawnMap, pieceMap);
+        this.standardStateDetector = new StandardStateDetector(pawnNumber, pieceNumber, pawnMapWhite, pawnMapBlack, combinedPawnMap, pieceMap);
 
 
     }
 
     void test(BoardInterface boardInterface, Coordinate start1, Coordinate start2, int size1, int size2, boolean possibleState) {
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
+        System.out.println(this.standardStateDetector.getStartLocations());
         Assertions.assertEquals(size1, map.get(start1).size());
         Assertions.assertEquals(size2, map.get(start2).size());
         Assertions.assertEquals(possibleState, this.pieceMap.getState());
@@ -63,7 +64,7 @@ public class PieceMapTest {
 //
 //        Assertions.assertEquals(1, map.get(start1).size());
 //        Assertions.assertEquals(1, map.get(start2).size());
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Path path = Path.of(start1);
         Assertions.assertEquals(path, map.get(start1).get(start1));
         Assertions.assertEquals(Path.of(start2), map.get(start2).get(start2));
@@ -85,7 +86,7 @@ public class PieceMapTest {
 //
 //        Assertions.assertEquals(1, map.get(start1).size());
 //        Assertions.assertEquals(1, map.get(start2).size());
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Path path = Path.of(start1);
         Assertions.assertEquals(path, map.get(start1).get(start1));
         Assertions.assertEquals(Path.of(start2), map.get(start2).get(start2));
@@ -102,7 +103,7 @@ public class PieceMapTest {
         test(boardInterface, start1, start2, 1, 1, true);
 //        Assertions.assertEquals(1, map.get(start1).size());
 //        Assertions.assertEquals(1, map.get(start2).size());
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
 
         Assertions.assertTrue(map.get(start1).get(new Coordinate(2, 4)).contains(new Coordinate(3, 1)));
         Assertions.assertEquals(Path.of(start2, new Coordinate(4, 1)), map.get(start2).get(new Coordinate(4, 1)));
@@ -120,7 +121,7 @@ public class PieceMapTest {
         test(boardInterface, start1, start2, 1, 1, true);
 //        Assertions.assertEquals(1, map.get(start1).size());
 //        Assertions.assertEquals(1, map.get(start2).size());
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
 
         Assertions.assertTrue(map.get(start1).get(new Coordinate(2, 3)).contains(new Coordinate(3, 6)));
         Assertions.assertEquals(Path.of(start2, new Coordinate(4, 6)), map.get(start2).get(new Coordinate(4, 6)));
@@ -133,15 +134,15 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/pppppppp/8/2B2B2/8/P6P/P1PPPP1P/RN1QK1NR w - - 0 1"));
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Coordinate start1 = new Coordinate(2, 0);
         Coordinate start2 = new Coordinate(5, 0);
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
-        System.out.println(this.testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 2)).get(0));
-        System.out.println(Pathfinder.pathsExclusive(this.testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 2)).get(0),
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getPawnPaths(true).get(new Coordinate(0, 2)).get(0));
+        System.out.println(Pathfinder.pathsExclusive(this.standardStateDetector.getPawnPaths(true).get(new Coordinate(0, 2)).get(0),
                 Path.of(start1, new Coordinate(1, 1), new Coordinate(0, 2), new Coordinate(-1, -1))));
 
         Assertions.assertEquals(Path.of(start1, new Coordinate(1, 1), new Coordinate(2, 2)), map.get(start1).get(new Coordinate(2, 4)));
@@ -155,13 +156,13 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r2qk2r/p1pppp1p/p6p/8/2b2b2/8/P1PPPP1P/R2QK1NR w - - 0 1"));
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Coordinate start1 = new Coordinate(2, 7);
         Coordinate start2 = new Coordinate(5, 7);
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
 //        System.out.println(this.combinedPawnMap.getWhitePaths().get(new Coordinate(0, 2)).get(0));
 //        System.out.println(Pathfinder.pathsExclusive(this.combinedPawnMap.getWhitePaths().get(new Coordinate(0, 2)).get(0),
 //                Path.of(start1, new Coordinate(1, 1), new Coordinate(0, 2), new Coordinate(-1, -1))));
@@ -177,12 +178,12 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r2qk2r/p1pppp1p/8/2B2B2/8/P1P2P1P/P2PP2P/RN1QK1NR w - - 0 1"));
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Coordinate start1 = new Coordinate(2, 0);
         Coordinate start2 = new Coordinate(5, 0);
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getStartLocations());
 
         Assertions.assertEquals(Path.of(start1, new Coordinate(1, 1), new Coordinate(2, 2)), map.get(start1).get(new Coordinate(2, 4)));
         Assertions.assertEquals(Path.of(start2, new Coordinate(6, 1), new Coordinate(5, 2)), map.get(start2).get(new Coordinate(5, 4)));
@@ -195,12 +196,12 @@ public class PieceMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r2qk2r/p2pp2p/p1p2p1p/8/2b2b2/P1P2P1P/P2PP2P/3QK3 w kq - 0 1"));
         
 
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Coordinate start1 = new Coordinate(2, 7);
         Coordinate start2 = new Coordinate(5, 7);
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getStartLocations());
 
         Assertions.assertEquals(Path.of(start1, new Coordinate(1, 6), new Coordinate(2, 5)), map.get(start1).get(new Coordinate(2, 3)));
         Assertions.assertEquals(Path.of(start2, new Coordinate(6, 6), new Coordinate(5, 5)), map.get(start2).get(new Coordinate(5, 3)));
@@ -212,12 +213,12 @@ public class PieceMapTest {
     void testBishopMultiple() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("3qkb2/2pppp2/8/2B5/4B1B1/8/1B4B1/RN1QK1NR w KQ - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Coordinate start1 = new Coordinate(2, 0);
         Coordinate start2 = new Coordinate(5, 0);
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getStartLocations());
 
         Assertions.assertEquals(2, map.get(start1).size());
         Assertions.assertEquals(3, map.get(start2).size());
@@ -237,12 +238,12 @@ public class PieceMapTest {
     void testBishopMultipleBlack() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rn1qk1nr/1b4b1/8/4b1b1/2b5/8/1B4B1/RN1QK1NR w KQ - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Coordinate start1 = new Coordinate(2, 7);
         Coordinate start2 = new Coordinate(5, 7);
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getStartLocations());
         System.out.println(map.get(start1));
         Assertions.assertEquals(2, map.get(start1).size());
         Assertions.assertEquals(3, map.get(start2).size());
@@ -263,12 +264,12 @@ public class PieceMapTest {
     void testBishopMultipleTwo() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("3qkb2/2pppp2/8/8/8/8/1B1BB1B1/RN1QK1NR w KQ - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Coordinate start1 = new Coordinate(2, 0);
         Coordinate start2 = new Coordinate(5, 0);
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getStartLocations());
 
         test(boardInterface, start1, start2, 2, 2, true);
 //        Assertions.assertEquals(2, map.get(start1).size());
@@ -292,12 +293,12 @@ public class PieceMapTest {
     void testBishopMultipleTwoBlack() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("3qk3/1b1bb1b1/8/8/8/8/1B1BB1B1/RN1QK1NR w KQ - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Coordinate start1 = new Coordinate(2, 7);
         Coordinate start2 = new Coordinate(5, 7);
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getStartLocations());
 
         test(boardInterface, start1, start2, 2, 2, true);
 //        Assertions.assertEquals(2, map.get(start1).size());
@@ -321,13 +322,13 @@ public class PieceMapTest {
     void testRookAtStartLocation() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard());
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Coordinate start1 = new Coordinate(0, 0);
         Coordinate start2 = new Coordinate(7, 0);
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getCaged());
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getCaged());
 
         test(boardInterface, start1, start2, 1, 1, true);
         test(boardInterface, new Coordinate(0, 7), new Coordinate(7, 7), 1, 1, true);
@@ -552,13 +553,13 @@ public class PieceMapTest {
     void testRoyaltyThroughCagedBishop() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/3QK3/7P/PPPPPPP1/RNB2BNR"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Coordinate start1 = new Coordinate(3, 0);
         Coordinate start2 = new Coordinate(4, 0);
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
         Assertions.assertEquals(0, map.get(start1).size());
         Assertions.assertEquals(0, map.get(start2).size());
@@ -570,13 +571,13 @@ public class PieceMapTest {
     void testRoyaltyThroughCagedBishopBlack() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnb2bnr/ppppppp1/7p/3qk3/8/8/PPPPPPPP/RNBQKBNR w - - 0 1"));
 
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Coordinate start1 = new Coordinate(3, 7);
         Coordinate start2 = new Coordinate(4, 7);
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
         Assertions.assertEquals(0, map.get(start1).size());
         Assertions.assertEquals(0, map.get(start2).size());
@@ -665,17 +666,17 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/p1pppppp/8/1p6/5R1P/8/1PPPPPP1/RNBQKBNR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
         
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 0 ; i < 5 ; i++) {
-            Assertions.assertEquals(3, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(3, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 5 ; i < 8 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         Assertions.assertTrue(pieceMap.getState());
 //        System.out.println(pieceMap.promotedPieceMap);
@@ -690,18 +691,18 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnb1k3/1ppp4/4pppp/p7/5R2/8/PPPPPPP1/RNBQKBNR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        this.standardStateDetector.testState(boardInterface);
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
         
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 0 ; i < 2 ; i++) {
-            Assertions.assertEquals(2, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(2, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 2 ; i < 8 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         Assertions.assertTrue(pieceMap.getState());
 
@@ -713,19 +714,19 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb2/pppppppR/7p/8/8/7P/PPPPPP2/RNBQKBNR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
         
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 0 ; i < 6 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 6 ; i < 8 ; i++) {
-            Assertions.assertEquals(1, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(1, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         Assertions.assertTrue(pieceMap.getState());
 
@@ -737,19 +738,19 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/pp2pppp/1p6/3p1R2/8/8/PP1PPPPP/R1BQKB1R w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
         
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 0 ; i < 5 ; i++) {
-            Assertions.assertEquals(1, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(1, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 5 ; i < 8 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         Assertions.assertTrue(pieceMap.getState());
 
@@ -761,19 +762,19 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/pRpppppp/1p6/2R5/8/8/PP1PPPPP/R1BQKB1R w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
         
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 0 ; i < 4 ; i++) {
-            Assertions.assertEquals(1, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(1, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 5 ; i < 8 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         Assertions.assertFalse(pieceMap.getState());
 
@@ -785,20 +786,20 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1bqkb1r/p1pppppp/1p6/6B1/3B4/3P4/PP2PPPP/RN1QKBNR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
         
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 0 ; i < 0 ; i++) {
-            Assertions.assertEquals(2, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(2, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 0 ; i < 8 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         Assertions.assertFalse(pieceMap.getState());
 
@@ -810,20 +811,20 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r3k2r/2p2ppp/p2pp3/1p4B1/3B2B1/4PB2/5PPP/RN1QK1NR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
         
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 0 ; i < 6 ; i++) {
-            Assertions.assertEquals(2, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(2, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 6 ; i < 8 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         Assertions.assertTrue(pieceMap.getState());
 
@@ -835,20 +836,20 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkb1r/ppppppp1/6p1/8/4B3/4P3/PPPP1PP1/R1BQKBNR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
         
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 0 ; i < 0 ; i++) {
-            Assertions.assertEquals(2, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(2, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 0; i < 8 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         Assertions.assertFalse(pieceMap.getState());
 
@@ -860,24 +861,24 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r1b1kbnr/pp1ppppp/1p6/8/5B2/8/PP1PPPPP/R1BQKB1R w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
         
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 0 ; i < 0 ; i++) {
-            Assertions.assertEquals(2, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(2, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 0; i < 8 ; i++) {
             if (i == 1 || i == 3) {
-                Assertions.assertEquals(1, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+                Assertions.assertEquals(1, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
 
             } else {
-                Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+                Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
             }
         }
         Assertions.assertTrue(pieceMap.getState());
@@ -890,24 +891,24 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rBb1kbnr/p1pp1ppp/8/8/8/8/P1PPPPPP/R1BQKB1R w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
         
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 0 ; i < 1 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 1 ; i < 2 ; i++) {
-            Assertions.assertEquals(1, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(1, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 2 ; i < 8 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         Assertions.assertTrue(pieceMap.getState());
 
@@ -927,23 +928,23 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbn1/ppppppp1/4r3/3N2p1/4N3/6P1/PPPPPP2/R1BQK1NR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
         
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 1 ; i < 2 ; i++) {
-            Assertions.assertEquals(3, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(3, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 2 ; i < 6 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 6; i < 8 ; i++) {
-            Assertions.assertEquals(3, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(3, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         Assertions.assertTrue(pieceMap.getState());
 
@@ -955,17 +956,17 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("k7/8/1K6/8/8/6P1/PPPP1PPB/6N1 w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 1 ; i < 8 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
 //        for (int i = 2 ; i < 6 ; i++) {
 //            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
@@ -983,17 +984,17 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbq2nr/pppp1ppp/3k4/8/8/5K2/PPPP1PPP/RNBQBBNR"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 1 ; i < 8 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
 //        for (int i = 2 ; i < 6 ; i++) {
 //            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
@@ -1011,17 +1012,17 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbnr/1ppppppp/1p6/8/8/8/4PPPP/RNBQKBRR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 1 ; i < 8 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
 //        for (int i = 2 ; i < 6 ; i++) {
 //            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
@@ -1039,20 +1040,20 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbnr/1ppppppp/1p6/8/8/8/5PPP/RNBQKBRR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
         for (int i = 1 ; i < 2 ; i++) {
-            Assertions.assertEquals(3, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(3, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
         for (int i = 2 ; i < 8 ; i++) {
-            Assertions.assertEquals(0, testImpossibleStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
+            Assertions.assertEquals(0, standardStateDetector.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
         }
 //        for (int i = 2 ; i < 6 ; i++) {
 //            Assertions.assertEquals(0, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
@@ -1070,10 +1071,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard());
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(true));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1085,10 +1086,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPPKPPP/RNBQ1BNR w"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(true));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1100,10 +1101,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbq1bnr/ppppkppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(true));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1114,10 +1115,10 @@ public class PieceMapTest {
     void testWhiteKingMovedByEscapeQ() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1rbqkbr1/pppp1ppp/2n5/4p3/4P3/8/PPPPPQPP/RNB1KBNR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(true));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1128,10 +1129,10 @@ public class PieceMapTest {
     void testWhiteKingMovedByTakenQ() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1rbqkbr1/pppp1pp1/6pn/4p3/4P3/8/PPPPP1PP/RNB1KBNR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(true));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1142,10 +1143,10 @@ public class PieceMapTest {
     void testBlackKingMovedByTakenQ() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnb1kbnr/ppppp1pp/5p2/8/8/P5P1/RPPPPPPR/1NBQKBN1 w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(true));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1156,10 +1157,10 @@ public class PieceMapTest {
     void testWhiteKingMovedByTakenR() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbn1/rppppppr/p5p1/8/4P3/8/PPPP1PPP/RNBQKBN1 w Q - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(true));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
     }
@@ -1168,10 +1169,10 @@ public class PieceMapTest {
     void testBlackKingMovedByTakenR() {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r3k3/ppp2ppp/6Q1/P2Kp2q/1NB3P1/p5P1/PP3PP1/R7 w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(true));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
     }
@@ -1183,10 +1184,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbn1/pppp1ppp/4r3/4p3/4P3/8/PPPP1PPP/RNBQKBNR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(true));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1198,10 +1199,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbq1bnr/ppppkppp/4p3/8/8/8/PPPPPPPP/1NBQKBNR w"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(true));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1213,10 +1214,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbr1/p1pp1ppp/1p2r2n/4p3/4P3/8/PPPP1PPP/RNBQKBNR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(true));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1227,10 +1228,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbn1/pppp1pp1/4r3/4p2p/4P3/8/PPPP1PPP/RNBQKBNR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(true));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1242,10 +1243,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbr1/pppp1ppp/7n/4p3/4P3/8/PPPP1PPP/RNBQKBNR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(true));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1257,10 +1258,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1r1qkb1r/pppp1ppp/n6n/4p3/4P3/8/PPPP1PPP/RNBQKBNR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(true));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1272,10 +1273,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbn1/rppp3r/p3p3/8/8/8/PPPPP3/RNBQKBNR b KQ - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(true));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1287,10 +1288,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r2qkb2/pppp1ppp/n2r3n/4p3/8/6P1/PPPPPP1P/RNBQKB1R w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertTrue(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(true));
+        Assertions.assertTrue(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1302,10 +1303,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("r2qkb2/pppp1ppp/n6n/4p3/8/6P1/PPPPPP1P/RNBQKBrR w - - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(true));
-        Assertions.assertFalse(testImpossibleStateDetector.getKingMovement(false));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(true));
+        Assertions.assertFalse(standardStateDetector.getKingMovement(false));
 
         Assertions.assertTrue(pieceMap.getState());
 
@@ -1317,9 +1318,9 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/1P6/P7/2N5/2PPPPPP/R1BQKBNR w KQkq - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertTrue(testImpossibleStateDetector.getCaged().get(Coordinates.WHITE_QUEEN_ROOK));
+        Assertions.assertTrue(standardStateDetector.getCaged().get(Coordinates.WHITE_QUEEN_ROOK));
         Assertions.assertTrue(pieceMap.getState());
 
 
@@ -1330,9 +1331,9 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/pppp1ppp/8/4p3/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
+        this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertTrue(testImpossibleStateDetector.getCaged().get(Coordinates.BLACK_KING));
+        Assertions.assertTrue(standardStateDetector.getCaged().get(Coordinates.BLACK_KING));
         Assertions.assertTrue(pieceMap.getState());
 
 
@@ -1343,10 +1344,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqk2r/pppp1ppp/3b1n2/4p3/5P2/8/PPPPP1PP/RNBQKBNR w KQkq - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        System.out.println(testImpossibleStateDetector.getCaged());
+        this.standardStateDetector.testState(boardInterface);
+        System.out.println(standardStateDetector.getCaged());
 
-        Assertions.assertTrue(testImpossibleStateDetector.getCaged().get(new Coordinate(3, 0)));
+        Assertions.assertTrue(standardStateDetector.getCaged().get(new Coordinate(3, 0)));
         Assertions.assertTrue(pieceMap.getState());
 
 
@@ -1356,10 +1357,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/p1pp1pp1/1p3p2/7p/8/8/PPPP1PPP/RNBQKBNR w KQk - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        System.out.println(testImpossibleStateDetector.getCaged());
+        this.standardStateDetector.testState(boardInterface);
+        System.out.println(standardStateDetector.getCaged());
 
-        Assertions.assertFalse(testImpossibleStateDetector.getCaged().get(new Coordinate(3, 0)));
+        Assertions.assertFalse(standardStateDetector.getCaged().get(new Coordinate(3, 0)));
         Assertions.assertTrue(pieceMap.getState());
 
 
@@ -1370,10 +1371,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/p1pp1ppp/1p3p2/8/8/8/PP1PPPPP/RNBQKBNR w q - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        System.out.println(testImpossibleStateDetector.getCaged());
+        this.standardStateDetector.testState(boardInterface);
+        System.out.println(standardStateDetector.getCaged());
 
-        Assertions.assertTrue(testImpossibleStateDetector.getCaged().get(new Coordinate(7, 7)));
+        Assertions.assertTrue(standardStateDetector.getCaged().get(new Coordinate(7, 7)));
         Assertions.assertTrue(pieceMap.getState());
 
 
@@ -1384,10 +1385,10 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/p1pp1pp1/1p3p2/7p/8/8/PP1PPPPP/RNBQKBNR w k - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        System.out.println(testImpossibleStateDetector.getCaged());
+        this.standardStateDetector.testState(boardInterface);
+        System.out.println(standardStateDetector.getCaged());
 
-        Assertions.assertTrue(testImpossibleStateDetector.getCaged().get(new Coordinate(0, 7)));
+        Assertions.assertTrue(standardStateDetector.getCaged().get(new Coordinate(0, 7)));
         Assertions.assertTrue(pieceMap.getState());
 
 
@@ -1401,15 +1402,15 @@ public class PieceMapTest {
         //NOT A TEST
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("4kb2/pRppppp1/1p6/P7/8/8/B1R1P3/RNBQKBNR w KQ - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
         Coordinate start1 = new Coordinate(3, 0);
         Coordinate start2 = new Coordinate(4, 0);
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
-        System.out.println(this.testImpossibleStateDetector.getPromotedPieceMap());
-        System.out.println(testImpossibleStateDetector.getPromotionNumbers());
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getPromotedPieceMap());
+        System.out.println(standardStateDetector.getPromotionNumbers());
 //        System.out.println(pieceMap.promotedPieceMap);
 
 //        Assertions.assertEquals(0, map.get(start1).size());
@@ -1433,15 +1434,15 @@ public class PieceMapTest {
 
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbn1/ppppppp1/5rp1/8/4N3/8/PPPPPPP1/RNBQKBN1 w Qq - 0 1"));
         
-        this.testImpossibleStateDetector.testState(boardInterface);
-        Map<Coordinate, Map<Coordinate, Path>> map = this.testImpossibleStateDetector.getStartLocations();
+        this.standardStateDetector.testState(boardInterface);
+        Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getStartLocations();
 
-        System.out.println(this.testImpossibleStateDetector.getStartLocations());
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.standardStateDetector.getStartLocations());
+        System.out.println(this.standardStateDetector.getPawnOrigins(false));
+        System.out.println(this.standardStateDetector.getPawnOrigins(true));
 
         
-        System.out.println(testImpossibleStateDetector.getPromotedPieceMap());
+        System.out.println(standardStateDetector.getPromotedPieceMap());
 //        for (int i = 1 ; i < 2 ; i++) {
 //            Assertions.assertEquals(3, pieceMap.getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());
 //        }

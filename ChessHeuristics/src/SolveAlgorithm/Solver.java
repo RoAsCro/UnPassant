@@ -1,6 +1,8 @@
 package SolveAlgorithm;
 
 import Heuristics.BoardInterface;
+import Heuristics.Detector.StateDetectorFactory;
+import Heuristics.DetectorInterface;
 import Heuristics.Path;
 import StandardChess.*;
 
@@ -10,14 +12,13 @@ import java.util.function.Predicate;
 public class Solver implements Runnable {
 
     Predicate<String> fenPredicate = p -> true;
-    private Predicate<SolverImpossibleStateDetector> detectorPredicate = d -> true;
+    private Predicate<DetectorInterface> detectorPredicate = d -> true;
     String originalBoard;
     private boolean legalFirstAlwaysTrue = false;
     private boolean legalFirst = false;
     private int additionalDepth = 2;
     private int maxDepth;
     private int numberOfSolutions = 100;
-    private StateComparator comparator = new StateComparator();
     private StateLog stateLog = new StateLog();
 
 //    private LinkedList<String> finalStates = new LinkedList<>();
@@ -26,11 +27,9 @@ public class Solver implements Runnable {
 
     private int count = 0;
 
-    private Map<String, SolverImpossibleStateDetector> stringDetectorMap = new HashMap<>();
-
     public Solver(){};
 
-    public Solver(Predicate<String> fenPredicate, Predicate<SolverImpossibleStateDetector> detectorPredicate){
+    public Solver(Predicate<String> fenPredicate, Predicate<DetectorInterface> detectorPredicate){
         this.fenPredicate = fenPredicate;
         this.detectorPredicate = detectorPredicate;
     }
@@ -438,8 +437,8 @@ public class Solver implements Runnable {
     }
 
     public boolean testState(ChessBoard board) {
-        SolverImpossibleStateDetector detector;
-        detector = StateDetectorFactory.getDetector(board);
+        DetectorInterface detector;
+        detector = StateDetectorFactory.getDetectorInterface(board);
         boolean pass = detector.testState();
         if (pass) {
             pass = castleCheck(board, detector);
@@ -479,7 +478,7 @@ public class Solver implements Runnable {
         return moveMaker.makeUnMove(origin, target);
     }
 
-    private boolean castleCheck(ChessBoard board, SolverImpossibleStateDetector detector) {
+    private boolean castleCheck(ChessBoard board, DetectorInterface detector) {
 
 
         boolean white = true;

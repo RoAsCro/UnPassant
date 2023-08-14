@@ -1,5 +1,6 @@
 import Heuristics.BoardInterface;
 import Heuristics.Deductions.*;
+import Heuristics.Detector.StandardStateDetector;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import StandardChess.BoardBuilder;
@@ -11,7 +12,7 @@ public class PromotionSquaresTest {
 
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;
-    TestImpossibleStateDetector detector;
+    StandardStateDetector detector;
     PromotedPawnSquares pps;
 
     @BeforeEach
@@ -25,7 +26,7 @@ public class PromotionSquaresTest {
         CaptureLocations cl = new CaptureLocations();
         PromotionMap prm = new PromotionMap();
         this.pps = new PromotedPawnSquares();
-        this.detector = new TestImpossibleStateDetector(pawnNumber, pieceNumber,
+        this.detector = new StandardStateDetector(pawnNumber, pieceNumber,
                 pmw,
                 pmb,
                 cpm,

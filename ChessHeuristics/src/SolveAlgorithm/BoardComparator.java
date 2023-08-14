@@ -19,11 +19,6 @@ public class BoardComparator implements Comparator<BoardInterface> {
                         o1.getBoardFacts().getCoordinates(false, piece).size() == o2.getBoardFacts().getCoordinates(false, piece).size()
                                 &&
                                 o1.getBoardFacts().getCoordinates(true, piece).size() == o2.getBoardFacts().getCoordinates(true, piece).size());
-
-//        System.out.println("-----------");
-//        System.out.println(o1.getReader().toFEN());
-//        System.out.println(o2.getReader().toFEN());
-
         if (equal) {
             String[] o1FEN = o1.getReader().toFEN().split(" ");
             String[] o2FEN = o2.getReader().toFEN().split(" ");
@@ -34,7 +29,6 @@ public class BoardComparator implements Comparator<BoardInterface> {
             equal = o1CriticalRegion.equals(o2CriticalRegion) && o1FEN[2].equals(o2FEN[2]);
         }
         int comparison = equal ? 0 : o1.hashCode() - o2.hashCode();
-//        System.out.println(equal);
         return comparison;
     }
 }

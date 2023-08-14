@@ -1,8 +1,7 @@
-package SolveAlgorithm;
+package Heuristics.Detector;
 
 import Heuristics.BoardInterface;
 import Heuristics.Deduction;
-import Heuristics.Deductions.TestImpossibleStateDetector;
 import Heuristics.Deductions.UnCastle;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
@@ -12,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SolverImpossibleStateDetector extends TestImpossibleStateDetector {
+public class SolverImpossibleStateDetector extends StandardStateDetector {
 
     private final BoardInterface boardInterface;
     private final UnCastle unCastle;

@@ -1,8 +1,10 @@
-package SolveAlgorithm;
+package Heuristics.Detector;
 
 import Heuristics.BoardInterface;
 import Heuristics.Deduction;
 import Heuristics.Deductions.*;
+import Heuristics.Detector.SolverImpossibleStateDetector;
+import Heuristics.DetectorInterface;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import StandardChess.BoardBuilder;
@@ -55,6 +57,14 @@ public class StateDetectorFactory {
 
     public static SolverImpossibleStateDetector getDetector(String fen) {
         return getDetector(BoardBuilder.buildBoard(fen));
+    }
+
+    public static DetectorInterface getDetectorInterface(ChessBoard board) {
+        return new StandardDetectorInterface(getDetector(board));
+    }
+
+    public static DetectorInterface getDetectorInterface(String fen) {
+        return getDetectorInterface(BoardBuilder.buildBoard(fen));
     }
 
     public static SolverImpossibleStateDetector getDetector(ChessBoard board, Deduction... deductions) {

@@ -1,7 +1,8 @@
-package Heuristics.Deductions;
+package Heuristics.Detector;
 
 import Heuristics.BoardInterface;
 import Heuristics.Deduction;
+import Heuristics.Deductions.UnCastle;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
@@ -11,7 +12,7 @@ import StandardChess.Coordinate;
 import java.util.*;
 import java.util.function.Function;
 
-public class TestImpossibleStateDetector implements StateDetector {
+public class StandardStateDetector implements StateDetector {
 
     private static final int MAX_PAWNS = 8;
     private static final int MAX_PIECES = 16;
@@ -20,9 +21,12 @@ public class TestImpossibleStateDetector implements StateDetector {
     private static final int BLACK = 1;
 
 
+    private final UnCastle unCastle = new UnCastle();
+
     private final PawnNumber pawnNumber;
     private final PieceNumber pieceNumber;
 
+    private BoardInterface board;
     private List<Deduction> deductions;
     private List<Deduction> finishedDeductions = new LinkedList();
 
@@ -61,7 +65,7 @@ public class TestImpossibleStateDetector implements StateDetector {
     private List<Path> blackPromotionPaths = new LinkedList<>();
 
 
-    public TestImpossibleStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction ... deductions) {
+    public StandardStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction ... deductions) {
         this.pawnNumber = pawnNumber;
         this.pieceNumber = pieceNumber;
         this.deductions = Arrays.stream(deductions).toList();
@@ -72,11 +76,20 @@ public class TestImpossibleStateDetector implements StateDetector {
         }
     }
 
+    public StandardStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, BoardInterface board, Deduction ... deductions) {
+        this(pawnNumber, pieceNumber, deductions);
+        this.board = board;
+    }
+
     @Override
     public boolean getState() {
         return this.state;
     }
 
+    @Override
+    public boolean testState() {
+        return !(this.board == null) && testState(this.board);
+    }
     @Override
     public boolean testState(BoardInterface board) {
 
@@ -115,8 +128,10 @@ public class TestImpossibleStateDetector implements StateDetector {
             }
             this.finishedDeductions.add(deduction);
         }
-        this.state = true;
 
+        this.state = true;
+        unCastle.registerStateDetector(this);
+        unCastle.hasMoved();
         return true;
     }
 

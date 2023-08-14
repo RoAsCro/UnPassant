@@ -1,5 +1,6 @@
 import Heuristics.BoardInterface;
 import Heuristics.Deductions.*;
+import Heuristics.Detector.StandardStateDetector;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import Heuristics.Deductions.UnCastle;
@@ -12,7 +13,7 @@ public class ImpossibleStates {
 
     PawnNumber pawnNumber;
     PieceNumber pieceNumber;
-    TestImpossibleStateDetector detector;
+    StandardStateDetector detector;
     PieceMap pm;
     UnCastle uc;
 
@@ -28,7 +29,7 @@ public class ImpossibleStates {
         PromotionMap prm = new PromotionMap();
         PromotedPawnSquares pps = new PromotedPawnSquares();
         this.uc = new UnCastle();
-        this.detector = new TestImpossibleStateDetector(pawnNumber, pieceNumber,
+        this.detector = new StandardStateDetector(pawnNumber, pieceNumber,
                 pmw,
                 pmb,
                 cpm,
