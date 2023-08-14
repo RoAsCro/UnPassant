@@ -178,7 +178,7 @@ public class PromotionMapTest {
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
         System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         System.out.println(testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(combinedPawnMap.getWhitePaths());
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
 
 
         for (int x = 0 ; x < 8 ; x++) {
@@ -203,9 +203,6 @@ public class PromotionMapTest {
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
         System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         System.out.println(testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(combinedPawnMap.getBlackPaths());
-
-
 //        for (int x = 0 ; x < 8 ; x++) {
             Assertions.assertTrue(testImpossibleStateDetector.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
 //        }
@@ -230,7 +227,7 @@ public class PromotionMapTest {
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
         System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         System.out.println(testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(combinedPawnMap.getWhitePaths());
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         for (int x = 0 ; x < 8 ; x++) {
             Assertions.assertFalse(testImpossibleStateDetector.getPawnOrigins(true).containsKey(new Coordinate(x, 7)), "" + x);
         }
@@ -253,7 +250,7 @@ public class PromotionMapTest {
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
         System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         System.out.println(testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(combinedPawnMap.getWhitePaths());
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         // One of the below should be true, it doesn't matter which
         for (int x = 0 ; x < 8 ; x++) {
 //            Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(x, 7)), "" + x);
@@ -277,7 +274,7 @@ public class PromotionMapTest {
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
         System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         System.out.println(testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(combinedPawnMap.getWhitePaths());
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         // One of the below should be true, it doesn't matter which
         for (int x = 0 ; x < 8 ; x++) {
 //            Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(x, 7)), "" + x);
@@ -301,7 +298,7 @@ public class PromotionMapTest {
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
         System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         System.out.println(testImpossibleStateDetector.getPawnOrigins(false));
-        System.out.println(combinedPawnMap.getWhitePaths());
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         // One of the below should be true, it doesn't matter which
         for (int x = 0 ; x < 8 ; x++) {
 //            Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(x, 7)), "" + x);

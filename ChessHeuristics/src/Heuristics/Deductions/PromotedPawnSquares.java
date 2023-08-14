@@ -1,12 +1,8 @@
 package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
-import Heuristics.Observation;
-import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
-import Heuristics.Pathfinder;
 import StandardChess.Coordinate;
-import StandardChess.StandardPieceFactory;
 
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -20,11 +16,6 @@ public class PromotedPawnSquares extends AbstractDeduction{
     private List<Path> blackPaths = new LinkedList<>();
     private boolean promotionMapInUse = false;
     public PromotedPawnSquares() {}
-
-    @Override
-    public List<Observation> getObservations() {
-        return null;
-    }
 
     @Override
     public boolean deduce(BoardInterface board) {

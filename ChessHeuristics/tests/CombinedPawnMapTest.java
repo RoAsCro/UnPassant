@@ -3,7 +3,6 @@ import Heuristics.Deductions.CombinedPawnMap;
 import Heuristics.Deductions.PawnMapBlack;
 import Heuristics.Deductions.PawnMapWhite;
 import Heuristics.Deductions.TestImpossibleStateDetector;
-import Heuristics.Observation;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
@@ -33,9 +32,10 @@ public class CombinedPawnMapTest {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/7p/7p/P6p/P6p/P7/P7/4K3 w - - 0 1"));
         this.testImpossibleStateDetector.testState(board);
 //        combinedPawnMap.deduce(board);
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
-        System.out.println(combinedPawnMap.getWhitePaths());
-        System.out.println(combinedPawnMap.getBlackPaths());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true));
+        
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false));
 //        Assertions
         Assertions.assertTrue(combinedPawnMap.getState());
     }
@@ -44,8 +44,8 @@ public class CombinedPawnMapTest {
     void testWhitePawnPathsTwo(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/7p/7p/7p/2P4p/8/PP1P4/4K3 w - - 0 1"));
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
-        System.out.println(combinedPawnMap.getWhitePaths());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true));
         Assertions.assertTrue(combinedPawnMap.getState());
 
     }
@@ -54,11 +54,11 @@ public class CombinedPawnMapTest {
     void testWhiteExclusivePawnPaths(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/2pppppp/8/P7/p7/8/1PPPPPPP/RNBQKB1R w KQkq - 0 1"));
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(this.pawnMapWhite.getPawnOrigins().get(new Coordinate(0, 4)));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)));
-        System.out.println(this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 3)));
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
-        Assertions.assertEquals(1, this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 3)).size());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(0, 4)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 4)));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 3)));
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 3)).size());
         Assertions.assertTrue(combinedPawnMap.getState());
 
     }
@@ -67,9 +67,9 @@ public class CombinedPawnMapTest {
     void testWhiteMultiOrigin(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/8/8/8/8/P7/8/RNBQKB1R w KQkq - 0 1"));
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(pawnMapWhite.getPawnOrigins().get(new Coordinate(0, 2)));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 2)));
-        Assertions.assertEquals(2, combinedPawnMap.getWhitePaths().get(new Coordinate(0, 2)).size());
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(0, 2)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 2)));
+        Assertions.assertEquals(2, testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 2)).size());
         Assertions.assertTrue(combinedPawnMap.getState());
 
     }
@@ -78,12 +78,12 @@ public class CombinedPawnMapTest {
     void testExclusive(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/P7/p7/8/1PPPPPPP/R1BQKB1R w KQkq - 0 1"));
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(Pathfinder.pathsExclusive(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).get(0), combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)).get(0)));
-        System.out.println(this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 3)));
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
-        System.out.println(pawnMapWhite.getPawnOrigins().get(new Coordinate(0, 4)));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)));
-        Assertions.assertTrue(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).get(0).contains(new Coordinate(1, 4)));
+        System.out.println(Pathfinder.pathsExclusive(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 3)).get(0), testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 4)).get(0)));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(0, 4)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 4)));
+        Assertions.assertTrue(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 3)).get(0).contains(new Coordinate(1, 4)));
         Assertions.assertTrue(combinedPawnMap.getState());
 
     }
@@ -92,11 +92,11 @@ public class CombinedPawnMapTest {
     void testExclusiveTwo(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/2pppppp/8/P7/p7/8/1PPPPPPP/R1BQKBNR w KQkq - 0 1"));
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 3)));
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
-        this.pawnMapWhite.getPawnOrigins().get(new Coordinate(0, 4));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)));
-        Assertions.assertEquals(1, this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 3)).size());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 3)));
+        this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(0, 4));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 4)));
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 3)).size());
         Assertions.assertTrue(combinedPawnMap.getState());
 
     }
@@ -105,9 +105,9 @@ public class CombinedPawnMapTest {
     void testExclusiveThree(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r1b1kb1r/pp1pp1pp/8/4P3/P4p2/8/1PPPPPP1/2BQKB1R w Kkq - 0 1"));
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(5, 3)));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(4, 4)));
-        Assertions.assertEquals(1, this.pawnMapBlack.getPawnOrigins().get(new Coordinate(5, 3)).size());
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(5, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(4, 4)));
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(5, 3)).size());
         Assertions.assertTrue(combinedPawnMap.getState());
 
     }
@@ -116,15 +116,15 @@ public class CombinedPawnMapTest {
     void testExclusiveFour(){
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/P7/p7/8/2PPPPPP/R1BQKBNR w KQkq - 0 1"));
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 3)));
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
-        this.pawnMapWhite.getPawnOrigins().get(new Coordinate(0, 4));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 3)));
+        this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(0, 4));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 4)));
         Path path = new Path();
         for (int i = 6 ; i > 2 ; i--) {
             path.add(new Coordinate(0, i));
         }
-        Assertions.assertFalse(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).contains(path));
+        Assertions.assertFalse(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 3)).contains(path));
         Assertions.assertTrue(combinedPawnMap.getState());
 
     }
@@ -136,17 +136,17 @@ public class CombinedPawnMapTest {
 
         this.testImpossibleStateDetector.testState(board);
 
-        System.out.println(this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 3)));
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
-        this.pawnMapWhite.getPawnOrigins().get(new Coordinate(0, 4));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 3)));
+        this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(0, 4));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 4)));
         Path path = new Path();
         for (int i = 6 ; i > 2 ; i--) {
             path.add(new Coordinate(0, i));
         }
         System.out.println(path);
         // If this fails, it may be due to implementations changing
-        Assertions.assertTrue(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).contains(path));
+        Assertions.assertTrue(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 3)).contains(path));
         Assertions.assertTrue(combinedPawnMap.getState());
 
     }
@@ -157,10 +157,10 @@ public class CombinedPawnMapTest {
 
 
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(3, 3)));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(4, 4)));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(3, 4)));
-        Assertions.assertTrue(combinedPawnMap.getBlackPaths().get(new Coordinate(3, 3)).get(0).contains(new Coordinate(2, 4)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(3, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(4, 4)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(3, 4)));
+        Assertions.assertTrue(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(3, 3)).get(0).contains(new Coordinate(2, 4)));
         Assertions.assertTrue(combinedPawnMap.getState());
 
     }
@@ -171,9 +171,9 @@ public class CombinedPawnMapTest {
 
 
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(3, 3)));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(3, 4)));
-        Assertions.assertFalse(combinedPawnMap.getBlackPaths().get(new Coordinate(3, 3)).get(0).contains(new Coordinate(3, 4)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(3, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(3, 4)));
+        Assertions.assertFalse(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(3, 3)).get(0).contains(new Coordinate(3, 4)));
         Assertions.assertTrue(combinedPawnMap.getState());
 
     }
@@ -184,12 +184,12 @@ public class CombinedPawnMapTest {
 
 
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 3)));
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
-        this.pawnMapWhite.getPawnOrigins().get(new Coordinate(0, 4));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 3)));
+        this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(0, 4));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 4)));
         Path path = new Path();
-        Assertions.assertTrue(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).get(0).contains(new Coordinate(0, 4)));
+        Assertions.assertTrue(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 3)).get(0).contains(new Coordinate(0, 4)));
 //        Assertions.assertTrue(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).get(0).contains(new Coordinate(0, 4)));
         Assertions.assertTrue(combinedPawnMap.getState());
 
@@ -202,9 +202,9 @@ public class CombinedPawnMapTest {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/2p1pppp/P3p3/p7/8/8/1PPPPPPP/R1BQKB1R w KQkq - 0 1"));
 
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 4)));
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 4)));
-        Assertions.assertEquals(1, this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 4)).size());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 4)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 4)));
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 4)).size());
         Assertions.assertTrue(combinedPawnMap.getState());
 
 
@@ -216,16 +216,16 @@ public class CombinedPawnMapTest {
 
 
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 4)));
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 4)));
-        System.out.println(this.pawnMapBlack.getPawnOrigins().get(new Coordinate(4, 3)));
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(4, 3)));
-        this.pawnMapWhite.getPawnOrigins().get(new Coordinate(0, 5));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 4)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 4)));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(4, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(4, 3)));
+        this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(0, 5));
 //        System.out.println(map.getMaxCaptures(new Coordinate(0, 5)));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 5)));
-        Assertions.assertEquals(1, this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 4)).size());
-        Assertions.assertEquals(1, this.pawnMapBlack.getPawnOrigins().get(new Coordinate(4, 3)).size());
-        Assertions.assertEquals(1, combinedPawnMap.getBlackPaths().get(new Coordinate(4, 3)).size());
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 5)));
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 4)).size());
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(4, 3)).size());
+        Assertions.assertEquals(1, testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(4, 3)).size());
         Assertions.assertTrue(combinedPawnMap.getState());
 
 
@@ -244,17 +244,17 @@ public class CombinedPawnMapTest {
 //        System.out.println(map.getPawnOrigins().get(new Coordinate(0, 5)));
 ////        System.out.println(map.getMaxCaptures(new Coordinate(0, 5)));
 //        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 5)));
-        System.out.println(this.pawnMapBlack.getPawnOrigins().get(new Coordinate(4, 3)));
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(4, 3)));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(5, 4)));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(4, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(4, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(5, 4)));
 
 
-        Assertions.assertEquals(1, this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 1)).size());
-        Assertions.assertEquals(1, this.pawnMapBlack.getPawnOrigins().get(new Coordinate(4, 3)).size());
-        Assertions.assertEquals(1, this.pawnMapWhite.getPawnOrigins().get(new Coordinate(0, 2)).size());
-        Assertions.assertEquals(2, this.pawnMapWhite.getPawnOrigins().get(new Coordinate(5, 4)).size());
-        Assertions.assertEquals(1, this.pawnMapWhite.getPawnOrigins().get(new Coordinate(3, 2)).size());
-        Assertions.assertEquals(2, this.pawnMapWhite.getPawnOrigins().get(new Coordinate(5, 2)).size());
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 1)).size());
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(4, 3)).size());
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(0, 2)).size());
+        Assertions.assertEquals(2, this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(5, 4)).size());
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(3, 2)).size());
+        Assertions.assertEquals(2, this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(5, 2)).size());
         Assertions.assertTrue(combinedPawnMap.getState());
 
 
@@ -276,16 +276,16 @@ public class CombinedPawnMapTest {
 //        System.out.println(map.getPawnOrigins().get(new Coordinate(0, 5)));
 ////        System.out.println(map.getMaxCaptures(new Coordinate(0, 5)));
 //        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 5)));
-        System.out.println(this.pawnMapBlack.getPawnOrigins().get(new Coordinate(4, 3)));
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(4, 3)));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(5, 4)));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(4, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(4, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(5, 4)));
 
 
 //        Assertions.assertEquals(1, blackMap.getPawnOrigins().get(new Coordinate(0, 1)).size());
-        Assertions.assertEquals(1, this.pawnMapBlack.getPawnOrigins().get(new Coordinate(4, 3)).size());
-        Assertions.assertEquals(1, this.pawnMapWhite.getPawnOrigins().get(new Coordinate(0, 2)).size());
-        Assertions.assertEquals(1, this.pawnMapWhite.getPawnOrigins().get(new Coordinate(5, 4)).size());
-        Assertions.assertEquals(1, this.pawnMapWhite.getPawnOrigins().get(new Coordinate(3, 2)).size());
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(4, 3)).size());
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(0, 2)).size());
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(5, 4)).size());
+        Assertions.assertEquals(1, this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(3, 2)).size());
 
 
 //        Assertions.assertEquals(1, combinedPawnMap.getBlackPaths().get(new Coordinate(4, 3)).size());
@@ -300,12 +300,12 @@ public class CombinedPawnMapTest {
 
 
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(Pathfinder.pathsExclusive(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)).get(0), combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)).get(0)));
-        System.out.println(this.pawnMapBlack.getPawnOrigins().get(new Coordinate(0, 3)));
-        System.out.println(combinedPawnMap.getBlackPaths().get(new Coordinate(0, 3)));
-        this.pawnMapWhite.getPawnOrigins().get(new Coordinate(0, 4));
-        System.out.println(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)));
-        Assertions.assertTrue(combinedPawnMap.getWhitePaths().get(new Coordinate(0, 4)).get(0).contains(new Coordinate(1, 3)));
+        System.out.println(Pathfinder.pathsExclusive(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 3)).get(0), testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 4)).get(0)));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false).get(new Coordinate(0, 3)));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false).get(new Coordinate(0, 3)));
+        this.testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(0, 4));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 4)));
+        Assertions.assertTrue(testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 4)).get(0).contains(new Coordinate(1, 3)));
         Assertions.assertTrue(combinedPawnMap.getState());
 
     }
@@ -316,8 +316,8 @@ public class CombinedPawnMapTest {
 
 
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(combinedPawnMap.getBlackPaths());
-        System.out.println(combinedPawnMap.getWhitePaths());
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true));
 
 //        Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(2, 3)).size());
 //        Assertions.assertEquals(new Coordinate(2, 1), map.getPawnOrigins().get(new Coordinate(2, 3)).get(0));
@@ -331,8 +331,8 @@ public class CombinedPawnMapTest {
 
 
         this.testImpossibleStateDetector.testState(board);
-        System.out.println(combinedPawnMap.getBlackPaths());
-        System.out.println(combinedPawnMap.getWhitePaths());
+        System.out.println(testImpossibleStateDetector.getPawnPaths(false));
+        System.out.println(testImpossibleStateDetector.getPawnPaths(true));
 
 //        Assertions.assertEquals(1, map.getPawnOrigins().get(new Coordinate(2, 3)).size());
 //        Assertions.assertEquals(new Coordinate(2, 1), map.getPawnOrigins().get(new Coordinate(2, 3)).get(0));

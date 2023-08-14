@@ -5,7 +5,6 @@ import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
-import StandardChess.StandardPieceFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,12 +39,6 @@ public class PromotionMap extends AbstractDeduction {
         this.promotionPawnMapBlack = new PromotionPawnMapBlack();
     }
 
-
-
-    @Override
-    public List<Observation> getObservations() {
-        return null;
-    }
 
     @Override
     public void registerDetector(StateDetector detector) {
@@ -743,7 +736,6 @@ public class PromotionMap extends AbstractDeduction {
                 //System.out.println("subtrahend" + PromotionMap.this.pawnMapBlack.maxPieces);
                 this.detector.reducePawnTakeablePieces(white, maxPieces - subtrahend);
 
-                updateMaxCapturedPieces(MAX_PIECES - subtrahend);
 
 
             }
@@ -805,7 +797,7 @@ public class PromotionMap extends AbstractDeduction {
                     .forEach(c -> toAddTwo.put(c, Path.of(targetsFiltered.stream()
                             .filter(cTwo -> Math.abs(c.getX() - cTwo.getX()) < K_ROOK_X).toList())));
             toAddTwo.entrySet().stream().filter(entry -> !entry.getValue().isEmpty())
-                    .forEach(entry -> getPawnOrigins().put(entry.getKey(), entry.getValue()));
+                    .forEach(entry -> detector.getPawnOrigins(white).put(entry.getKey(), entry.getValue()));
             //System.out.println("HHHH" + this.detector.getPawnOrigins(white));
 
 
@@ -816,21 +808,12 @@ public class PromotionMap extends AbstractDeduction {
             //System.out.println("captures  4" + getPawnOrigins());
 
             flip(false, white);
-            updateCaptureSet(white);
-            //System.out.println("captures  3" + origins);
-            origins.forEach((key, value) -> {
-                int x = key.getX();
-                value.removeAll(value.stream()
-                        .filter(coordinate -> Math.abs(x - coordinate.getX()) > this.detector.getCapturedPieces(white) + this.detector.getCaptureSet(white).get(key))
-                        .toList());
-            });
+            super.captures(origins, white);
             //System.out.println("captures  3" + origins);
 
             flip(true, white);
             //System.out.println("captures  5" + getPawnOrigins());
-
             Map<Coordinate, Integer> newCaptures = new HashMap<>();
-
             detector.getPawnOrigins(white).entrySet().stream()
                     .filter(entry -> entry.getKey().getY()
                             == (white ? FINAL_RANK_Y : FIRST_RANK_Y))
@@ -881,12 +864,6 @@ public class PromotionMap extends AbstractDeduction {
         public void update() {
             super.update(true);
         }
-
-        @Override
-        public int capturedPieces() {
-            return super.capturedPieces(true);
-        }
-
     }
 
     private class PromotionPawnMapBlack extends PromotionPawnMap {
@@ -898,11 +875,6 @@ public class PromotionMap extends AbstractDeduction {
         @Override
         public void update() {
             super.update(false);
-        }
-
-        @Override
-        public int capturedPieces() {
-            return super.capturedPieces(false);
         }
 
     }
@@ -917,9 +889,9 @@ public class PromotionMap extends AbstractDeduction {
         }
 
         public void reduce(Map<Coordinate, Path> pawnOrigins) {
-            getPawnOrigins().clear();
-            getPawnOrigins().putAll(pawnOrigins);
-            List<Coordinate> origins = getPawnOrigins().entrySet().stream()
+            detector.getPawnOrigins(white).clear();
+            detector.getPawnOrigins(white).putAll(pawnOrigins);
+            List<Coordinate> origins = detector.getPawnOrigins(white).entrySet().stream()
                     .flatMap(f -> f.getValue().stream())
                     .collect(Collectors.toSet())
                     .stream().toList();
@@ -941,11 +913,6 @@ public class PromotionMap extends AbstractDeduction {
         @Override
         public void update() {
             super.update(this.white);
-        }
-
-        @Override
-        public int capturedPieces() {
-            return super.capturedPieces(this.white);
         }
 
     }

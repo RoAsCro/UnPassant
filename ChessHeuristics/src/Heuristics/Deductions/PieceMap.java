@@ -47,10 +47,6 @@ public class PieceMap extends AbstractDeduction{
     public Map<Coordinate, Boolean> getCaged() {
         return this.detector.getCaged();
     }
-    @Override
-    public List<Observation> getObservations() {
-        return null;
-    }
 
     @Override
     public boolean deduce(BoardInterface board) {

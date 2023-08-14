@@ -5,7 +5,7 @@ import Heuristics.Deduction;
 import Heuristics.Deductions.*;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
-import Heuristics.UnCastle;
+import Heuristics.Deductions.UnCastle;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 
@@ -17,24 +17,15 @@ public class StateDetectorFactory {
     public static final int prmPosition = 6;
     public static final int ppsPosition = 7;
 
-    private static Deduction[] getDeductions(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction... deductions) {
-        PawnMapWhite pmw = null;
-        PawnMapBlack pmb = null;
-        CombinedPawnMap cpm = null;
+    private static Deduction[] getDeductions() {
+        PawnMapWhite pmw;
+        PawnMapBlack pmb;
+        CombinedPawnMap cpm;
 //        System.out.println(Arrays.stream(deductions).toList());
-        for (Deduction d : deductions) {
-            if (d instanceof PawnMapWhite p) {
-                pmw = new PawnMapWhite(p);
-            } else if (d instanceof PawnMapBlack p) {
-                pmb = new PawnMapBlack(p);
-            } else if (d instanceof CombinedPawnMap p) {
-                cpm = p;
-            }
-        }
 //        System.out.println(pmw);
-        pmw = pmw == null ? new PawnMapWhite() : pmw;
-        pmb = pmb == null ? new PawnMapBlack() : pmb;
-        cpm = cpm == null ? new CombinedPawnMap() : cpm;
+        pmw = new PawnMapWhite();
+        pmb = new PawnMapBlack();
+        cpm = new CombinedPawnMap();
 
 //        System.out.println(pmw.getPawnOrigins());
 
@@ -58,8 +49,8 @@ public class StateDetectorFactory {
     public static SolverImpossibleStateDetector getDetector(ChessBoard board) {
         PawnNumber pawnNumber = new PawnNumber();
         PieceNumber pieceNumber = new PieceNumber();
-        Deduction[] deductions = getDeductions(pawnNumber, pieceNumber);
-        UnCastle unCastle = getUnCastle(deductions);
+        Deduction[] deductions = getDeductions();
+        UnCastle unCastle = new UnCastle();
         return new SolverImpossibleStateDetector(pawnNumber, pieceNumber, unCastle, new BoardInterface(board), deductions);
     }
 
@@ -70,19 +61,10 @@ public class StateDetectorFactory {
     public static SolverImpossibleStateDetector getDetector(ChessBoard board, Deduction... deductions) {
         PawnNumber pawnNumber = new PawnNumber();
         PieceNumber pieceNumber = new PieceNumber();
-        UnCastle unCastle = getUnCastle(deductions);
+        UnCastle unCastle = new UnCastle();
 
         return new SolverImpossibleStateDetector(pawnNumber, pieceNumber, unCastle,
-                new BoardInterface(board), getDeductions(pawnNumber, pieceNumber, deductions));
+                new BoardInterface(board), getDeductions());
     }
-
-    private static UnCastle getUnCastle(Deduction... deductions) {
-        return new UnCastle( (PawnMap) deductions[pmwPosition],
-                (PawnMap) deductions[pmbPosition],
-                (PieceMap) deductions[pmPosition],
-                (PromotionMap) deductions[prmPosition],
-                (PromotedPawnSquares) deductions[ppsPosition]);
-    }
-
 
     }

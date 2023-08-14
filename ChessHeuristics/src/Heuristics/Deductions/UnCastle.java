@@ -1,6 +1,8 @@
-package Heuristics;
+package Heuristics.Deductions;
 
 import Heuristics.Deductions.*;
+import Heuristics.Path;
+import Heuristics.StateDetector;
 import StandardChess.Coordinate;
 
 import java.util.Collection;
@@ -16,8 +18,6 @@ public class UnCastle {
     boolean[] whiteData = new boolean[]{false, false, false};
     boolean[] blackData = new boolean[]{false, false, false};
 
-    public UnCastle(PawnMap pawnMapWhite, PawnMap pawnMapBlack, PieceMap pieceMap, PromotionMap promotionMap, PromotedPawnSquares promotedPawnSquares) {
-    }
     public void registerStateDetector(StateDetector stateDetector) {
         this.stateDetector =stateDetector;
     }

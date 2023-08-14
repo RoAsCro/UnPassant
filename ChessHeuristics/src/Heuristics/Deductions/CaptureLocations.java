@@ -1,7 +1,6 @@
 package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
-import Heuristics.Observation;
 import Heuristics.Path;
 import Heuristics.StateDetector;
 import StandardChess.Coordinate;
@@ -24,10 +23,6 @@ public class CaptureLocations extends AbstractDeduction {
     public void registerDetector(StateDetector detector) {
         super.registerDetector(detector);
         this.pathFinderUtil = new PiecePathFinderUtil(detector);
-    }
-    @Override
-    public List<Observation> getObservations() {
-        return null;
     }
 
     @Override

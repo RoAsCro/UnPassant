@@ -2,7 +2,7 @@ import Heuristics.BoardInterface;
 import Heuristics.Deductions.*;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
-import Heuristics.UnCastle;
+import Heuristics.Deductions.UnCastle;
 import StandardChess.BoardBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ public class UnCastleTest {
         CaptureLocations cl = new CaptureLocations();
         this.prm = new PromotionMap();
         this.pps = new PromotedPawnSquares();
-        this.uc = new UnCastle(pmw, pmb, pm, prm, pps);
+        this.uc = new UnCastle();
         this.detector = new TestImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,
                 pmb,

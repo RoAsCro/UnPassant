@@ -139,9 +139,9 @@ public class PieceMapTest {
         Coordinate start2 = new Coordinate(5, 0);
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
-        System.out.println(this.combinedPawnMap.getWhitePaths().get(new Coordinate(0, 2)).get(0));
-        System.out.println(Pathfinder.pathsExclusive(this.combinedPawnMap.getWhitePaths().get(new Coordinate(0, 2)).get(0),
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(this.testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 2)).get(0));
+        System.out.println(Pathfinder.pathsExclusive(this.testImpossibleStateDetector.getPawnPaths(true).get(new Coordinate(0, 2)).get(0),
                 Path.of(start1, new Coordinate(1, 1), new Coordinate(0, 2), new Coordinate(-1, -1))));
 
         Assertions.assertEquals(Path.of(start1, new Coordinate(1, 1), new Coordinate(2, 2)), map.get(start1).get(new Coordinate(2, 4)));
@@ -161,7 +161,7 @@ public class PieceMapTest {
         Coordinate start2 = new Coordinate(5, 7);
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
 //        System.out.println(this.combinedPawnMap.getWhitePaths().get(new Coordinate(0, 2)).get(0));
 //        System.out.println(Pathfinder.pathsExclusive(this.combinedPawnMap.getWhitePaths().get(new Coordinate(0, 2)).get(0),
 //                Path.of(start1, new Coordinate(1, 1), new Coordinate(0, 2), new Coordinate(-1, -1))));
@@ -558,7 +558,7 @@ public class PieceMapTest {
         Coordinate start2 = new Coordinate(4, 0);
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         Assertions.assertEquals(0, map.get(start1).size());
         Assertions.assertEquals(0, map.get(start2).size());
@@ -576,7 +576,7 @@ public class PieceMapTest {
         Coordinate start2 = new Coordinate(4, 7);
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         Assertions.assertEquals(0, map.get(start1).size());
         Assertions.assertEquals(0, map.get(start2).size());
@@ -670,7 +670,7 @@ public class PieceMapTest {
         Coordinate start1 = new Coordinate(3, 0);
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
         
         System.out.println(pieceMap.getPromotedPieceMap());
         for (int i = 0 ; i < 5 ; i++) {
@@ -694,8 +694,8 @@ public class PieceMapTest {
         
         this.testImpossibleStateDetector.testState(boardInterface);
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         
         System.out.println(pieceMap.getPromotedPieceMap());
@@ -718,8 +718,8 @@ public class PieceMapTest {
         this.testImpossibleStateDetector.testState(boardInterface);
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         
         System.out.println(pieceMap.getPromotedPieceMap());
@@ -742,8 +742,8 @@ public class PieceMapTest {
         this.testImpossibleStateDetector.testState(boardInterface);
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         
         System.out.println(pieceMap.getPromotedPieceMap());
@@ -766,8 +766,8 @@ public class PieceMapTest {
         this.testImpossibleStateDetector.testState(boardInterface);
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         
         System.out.println(pieceMap.getPromotedPieceMap());
@@ -791,8 +791,8 @@ public class PieceMapTest {
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         
         System.out.println(pieceMap.getPromotedPieceMap());
@@ -816,8 +816,8 @@ public class PieceMapTest {
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         
         System.out.println(pieceMap.getPromotedPieceMap());
@@ -841,8 +841,8 @@ public class PieceMapTest {
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         
         System.out.println(pieceMap.getPromotedPieceMap());
@@ -866,8 +866,8 @@ public class PieceMapTest {
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         
         System.out.println(pieceMap.getPromotedPieceMap());
@@ -896,8 +896,8 @@ public class PieceMapTest {
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         
         System.out.println(this.pieceMap.getStartLocations());
@@ -933,8 +933,8 @@ public class PieceMapTest {
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         
         System.out.println(pieceMap.getPromotedPieceMap());
@@ -961,8 +961,8 @@ public class PieceMapTest {
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         System.out.println(this.pieceMap.getStartLocations());
         System.out.println(pieceMap.getPromotedPieceMap());
@@ -989,8 +989,8 @@ public class PieceMapTest {
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         System.out.println(this.pieceMap.getStartLocations());
         System.out.println(pieceMap.getPromotedPieceMap());
@@ -1017,8 +1017,8 @@ public class PieceMapTest {
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         System.out.println(this.pieceMap.getStartLocations());
         System.out.println(pieceMap.getPromotedPieceMap());
@@ -1045,8 +1045,8 @@ public class PieceMapTest {
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         System.out.println(this.pieceMap.getStartLocations());
         System.out.println(pieceMap.getPromotedPieceMap());
@@ -1409,7 +1409,7 @@ public class PieceMapTest {
         Coordinate start2 = new Coordinate(4, 0);
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
         System.out.println(this.pieceMap.getPromotedPieceMap());
         System.out.println(pieceMap.getPromotionNumbers());
 //        System.out.println(pieceMap.promotedPieceMap);
@@ -1439,8 +1439,8 @@ public class PieceMapTest {
         Map<Coordinate, Map<Coordinate, Path>> map = this.pieceMap.getStartLocations();
 
         System.out.println(this.pieceMap.getStartLocations());
-        System.out.println(this.pawnMapBlack.getPawnOrigins());
-        System.out.println(this.pawnMapWhite.getPawnOrigins());
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(true));
 
         
         System.out.println(pieceMap.getPromotedPieceMap());

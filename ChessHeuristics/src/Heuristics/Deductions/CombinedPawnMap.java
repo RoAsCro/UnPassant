@@ -1,31 +1,15 @@
 package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
-import Heuristics.Observation;
 import Heuristics.Path;
 import Heuristics.Pathfinder;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
-import StandardChess.StandardPieceFactory;
 
 import java.util.*;
-import java.util.function.Function;
-
-import static Heuristics.Deductions.PiecePathFinderUtil.PATH_DEVIATION;
 
 public class CombinedPawnMap extends AbstractDeduction {
-    private PawnMap white;
-    private PawnMap black;
-
-    public CombinedPawnMap(PawnMap white, PawnMap black, CombinedPawnMap combinedPawnMap) {
-        this.black = black;
-        this.white = white;
-    }
     public CombinedPawnMap(){};
-    @Override
-    public List<Observation> getObservations() {
-        return new LinkedList<>();
-    }
 
     @Override
     public boolean deduce(BoardInterface board) {
@@ -173,15 +157,6 @@ public class CombinedPawnMap extends AbstractDeduction {
                             });
                     this.detector.getPawnPaths(white).put(entry.getKey(), paths);
                 });
-    }
-
-
-    public Map<Coordinate, List<Path>> getWhitePaths() {
-        return this.detector.getPawnPaths(true);
-    }
-
-    public Map<Coordinate, List<Path>> getBlackPaths() {
-        return this.detector.getPawnPaths(false);
     }
 
 }

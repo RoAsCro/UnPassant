@@ -6,7 +6,7 @@ import Heuristics.Deductions.PieceMap;
 import Heuristics.Deductions.TestImpossibleStateDetector;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
-import Heuristics.UnCastle;
+import Heuristics.Deductions.UnCastle;
 import StandardChess.Coordinate;
 
 import java.util.List;
