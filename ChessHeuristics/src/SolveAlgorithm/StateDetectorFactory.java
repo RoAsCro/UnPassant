@@ -77,7 +77,7 @@ public class StateDetectorFactory {
     }
 
     private static UnCastle getUnCastle(Deduction... deductions) {
-        return new UnCastle((PawnMap) deductions[pmwPosition],
+        return new UnCastle( (PawnMap) deductions[pmwPosition],
                 (PawnMap) deductions[pmbPosition],
                 (PieceMap) deductions[pmPosition],
                 (PromotionMap) deductions[prmPosition],

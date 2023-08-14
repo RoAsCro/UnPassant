@@ -9,7 +9,11 @@ import java.util.Map;
 public interface StateDetector {
     public PieceNumber getPieceNumber();
 
+    boolean getState();
+
     boolean testState(BoardInterface board);
+
+    List<Path> getPromotionPaths(boolean white);
 
     int getPawnNumbers(boolean white);
 

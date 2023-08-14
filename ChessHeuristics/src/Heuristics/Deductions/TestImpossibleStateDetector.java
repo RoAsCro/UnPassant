@@ -56,6 +56,9 @@ public class TestImpossibleStateDetector implements StateDetector {
     private Path[] cagedCaptures = new Path[]{new Path(), new Path()};
     private int[] pawnsCapturedByPawns = new int[]{0, 0};
     private final Path[] promotedPawns = new Path[]{new Path(), new Path()};
+    private boolean state = false;
+    private List<Path> whitePromotionPaths = new LinkedList<>();
+    private List<Path> blackPromotionPaths = new LinkedList<>();
 
 
     public TestImpossibleStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, Deduction ... deductions) {
@@ -70,16 +73,22 @@ public class TestImpossibleStateDetector implements StateDetector {
     }
 
     @Override
+    public boolean getState() {
+        return this.state;
+    }
+
+    @Override
     public boolean testState(BoardInterface board) {
 
         this.pieceNumber.observe(board);
         if (board.inCheck(board.getTurn().equals("white") ? "black" : "white")) {
 //            System.out.println("Eh1");
-
+            this.state = false;
             return false;
         }
         if (this.pieceNumber.getBlackPieces() > MAX_PIECES || this.pieceNumber.getWhitePieces() > MAX_PIECES) {
 //            System.out.println("Eh2");
+            this.state = false;
 
             return false;
         }
@@ -87,6 +96,7 @@ public class TestImpossibleStateDetector implements StateDetector {
         this.pawnNumber.observe(board);
         if (this.pawnNumber.getBlackPawns() > MAX_PAWNS || this.pawnNumber.getWhitePawns() > MAX_PAWNS) {
 //            System.out.println("Eh3");
+            this.state = false;
 
             return false;
         }
@@ -99,10 +109,14 @@ public class TestImpossibleStateDetector implements StateDetector {
             if (!this.deductions.stream().allMatch(Deduction::getState)) {
                 System.out.println(deduction);
                 System.out.println("f");
+                this.state = false;
+
                 return false;
             }
             this.finishedDeductions.add(deduction);
         }
+        this.state = true;
+
         return true;
     }
 
@@ -112,7 +126,10 @@ public class TestImpossibleStateDetector implements StateDetector {
         return this.deductions;
     }
 
-
+    @Override
+    public List<Path> getPromotionPaths(boolean white) {
+        return white ? this.whitePromotionPaths : this.blackPromotionPaths;
+    }
     @Override
     public int getPawnNumbers(boolean white) {
         return white ? this.pawnNumber.getWhitePawns() : this.pawnNumber.getBlackPawns();
@@ -265,11 +282,6 @@ public class TestImpossibleStateDetector implements StateDetector {
 
     @Override
     public int capturedPieces(boolean white) {
-        //Sys tem.out.println("CPCP");
-        //Sys tem.out.println(this.detector.pawnTakeablePieces(white));
-        //Sys tem.out.println((white
-//                ? this.detector.getPieceNumber().getBlackPieces()
-//                : this.detector.getPieceNumber().getWhitePieces()));
         return pawnTakeablePieces(white) - (white
                 ? getPieceNumber().getBlackPieces()
                 : getPieceNumber().getWhitePieces());

@@ -42,6 +42,7 @@ public class UnCastleTest {
                 cl,
                 prm,
                 pps);
+        this.uc.registerStateDetector(detector);
     }
 
     @Test
@@ -81,7 +82,7 @@ public class UnCastleTest {
         this.detector.testState(new BoardInterface(BoardBuilder.buildBoard("rnb1kb1r/pppp1ppp/3p4/8/8/8/PPPPPP1P/RNBQKBNR w KQkq - 0 1")));
         List<boolean[]> booleans = uc.hasMoved();
 
-        System.out.println(this.pps.getPromotionPaths(true));
+        System.out.println(this.detector.getPromotionPaths(true));
         Assertions.assertFalse(booleans.get(0)[0]);
         Assertions.assertTrue(booleans.get(1)[0]);
 
@@ -91,7 +92,7 @@ public class UnCastleTest {
     public void movedRook() {
         this.detector.testState(new BoardInterface(BoardBuilder.buildBoard("1nb1kb1r/rppp1ppp/p4p2/8/8/7P/PPPPPP1R/RNBQKBN1 w Qk - 0 1")));
         List<boolean[]> booleans = uc.hasMoved();
-        System.out.println(this.pps.getPromotionPaths(true));
+        System.out.println(this.detector.getPromotionPaths(true));
         Assertions.assertFalse(booleans.get(0)[1]);
         Assertions.assertTrue(booleans.get(0)[2]);
 

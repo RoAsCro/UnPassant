@@ -22,6 +22,7 @@ public class SolverImpossibleStateDetector extends TestImpossibleStateDetector {
         super(pawnNumber, pieceNumber, deductions);
         this.boardInterface = board;
         this.unCastle = unCastle;
+        this.unCastle.registerStateDetector(this);
     }
 
     public boolean testState() {

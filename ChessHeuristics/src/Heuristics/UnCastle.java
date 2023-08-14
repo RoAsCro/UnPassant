@@ -12,35 +12,27 @@ import java.util.stream.Collectors;
 public class UnCastle {
 
     private final static List<Integer> criticalXs = List.of(3, 4, 5);
-    private PawnMap pawnMapWhite;
-    private PawnMap pawnMapBlack;
-    private PieceMap pieceMap;
-    private PromotionMap promotionMap;
-    private PromotedPawnSquares promotedPawnSquares;
+    StateDetector stateDetector;
     boolean[] whiteData = new boolean[]{false, false, false};
     boolean[] blackData = new boolean[]{false, false, false};
 
     public UnCastle(PawnMap pawnMapWhite, PawnMap pawnMapBlack, PieceMap pieceMap, PromotionMap promotionMap, PromotedPawnSquares promotedPawnSquares) {
-
-        this.pawnMapWhite = pawnMapWhite;
-        this.pawnMapBlack = pawnMapBlack;
-        this.pieceMap = pieceMap;
-        this.promotionMap = promotionMap;
-        this.promotedPawnSquares = promotedPawnSquares;
     }
-
+    public void registerStateDetector(StateDetector stateDetector) {
+        this.stateDetector =stateDetector;
+    }
     public List<boolean[]> hasMoved() {
 
-        this.blackData[0] = this.pieceMap.getKingMovement(false);
-        this.blackData[1] = this.pieceMap.getRookMovement(false, false);
-        this.blackData[2] = this.pieceMap.getRookMovement(false, true);
-        this.whiteData[0] = this.pieceMap.getKingMovement(true);
-        this.whiteData[1] = this.pieceMap.getRookMovement(true, false);
-        this.whiteData[2] = this.pieceMap.getRookMovement(true, true);
+        this.blackData[0] = this.stateDetector.getKingMovement(false);
+        this.blackData[1] = this.stateDetector.getRookMovement(false, true);
+        this.blackData[2] = this.stateDetector.getRookMovement(false, false);
+        this.whiteData[0] = this.stateDetector.getKingMovement(true);
+        this.whiteData[1] = this.stateDetector.getRookMovement(true, true);
+        this.whiteData[2] = this.stateDetector.getRookMovement(true, false);
         // Check rook posisitons
 
 //        System.out.println(this.promotionMap.getState());
-        if (this.promotionMap.getState() && this.promotionMap.getPromotionCombinedPawnMap() != null) {
+        if (this.stateDetector.getState()) {
             if (!this.blackData[0]) {
                 checkPromotionMap(true);
             }
@@ -48,13 +40,14 @@ public class UnCastle {
                 checkPromotionMap(false);
             }
         }
+        System.out.println("---");
 
         if (!this.blackData[0]) {
-            this.promotedPawnSquares.getPromotionPaths(true)
+            this.stateDetector.getPromotionPaths(true)
                     .forEach(p -> checkPromotedPawns(true, p));
         }
         if (!this.whiteData[0]) {
-            this.promotedPawnSquares.getPromotionPaths(false)
+            this.stateDetector.getPromotionPaths(false)
                     .forEach(p -> checkPromotedPawns(false, p));
         }
 
@@ -79,12 +72,12 @@ public class UnCastle {
     }
 
     private boolean[] bishops() {
-        List<Coordinate> onPSquare = this.pieceMap.getPromotedPieceMap().entrySet()
+        List<Coordinate> onPSquare = this.stateDetector.getPromotedPieceMap().entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().contains(entry.getKey()))
                 .map(Map.Entry::getKey)
                 .toList();
-        Path bishops = Path.of(this.pieceMap.getPromotionNumbers().entrySet()
+        Path bishops = Path.of(this.stateDetector.getPromotionNumbers().entrySet()
                 .stream()
                 .filter(entry -> entry.getKey().startsWith("bi"))
                 .flatMap(e -> e.getValue().keySet().stream().filter(Objects::nonNull).flatMap(Collection::stream))
@@ -94,10 +87,10 @@ public class UnCastle {
         boolean[] returnBooleans = new boolean[]{false, false};
         bishops.forEach(c -> {
             List<Coordinate> criticalCoords = List.of(new Coordinate(c.getX() + 1, Math.abs(c.getY() - 1)), new Coordinate(c.getX() - 1, Math.abs(c.getY() - 1)));
-            if (this.pawnMapWhite.getPawnOrigins().keySet().containsAll(criticalCoords)) {
+            if (this.stateDetector.getPawnOrigins(true).keySet().containsAll(criticalCoords)) {
                 returnBooleans[0] = true;
             }
-            if (this.pawnMapBlack.getPawnOrigins().keySet().containsAll(criticalCoords)) {
+            if (this.stateDetector.getPawnOrigins(false).keySet().containsAll(criticalCoords)) {
                 returnBooleans[1] = true;
 
             }
@@ -111,9 +104,8 @@ public class UnCastle {
         int offSet = white ? 1 : -1;
         List<Coordinate> kingCoords = List.of(new Coordinate(3, y), new Coordinate(5, y), new Coordinate(4, y + offSet));
         List<Coordinate> rookCoords = List.of(new Coordinate(0, y + offSet), new Coordinate(7, y + offSet));
-
-
         boolean[] data = !white ? this.whiteData : this.blackData;
+        System.out.println(promotionPaths);
         promotionPaths.forEach(c -> {
                 if (kingCoords.contains(c)) {
                     data[0] = true;
@@ -128,20 +120,14 @@ public class UnCastle {
     }
 
     private void checkPromotionMap(boolean white) {
-        PawnMap pawnMap = white ? this.pawnMapWhite : this.pawnMapBlack;
-        PawnMap promoPawnMap = this.promotionMap.getPromotionPawnMap(white) ;
         int y = white ? 6 : 1;
         int offSet = white ? 1 : -1;
-        Map<Coordinate, List<Path>> pawnPaths = white ? this.promotionMap.getPromotionCombinedPawnMap().getWhitePaths()
-                : this.promotionMap.getPromotionCombinedPawnMap().getBlackPaths();
-        List<Map.Entry<Coordinate, Path>> list = promoPawnMap.getPawnOrigins().entrySet()
-                .stream().filter(entry -> !pawnMap.getPawnOrigins().containsKey(entry.getKey())).toList();
+        Map<Coordinate, List<Path>> pawnPaths = this.stateDetector.getPawnPaths(white);
         List<Coordinate> criticalCoords = List.of(new Coordinate(3, y), new Coordinate(5, y), new Coordinate(4, y + offSet));
         List<Coordinate> rookCoords = List.of(new Coordinate(0, y + offSet), new Coordinate(7, y + offSet));
-
         boolean[] data = !white ? this.whiteData : this.blackData;
         pawnPaths.entrySet().stream()
-                .filter(entry -> !pawnMap.getPawnOrigins().containsKey(entry.getKey()))
+                .filter(entry -> entry.getKey().getY() == 7  || entry.getKey().getY() == 0)
                 .filter(entry -> entry.getValue().size() == 1)
                 .forEach(entry -> {
                     entry.getValue().stream().forEach(innerEntry -> {

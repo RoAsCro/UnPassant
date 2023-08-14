@@ -36,14 +36,15 @@ public class PromotedPawnSquares extends AbstractDeduction{
             System.out.println("w-----------w");
             //System.out.println(emptyWhiteOrigins);
 
-            whitePaths = pathToFinalRank(board, false, emptyWhiteOrigins);
-            whitePaths = getCaptures(false, whitePaths);
+            List<Path> tempWhitePaths = pathToFinalRank(board, false, emptyWhiteOrigins);
+            whitePaths = getCaptures(false, tempWhitePaths);
             //System.out.println(whitePaths);
 
             if (whitePaths.size() < this.detector.getPawnsCapturedByPawns(true)) {
                 this.state = false;
                 return false;
             }
+            this.detector.getPromotionPaths(true).addAll(whitePaths);
         }
 
         if (!emptyBlackOrigins.isEmpty()) {
@@ -51,15 +52,17 @@ public class PromotedPawnSquares extends AbstractDeduction{
             //System.out.println(emptyBlackOrigins);
 
 //            System.out.println(emptyBlackOrigins);
-            blackPaths = pathToFinalRank(board, true, emptyBlackOrigins);
+            List<Path> tempBlackPaths = pathToFinalRank(board, true, emptyBlackOrigins);
             //System.out.println(blackPaths);
             //System.out.println(blackPaths.size());
-            blackPaths = getCaptures(true, blackPaths);
+            blackPaths = getCaptures(true, tempBlackPaths);
 
             if (blackPaths.size() < this.detector.getPawnsCapturedByPawns(false)) {
                 this.state = false;
                 return false;
             }
+            this.detector.getPromotionPaths(false).addAll(blackPaths);
+
             // TODO put into promotions
         }
 
@@ -69,7 +72,6 @@ public class PromotedPawnSquares extends AbstractDeduction{
     private Path findEmptyOrigins(boolean white) {
         Path promotedPawns = this.detector.getPromotedPawns(white);
         System.out.println("promotedPawns");
-
         System.out.println(promotedPawns);
         return Path.of(promotedPawns.stream().filter(c -> (this.detector.getPawnOrigins(white))
                     .values()
@@ -79,8 +81,7 @@ public class PromotedPawnSquares extends AbstractDeduction{
     }
 
     private List<Path> pathToFinalRank(BoardInterface board, boolean notWhite, Path origins) {
-
-        System.out.println(this.promotionMapInUse);
+        System.out.println(origins);
         int captures = (this.detector.pawnTakeablePieces(!notWhite) - (!notWhite ? this.detector.getPieceNumber().getBlackPieces() : this.detector.getPieceNumber().getWhitePieces()))
                 -
                 (this.detector.minimumPawnCaptures(!notWhite));
@@ -101,13 +102,6 @@ public class PromotedPawnSquares extends AbstractDeduction{
                             return pathFinderUtil.findAllPawnPath(board, origin, enemyCaptures,
                                     (b, c) -> c.equals(entry.getKey()), !notWhite).size() == 1;
                         })
-//                        Pathfinder.findAllPawnPaths(
-//                                StandardPieceFactory.getInstance().getPiece(notWhite ? "p" : "P"),
-//                                entry.getValue().get(0).getFirst(),
-//                                (b, c) -> c.equals(entry.getKey()),
-//                                board,
-//                                p -> CombinedPawnMap.PATH_DEVIATION.apply(p) <= enemyCaptures)
-//                        .size() == 1)
                 .toList();
 
 
@@ -122,18 +116,6 @@ public class PromotedPawnSquares extends AbstractDeduction{
                     pathFinderUtil.findShortestPawnPath(board, origin, captures,
                             (b, c) -> c.getY() == (notWhite ? FIRST_RANK_Y : FINAL_RANK_Y),
                             !notWhite, false, forbiddenList);
-//                    Pathfinder.findShortestPawnPath(
-//                    StandardPieceFactory.getInstance().getPiece(notWhite ? "p" : "P"),
-//                    origin,
-//                    (b, c) -> c.getY() == (notWhite ? FIRST_RANK_Y : FINAL_RANK_Y),
-//                    board,
-//                    p -> CombinedPawnMap.PATH_DEVIATION.apply(p) <= captures,
-//                    (p1, p2) ->
-//                            (
-////                                    this.promotionMapInUse ?
-//                                            this.combinedPawnMap.exclusion(forbidden, p1, p2)
-////                                    : this.promotionMap.getPromotionCombinedPawnMap().exclusion(forbidden, p1, p2)
-//                            ));
             if (shortest.isEmpty()) {
                 continue;
             }
@@ -167,37 +149,5 @@ public class PromotedPawnSquares extends AbstractDeduction{
         }
         return legalPaths;
     }
-
-    public List<Path> getPromotionPaths(boolean white) {
-        return white ? this.whitePaths : this.blackPaths;
-    }
-
-//    private boolean[] bishops() {
-//        List<Coordinate> onPSquare = this.pieceMap.getPromotedPieceMap().entrySet()
-//                .stream()
-//                .filter(entry -> entry.getValue().contains(entry.getKey()))
-//                .map(Map.Entry::getKey)
-//                .toList();
-//        System.out.println(onPSquare);
-//        Path bishops = Path.of(this.pieceMap.getPromotionNumbers().entrySet()
-//                .stream()
-//                .filter(entry -> entry.getKey().startsWith("bi"))
-//                .flatMap(e -> e.getValue().keySet().stream().filter(Objects::nonNull).flatMap(Collection::stream))
-//                .filter(onPSquare::contains)
-//                .filter(c -> c.getX() == 3 || c.getX() == 5)
-//                .collect(Collectors.toSet()));
-//        boolean[] returnBooleans = new boolean[]{false, false};
-//        bishops.forEach(c -> {
-//            List<Coordinate> criticalCoords = List.of(new Coordinate(c.getX() + 1, Math.abs(c.getY() - 1)), new Coordinate(c.getX() - 1, Math.abs(c.getY() - 1)));
-//            if (this.combinedPawnMap.getPawnMap(true).getPawnOrigins().keySet().containsAll(criticalCoords)) {
-//                returnBooleans[0] = true;
-//            }
-//            if (this.combinedPawnMap.getPawnMap(true).getPawnOrigins().keySet().containsAll(criticalCoords)) {
-//                returnBooleans[1] = true;
-//
-//            }
-//        });
-//        return returnBooleans;
-//    }
 
 }

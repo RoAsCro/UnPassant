@@ -691,10 +691,6 @@ public class PromotionMap extends AbstractDeduction {
         }
     }
 
-    public Map<Coordinate, Path> getPawnOrigins(boolean white) {
-        return white ? this.promotionPawnMapWhite.getPawnOrigins() : this.promotionPawnMapBlack.getPawnOrigins();
-    }
-
     public PawnMap getPromotionPawnMap(boolean white) {
         return white ? promotionPawnMapWhite : promotionPawnMapBlack;
     }

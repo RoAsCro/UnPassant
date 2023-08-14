@@ -37,7 +37,7 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("4k3/8/8/3BB3/8/7P/2PPPPP1/RNBQKBNR w KQ - 0 1"));
 
         this.testImpossibleStateDetector.testState(boardInterface);
-        System.out.println(promotionMap.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         System.out.println(testImpossibleStateDetector.getPawnPaths(true));
 
@@ -68,7 +68,7 @@ public class PromotionMapTest {
         Assertions.assertFalse(testImpossibleStateDetector.getPawnOrigins(true).containsKey(new Coordinate(5, 7)));
         Assertions.assertFalse(testImpossibleStateDetector.getPawnOrigins(true).containsKey(new Coordinate(2, 7)));
         Assertions.assertFalse(testImpossibleStateDetector.getPawnOrigins(true).containsKey(new Coordinate(4, 7)));
-        System.out.println(promotionMap.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         System.out.println(this.testImpossibleStateDetector.getPawnPaths(true));
 //        Assertions.assertTrue(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(1, 7)));
         Assertions.assertTrue(promotionMap.getState());
@@ -81,12 +81,12 @@ public class PromotionMapTest {
 
 
         this.testImpossibleStateDetector.testState(boardInterface);
-        System.out.println(promotionMap.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         Assertions.assertEquals(1, testImpossibleStateDetector.getPawnOrigins(true).get(new Coordinate(0, 7)).size());
         Assertions.assertTrue(testImpossibleStateDetector.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
         Assertions.assertFalse(testImpossibleStateDetector.getPawnOrigins(true).containsKey(new Coordinate(1, 7)));
-        System.out.println(promotionMap.getPawnOrigins(true));
-        System.out.println(promotionMap.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         Assertions.assertTrue(promotionMap.getState());
     }
 
@@ -134,7 +134,7 @@ public class PromotionMapTest {
         this.testImpossibleStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         System.out.println(testImpossibleStateDetector.getPawnPaths(true));
 
         Assertions.assertTrue(testImpossibleStateDetector.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
@@ -156,7 +156,7 @@ public class PromotionMapTest {
         this.testImpossibleStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
         Assertions.assertTrue(testImpossibleStateDetector.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
         Assertions.assertTrue(testImpossibleStateDetector.getPawnOrigins(true).containsKey(new Coordinate(1, 7)));
         Assertions.assertTrue(testImpossibleStateDetector.getPawnOrigins(true).containsKey(new Coordinate(2, 7)));
@@ -176,8 +176,8 @@ public class PromotionMapTest {
         this.testImpossibleStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins(true));
-        System.out.println(promotionMap.getPawnOrigins(false));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(false));
         System.out.println(combinedPawnMap.getWhitePaths());
 
 
@@ -201,8 +201,8 @@ public class PromotionMapTest {
         this.testImpossibleStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins(true));
-        System.out.println(promotionMap.getPawnOrigins(false));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(false));
         System.out.println(combinedPawnMap.getBlackPaths());
 
 
@@ -210,7 +210,7 @@ public class PromotionMapTest {
             Assertions.assertTrue(testImpossibleStateDetector.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
 //        }
 //        for (int x = 0 ; x < 8 ; x++) {
-        System.out.println(this.promotionMap.getPawnOrigins(false));
+        System.out.println(this.testImpossibleStateDetector.getPawnOrigins(false));
         // NOTE : CHANGED FROM ASSERTFALSE
         Assertions.assertFalse(testImpossibleStateDetector.getPawnOrigins(false).containsKey(new Coordinate(0, 0)));
 //        }
@@ -228,8 +228,8 @@ public class PromotionMapTest {
         this.testImpossibleStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins(true));
-        System.out.println(promotionMap.getPawnOrigins(false));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(false));
         System.out.println(combinedPawnMap.getWhitePaths());
         for (int x = 0 ; x < 8 ; x++) {
             Assertions.assertFalse(testImpossibleStateDetector.getPawnOrigins(true).containsKey(new Coordinate(x, 7)), "" + x);
@@ -251,8 +251,8 @@ public class PromotionMapTest {
         this.testImpossibleStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins(true));
-        System.out.println(promotionMap.getPawnOrigins(false));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(false));
         System.out.println(combinedPawnMap.getWhitePaths());
         // One of the below should be true, it doesn't matter which
         for (int x = 0 ; x < 8 ; x++) {
@@ -275,8 +275,8 @@ public class PromotionMapTest {
         this.testImpossibleStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins(true));
-        System.out.println(promotionMap.getPawnOrigins(false));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(false));
         System.out.println(combinedPawnMap.getWhitePaths());
         // One of the below should be true, it doesn't matter which
         for (int x = 0 ; x < 8 ; x++) {
@@ -299,8 +299,8 @@ public class PromotionMapTest {
         this.testImpossibleStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(promotionMap.getPawnOrigins(true));
-        System.out.println(promotionMap.getPawnOrigins(false));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(true));
+        System.out.println(testImpossibleStateDetector.getPawnOrigins(false));
         System.out.println(combinedPawnMap.getWhitePaths());
         // One of the below should be true, it doesn't matter which
         for (int x = 0 ; x < 8 ; x++) {

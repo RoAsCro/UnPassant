@@ -87,41 +87,41 @@ public class PromotionSquaresTest {
     @Test
     void promotion() {
         Assertions.assertTrue(test("rnbqkbnr/1pp1pp2/1pp3p1/4p3/8/8/PPP3PP/R1BQKB1R w - - 0 1"));
-        System.out.println(this.pps.getPromotionPaths(true));
+        System.out.println(this.detector.getPromotionPaths(true));
     }
 
     @Test
     void promotionExtraMissingPawn() {
         Assertions.assertTrue(test("rnbqkbnr/ppp1ppp1/2p3p1/8/8/8/1PP1PPPP/R1BQKBNR w - - 0 1"));
-        System.out.println(this.pps.getPromotionPaths(true));
+        System.out.println(this.detector.getPromotionPaths(true));
     }
 
     @Test
     void promotionNoPath() {
         Assertions.assertFalse(test("rnbqkbnr/pppp1ppp/5p2/8/8/8/PPPPPP1P/RNBQKBNR w - - 0 1"));
-        System.out.println(this.pps.getPromotionPaths(true));
+        System.out.println(this.detector.getPromotionPaths(true));
     }
     @Test
     void promotionNoPathDueToCage() {
-        Assertions.assertFalse(test("rn2kbnr/pppp1ppp/5p2/8/8/8/PP1PPPPP/RNBQKBNR w - - 0 1"), (this.pps.getPromotionPaths(true).toString()));
-        System.out.println(this.pps.getPromotionPaths(true));
+        Assertions.assertFalse(test("rn2kbnr/pppp1ppp/5p2/8/8/8/PP1PPPPP/RNBQKBNR w - - 0 1"), (this.detector.getPromotionPaths(true).toString()));
+        System.out.println(this.detector.getPromotionPaths(true));
     }
 
     @Test
     void promotionPathDueToCaged() {
-        Assertions.assertTrue(test("1nbqkbnr/p1pp1ppp/1p3p2/8/8/8/PP1PPPPP/RNBQKBNR w - - 0 1"), (this.pps.getPromotionPaths(true).toString()));
-        System.out.println(this.pps.getPromotionPaths(true));
+        Assertions.assertTrue(test("1nbqkbnr/p1pp1ppp/1p3p2/8/8/8/PP1PPPPP/RNBQKBNR w - - 0 1"), (this.detector.getPromotionPaths(true).toString()));
+        System.out.println(this.detector.getPromotionPaths(true));
     }
 
     @Test
     void promotionNoPathDueToCagedOnOtherSide() {
-        Assertions.assertFalse(test("rnbqkbn1/p1pppppp/p7/8/8/8/PP1PPPPP/RNBQKBNR w - - 0 1"), (this.pps.getPromotionPaths(true).toString()));
-        System.out.println(this.pps.getPromotionPaths(true));
+        Assertions.assertFalse(test("rnbqkbn1/p1pppppp/p7/8/8/8/PP1PPPPP/RNBQKBNR w - - 0 1"), (this.detector.getPromotionPaths(true).toString()));
+        System.out.println(this.detector.getPromotionPaths(true));
     }
     @Test
     void promotionWithPath() {
         Assertions.assertTrue(test("rnb1kb1r/pppp1ppp/5p2/8/8/8/PP1PPPPP/RNBQKBNR w - - 0 1"));
-        System.out.println(this.pps.getPromotionPaths(true));
+        System.out.println(this.detector.getPromotionPaths(true));
     }
 
 
