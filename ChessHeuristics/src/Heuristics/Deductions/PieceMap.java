@@ -3,7 +3,6 @@ package Heuristics.Deductions;
 import Heuristics.*;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
-import StandardChess.StandardPieceFactory;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -209,7 +208,7 @@ public class PieceMap extends AbstractDeduction{
                         ? pieceName.substring(0, 1).toUpperCase()
                         : pieceName.substring(0, 1).toLowerCase();
                 //system.out.println("FINDING PATH" + pieceName);
-                if (this.pathFinderUtil.findPath(board, pieceName, pieceCode, origin, entry.getKey()).isEmpty()){
+                if (this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, origin, entry.getKey()).isEmpty()){
                     //system.out.println("or" + origin);
                     //system.out.println("t" + entry.getKey());
 
@@ -404,7 +403,7 @@ public class PieceMap extends AbstractDeduction{
                     : pieceName.substring(0, 1).toLowerCase();
             entry.getValue().keySet().forEach(origin -> {
 
-                if (this.pathFinderUtil.findPath(board, pieceName, pieceCode, origin, key).isEmpty()){
+                if (this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, origin, key).isEmpty()){
                     coordinatesToRemove.add(origin);
                 }
             });
@@ -434,7 +433,7 @@ public class PieceMap extends AbstractDeduction{
                                     && Coordinates.light(origin) != Coordinates.light(coordinate)){
                                 return false;
                             }
-                            Path path = this.pathFinderUtil.findPath(board, pieceName, pieceCode, origin, coordinate);
+                            Path path = this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, origin, coordinate);
                             if (path.isEmpty()) {
                                 return false;
                             }
@@ -467,7 +466,7 @@ public class PieceMap extends AbstractDeduction{
         Map<Coordinate, Path> candidatePaths = new TreeMap<>();
         Path pieces = new Path();
         if (cage) {
-            this.detector.getCaged().put(start, this.pathFinderUtil.findPath(board, pieceName, pieceCode, start, Coordinates.NULL_COORDINATE).isEmpty());
+            this.detector.getCaged().put(start, this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, start, Coordinates.NULL_COORDINATE).isEmpty());
         } else {
             for (Coordinate target : candidatePieces) {
 
@@ -479,7 +478,7 @@ public class PieceMap extends AbstractDeduction{
                 if (pieceName.equals("bishop") && Coordinates.light(start) != Coordinates.light(target)) {
                     continue;
                 }
-                Path foundPath = this.pathFinderUtil.findPath(board, pieceName, pieceCode, start, target);
+                Path foundPath = this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, start, target);
                 if (!foundPath.isEmpty()) {
                     candidatePaths.put(target, foundPath);
                     pieces.add(target);
@@ -551,9 +550,9 @@ public class PieceMap extends AbstractDeduction{
                               Coordinate target, boolean white) {
 
         if (white) {
-            return !this.detector.getKingMovement(true) && this.pathFinderUtil.findPath(board, pieceName, pieceCode, start, target, kingCollisionWhite).isEmpty();
+            return !this.detector.getKingMovement(true) && this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, start, target, kingCollisionWhite).isEmpty();
         } else {
-            return !this.detector.getKingMovement(false) && this.pathFinderUtil.findPath(board, pieceName, pieceCode, start, target, kingCollisionBlack).isEmpty();
+            return !this.detector.getKingMovement(false) && this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, start, target, kingCollisionBlack).isEmpty();
         }
     }
 

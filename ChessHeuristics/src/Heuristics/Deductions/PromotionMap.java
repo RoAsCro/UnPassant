@@ -568,70 +568,74 @@ public class PromotionMap extends AbstractDeduction {
                       BoardInterface board,
                       List<Path> forbiddenWhitePaths, List<Path> forbiddenBlackPaths,
                       Coordinate target) {
-
-        Path shortest = Pathfinder.findShortestPawnPath(
-                StandardPieceFactory.getInstance().getPiece(origin.getY() == 1 || origin.getY() == 0 ? "P" : "p"),
-                origin,
-                (b, c) -> target.equals(c),
-                board,
-                p -> {
-                    return true;
-//                        Map<Coordinate, Path> map = coordinate.getY() == 1
-//                                ? this.pawnMap.getSinglePath("white")
-//                                : this.pawnMap.getSinglePath("black");
-//                        return map.values().stream()
-//                                .noneMatch(path -> Pathfinder.pathsExclusive(p, path));
-
-                },
-                (p1, p2) -> {
-                    //system.out.println(
-//                                p1 + " vs " + p2
-//                        );
-                    List<Path> forbiddenPaths = origin.getY() == 1 || origin.getY() == 7
-                            ? forbiddenBlackPaths
-                            : forbiddenWhitePaths;
-
-                    boolean p1NotExclusive;
-                    if (p1.isEmpty()) {
-                        p1NotExclusive = true;
-                    } else {
-                        p1NotExclusive = forbiddenPaths
-                                .stream()
-                                .noneMatch(path ->
-                                        // What is commented out below may greatly affect performance
-                                        // now that it is commented out - however, it allows theoretical collision
-                                        // Before reinstating, create new checks
-//                                        p1.contains(entry.getKey()) &&
-                                        Pathfinder.pathsExclusive(p1, path));
-                    }
-                    boolean p2NotExclusive = forbiddenPaths
-                            .stream()
-                            .noneMatch(path ->
-                                    // See above before deleting
-//                                    (p2.contains(entry.getKey()) || entry.getValue().get(0).contains(p2.getLast())) &&
-                                    Pathfinder.pathsExclusive(p2, path));
-                    if (!p1NotExclusive && !p2NotExclusive) {
-                        return new Path();
-                    }
-                    if (!p1NotExclusive) {
-                        return p2;
-                    }
-                    if (!p2NotExclusive) {
-//                            //system.out.println("p2 exclusive");
-                        return p1;
-                    }
-
-
-                    if (!p1.isEmpty()) {
-                        int p1Deviation = CombinedPawnMap.PATH_DEVIATION.apply(p1);
-                        int p2Deviation = CombinedPawnMap.PATH_DEVIATION.apply(p2);
-                        if (p1Deviation < p2Deviation) {
-                            return p1;
-                        }
-                    }
-//                        //system.out.println("both not exclusive");
-                    return p2;
-                });
+        Path shortest = new PiecePathFinderUtil(this.detector).findShortestPawnPath(
+                board, origin, 0, (b, c) -> target.equals(c),
+                origin.getY() == 1 || origin.getY() == 0, false, origin.getY() == 1 || origin.getY() == 7
+                        ? forbiddenBlackPaths
+                        : forbiddenWhitePaths);
+//                Pathfinder.findShortestPawnPath(
+//                StandardPieceFactory.getInstance().getPiece(origin.getY() == 1 || origin.getY() == 0 ? "P" : "p"),
+//                origin,
+//                (b, c) -> target.equals(c),
+//                board,
+//                p -> {
+//                    return true;
+////                        Map<Coordinate, Path> map = coordinate.getY() == 1
+////                                ? this.pawnMap.getSinglePath("white")
+////                                : this.pawnMap.getSinglePath("black");
+////                        return map.values().stream()
+////                                .noneMatch(path -> Pathfinder.pathsExclusive(p, path));
+//
+//                },
+//                (p1, p2) -> {
+//                    //system.out.println(
+////                                p1 + " vs " + p2
+////                        );
+//                    List<Path> forbiddenPaths = origin.getY() == 1 || origin.getY() == 7
+//                            ? forbiddenBlackPaths
+//                            : forbiddenWhitePaths;
+//
+//                    boolean p1NotExclusive;
+//                    if (p1.isEmpty()) {
+//                        p1NotExclusive = true;
+//                    } else {
+//                        p1NotExclusive = forbiddenPaths
+//                                .stream()
+//                                .noneMatch(path ->
+//                                        // What is commented out below may greatly affect performance
+//                                        // now that it is commented out - however, it allows theoretical collision
+//                                        // Before reinstating, create new checks
+////                                        p1.contains(entry.getKey()) &&
+//                                        Pathfinder.pathsExclusive(p1, path));
+//                    }
+//                    boolean p2NotExclusive = forbiddenPaths
+//                            .stream()
+//                            .noneMatch(path ->
+//                                    // See above before deleting
+////                                    (p2.contains(entry.getKey()) || entry.getValue().get(0).contains(p2.getLast())) &&
+//                                    Pathfinder.pathsExclusive(p2, path));
+//                    if (!p1NotExclusive && !p2NotExclusive) {
+//                        return new Path();
+//                    }
+//                    if (!p1NotExclusive) {
+//                        return p2;
+//                    }
+//                    if (!p2NotExclusive) {
+////                            //system.out.println("p2 exclusive");
+//                        return p1;
+//                    }
+//
+//
+//                    if (!p1.isEmpty()) {
+//                        int p1Deviation = CombinedPawnMap.PATH_DEVIATION.apply(p1);
+//                        int p2Deviation = CombinedPawnMap.PATH_DEVIATION.apply(p2);
+//                        if (p1Deviation < p2Deviation) {
+//                            return p1;
+//                        }
+//                    }
+////                        //system.out.println("both not exclusive");
+//                    return p2;
+//                });
         if (!shortest.isEmpty()) {
             boolean white = origin.getY() == FINAL_RANK_Y;
             Path cagedCaptures = this.detector.getCagedCaptures(white);
@@ -646,7 +650,7 @@ public class PromotionMap extends AbstractDeduction {
 
 
             this.goalOrigins.putIfAbsent(origin, new HashMap<>());
-            this.goalOrigins.get(origin).put(target, CombinedPawnMap.PATH_DEVIATION.apply(shortest));
+            this.goalOrigins.get(origin).put(target, PiecePathFinderUtil.PATH_DEVIATION.apply(shortest));
         }
 
     }
@@ -675,7 +679,7 @@ public class PromotionMap extends AbstractDeduction {
         for (Coordinate checkedCoord : forChecking) {
             Path forRemoval = new Path();
             for (Coordinate rookLocation : cagedCaptures) {
-                if (!this.pathFinderUtil.findPath(board, "rook", white ? "r" : "R", rookLocation, checkedCoord).isEmpty()) {
+                if (!this.pathFinderUtil.findPiecePath(board, "rook", white ? "r" : "R", rookLocation, checkedCoord).isEmpty()) {
                     //system.out.println("Pathed succ");
                     forRemoval.add(rookLocation);
                     break;

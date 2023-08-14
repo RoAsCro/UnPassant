@@ -31,7 +31,7 @@ public abstract class AbstractDeduction implements Deduction {
             "king", 5, "bishop", 6, "knight", 7, "rook"
     );
 
-    protected final static Map<String, String> PIECE_CODES = Map.of(
+    public final static Map<String, String> PIECE_CODES = Map.of(
             "rook", "r", "knight", "n", "bishop", "b", "queen", "q",
             "king", "k"
     );

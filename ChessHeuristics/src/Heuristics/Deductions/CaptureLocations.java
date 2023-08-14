@@ -104,7 +104,7 @@ public class CaptureLocations extends AbstractDeduction {
             ofWhichRook.forEach(coordinate2 -> board.getBoardFacts().getCoordinates(white, "pawn")
                     .stream().filter(coordinate -> white ? (coordinate.getY() >= BLACK_PAWN_Y)  : (coordinate.getY() <= WHITE_PAWN_Y))
                     .forEach(coordinate -> {
-                        if (!this.pathFinderUtil.findPath(board, "rook", white ? "r" : "R", coordinate2, coordinate).isEmpty()) {
+                        if (!this.pathFinderUtil.findPiecePath(board, "rook", white ? "r" : "R", coordinate2, coordinate).isEmpty()) {
                             reachable.get(coordinate2.getX()).add(coordinate);
                         }
                     }));
@@ -178,7 +178,7 @@ public class CaptureLocations extends AbstractDeduction {
 //        System.out.println(singlePawns);
         int otherValue = singlePawns.values().stream()
                 .map(pathList -> pathList
-                        .stream().map(CombinedPawnMap.PATH_DEVIATION)
+                        .stream().map(PiecePathFinderUtil.PATH_DEVIATION)
                         .reduce((i, j) -> i < j ? i : j)
                         .orElse(0))
                 .reduce(0, Integer::sum);
