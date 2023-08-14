@@ -8,9 +8,6 @@ public class PawnMapWhite extends PawnMap{
     public PawnMapWhite(PawnMap pawnMap) {
         super(pawnMap);
     }
-    public PawnMapWhite(PawnNumber pawnNumber, PieceNumber pieceNumber) {
-        super(true, pawnNumber, pieceNumber);
-    }
     public PawnMapWhite() {
         super(true);
     }

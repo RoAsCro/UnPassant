@@ -16,16 +16,10 @@ import java.util.Map;
 import static Heuristics.Deductions.PiecePathFinderUtil.PATH_DEVIATION;
 
 public class PromotedPawnSquares extends AbstractDeduction{
-    private CombinedPawnMap combinedPawnMap;
     private List<Path> whitePaths = new LinkedList<>();
     private List<Path> blackPaths = new LinkedList<>();
     private boolean promotionMapInUse = false;
-    public PromotedPawnSquares(PieceNumber pieceNumber, PieceMap pieceMap, PromotionMap promotionMap, CaptureLocations cl, CombinedPawnMap combinedPawnMap) {
-        this.combinedPawnMap = combinedPawnMap;
-    }
-
-    public PromotedPawnSquares() {
-    }
+    public PromotedPawnSquares() {}
 
     @Override
     public List<Observation> getObservations() {

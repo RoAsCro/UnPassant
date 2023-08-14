@@ -38,7 +38,6 @@ public class PawnMapTest {
     @Test
     void testPawnMapsPawnPositions() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/7p/P6p/P6p/P6p/P6p/P7/4K3 w - - 0 1"));
-        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         this.testImpossibleStateDetector.testState(board);
         System.out.println(this.pawnMapWhite.getPawnOrigins());
         this.pawnMapWhite.getPawnOrigins().entrySet().stream().forEach(entry ->{
@@ -58,7 +57,6 @@ public class PawnMapTest {
     void testPawnMapsTwo() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("r3k2r/p2p4/1pp5/2p5/2P5/1PP5/P2P4/4K3 w kq - 0 1"));
 //        board = new BoardInterface(BoardBuilder.buildBoard("r3k2r/p7/1pp5/2p5/2P5/1PP5/P7/4K3 w kq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         this.testImpossibleStateDetector.testState(board);
         System.out.println(this.pawnMapWhite.getPawnOrigins());
         Assertions.assertEquals(1, this.pawnMapWhite.getPawnOrigins().get(new Coordinate(2, 3)).size());
@@ -74,7 +72,6 @@ public class PawnMapTest {
     @Test
     void testPawnMapsThree() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("4k3/5p2/p2pp3/1p6/1p6/1PPPP3/2P2PPP/4K3 w - - 0 1"));
-        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         this.testImpossibleStateDetector.testState(board);
         System.out.println(this.pawnMapWhite.getPawnOrigins());
         Assertions.assertEquals(1, this.pawnMapWhite.getPawnOrigins().get(new Coordinate(1, 2)).size());
@@ -275,54 +272,8 @@ public class PawnMapTest {
         //NOT A TEST
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard("rn2k3/ppp3pp/3p4/8/P7/1P1P4/P2P1PPP/RNBQKBNR w KQq - 0 1"));
 //        board = new BoardInterface(BoardBuilder.buildBoard("r3k2r/p7/1pp5/2p5/2P5/1PP5/P7/4K3 w kq - 0 1"));
-        PawnMapWhite map = new PawnMapWhite(new PawnNumber(), new PieceNumber());
         this.testImpossibleStateDetector.testState(board);
         System.out.println(this.pawnMapWhite.getPawnOrigins());
-//        System.out.println(this.pawnMapWhite.getPawnOrigins());
-//        Map<Coordinate, Path> mape = new HashMap<>();
-//        mape.putAll(this.pawnMapWhite.getPawnOrigins());
-//        mape.clear();
-//        System.out.println(this.pawnMapWhite.getPawnOrigins());
-//        System.out.println(this.pawnMapWhite.capturedPieces());
-//        System.out.println(this.pawnMapWhite.getCaptureSet());
-
-
-
-////        System.out.println(this.pawnMapWhite.getPawnOrigins().get(new Coordinate(1, 2)).hashCode());
-////        System.out.println(this.pawnMapWhite.getPawnOrigins().get(new Coordinate(2, 2)).equals(this.pawnMapWhite.getPawnOrigins().get(new Coordinate(1, 2))));
-//
-//        PawnMapWhite map2 = new PawnMapWhite(new PawnNumber(), new PieceNumber());
-//        map2.deduce(board);
-//
-//
-//
-//        
-//        this.testImpossibleStateDetector.testState(board);
-//        System.out.println(this.pawnMapBlack.getPawnOrigins());
-////        System.out.println(this.pawnMapWhite.getMaxCaptures(new Coordinate(2, 3)));
-//
-//        System.out.println(this.pawnMapWhite.getCaptureSet());
-//        CombinedPawnMap combinedPawnMap = new CombinedPawnMap(map, this.pawnMapBlack);
-//        combinedPawnthis.testImpossibleStateDetector.testState(board);
-//        System.out.println(combinedPawnthis.pawnMapWhite.getWhitePaths());
-////        combinedPawnthis.pawnMapWhite.getWhitePaths().entrySet().stream().forEach(entry -> {
-////            entry.getValue().stream().reduce((path, path2) ->
-////                    path.stream()
-////                            .reduce(path.get(0), ((coordinate, coordinate2) -> {coordinate.})))
-////        });
-//        System.out.println(combinedPawnthis.pawnMapWhite.captures("white"));
-//        System.out.println(combinedPawnthis.pawnMapWhite.captures("black"));
-//        System.out.println(this.pawnMapWhite.getPawnOrigins());
-//        System.out.println(this.pawnMapBlack.getPawnOrigins());
-//        System.out.println(this.pawnMapWhite.getOriginFree());
-//        System.out.println(this.pawnMapBlack.getOriginFree());
-//        System.out.println(this.pawnMapWhite.capturedPieces());
-//        System.out.println(this.pawnMapBlack.capturedPieces());
-//        System.out.println(this.pawnMapWhite.getCaptureSet());
-//        System.out.println(combinedPawnthis.pawnMapWhite.getSinglePath("white", new Coordinate(0, 4)));
-
-
-
     }
 
 }

@@ -29,11 +29,6 @@ public class CombinedPawnMap extends AbstractDeduction {
         this.black = black;
         this.white = white;
     }
-
-    public CombinedPawnMap(PawnMap white, PawnMap black) {
-        this.black = black;
-        this.white = white;
-    }
     public CombinedPawnMap(){};
 
 //    /**

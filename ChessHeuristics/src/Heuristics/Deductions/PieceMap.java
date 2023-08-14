@@ -17,17 +17,6 @@ public class PieceMap extends AbstractDeduction{
     Predicate<Path> kingCollisionWhite = path -> !path.getLast().equals(Coordinates.WHITE_KING);
     Predicate<Path> kingCollisionBlack = path -> !path.getLast().equals(Coordinates.BLACK_KING);
 
-
-    public PieceMap(CombinedPawnMap pawnMap) {
-        this.promotedPieceMap = new TreeMap<>();
-        for (int y  = 0 ; y < 8 ; y = y + 7) {
-            for (int x = 0; x < 8; x++) {
-                this.promotedPieceMap.put(new Coordinate(x, y), new Path());
-            }
-        }
-
-    }
-
     public PieceMap() {
         this.promotedPieceMap = new TreeMap<>();
         for (int y  = 0 ; y < 8 ; y = y + 7) {

@@ -42,7 +42,7 @@ public class StateDetectorFactory {
         PieceMap pm = new PieceMap();
         CaptureLocations cl = new CaptureLocations();
         PromotionMap prm = new PromotionMap();
-        PromotedPawnSquares pps = new PromotedPawnSquares(pieceNumber, pm, prm, cl, cpm);
+        PromotedPawnSquares pps = new PromotedPawnSquares();
 //        Deduction[] deductions1 = new Deduction[]{};
         return new Deduction[]{pp,
                 pmw,

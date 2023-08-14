@@ -35,16 +35,6 @@ public class PromotionMap extends AbstractDeduction {
     private final Map<Coordinate, Map<Coordinate, Integer>> goalOrigins = new HashMap<>();
 //    private final Map<>
 
-
-
-    public PromotionMap(PieceMap pieceMap, CombinedPawnMap pawnMap, PawnMapWhite pawnMapWhite, PawnMapBlack pawnMapBlack, CaptureLocations captureLocations, PieceNumber pieceNumber, PawnNumber pawnNumber) {
-
-        this.promotionPawnMapWhite = new PromotionPawnMapWhite();
-        this.promotionPawnMapBlack = new PromotionPawnMapBlack();
-
-
-    }
-
     public PromotionMap() {
         this.promotionPawnMapWhite = new PromotionPawnMapWhite();
         this.promotionPawnMapBlack = new PromotionPawnMapBlack();

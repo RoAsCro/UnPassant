@@ -31,8 +31,8 @@ public class UnCastleTest {
         CombinedPawnMap cpm = new CombinedPawnMap();
         this.pm = new PieceMap();
         CaptureLocations cl = new CaptureLocations();
-        this.prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
-        this.pps = new PromotedPawnSquares(pieceNumber, pm, prm, cl, cpm);
+        this.prm = new PromotionMap();
+        this.pps = new PromotedPawnSquares();
         this.uc = new UnCastle(pmw, pmb, pm, prm, pps);
         this.detector = new TestImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,

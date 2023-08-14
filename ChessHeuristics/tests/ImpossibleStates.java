@@ -25,8 +25,8 @@ public class ImpossibleStates {
         CombinedPawnMap cpm = new CombinedPawnMap();
         this.pm = new PieceMap();
         CaptureLocations cl = new CaptureLocations();
-        PromotionMap prm = new PromotionMap(pm, cpm, pmw, pmb, cl, pieceNumber, pawnNumber);
-        PromotedPawnSquares pps = new PromotedPawnSquares(pieceNumber, pm, prm, cl, cpm);
+        PromotionMap prm = new PromotionMap();
+        PromotedPawnSquares pps = new PromotedPawnSquares();
         this.uc = new UnCastle(pmw, pmb, pm, prm, pps);
         this.detector = new TestImpossibleStateDetector(pawnNumber, pieceNumber,
                 pmw,

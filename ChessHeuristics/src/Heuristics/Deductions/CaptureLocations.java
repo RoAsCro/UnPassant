@@ -18,12 +18,6 @@ public class CaptureLocations extends AbstractDeduction {
     private static final BiPredicate<Coordinate, Coordinate> LIGHT_TEST =
             (c1, c2) -> c2.getX() != c1.getX() && Coordinates.light(c1);
 
-
-
-
-    public CaptureLocations(PawnMapWhite pawnMapWhite, PawnMapBlack pawnMapBlack, PieceMap pieceMap, CombinedPawnMap combinedPawnMap) {
-    }
-
     public CaptureLocations() {}
 
     @Override

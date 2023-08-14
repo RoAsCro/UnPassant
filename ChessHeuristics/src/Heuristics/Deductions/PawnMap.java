@@ -31,13 +31,6 @@ public abstract class PawnMap extends AbstractDeduction{
         this.capturedPieces = pawnMap.capturedPieces;
         this.sets = pawnMap.sets;
     }
-
-    public PawnMap(Boolean white, PawnNumber pawnNumber, PieceNumber pieceNumber) {
-        this.white = white;
-        this.observations.add(pawnNumber);
-        this.observations.add(pieceNumber);
-
-    }
     public PawnMap(Boolean white) {
         this.white = white;
     }
