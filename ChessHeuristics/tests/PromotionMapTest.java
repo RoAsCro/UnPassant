@@ -287,6 +287,7 @@ public class PromotionMapTest {
 //            Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(x, 7)), "" + x);
         }
         for (int x = 0 ; x < 8 ; x++) {
+            System.out.println(standardStateDetector.getPawnData().getPawnPaths(false).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList());
             Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(false).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(x, 0)), "" + x);
         }
 

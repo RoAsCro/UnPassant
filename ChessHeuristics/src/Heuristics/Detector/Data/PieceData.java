@@ -7,8 +7,7 @@ import java.util.Map;
 
 public interface PieceData {
     Map<Coordinate, Boolean> getCaged(); //Important
-    Map<Coordinate, Map<Coordinate, Path>> getStartLocations(); //Mostly important
-
+    Map<Coordinate, Map<Coordinate, Path>> getStartLocations();
 
     boolean getKingMovement(boolean white);
 

@@ -59,14 +59,16 @@ public class PieceMap extends AbstractDeduction{
         for (int y  = 0 ; y < 8 ; y = y + 7) {
             for (int x = 0; x < 8; x++) {
                 Coordinate origin = new Coordinate(x, y);
-                if (x == 1 || x == 6) {
+                if (x == Q_KNIGHT_X || x == K_KNIGHT_X) {
                     continue;
                 }
                 if (!this.detector.getPieceData().getCaged().get(origin)) {
-                    Set<Coordinate> pieceLocations = this.detector.getPieceData().getStartLocations().get(origin).keySet();
+                    Set<Coordinate> pieceLocations = this.detector.getPieceData()
+                            .getStartLocations().get(origin).keySet();
                     String name = STANDARD_STARTS.get(x);
                     if (name.equals("bishop")) {
-                        name = name + x;
+                        name = name +
+                                ((x + y) % 2 == 0 ? "d" : "l");
                     }
                     if (y == 0) {
                         name = name + "w";
@@ -96,8 +98,6 @@ public class PieceMap extends AbstractDeduction{
                 .filter((entry) -> entry.getValue().size() > pieceNumber.get(entry.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-
-
         findPromotionPaths(board, potentialPromotions);
 
         potentialPromotions.forEach((key, value) -> {
@@ -111,25 +111,35 @@ public class PieceMap extends AbstractDeduction{
         //system.out.println(this.promotionNumbers);
 
         Map<String, Path> certainPromotions = new TreeMap<>();
-        Path foundPieces = Path.of(this.detector.getPieceData().getStartLocations().values().stream().map(Map::keySet).flatMap(Collection::stream).toList());
+        Path foundPieces = Path.of(this.detector.getPieceData().getStartLocations().values()
+                .stream().map(Map::keySet).flatMap(Collection::stream).toList());
         Arrays.stream(new int[]{0, 2, 3}).forEach(x -> {
-            String pieceName = STANDARD_STARTS.get(x);
-            String bishopAddition = pieceName.charAt(0) == 'b' ? "b" : "";
-            Path promotions = Path.of(board.getBoardFacts().getCoordinates(true, pieceName)
-                    .stream()
-                    .filter(coordinate -> !foundPieces.contains(coordinate))
-                    .toList());
-            certainPromotions.put(pieceName + bishopAddition + "w", promotions);
-            promotions = Path.of(board.getBoardFacts().getCoordinates(false, pieceName)
-                    .stream()
-                    .filter(coordinate -> !foundPieces.contains(coordinate))
-                    .toList());
-            certainPromotions.put(pieceName + bishopAddition + "b", promotions);
+            boolean white = true;
+            for (int i = 0 ; i < 2 ; i++) {
+                String pieceName = STANDARD_STARTS.get(x);
+                int y = white ? FIRST_RANK_Y : FINAL_RANK_Y;
+                boolean bishopAddition = pieceName.charAt(0) == 'b';
+                Path promotions = Path.of(board.getBoardFacts().getCoordinates(white, pieceName)
+                        .stream()
+                        .filter(coordinate -> !foundPieces.contains(coordinate))
+                        .toList());
+                boolean finalWhite = white;
+                promotions.forEach(c -> {
+                    String name = pieceName +
+                            (bishopAddition ? ((c.getX() + c.getY()) % 2 == 0 ? "d" : "l") : "") +
+                            (finalWhite ? "w" : "b");
+                    if (!certainPromotions.containsKey(name)) {
+                        certainPromotions.put(name, new Path());
+                    }
+                    certainPromotions.get(name).add(c);
+
+                });
+                ;
+                white = false;
+            }
         });
-        //system.out.println("THISONE" + this.startPiecePairs);
-        //system.out.println("THISONE" + certainPromotions);
+
         findPromotionPaths(board, certainPromotions);
-        //system.out.println("THISONE" + certainPromotions);
         certainPromotions.forEach((key, value) -> {
             Map<Path, Integer> toPut = new HashMap<>();
             toPut.put(value, 0);
@@ -197,7 +207,9 @@ public class PieceMap extends AbstractDeduction{
         int numberOfPotentialPromotions = potentialPromotions.size();
         int accountedPromotions = potentialPromotions.entrySet().stream().filter(entry -> {
             if (entry.getValue() != null) {
-                int promotions = this.detector.getPromotionData().getPromotionNumbers().get(entry.getKey()).get(entry.getValue());
+                int promotions = this.detector.getPromotionData()
+                        .getPromotionNumbers()
+                        .get(entry.getKey()).get(entry.getValue());
                 int potentiallyPromoted = 0;
                 for (Coordinate coordinate : entry.getValue()) {
                     this.detector.getPromotionData().getPromotedPieceMap().values().stream().flatMap(Path::stream).anyMatch(c -> c.equals(coordinate));

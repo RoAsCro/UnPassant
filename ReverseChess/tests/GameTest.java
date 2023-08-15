@@ -1,4 +1,4 @@
-import Game.Game;
+import Games.Game;
 import StandardChess.Coordinate;
 import StandardChess.NullPiece;
 import StandardChess.StandardPieceFactory;

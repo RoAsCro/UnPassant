@@ -13,19 +13,21 @@ import static Heuristics.Detector.StandardStateDetector.PATH_DEVIATION;
 public class StandardPawnData implements PawnData {
     private static final int WHITE = 0;
     private static final int BLACK = 1;
-    private Map<Coordinate, Boolean>[] originFree = new Map[]{new TreeMap<Coordinate, Boolean>(), new TreeMap<Coordinate, Boolean>()};
-    private Map<Coordinate, List<Path>>[] pawnPaths = new Map[]{new TreeMap<Coordinate, List<Path>>(), new TreeMap<Coordinate, List<Path>>()};
+    private final List<Map<Coordinate, Boolean>> originFree
+            = List.of(new TreeMap<Coordinate, Boolean>(), new TreeMap<Coordinate, Boolean>());
+    private final List<Map<Coordinate, List<Path>>> pawnPaths
+            = List.of(new TreeMap<Coordinate, List<Path>>(), new TreeMap<Coordinate, List<Path>>());
 
     public StandardPawnData() {
         for (int i = 0; i < 8 ; i++ ) {
-            originFree[WHITE].put(new Coordinate(i, 1), true);
-            originFree[BLACK].put(new Coordinate(i, 6), true);
+            originFree.get(WHITE).put(new Coordinate(i, 1), true);
+            originFree.get(BLACK).put(new Coordinate(i, 6), true);
         }
     }
 
     @Override
     public Map<Coordinate, List<Path>> getPawnPaths(boolean white) {
-        return pawnPaths[white ? WHITE : BLACK];
+        return pawnPaths.get(white ? WHITE : BLACK);
     }
 
     @Override
@@ -50,6 +52,6 @@ public class StandardPawnData implements PawnData {
 
     @Override
     public Map<Coordinate, Boolean> getOriginFree(boolean white) {
-        return originFree[white ? WHITE : BLACK];
+        return originFree.get(white ? WHITE : BLACK);
     }
 }
