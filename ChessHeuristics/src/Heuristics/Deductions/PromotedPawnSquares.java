@@ -5,10 +5,10 @@ import Heuristics.Path;
 import StandardChess.Coordinate;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static Heuristics.Deductions.PiecePathFinderUtil.PATH_DEVIATION;
-import static Heuristics.HeuristicsUtil.FINAL_RANK_Y;
-import static Heuristics.HeuristicsUtil.FIRST_RANK_Y;
+import static Heuristics.HeuristicsUtil.*;
 
 public class PromotedPawnSquares extends AbstractDeduction{
     public PromotedPawnSquares() {
@@ -57,10 +57,12 @@ public class PromotedPawnSquares extends AbstractDeduction{
     }
 
     private Path findEmptyOrigins(boolean white) {
-        Path promotedPawns = this.detector.getPromotedPawns(white);
-        return Path.of(promotedPawns.stream().filter(c -> (this.detector.getPawnOrigins(white))
-                    .values()
-                    .stream().flatMap(Path::stream)
+        Path promotedPawns = Path.of(this.detector.getnonPawnCaptures(white)
+                .stream().filter(c -> c.getY() == (white ? WHITE_PAWN_Y : BLACK_PAWN_Y))
+                .collect(Collectors.toList()));
+        return Path.of(promotedPawns.stream().filter(c -> (this.detector.getPawnPaths(white))
+                    .values().stream()
+                    .flatMap(l -> l.stream().map(LinkedList::getFirst))
                     .noneMatch(c::equals))
                 .toList());
     }

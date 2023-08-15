@@ -44,37 +44,50 @@ public interface StateDetector {
 
     //Promotion data
     Map<String, Map<Path, Integer>> getPromotionNumbers();
-    Path getCagedCaptures(boolean white); // CL and ProMap - part of the rollup - This is essentially innaccessible taken rooks
+    Map<Coordinate, Path> getPromotedPieceMap();
+
 
 
     //Piece mapping data
-    Map<Coordinate, Path> getPromotedPieceMap();
     Map<Coordinate, Boolean> getCaged(); //Important
     Map<Coordinate, Map<Coordinate, Path>> getStartLocations(); //Mostly important
 
 
     // Pawn Data
     Map<Coordinate, Path> getPawnOrigins(boolean white); // Change instead to references to pawn paths
+
+
+
+    // Capture Data
+    Path getnonPawnCaptures(boolean white); // CL and ProMap - part of the rollup - This is essentially innaccessible taken rooks
     void setPawnsCapturedByPawns(boolean white, int pawnsCapturedByPawns);
     int getPawnsCapturedByPawns(boolean white);    //This and the above: CL and PPS - Roll this into a single dataset with
-                                                   //Pawntakeablecaptures and additionalcaptures - a set of impossibly taken pieces?
-    Path getPromotedPawns(boolean white);
-    int minimumPawnCaptures(boolean white); //Important
-    int pawnTakeablePieces(boolean white); //Important
-    void reducePawnTakeablePieces(boolean white, int subtrahend); //Important
+    //Pawntakeablecaptures and additionalcaptures - a set of impossibly taken pieces?
+
+
+    // Pawn Data
     Map<Coordinate, List<Path>> getPawnPaths(boolean white); //Important
 
 
+
+    int minimumPawnCaptures(boolean white); //Important
+
+
+
+    // TODO Deprecate
     Map<Coordinate, Path> getSinglePawnPaths(boolean white); //Pawns with one origin and one possible path to that origin
                                                             //Maybe there's a shortcut here using capture numbers?
-
-    Map<Coordinate, Integer> getCaptureSet(boolean white); //Used by CP and PM + PromotionPM - can be changed to a public method
-    int getCapturedPieces(boolean white); //Used by CPM and PM
-    void setCapturedPieces(boolean white, int capturedPieces); //Used by CPM and PM
-    int getMaxCaptures(boolean white, Coordinate coordinate); // CPM
-
-
+    int pawnTakeablePieces(boolean white);
+    void reducePawnTakeablePieces(boolean white, int subtrahend);
     //DEPRECATED
+    @Deprecated
+    Map<Coordinate, Integer> getCaptureSet(boolean white); //Used by CP and PM + PromotionPM - can be changed to a public method
+    @Deprecated
+    int getCapturedPieces(boolean white); //Used by CPM and PM
+    @Deprecated
+    void setCapturedPieces(boolean white, int capturedPieces); //Used by CPM and PM
+    @Deprecated
+    int getMaxCaptures(boolean white, Coordinate coordinate); // CPM
     @Deprecated
     List<Path> getPromotionPaths(boolean white);
     @Deprecated
@@ -83,7 +96,10 @@ public interface StateDetector {
     int capturedPieces(boolean white);
     @Deprecated
     public PieceNumber getPieceNumber();
+    @Deprecated
     void update(); //Get rid of when combining Pawn maps
+    @Deprecated
+    Path getPromotedPawns(boolean white);
 
 
 

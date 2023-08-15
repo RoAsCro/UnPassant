@@ -10,8 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class CaptureLocationTest {
-    PawnMap pawnMapWhite;
-    PawnMap pawnMapBlack;
+//    PawnMap pawnMapWhite;
+//    PawnMap pawnMapBlack;
     CombinedPawnMap combinedPawnMap;
     PieceMap pieceMap;
     StandardStateDetector standardStateDetector;
@@ -21,13 +21,13 @@ public class CaptureLocationTest {
     void setup() {
         PawnNumber pawnNumber = new PawnNumber();
         PieceNumber pieceNumber = new PieceNumber();
-        pawnMapWhite = new PawnMap(true);
-        pawnMapBlack = new PawnMap(false);
+//        pawnMapWhite = new PawnMap(true);
+//        pawnMapBlack = new PawnMap(false);
         combinedPawnMap = new CombinedPawnMap();
         pieceMap = new PieceMap();
         captureLocations = new CaptureLocations();
         this.standardStateDetector = new StandardStateDetector(pawnNumber, pieceNumber,
-                pawnMapWhite, pawnMapBlack, combinedPawnMap, pieceMap, captureLocations);
+                combinedPawnMap, pieceMap, captureLocations);
 
     }
 
@@ -206,7 +206,7 @@ public class CaptureLocationTest {
         //system.out.println(pawnMapWhite.getPawnOrigins());
         //system.out.println(combinedPawnMap.getWhitePaths());
         Assertions.assertEquals(0, standardStateDetector.getPawnOrigins(true).get(new Coordinate(5, 2)).size());
-        Assertions.assertFalse(pawnMapWhite.getState());
+//        Assertions.assertFalse(pawnMapWhite.getState());
 
 
     }
@@ -222,7 +222,7 @@ public class CaptureLocationTest {
         //system.out.println(pawnMapWhite.getPawnOrigins());
         //system.out.println(combinedPawnMap.getWhitePaths());
         Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(true).get(new Coordinate(5, 2)).size());
-        Assertions.assertTrue(pawnMapWhite.getState());
+//        Assertions.assertTrue(pawnMapWhite.getState());
 
 
     }
@@ -238,7 +238,7 @@ public class CaptureLocationTest {
         //system.out.println(pawnMapWhite.getPawnOrigins());
         //system.out.println(combinedPawnMap.getWhitePaths());
         Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(true).get(new Coordinate(5, 3)).size());
-        Assertions.assertTrue(pawnMapWhite.getState());
+//        Assertions.assertTrue(pawnMapWhite.getState());
 
 
     }
@@ -263,7 +263,6 @@ public class CaptureLocationTest {
 
         
 //        this.pieceMap.deduce(boardInterface);
-        this.pawnMapWhite.deduce(boardInterface);
 
         this.standardStateDetector.testState(boardInterface);
 

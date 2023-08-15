@@ -292,4 +292,6 @@ public class PawnMap extends AbstractDeduction{
                 .toList()
                 .isEmpty();
     }
+
+
 }

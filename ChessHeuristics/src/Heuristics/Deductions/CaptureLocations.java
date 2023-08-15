@@ -9,15 +9,16 @@ import StandardChess.Coordinates;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static Heuristics.HeuristicsUtil.*;
 
 public class CaptureLocations extends AbstractDeduction {
     private PiecePathFinderUtil pathFinderUtil;
     private static final BiPredicate<Coordinate, Coordinate> DARK_TEST =
-            (c1, c2) -> c2.getX() != c1.getX() && !Coordinates.light(c1);
+            (c1, c2) -> (c2.getX() != c1.getX() || c1.equals(c2) ) && !Coordinates.light(c1);
     private static final BiPredicate<Coordinate, Coordinate> LIGHT_TEST =
-            (c1, c2) -> c2.getX() != c1.getX() && Coordinates.light(c1);
+            (c1, c2) -> (c2.getX() != c1.getX() || c1.equals(c2))  && Coordinates.light(c1);
 
     public CaptureLocations() {
         super("Too many pawn captures - not all missing pieces are reachable.");
@@ -37,21 +38,22 @@ public class CaptureLocations extends AbstractDeduction {
                 whiteRemovals + blackRemovals != 0
         ) {
             //System.out.println("sdsds" + whiteRemovals + " " + blackRemovals);
-            this.detector.reducePawnTakeablePieces(true, whiteRemovals);
-            this.detector.reducePawnTakeablePieces(false, blackRemovals);
+//            this.detector.reducePawnTakeablePieces(true, whiteRemovals);
+//            this.detector.reducePawnTakeablePieces(false, blackRemovals);
             this.detector.reTest(board);
         }
 
-        this.detector.getPromotedPawns(true).addAll(pawnCaptureLocations(true, board));
-        this.detector.getPromotedPawns(false).addAll(pawnCaptureLocations(false, board));
+        this.detector.getnonPawnCaptures(true).addAll(pawnCaptureLocations(true, board));
+        this.detector.getnonPawnCaptures(false).addAll(pawnCaptureLocations(false, board));
         //System.out.println(promotedBlackPawns);
         return false ;
     }
 
     private int reductions(BoardInterface board, boolean white) {
+        int y = white ? FINAL_RANK_Y : FIRST_RANK_Y;
         int capturesToRemove = 0;
         Path ofWhichCaged = Path.of(this.detector.getCaged().entrySet().stream()
-                .filter(entry -> entry.getKey().getY() == (white ? FINAL_RANK_Y : FIRST_RANK_Y))
+                .filter(entry -> entry.getKey().getY() == y)
                 .filter(Map.Entry::getValue) //Is Caged
                 .filter(entry -> {
                     Map<Coordinate, Path> map = this.detector.getStartLocations().get(entry.getKey());
@@ -70,15 +72,24 @@ public class CaptureLocations extends AbstractDeduction {
                 .map(Map.Entry::getKey)
                 .toList());
         int ofWhichBishop = (int) ofWhichCaged.stream()
-                .filter(coordinate -> coordinate.getX() == K_BISHOP_X || coordinate.getX() == Q_BISHOP_X) // Is a bishop
+                .filter(coordinate -> {
+                    boolean bishop = coordinate.getX() == K_BISHOP_X || coordinate.getX() == Q_BISHOP_X;
+                    if (bishop) {
+                        this.detector.getnonPawnCaptures(white).add(coordinate);
+                    }
+                    return bishop;
+                }) // Is a bishop
                 .count();
 
         // Rooks are the only piece capable of being both caged and captured on the pawn rank
         Path ofWhichRook = Path.of(ofWhichCaged.stream()
-                .filter(coordinate -> coordinate.getX() == 0 || coordinate.getX() == 7) // Is a rook
+                .filter(coordinate -> coordinate.getX() == Q_ROOK_X || coordinate.getX() == K_ROOK_X) // Is a rook
                 .toList());
 
         int ofWhichQueen = ofWhichCaged.size() - ofWhichBishop - ofWhichRook.size();
+        if (ofWhichQueen > 0) {
+            this.detector.getnonPawnCaptures(white).add(new Coordinate(QUEEN_X, y));
+        }
 
         int inaccessibleTakenRooks = 0;
         // Check each rook can path to any opposing pawn
@@ -102,9 +113,18 @@ public class CaptureLocations extends AbstractDeduction {
             if (pawnCaptures(paths, white)) {
                 if (!predicates.isEmpty()) {
                     capturesToRemove += predicateIterate(white, predicates).size();
+                    Path.of(new Coordinate(Q_BISHOP_X, y), new Coordinate(K_BISHOP_X, y))
+                                    .forEach(c -> {
+                                        if (predicates.stream().anyMatch(p -> p.test(c, c))) {
+                                            this.detector.getnonPawnCaptures(white).add(c);
+                                        }
+                                    });
                 }
             }
         }
+//        if (this.detector.getnonPawnCaptures(white).size() != ofWhichQueen + ofWhichBishop + inaccessibleTakenRooks + capturesToRemove) {
+//            throw new RuntimeException();
+//        }
         return ofWhichQueen + ofWhichBishop + inaccessibleTakenRooks + capturesToRemove;
     }
 
@@ -138,7 +158,7 @@ public class CaptureLocations extends AbstractDeduction {
                 }
             }
             if (increase) {
-                this.detector.getCagedCaptures(white).add(coordinate);
+                this.detector.getnonPawnCaptures(white).add(coordinate);
             }
         }
         return innaccessibleTakenRooks;
@@ -196,12 +216,22 @@ public class CaptureLocations extends AbstractDeduction {
             // TODO decision on this
             // Without the commented out if statement, this can easily produce false negatives - watch out when game testing
 //            if (pawnCaptures(otherPlayerPaths, !white)) {
+
                 int y = white ? WHITE_PAWN_Y : BLACK_PAWN_Y;
-                for (int x = 0 ; x <= K_ROOK_X ; x++) {
+//            Path pawnOrigins = Path.of(Stream.iterate(0, i -> i + 1).limit(MAX_PAWNS).map(i -> new Coordinate(i, y)).toList());
+//            System.out.println("BBBB" + pawnOrigins);
+            Path pawnOrigins = Path.of(this.detector.getPawnPaths(white).values().stream()
+                    .flatMap(l -> l.stream().map(LinkedList::getFirst))
+                    .collect(Collectors.toSet()));
+            System.out.println(pawnOrigins);
+            System.out.println(this.detector.getPawnOrigins(white).values().stream().flatMap(Path::stream).toList());
+
+            for (int x = 0 ; x <= K_ROOK_X ; x++) {
                     Coordinate c = new Coordinate(x, y);
                     // If that origin has no pawn - should only be possible if there is a pawn missing
-                    if (this.detector.getPawnOrigins(white).values()
-                            .stream().flatMap(Path::stream).noneMatch(c::equals)) {
+                    if (pawnOrigins
+                            .stream().filter(c1 -> c1.getY() == y)
+                            .noneMatch(c::equals)) {
                         pawnPredicates.add((c1, c2) -> (c1.equals(c) && c2.equals(c)) || c1.getX() != c2.getX() && Math.abs(c2.getX() - c.getX()) <= unnaccountedCaptures);
                         missingPawns.add(c);
                     }
@@ -212,6 +242,7 @@ public class CaptureLocations extends AbstractDeduction {
                 if (Math.abs(pawnPredicates.size() - missingPawns.size()) >= pCBP) {
                     return new LinkedList<>();
                 }
+//                this.detector.getnonPawnCaptures(white)
                 this.detector.setPawnsCapturedByPawns(white, pCBP - Math.abs(pawnPredicates.size() - missingPawns.size()));
                 return missingPawns.stream().filter(c -> pawnPredicates.stream().anyMatch(p -> p.test(c, c))).toList();
 //            }
@@ -246,17 +277,25 @@ public class CaptureLocations extends AbstractDeduction {
 
         HashMap<Coordinate, List<Path>> returnMap = new HashMap<Coordinate, List<Path>>(
                 pathsInUse.entrySet().stream()
-                .filter(entry -> entry.getKey().getY() == (white ? WHITE_ESCAPE_Y : BLACK_ESCAPE_Y))
-                .filter(entry -> pathsInUse
+                .filter(entry -> entry.getKey().getY() == (white ? WHITE_ESCAPE_Y : BLACK_ESCAPE_Y)) //On ranks 2 or 5
+                .filter(entry -> pathsInUse //There is a pawn behind it
                         .containsKey(new Coordinate(entry.getKey().getX(), white ? WHITE_PAWN_Y : BLACK_PAWN_Y)))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
         );
-//        System.out.println(returnMap);
+
         returnMap.putAll(this.detector.getPawnPaths(white)
                 .entrySet()
                 .stream()
                 .filter(entry -> !returnMap.containsKey(entry.getKey()))
-                .filter(entry -> this.detector.getSinglePawnPaths(white).get(entry.getKey()) != null)
+                .filter(entry -> entry.getValue().size() == 1 && !(entry.getValue().get(0).size() == 1))
+                .filter(e -> {
+                    int deviation = PiecePathFinderUtil.PATH_DEVIATION.apply(e.getValue().get(0));
+                    return (
+//                            deviation >= getMaxCaptures(!white, e.getKey()) ||
+                            deviation >= Math.abs(e.getKey().getY() - e.getValue().get(0).getFirst().getY()) ||
+                                    deviation == 0);
+                } )
+//                .filter(entry -> this.detector.getSinglePawnPaths(white).get(entry.getKey()) != null)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
         return  returnMap; //Every path that's a single path;

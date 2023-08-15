@@ -154,7 +154,8 @@ public class CombinedPawnMap extends AbstractDeduction {
                 forRemoval.add(new Coordinate[]{path.getLast(), path.getFirst()});
             }
         });
-        forRemoval.forEach(coordinates -> this.detector.getPawnOrigins(white).get(coordinates[0]).remove(coordinates[1]));
+        forRemoval.forEach(coordinates -> (white ? this.whitePawnMap : this.blackPawnMap)
+                .getPawnOrigins().get(coordinates[0]).remove(coordinates[1]));
         updateP();
         return !forRemoval.isEmpty() || !newPaths.isEmpty();
     }
@@ -175,7 +176,8 @@ public class CombinedPawnMap extends AbstractDeduction {
     }
 
     private void makeMaps(BoardInterface board, boolean white) {
-        this.detector.getPawnOrigins(white).entrySet()
+        (white ? this.whitePawnMap : this.blackPawnMap)
+                .getPawnOrigins().entrySet()
                 .stream()
                 .forEach(entry -> {
                     List<Path> paths = new LinkedList<>();
@@ -200,7 +202,7 @@ public class CombinedPawnMap extends AbstractDeduction {
     }
 
     public static class PawnMap extends AbstractDeduction{
-
+        private Map<Coordinate, Path> pawnOrigins = new TreeMap<>();
         private final Map<Coordinate, Integer> captureSet = new TreeMap<>();
         private List<Set<Coordinate>> sets = new LinkedList<>();
         private int pieceNumbers = 0;
@@ -266,7 +268,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                             }
                             starts.add(new Coordinate(x, start));
                         }
-                        this.detector.getPawnOrigins(white).put(pawn, starts);
+                        pawnOrigins.put(pawn, starts);
                     }
                 });
             }
@@ -292,7 +294,7 @@ public class CombinedPawnMap extends AbstractDeduction {
 
         protected void updateCaptureSet() {
             int maxOffset = capturedPieces() -
-                    this.detector.getPawnOrigins(this.white).entrySet().stream()
+                    pawnOrigins.entrySet().stream()
                             .map(entry -> {
                                 int x = entry.getKey().getX();
                                 Coordinate coordinate = entry.getValue().stream()
@@ -322,7 +324,7 @@ public class CombinedPawnMap extends AbstractDeduction {
         }
         private void reduce() {
             this.sets = new LinkedList<>();
-            List<Coordinate> origins = this.detector.getPawnOrigins(this.white).entrySet().stream()
+            List<Coordinate> origins = pawnOrigins.entrySet().stream()
                     .flatMap(f -> f.getValue().stream())
                     .collect(Collectors.toSet())
                     .stream().toList();
@@ -331,7 +333,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 List<Coordinate> originsTwo = new LinkedList<>(origins);
                 boolean change = true;
                 while (change){
-                    captures(this.detector.getPawnOrigins(white));
+                    captures(pawnOrigins);
                     change = reduceIter(new HashSet<>(), originsTwo);
 
                 }
@@ -348,7 +350,7 @@ public class CombinedPawnMap extends AbstractDeduction {
             boolean change = false;
             if (!set.isEmpty()) {
                 AtomicBoolean supersets = new AtomicBoolean(false);
-                List<Coordinate> subsets = this.detector.getPawnOrigins(white).entrySet().stream()
+                List<Coordinate> subsets = pawnOrigins.entrySet().stream()
                         .filter(entry -> {
                             Path path = entry.getValue();
                             if (path.stream().anyMatch(set::contains)) {
@@ -370,7 +372,7 @@ public class CombinedPawnMap extends AbstractDeduction {
 
                     // Check the total number of captures
                     Map<Coordinate, Path> map = new TreeMap<>();
-                    subsets.forEach(coordinate -> map.put(coordinate, Path.of(this.detector.getPawnOrigins(white).get(coordinate))));
+                    subsets.forEach(coordinate -> map.put(coordinate, Path.of(pawnOrigins.get(coordinate))));
                     set.forEach(coordinate -> this.detector.getOriginFree(white).put(coordinate, false));
                     this.sets.add(set);
                     reduceIterHelperStart(map);
@@ -431,7 +433,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 removalMap.put(currentPawn, forRemoval);
             }
 
-            removalMap.forEach((key, value) -> this.detector.getPawnOrigins(white).get(key).removeAll(value));
+            removalMap.forEach((key, value) -> pawnOrigins.get(key).removeAll(value));
 
         }
 
@@ -473,7 +475,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          */
         private boolean removeCoords(Set<Coordinate> forRemoval, List<Coordinate> ignore) {
 
-            return !this.detector.getPawnOrigins(white).entrySet()
+            return !pawnOrigins.entrySet()
                     .stream()
                     .filter(entry -> !ignore.contains(entry.getKey()))
                     .filter(entry -> entry.getValue().removeAll(forRemoval))
@@ -489,6 +491,10 @@ public class CombinedPawnMap extends AbstractDeduction {
         public Map<Coordinate, Integer> getCaptureSet() {
             return this.captureSet;
         }
+        public Map<Coordinate, Path> getPawnOrigins() {
+            return this.pawnOrigins;
+        }
+
 
     }
 

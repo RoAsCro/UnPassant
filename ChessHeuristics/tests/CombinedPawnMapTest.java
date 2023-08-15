@@ -14,16 +14,16 @@ import org.junit.jupiter.api.Test;
 
 public class CombinedPawnMapTest {
 
-    PawnMap pawnMapWhite;
-    PawnMap pawnMapBlack;
+//    PawnMap pawnMapWhite;
+//    PawnMap pawnMapBlack;
     StandardStateDetector standardStateDetector;
     CombinedPawnMap combinedPawnMap;
     @BeforeEach
     void setup() {
-        this.pawnMapWhite = new PawnMap(true);
-        this.pawnMapBlack = new PawnMap(false);
+//        this.pawnMapWhite = new PawnMap(true);
+//        this.pawnMapBlack = new PawnMap(false);
         this.combinedPawnMap = new CombinedPawnMap();
-        standardStateDetector = new StandardStateDetector(new PawnNumber(), new PieceNumber(), pawnMapWhite, pawnMapBlack, this.combinedPawnMap);
+        standardStateDetector = new StandardStateDetector(new PawnNumber(), new PieceNumber(), this.combinedPawnMap);
     }
 
     @Test

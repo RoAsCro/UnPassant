@@ -94,10 +94,10 @@ public class UnCastle {
         boolean[] returnBooleans = new boolean[]{false, false};
         bishops.forEach(c -> {
             List<Coordinate> criticalCoords = List.of(new Coordinate(c.getX() + 1, Math.abs(c.getY() - 1)), new Coordinate(c.getX() - 1, Math.abs(c.getY() - 1)));
-            if (this.stateDetector.getPawnOrigins(true).keySet().containsAll(criticalCoords)) {
+            if (this.stateDetector.getPawnPaths(true).keySet().containsAll(criticalCoords)) {
                 returnBooleans[0] = true;
             }
-            if (this.stateDetector.getPawnOrigins(false).keySet().containsAll(criticalCoords)) {
+            if (this.stateDetector.getPawnPaths(false).keySet().containsAll(criticalCoords)) {
                 returnBooleans[1] = true;
 
             }

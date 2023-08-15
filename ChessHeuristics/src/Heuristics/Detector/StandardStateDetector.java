@@ -3,6 +3,7 @@ package Heuristics.Detector;
 import Heuristics.BoardInterface;
 import Heuristics.Deduction;
 import Heuristics.Deductions.UnCastle;
+import Heuristics.HeuristicsUtil;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
@@ -150,11 +151,20 @@ public class StandardStateDetector implements StateDetector {
     // Pawn Map Stuff
     @Override
     public int pawnTakeablePieces(boolean white) {
-        return this.piecesTakableByPawns[white ? WHITE : BLACK];
+        return MAX_PIECES - getnonPawnCaptures(white)
+                .stream().filter(c -> c.getY() != (white ? HeuristicsUtil.WHITE_PAWN_Y : HeuristicsUtil.BLACK_PAWN_Y))
+                .toList()
+                .size();
+//        return this.piecesTakableByPawns[white ? WHITE : BLACK];
     }
 
     @Override
     public void reducePawnTakeablePieces(boolean white, int subtrahend) {
+        if (subtrahend < 0) {
+            System.out.println("subtrahend");
+
+            System.out.println(subtrahend);
+        }
         this.piecesTakableByPawns[white ? WHITE : BLACK] -= subtrahend;
     }
 
@@ -176,7 +186,6 @@ public class StandardStateDetector implements StateDetector {
     public int getCapturedPieces(boolean white) {
         return capturedPieces[white ? WHITE : BLACK];
     }
-
     @Override
     public void setCapturedPieces(boolean white, int capturedPieces) {
         this.capturedPieces[white ? WHITE : BLACK] = capturedPieces;
@@ -262,7 +271,7 @@ public class StandardStateDetector implements StateDetector {
     }
 
     @Override
-    public Path getCagedCaptures(boolean white) {
+    public Path getnonPawnCaptures(boolean white) {
         return cagedCaptures[white ? WHITE : BLACK];
     }
 

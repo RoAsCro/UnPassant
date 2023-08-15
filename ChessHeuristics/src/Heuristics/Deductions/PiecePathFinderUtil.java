@@ -8,6 +8,7 @@ import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 import StandardChess.StandardPieceFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
@@ -40,7 +41,12 @@ public class PiecePathFinderUtil {
         int y = path.getLast().getY();
         if (y == WHITE_ESCAPE_Y || y == BLACK_ESCAPE_Y) {
             boolean white = y == WHITE_ESCAPE_Y;
-            Path toCheck = this.detector.getSinglePawnPaths(white).get(path.getLast());
+            Path toCheck = this.detector.getPawnPaths(white).entrySet()
+                    .stream().filter(e -> e.getKey().getY() == (white ? WHITE_ESCAPE_Y : BLACK_ESCAPE_Y))
+                    .filter(e -> e.getValue().size() == 1)
+                    .filter(e -> e.getValue().get(0).contains(path.getLast()))
+                    .map(e -> e.getValue().get(0))
+                    .findAny().orElse(null);
             Map<Coordinate, List<Path>> map = this.detector.getPawnPaths(white);
             return !(
                     map.containsKey(path.getLast())
@@ -189,7 +195,23 @@ public class PiecePathFinderUtil {
     }
 
 
-
+//    public Map<Coordinate, Path> singleOriginPawns(BoardInterface board, boolean white) {
+//        Map<Coordinate, List<Path>> checkedPlayerPaths = this.detector.getPawnPaths(white);
+//
+//        Map<Coordinate, List<Path>> opposingPlayerPaths = this.detector.getPawnPaths(!white);
+////        PiecePathFinderUtil pathFinderUtil = new PiecePathFinderUtil(this.detector);
+//        // Find every pawn of the opposing player with one origin and one possible path
+//        List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = new ArrayList<>(opposingPlayerPaths.entrySet()
+//                .stream()
+//                .filter(entry -> entry.getValue().size() == 1 && !(entry.getValue().get(0).size() == 1))
+//                .filter(entry ->
+//                        findAllPawnPath(board, entry.getValue().get(0).getFirst(), getMaxCaptures(!white, entry.getKey()),
+//                                        (b, c) -> c.equals(entry.getKey()), !white)
+//                                .size() == 1)
+//                .toList());
+//        singleOriginPawns.addAll(opposingPlayerPaths.entrySet()
+//                .stream().filter(entry ->entry.getValue().size() == 1 && entry.getValue().get(0).size() == 1).toList());
+//    }
 
 
 }
