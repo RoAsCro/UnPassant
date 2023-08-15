@@ -2,6 +2,7 @@ package Heuristics;
 
 import StandardChess.Coordinate;
 
+import java.util.LinkedList;
 import java.util.Map;
 
 public class StandardObserver {
@@ -33,7 +34,16 @@ public class StandardObserver {
                 : Map.copyOf(blackPieces);
     }
 
+    public int pieceNumbers(boolean white) {
+        return (white ? whitePieces : blackPieces)
+                .values().stream()
+                .map(LinkedList::size)
+                .reduce(Integer::sum)
+                .orElse(0);
+    }
 
-
+    public int pawnNumber(boolean white) {
+        return getCoordinates(white, "pawn").size();
+    }
 
 }

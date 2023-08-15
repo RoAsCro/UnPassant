@@ -15,6 +15,9 @@ import static Heuristics.HeuristicsUtil.FIRST_RANK_Y;
 
 public class PawnMap extends AbstractDeduction{
     private List<Set<Coordinate>> sets = new LinkedList<>();
+    private int pieceNumbers = 0;
+    private int opponentPieceNumbers = 0;
+
     protected int maxPieces = 16;
 
     protected boolean white;
@@ -26,6 +29,8 @@ public class PawnMap extends AbstractDeduction{
 
     @Override
     public boolean deduce(BoardInterface board) {
+        this.pieceNumbers = board.getBoardFacts().pieceNumbers(this.white);
+        this.opponentPieceNumbers = board.getBoardFacts().pieceNumbers(!this.white);
         rawMap(board, this.white);
         reduce();
         return false;
@@ -39,9 +44,7 @@ public class PawnMap extends AbstractDeduction{
      * @return the max number of pieces minus the number of pieces the opponent is missing
      */
     protected int capturedPieces() {
-        return this.detector.pawnTakeablePieces(this.white) - (this.white
-                ? this.detector.getPieceNumber().getBlackPieces()
-                : this.detector.getPieceNumber().getWhitePieces());
+        return this.detector.pawnTakeablePieces(this.white) - (this.opponentPieceNumbers);
     }
 
     /**

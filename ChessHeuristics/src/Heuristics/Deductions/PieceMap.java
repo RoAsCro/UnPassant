@@ -2,7 +2,7 @@ package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
 import Heuristics.Path;
-import Heuristics.StateDetector;
+import Heuristics.Detector.StateDetector;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 
@@ -326,9 +326,9 @@ public class PieceMap extends AbstractDeduction{
         // Does not account for the possibility that these pieces are promoted
         int minnimumCaptures = this.detector.minimumPawnCaptures(false);
 
-        boolean allPiecesTakenByPawnsW = minnimumCaptures != 0 && minnimumCaptures == this.detector.pawnTakeablePieces(true) - this.detector.getPieceNumber().getWhitePieces();
+        boolean allPiecesTakenByPawnsW = minnimumCaptures != 0 && minnimumCaptures == this.detector.pawnTakeablePieces(true) - board.getBoardFacts().pieceNumbers(true);
         minnimumCaptures = this.detector.minimumPawnCaptures(true);
-        boolean allPiecesTakenByPawnsB = minnimumCaptures != 0 && minnimumCaptures == this.detector.pawnTakeablePieces(false) - this.detector.getPieceNumber().getBlackPieces();
+        boolean allPiecesTakenByPawnsB = minnimumCaptures != 0 && minnimumCaptures == this.detector.pawnTakeablePieces(false) - board.getBoardFacts().pieceNumbers(false);
 
         // Check queen
         Coordinate currentQueen = new Coordinate(QUEEN_X, FIRST_RANK_Y);

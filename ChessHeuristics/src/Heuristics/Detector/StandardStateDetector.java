@@ -6,7 +6,6 @@ import Heuristics.Deductions.UnCastle;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
-import Heuristics.StateDetector;
 import StandardChess.Coordinate;
 
 import java.util.*;
@@ -96,12 +95,10 @@ public class StandardStateDetector implements StateDetector {
 
         this.pieceNumber.observe(board);
         if (board.inCheck(board.getTurn().equals("white") ? "black" : "white")) {
-//            System.out.println("Eh1");
             this.state = false;
             return false;
         }
         if (this.pieceNumber.getBlackPieces() > MAX_PIECES || this.pieceNumber.getWhitePieces() > MAX_PIECES) {
-//            System.out.println("Eh2");
             this.state = false;
 
             return false;
@@ -109,7 +106,6 @@ public class StandardStateDetector implements StateDetector {
 
         this.pawnNumber.observe(board);
         if (this.pawnNumber.getBlackPawns() > MAX_PAWNS || this.pawnNumber.getWhitePawns() > MAX_PAWNS) {
-//            System.out.println("Eh3");
             this.state = false;
 
             return false;
@@ -290,14 +286,12 @@ public class StandardStateDetector implements StateDetector {
         return promotedPieceMap;
     }
 
-
     @Override
     public int capturedPieces(boolean white) {
         return pawnTakeablePieces(white) - (white
                 ? getPieceNumber().getBlackPieces()
                 : getPieceNumber().getWhitePieces());
     }
-
 
     @Override
     public String toString() {

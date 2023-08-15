@@ -1,7 +1,7 @@
 package Heuristics.Deductions;
 
 import Heuristics.Path;
-import Heuristics.StateDetector;
+import Heuristics.Detector.StateDetector;
 import StandardChess.Coordinate;
 
 import java.util.Collection;
@@ -28,7 +28,7 @@ public class UnCastle {
         this.whiteData[0] = this.stateDetector.getKingMovement(true);
         this.whiteData[1] = this.stateDetector.getRookMovement(true, true);
         this.whiteData[2] = this.stateDetector.getRookMovement(true, false);
-        // Check rook posisitons
+
 
 //        System.out.println(this.promotionMap.getState());
         if (this.stateDetector.getState()) {
@@ -40,16 +40,17 @@ public class UnCastle {
             }
         }
         //System.out.println("---");
-
-        if (!this.blackData[0]) {
-            this.stateDetector.getPromotionPaths(true)
-                    .forEach(p -> checkPromotedPawns(true, p));
-        }
-        if (!this.whiteData[0]) {
-            this.stateDetector.getPromotionPaths(false)
-                    .forEach(p -> checkPromotedPawns(false, p));
-        }
-
+        //
+        //Promotion issue ciritcal region
+//        if (!this.blackData[0]) {
+//            this.stateDetector.getPromotionPaths(true)
+//                    .forEach(p -> checkPromotedPawns(true, p));
+//        }
+//        if (!this.whiteData[0]) {
+//            this.stateDetector.getPromotionPaths(false)
+//                    .forEach(p -> checkPromotedPawns(false, p));
+//        }
+        //
         if (!(this.blackData[0] && this.whiteData[0])) {
             boolean[] bishops = bishops();
             if (bishops[0]) {
@@ -66,8 +67,8 @@ public class UnCastle {
         if (this.whiteData[1] && this.whiteData[2]) {
             this.whiteData[0] = true;
         }
-        //System.out.println("LLL");
-        //System.out.println(blackData[0]);
+        System.out.println("LLL");
+        System.out.println(blackData[1]);
         this.stateDetector.setKingMovement(false, this.blackData[0]);
         this.stateDetector.setRookMovement(false, true, this.blackData[1]);
         this.stateDetector.setRookMovement(false, false, this.blackData[2]);
@@ -104,8 +105,12 @@ public class UnCastle {
         return returnBooleans;
     }
 
+    /**
+     * Checks if a pawn passes over a critical square when promoting
+     * @param white
+     * @param promotionPaths
+     */
     private void checkPromotedPawns(boolean white, Path promotionPaths) {
-        //System.out.println("??????????????");
         int y = white ? 6 : 1;
         int offSet = white ? 1 : -1;
         List<Coordinate> kingCoords = List.of(new Coordinate(3, y), new Coordinate(5, y), new Coordinate(4, y + offSet));
@@ -134,7 +139,7 @@ public class UnCastle {
         boolean[] data = !white ? this.whiteData : this.blackData;
         pawnPaths.entrySet().stream()
                 .filter(entry -> entry.getKey().getY() == 7  || entry.getKey().getY() == 0)
-                .filter(entry -> entry.getValue().size() == 1)
+//                .filter(entry -> entry.getValue().size() == 1)
                 .forEach(entry -> {
                     entry.getValue().stream().forEach(innerEntry -> {
                         if (innerEntry.stream().anyMatch(criticalCoords::contains)) {

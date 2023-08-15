@@ -1,5 +1,6 @@
 import Heuristics.BoardInterface;
 import Heuristics.Deductions.*;
+import Heuristics.Detector.StandardDetectorInterface;
 import Heuristics.Detector.StandardStateDetector;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
@@ -471,23 +472,34 @@ public class ImpossibleStates {
     @Test
     void r() {
 
-        System.out.println(test("r3k3/8/8/8/8/8/5PP1/6bK b q - 0 1"));
-        System.out.println(BoardBuilder.buildBoard("r3k3/8/8/8/8/8/5PP1/6bK b q - 0 1").canCastle("queen", "black"));
-        System.out.println(BoardBuilder.buildBoard("r3k3/8/8/8/8/8/5PP1/6bK b q - 0 1").getReader().toFEN());
+        System.out.println(test("r3kqR1/1p1ppp2/5BpP/6PN/4P2p/3Q1P2/2PK2pP/8 w - - 0 1"));
+        System.out.println(this.detector.getPromotionNumbers());
+        System.out.println(this.detector.getPromotedPieceMap());
+        System.out.println(this.detector.getPromotedPawns(false));
+        System.out.println(this.detector.getPromotionPaths(false));
+        System.out.println(new StandardDetectorInterface(detector).getPromotions(true));
+        System.out.println(this.detector.getRookMovement(false, true));
 
-        System.out.println(this.detector.getCaged());
+        System.out.println(this.detector.getPawnPaths(false));
+        System.out.println(this.detector.getPawnPaths(true));
+        System.out.println(this.detector.getPromotionPaths(false));
+
+        System.out.println(this.detector.getPromotionPaths(true));
+
 
 
     } @Test
     void r2() {
 
-        System.out.println(test("rn1qk1nr/p1pp1pp1/1p6/2b1p3/2B1P1P1/N1P3N1/P1PP1P1P/R2QK2R w KQkq - 0 1"));
+        System.out.println(test("3qkb1r/2pppp1p/1p6/2q1N3/3Q1b2/1P5P/2PPPP1P/2BQKB1R w Kk - 0 1"));
 //        System.out.println(test("r3kqR1/1p1pppp1/5B1P/6PN/4P2p/3Q1P2/2PK2pP/8 b q - 0 1"));
 
+        System.out.println(this.detector.getStartLocations());
         System.out.println(this.detector.getPromotionNumbers());
         System.out.println(this.detector.getPromotedPieceMap());
         System.out.println(this.detector.getPromotedPawns(false));
         System.out.println(this.detector.getPromotionPaths(false));
+        System.out.println(new StandardDetectorInterface(detector).getPromotions(true));
 
 
 

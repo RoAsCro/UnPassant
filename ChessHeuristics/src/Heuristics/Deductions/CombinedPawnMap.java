@@ -86,10 +86,8 @@ public class CombinedPawnMap extends AbstractDeduction {
         }
 
         singleOriginPawns.forEach(entry -> this.detector.getSinglePawnPaths(!white).put(entry.getKey(), entry.getValue().get(0)));
-
         List<Path> newPaths = new LinkedList<>();
-        singleOriginPawns
-                .forEach(entry -> checkedPlayerPaths.entrySet()
+        singleOriginPawns.forEach(entry -> checkedPlayerPaths.entrySet()
                         .stream()
                         .filter(innerEntry -> !innerEntry.getValue().isEmpty())
                         .filter(innerEntry -> {

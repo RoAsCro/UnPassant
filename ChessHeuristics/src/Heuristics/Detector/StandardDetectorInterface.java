@@ -12,7 +12,7 @@ public class StandardDetectorInterface implements DetectorInterface {
 
     private StandardStateDetector detector;
 
-    StandardDetectorInterface(StandardStateDetector detector) {
+    public StandardDetectorInterface(StandardStateDetector detector) {
         this.detector = detector;
     }
     @Override
@@ -21,8 +21,10 @@ public class StandardDetectorInterface implements DetectorInterface {
                 .stream()
                 .filter(e -> e.getKey().endsWith(white ? "w" : "b"))
                 .filter(e -> !e.getValue().isEmpty())
-                .filter(e -> !e.getValue().containsKey(null))
                 .toList();
+        entryList.forEach(e -> e.getValue().remove(null));//TODO SERIOUSLY TEST THIS RIGOUROUSLY
+        entryList = entryList.stream().filter(e -> !e.getValue().isEmpty()).toList();
+        // TODO WHAT IS BISHOP5
         return entryList.stream()
                 .collect(Collectors.toMap(e -> {
                     String name = e.getKey();

@@ -1,9 +1,7 @@
 package Heuristics.Deductions;
 
 import Heuristics.Deduction;
-import Heuristics.StateDetector;
-
-import java.util.Map;
+import Heuristics.Detector.StateDetector;
 
 public abstract class AbstractDeduction implements Deduction {
     protected String errorMessage = "Position not legal.";

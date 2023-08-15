@@ -3,7 +3,7 @@ package Heuristics.Deductions;
 import Heuristics.BoardInterface;
 import Heuristics.Path;
 import Heuristics.Pathfinder;
-import Heuristics.StateDetector;
+import Heuristics.Detector.StateDetector;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 import StandardChess.StandardPieceFactory;

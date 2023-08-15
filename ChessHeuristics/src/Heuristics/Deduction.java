@@ -1,6 +1,8 @@
 package Heuristics;
 
 
+import Heuristics.Detector.StateDetector;
+
 public interface Deduction {
 
     void registerDetector(StateDetector detector);

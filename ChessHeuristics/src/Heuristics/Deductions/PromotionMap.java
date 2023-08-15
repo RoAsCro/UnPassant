@@ -5,7 +5,7 @@ import Heuristics.Detector.StandardStateDetector;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
-import Heuristics.StateDetector;
+import Heuristics.Detector.StateDetector;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 
@@ -19,7 +19,7 @@ public class PromotionMap extends AbstractDeduction {
     private final static int HIGH_NUMBER = 99;
     private PiecePathFinderUtil pathFinderUtil = new PiecePathFinderUtil(detector);
 
-    boolean inDepth = true;
+    private boolean inDepth = true;
 
     private final List<Map<Path, Path>> claimsWhite = new LinkedList<>();
     private final List<Map<Path, Path>> claimsBlack = new LinkedList<>();
@@ -108,8 +108,8 @@ public class PromotionMap extends AbstractDeduction {
                 coordinate, board, forbiddenWhitePaths, forbiddenBlackPaths, coordinate1
         )));
 
-        Map<Path, List<Path>> pieceSquareOriginWhite = new HashMap<>(updates(true));
-        Map<Path, List<Path>> pieceSquareOriginBlack = new HashMap<>(updates(false));
+        Map<Path, List<Path>> pieceSquareOriginWhite = new HashMap<>(updates(board, true));
+        Map<Path, List<Path>> pieceSquareOriginBlack = new HashMap<>(updates(board, false));
         // Fail if a piece has no valid origin
         if (pieceSquareOriginWhite.containsValue(List.of()) || pieceSquareOriginBlack.containsValue(List.of())) {
             this.state = false;
@@ -188,8 +188,8 @@ public class PromotionMap extends AbstractDeduction {
                     .stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> Path.of(entry.getValue().stream().map(Path::getLast).collect(Collectors.toSet()).stream().toList())));
 
             originClaimIteratorHelperStarter(pathIntegerMap, originPool, pieceOriginBlackTwo, claims, false);
-            reduceClaims(true, pieceSquareOriginWhite);
-            reduceClaims(false, pieceSquareOriginBlack);
+            reduceClaims(true, pieceSquareOriginWhite, board);
+            reduceClaims(false, pieceSquareOriginBlack, board);
 
 
             if ((this.claimsBlack.isEmpty() && promotionsBlack != 0) || (this.claimsWhite.isEmpty() && promotionsWhite != 0)) {
@@ -292,7 +292,7 @@ public class PromotionMap extends AbstractDeduction {
         this.promotionPawnMapWhite = new PromotionPawnMap(true);
         this.promotionPawnMapBlack = new PromotionPawnMap(false);
         this.combinedPawnMap = new PromotionCombinedPawnMap();
-        StateDetector stateDetector = new StandardStateDetector(new PawnNumber(), this.detector.getPieceNumber(), promotionPawnMapWhite, promotionPawnMapBlack, combinedPawnMap);
+        StateDetector stateDetector = new StandardStateDetector(new PawnNumber(), new PieceNumber(), promotionPawnMapWhite, promotionPawnMapBlack, combinedPawnMap);
         this.promotionPawnMapWhite.registerDetector(stateDetector);
         this.promotionPawnMapBlack.registerDetector(stateDetector);
         this.combinedPawnMap.registerDetector(stateDetector);;
@@ -378,9 +378,8 @@ public class PromotionMap extends AbstractDeduction {
         }
         return claimed;
     }
-
-    private void reduceClaims(boolean white, Map<Path, List<Path>> pieceSquareOrigin) {
-        int maxCaptures = this.detector.capturedPieces(white) - this.detector.minimumPawnCaptures(white)
+    private void reduceClaims(boolean white, Map<Path, List<Path>> pieceSquareOrigin, BoardInterface board) {
+        int maxCaptures = (this.detector.pawnTakeablePieces(white) - board.getBoardFacts().pieceNumbers(!white)) - this.detector.minimumPawnCaptures(white)
                 + (white ? additionalCapturesWhite : additionalCapturesBlack);
 
         List<Map<Path, Path>> allClaims = white ? this.claimsWhite : this.claimsBlack;
@@ -414,10 +413,8 @@ public class PromotionMap extends AbstractDeduction {
      * @return a Map of combinations of promoted piece sets, and Paths containing promotion squares in the first
      * position and pawn origins in the last position
      */
-    private Map<Path, List<Path>> updates(boolean white) {
-        int maxCaptures = (this.detector.pawnTakeablePieces(white) - (white
-                ? this.detector.getPieceNumber().getBlackPieces()
-                : this.detector.getPieceNumber().getWhitePieces())) - this.detector.minimumPawnCaptures(white)
+    private Map<Path, List<Path>> updates(BoardInterface board, boolean white) {
+        int maxCaptures = (this.detector.pawnTakeablePieces(white) - (board.getBoardFacts().pieceNumbers(!white))) - this.detector.minimumPawnCaptures(white)
                 + (white ? additionalCapturesWhite : additionalCapturesBlack);
         // reduce goal/Origin sets that contain too many captures
         this.goalOrigins.entrySet().stream()
@@ -473,8 +470,6 @@ public class PromotionMap extends AbstractDeduction {
                 int change = white ? 1 : -1;
                 pathCagedCaptures(captureY, change, shortest, cagedCaptures, board, white);
             }
-
-
             this.goalOrigins.putIfAbsent(origin, new HashMap<>());
             this.goalOrigins.get(origin).put(target, PiecePathFinderUtil.PATH_DEVIATION.apply(shortest));
         }

@@ -2,7 +2,7 @@ package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
 import Heuristics.Path;
-import Heuristics.StateDetector;
+import Heuristics.Detector.StateDetector;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 
@@ -42,8 +42,8 @@ public class CaptureLocations extends AbstractDeduction {
             this.detector.reTest(board);
         }
 
-        this.detector.getPromotedPawns(true).addAll(pawnCaptureLocations(true));
-        this.detector.getPromotedPawns(false).addAll(pawnCaptureLocations(false));
+        this.detector.getPromotedPawns(true).addAll(pawnCaptureLocations(true, board));
+        this.detector.getPromotedPawns(false).addAll(pawnCaptureLocations(false, board));
         //System.out.println(promotedBlackPawns);
         return false ;
     }
@@ -80,42 +80,10 @@ public class CaptureLocations extends AbstractDeduction {
 
         int ofWhichQueen = ofWhichCaged.size() - ofWhichBishop - ofWhichRook.size();
 
-
-        Map<Integer, Path> reachable = Map.of(Q_ROOK_X, new Path(), K_ROOK_X, new Path());
+        int inaccessibleTakenRooks = 0;
         // Check each rook can path to any opposing pawn
         if (!ofWhichRook.isEmpty()) {
-            ofWhichRook.forEach(coordinate2 -> board.getBoardFacts().getCoordinates(white, "pawn")
-                    .stream().filter(coordinate -> white ? (coordinate.getY() >= BLACK_PAWN_Y)  : (coordinate.getY() <= WHITE_PAWN_Y))
-                    .forEach(coordinate -> {
-                        if (!this.pathFinderUtil.findPiecePath(board, "rook", white ? "r" : "R", coordinate2, coordinate).isEmpty()) {
-                            reachable.get(coordinate2.getX()).add(coordinate);
-                        }
-                    }));
-        }
-
-        int innaccessibleTakenRooks = 0;
-        //Check each rook is only pathing to one pawn
-        for (int i = 0 ; i < ofWhichRook.size() ; i++){
-            boolean increase = false;
-            Coordinate coordinate = ofWhichRook.get(i);
-            int size = reachable.get(coordinate.getX()).size();
-
-//            System.out.println(size);
-            if (size == 0) {
-//                System.out.println("ZERO");
-                increase = true;
-                innaccessibleTakenRooks += 1;
-            } else if (!(ofWhichRook.size() == 1) && !(size > 1)) {
-                int rookX = Math.abs(coordinate.getX() - K_ROOK_X);
-                if (reachable.get(rookX).size() == 1
-                        && !reachable.get(rookX).contains(coordinate)) {
-                    increase = true;
-                    innaccessibleTakenRooks += 1;
-                }
-            }
-            if (increase) {
-                this.detector.getCagedCaptures(white).add(coordinate);
-            }
+             inaccessibleTakenRooks = findInaccessibleRooks(board, white, ofWhichRook);
         }
 
         // Account for bishops being taken on the correct colour
@@ -133,12 +101,47 @@ public class CaptureLocations extends AbstractDeduction {
 
             if (pawnCaptures(paths, white)) {
                 if (!predicates.isEmpty()) {
-//                    System.out.println("What");
                     capturesToRemove += predicateIterate(white, predicates).size();
                 }
             }
         }
-        return ofWhichQueen + ofWhichBishop + innaccessibleTakenRooks + capturesToRemove;
+        return ofWhichQueen + ofWhichBishop + inaccessibleTakenRooks + capturesToRemove;
+    }
+
+    private int findInaccessibleRooks(BoardInterface board, boolean white, Path rooks) {
+        Map<Integer, Path> reachable = Map.of(Q_ROOK_X, new Path(), K_ROOK_X, new Path());
+        if (!rooks.isEmpty()) {
+            rooks.forEach(coordinate2 -> board.getBoardFacts().getCoordinates(white, "pawn")
+                    .stream().filter(coordinate -> white ? (coordinate.getY() >= BLACK_PAWN_Y)  : (coordinate.getY() <= WHITE_PAWN_Y))
+                    .forEach(coordinate -> {
+                        if (!this.pathFinderUtil.findPiecePath(board, "rook", white ? "r" : "R", coordinate2, coordinate).isEmpty()) {
+                            reachable.get(coordinate2.getX()).add(coordinate);
+                        }
+                    }));
+        }
+
+        int innaccessibleTakenRooks = 0;
+        //Check each rook is only pathing to one pawn
+        for (int i = 0 ; i < rooks.size() ; i++){
+            boolean increase = false;
+            Coordinate coordinate = rooks.get(i);
+            int size = reachable.get(coordinate.getX()).size();
+            if (size == 0) {
+                increase = true;
+                innaccessibleTakenRooks += 1;
+            } else if (!(rooks.size() == 1) && !(size > 1)) {
+                int rookX = Math.abs(coordinate.getX() - K_ROOK_X);
+                if (reachable.get(rookX).size() == 1
+                        && !reachable.get(rookX).contains(coordinate)) {
+                    increase = true;
+                    innaccessibleTakenRooks += 1;
+                }
+            }
+            if (increase) {
+                this.detector.getCagedCaptures(white).add(coordinate);
+            }
+        }
+        return innaccessibleTakenRooks;
     }
 
     /**
@@ -156,10 +159,10 @@ public class CaptureLocations extends AbstractDeduction {
         return otherValue == this.detector.minimumPawnCaptures(white) && otherValue != 0;
     }
 
-    private List<Coordinate> pawnCaptureLocations(boolean white) {
+    private List<Coordinate> pawnCaptureLocations(boolean white, BoardInterface boardInterface) {
         // If every capture of the opponent has been made by pawns
         int maxPiecesOpponentCanTake = this.detector.pawnTakeablePieces(!white);
-        int numberOfPiecesPlayerHasRemaining = (white ? this.detector.getPieceNumber().getWhitePieces() : this.detector.getPieceNumber().getBlackPieces());
+        int numberOfPiecesPlayerHasRemaining = boardInterface.getBoardFacts().pieceNumbers(white);
         int numberOfPromotedPiecesPlayerHas = this.detector.getPromotionNumbers().entrySet()
                 .stream()
                 .filter(entry -> entry.getKey().charAt(entry.getKey().length()-1) == (white ? 'w' : 'b'))
@@ -170,7 +173,7 @@ public class CaptureLocations extends AbstractDeduction {
                 .orElse(0);
 
         //System.out.println(numberOfPromotedPiecesPlayerHas);
-        int numberOfPawnsPlayerHasLost = (MAX_PAWNS - this.detector.getPawnNumbers(white)) - numberOfPromotedPiecesPlayerHas;
+        int numberOfPawnsPlayerHasLost = (MAX_PAWNS - boardInterface.getBoardFacts().getCoordinates(white, "pawn").size()) - numberOfPromotedPiecesPlayerHas;
         //System.out.println(numberOfPawnsPlayerHasLost);
 
         // MINUS THE NUMBER OF PROMOTED PIECES ON THE BOARD
@@ -185,7 +188,7 @@ public class CaptureLocations extends AbstractDeduction {
 
 
             // The deviation a pawn can make
-            int unnaccountedCaptures = (this.detector.pawnTakeablePieces(white) - (white ? this.detector.getPieceNumber().getBlackPieces() : this.detector.getPieceNumber().getWhitePieces()))
+            int unnaccountedCaptures = (this.detector.pawnTakeablePieces(white) - boardInterface.getBoardFacts().pieceNumbers(!white))
                     - this.detector.minimumPawnCaptures(white);
             List<BiPredicate<Coordinate, Coordinate>> pawnPredicates = new LinkedList<>();
             List<Coordinate> missingPawns = new LinkedList<>();
@@ -193,7 +196,6 @@ public class CaptureLocations extends AbstractDeduction {
             // TODO decision on this
             // Without the commented out if statement, this can easily produce false negatives - watch out when game testing
 //            if (pawnCaptures(otherPlayerPaths, !white)) {
-            // if (minimum captures equals max captures???)
                 int y = white ? WHITE_PAWN_Y : BLACK_PAWN_Y;
                 for (int x = 0 ; x <= K_ROOK_X ; x++) {
                     Coordinate c = new Coordinate(x, y);
@@ -205,7 +207,7 @@ public class CaptureLocations extends AbstractDeduction {
                     }
                 }
                 //System.out.println(pawnPredicates.size());
-                List<BiPredicate<Coordinate, Coordinate>> newPredicates = predicateIterate(!white, pawnPredicates);
+                predicateIterate(!white, pawnPredicates);
                 //System.out.println(pawnPredicates.size());
                 if (Math.abs(pawnPredicates.size() - missingPawns.size()) >= pCBP) {
                     return new LinkedList<>();
