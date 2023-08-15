@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class SolverImpossibleStateDetector extends StandardStateDetector {
 
 
-    public SolverImpossibleStateDetector(PawnData pawnData, CaptureData captureData, PromotionData promotionData, PieceData pieceData, UnCastle unCastle, BoardInterface board, Deduction... deductions) {
+    public SolverImpossibleStateDetector(PawnData pawnData, CaptureData captureData, PromotionData promotionData, PieceData pieceData, BoardInterface board, Deduction... deductions) {
         super(pawnData,captureData, promotionData, pieceData, board, deductions);
 
     }

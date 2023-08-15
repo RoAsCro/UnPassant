@@ -36,14 +36,12 @@ public class UnCastleTest {
         this.pps = new PromotedPawnSquares();
         this.uc = new UnCastle();
         this.detector = new StandardStateDetector(new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(),
-//                pmw,
-//                pmb,
                 cpm,
                 pm,
                 cl,
                 prm,
-                pps);
-        this.uc.registerStateDetector(detector);
+                pps,
+                this.uc);
     }
 
     @Test

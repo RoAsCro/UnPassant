@@ -18,7 +18,6 @@ public class StandardStateDetector implements StateDetector {
     private static final int MAX_PAWNS = 8;
     private static final int MAX_PIECES = 16;
     private final UnCastle unCastle = new UnCastle();
-
     private BoardInterface board;
     private final PawnData pawnData;
     private final CaptureData captureData;
@@ -36,7 +35,9 @@ public class StandardStateDetector implements StateDetector {
     private boolean state = false;
     private String errorMessage;
 
-    public StandardStateDetector(PawnData pawnData, CaptureData captureData, PromotionData promotionData, PieceData pieceData, Deduction ... deductions) {
+    public StandardStateDetector(PawnData pawnData, CaptureData captureData,
+                                 PromotionData promotionData, PieceData pieceData,
+                                 Deduction ... deductions) {
         this.pawnData = pawnData;
         this.captureData = captureData;
         this.promotionData = promotionData;
@@ -45,7 +46,9 @@ public class StandardStateDetector implements StateDetector {
         this.deductions.forEach(d -> d.registerDetector(this));
     }
 
-    public StandardStateDetector(PawnData pawnData, CaptureData captureData, PromotionData promotionData, PieceData pieceData, BoardInterface board, Deduction ... deductions) {
+    public StandardStateDetector(PawnData pawnData, CaptureData captureData,
+                                 PromotionData promotionData, PieceData pieceData,
+                                 BoardInterface board, Deduction ... deductions) {
         this(pawnData, captureData, promotionData, pieceData, deductions);
         this.board = board;
     }
@@ -87,13 +90,15 @@ public class StandardStateDetector implements StateDetector {
                 this.state = false;
                 this.errorMessage = deduction.errorMessage();
                 return false;
+
             }
+
             this.finishedDeductions.add(deduction);
+
         }
 
         this.state = true;
-        unCastle.registerStateDetector(this);
-        unCastle.hasMoved();
+
         return true;
     }
 

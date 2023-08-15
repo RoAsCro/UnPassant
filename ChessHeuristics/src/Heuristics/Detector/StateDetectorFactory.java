@@ -13,11 +13,6 @@ import StandardChess.ChessBoard;
 
 public class StateDetectorFactory {
 
-    public static final int pmwPosition = 1;
-    public static final int pmbPosition = 2;
-    public static final int pmPosition = 4;
-    public static final int prmPosition = 6;
-    public static final int ppsPosition = 7;
 
     private static Deduction[] getDeductions() {
         CombinedPawnMap cpm;
@@ -27,14 +22,16 @@ public class StateDetectorFactory {
         CaptureLocations cl = new CaptureLocations();
         PromotionMap prm = new PromotionMap();
         PromotedPawnSquares pps = new PromotedPawnSquares();
-        return new Deduction[]{pp, cpm, pm, cl, prm, pps};
+        UnCastle uc = new UnCastle();
+        return new Deduction[]{pp, cpm, pm, cl, prm, pps,
+                uc
+        };
     }
 
     public static SolverImpossibleStateDetector getDetector(ChessBoard board) {
         Deduction[] deductions = getDeductions();
-        UnCastle unCastle = new UnCastle();
         return new SolverImpossibleStateDetector(new StandardPawnData(), new StandardCaptureData(),
-                new StandardPromotionData(), new StandardPieceData(), unCastle, new BoardInterface(board), deductions);
+                new StandardPromotionData(), new StandardPieceData(), new BoardInterface(board), deductions);
     }
 
     public static SolverImpossibleStateDetector getDetector(String fen) {
@@ -50,10 +47,8 @@ public class StateDetectorFactory {
     }
 
     public static SolverImpossibleStateDetector getDetector(String fen, Deduction... deductions) {
-        UnCastle unCastle = new UnCastle();
-
         return new SolverImpossibleStateDetector(new StandardPawnData(), new StandardCaptureData(),
-                new StandardPromotionData(), new StandardPieceData(), unCastle,
+                new StandardPromotionData(), new StandardPieceData(),
                 new BoardInterface(BoardBuilder.buildBoard(fen)), deductions);
     }
 

@@ -1,7 +1,7 @@
 package Heuristics.Deductions;
 
+import Heuristics.BoardInterface;
 import Heuristics.Path;
-import Heuristics.Detector.StateDetector;
 import StandardChess.Coordinate;
 
 import java.util.Collection;
@@ -10,47 +10,45 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class UnCastle {
+public class UnCastle extends AbstractDeduction{
 
     private final static List<Integer> criticalXs = List.of(3, 4, 5);
-    StateDetector stateDetector;
     boolean[] whiteData = new boolean[]{false, false, false};
     boolean[] blackData = new boolean[]{false, false, false};
 
-    public void registerStateDetector(StateDetector stateDetector) {
-        this.stateDetector =stateDetector;
+    public UnCastle() {
+        super("");
     }
+//    @Override
+//    public void registerDetector(StateDetector detector) {
+//        super.registerDetector(detector);
+//        System.out.println("G");
+//    }
+
+    @Override
+    public boolean deduce(BoardInterface board) {
+        hasMoved();
+        return false;
+    }
+
     public List<boolean[]> hasMoved() {
+        System.out.println("Running");
 
-        this.blackData[0] = this.stateDetector.getPieceData().getKingMovement(false);
-        this.blackData[1] = this.stateDetector.getPieceData().getRookMovement(false, true);
-        this.blackData[2] = this.stateDetector.getPieceData().getRookMovement(false, false);
-        this.whiteData[0] = this.stateDetector.getPieceData().getKingMovement(true);
-        this.whiteData[1] = this.stateDetector.getPieceData().getRookMovement(true, true);
-        this.whiteData[2] = this.stateDetector.getPieceData().getRookMovement(true, false);
+        this.blackData[0] = this.detector.getPieceData().getKingMovement(false);
+        this.blackData[1] = this.detector.getPieceData().getRookMovement(false, true);
+        this.blackData[2] = this.detector.getPieceData().getRookMovement(false, false);
+        this.whiteData[0] = this.detector.getPieceData().getKingMovement(true);
+        this.whiteData[1] = this.detector.getPieceData().getRookMovement(true, true);
+        this.whiteData[2] = this.detector.getPieceData().getRookMovement(true, false);
 
-
-//        System.out.println(this.promotionMap.getState());
-        if (this.stateDetector.getState()) {
-            if (!this.blackData[0]) {
-                checkPromotionMap(true);
-            }
-            if (!this.whiteData[0]) {
-                checkPromotionMap(false);
-            }
+//        if (this.detector.getState()) {
+        if (!this.blackData[0]) {
+            checkPromotionMap(true);
         }
-        //System.out.println("---");
-        //
-        //Promotion issue ciritcal region
-//        if (!this.blackData[0]) {
-//            this.stateDetector.getPromotionPaths(true)
-//                    .forEach(p -> checkPromotedPawns(true, p));
+        if (!this.whiteData[0]) {
+            checkPromotionMap(false);
+        }
 //        }
-//        if (!this.whiteData[0]) {
-//            this.stateDetector.getPromotionPaths(false)
-//                    .forEach(p -> checkPromotedPawns(false, p));
-//        }
-        //
         if (!(this.blackData[0] && this.whiteData[0])) {
             boolean[] bishops = bishops();
             if (bishops[0]) {
@@ -67,22 +65,27 @@ public class UnCastle {
         if (this.whiteData[1] && this.whiteData[2]) {
             this.whiteData[0] = true;
         }
-        this.stateDetector.getPieceData().setKingMovement(false, this.blackData[0]);
-        this.stateDetector.getPieceData().setRookMovement(false, true, this.blackData[1]);
-        this.stateDetector.getPieceData().setRookMovement(false, false, this.blackData[2]);
-        this.stateDetector.getPieceData().setKingMovement(true, this.whiteData[0]);
-        this.stateDetector.getPieceData().setRookMovement(true, true, this.whiteData[1]);
-        this.stateDetector.getPieceData().setRookMovement(true, false, this.whiteData[2]);
+        this.detector.getPieceData().setKingMovement(false, this.blackData[0]);
+        this.detector.getPieceData().setRookMovement(false, true, this.blackData[1]);
+        this.detector.getPieceData().setRookMovement(false, false, this.blackData[2]);
+        this.detector.getPieceData().setKingMovement(true, this.whiteData[0]);
+        this.detector.getPieceData().setRookMovement(true, true, this.whiteData[1]);
+        this.detector.getPieceData().setRookMovement(true, false, this.whiteData[2]);
+        System.out.println(this.blackData[0]);
+        System.out.println(this.blackData[1]);
+        System.out.println(this.blackData[2]);
+
+
         return List.of(this.whiteData, this.blackData);
     }
 
     private boolean[] bishops() {
-        List<Coordinate> onPSquare = this.stateDetector.getPromotionData().getPromotedPieceMap().entrySet()
+        List<Coordinate> onPSquare = this.detector.getPromotionData().getPromotedPieceMap().entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().contains(entry.getKey()))
                 .map(Map.Entry::getKey)
                 .toList();
-        Path bishops = Path.of(this.stateDetector.getPromotionData().getPromotionNumbers().entrySet()
+        Path bishops = Path.of(this.detector.getPromotionData().getPromotionNumbers().entrySet()
                 .stream()
                 .filter(entry -> entry.getKey().startsWith("bi"))
                 .flatMap(e -> e.getValue().keySet().stream().filter(Objects::nonNull).flatMap(Collection::stream))
@@ -92,10 +95,10 @@ public class UnCastle {
         boolean[] returnBooleans = new boolean[]{false, false};
         bishops.forEach(c -> {
             List<Coordinate> criticalCoords = List.of(new Coordinate(c.getX() + 1, Math.abs(c.getY() - 1)), new Coordinate(c.getX() - 1, Math.abs(c.getY() - 1)));
-            if (this.stateDetector.getPawnData().getPawnPaths(true).keySet().containsAll(criticalCoords)) {
+            if (this.detector.getPawnData().getPawnPaths(true).keySet().containsAll(criticalCoords)) {
                 returnBooleans[0] = true;
             }
-            if (this.stateDetector.getPawnData().getPawnPaths(false).keySet().containsAll(criticalCoords)) {
+            if (this.detector.getPawnData().getPawnPaths(false).keySet().containsAll(criticalCoords)) {
                 returnBooleans[1] = true;
 
             }
@@ -103,35 +106,10 @@ public class UnCastle {
         return returnBooleans;
     }
 
-    /**
-     * Checks if a pawn passes over a critical square when promoting
-     * @param white
-     * @param promotionPaths
-     */
-    private void checkPromotedPawns(boolean white, Path promotionPaths) {
-        int y = white ? 6 : 1;
-        int offSet = white ? 1 : -1;
-        List<Coordinate> kingCoords = List.of(new Coordinate(3, y), new Coordinate(5, y), new Coordinate(4, y + offSet));
-        List<Coordinate> rookCoords = List.of(new Coordinate(0, y + offSet), new Coordinate(7, y + offSet));
-        boolean[] data = !white ? this.whiteData : this.blackData;
-        //System.out.println(promotionPaths);
-        promotionPaths.forEach(c -> {
-                if (kingCoords.contains(c)) {
-                    data[0] = true;
-                }
-               if (rookCoords.get(0).equals(c)) {
-                   data[1] = true;
-               } else if (rookCoords.get(1).equals(c)) {
-                   //System.out.println(white);
-                   data[2] = true;
-               }
-        });
-    }
-
     private void checkPromotionMap(boolean white) {
         int y = white ? 6 : 1;
         int offSet = white ? 1 : -1;
-        Map<Coordinate, List<Path>> pawnPaths = this.stateDetector.getPawnData().getPawnPaths(white);
+        Map<Coordinate, List<Path>> pawnPaths = this.detector.getPawnData().getPawnPaths(white);
         List<Coordinate> criticalCoords = List.of(new Coordinate(3, y), new Coordinate(5, y), new Coordinate(4, y + offSet));
         List<Coordinate> rookCoords = List.of(new Coordinate(0, y + offSet), new Coordinate(7, y + offSet));
         boolean[] data = !white ? this.whiteData : this.blackData;
@@ -139,7 +117,7 @@ public class UnCastle {
                 .filter(entry -> entry.getKey().getY() == 7  || entry.getKey().getY() == 0)
 //                .filter(entry -> entry.getValue().size() == 1)
                 .forEach(entry -> {
-                    entry.getValue().stream().forEach(innerEntry -> {
+                    entry.getValue().forEach(innerEntry -> {
                         if (innerEntry.stream().anyMatch(criticalCoords::contains)) {
                             data[0] = true;
                         }
