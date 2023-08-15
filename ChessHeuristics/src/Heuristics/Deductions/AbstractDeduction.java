@@ -1,12 +1,9 @@
 package Heuristics.Deductions;
 
-import Heuristics.Deduction;
 import Heuristics.Detector.StateDetector;
-import Heuristics.HeuristicsUtil;
 import Heuristics.Path;
 import StandardChess.Coordinate;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 import static Heuristics.HeuristicsUtil.*;

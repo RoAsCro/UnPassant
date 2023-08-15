@@ -1,7 +1,6 @@
 package Heuristics.Detector;
 
 import Heuristics.BoardInterface;
-import Heuristics.DetectorInterface;
 import Heuristics.Path;
 
 import java.util.List;

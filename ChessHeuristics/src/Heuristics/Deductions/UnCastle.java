@@ -1,6 +1,7 @@
 package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
+import Heuristics.HeuristicsUtil;
 import Heuristics.Path;
 import StandardChess.Coordinate;
 
@@ -32,8 +33,6 @@ public class UnCastle extends AbstractDeduction{
     }
 
     public List<boolean[]> hasMoved() {
-        System.out.println("Running");
-
         this.blackData[0] = this.detector.getPieceData().getKingMovement(false);
         this.blackData[1] = this.detector.getPieceData().getRookMovement(false, true);
         this.blackData[2] = this.detector.getPieceData().getRookMovement(false, false);
@@ -71,11 +70,6 @@ public class UnCastle extends AbstractDeduction{
         this.detector.getPieceData().setKingMovement(true, this.whiteData[0]);
         this.detector.getPieceData().setRookMovement(true, true, this.whiteData[1]);
         this.detector.getPieceData().setRookMovement(true, false, this.whiteData[2]);
-        System.out.println(this.blackData[0]);
-        System.out.println(this.blackData[1]);
-        System.out.println(this.blackData[2]);
-
-
         return List.of(this.whiteData, this.blackData);
     }
 
@@ -110,7 +104,7 @@ public class UnCastle extends AbstractDeduction{
         int y = white ? 6 : 1;
         int offSet = white ? 1 : -1;
         Map<Coordinate, List<Path>> pawnPaths = this.detector.getPawnData().getPawnPaths(white);
-        List<Coordinate> criticalCoords = List.of(new Coordinate(3, y), new Coordinate(5, y), new Coordinate(4, y + offSet));
+        List<Coordinate> criticalCoords = List.of(new Coordinate(HeuristicsUtil.QUEEN_X, y), new Coordinate(5, y), new Coordinate(4, y + offSet));
         List<Coordinate> rookCoords = List.of(new Coordinate(0, y + offSet), new Coordinate(7, y + offSet));
         boolean[] data = !white ? this.whiteData : this.blackData;
         pawnPaths.entrySet().stream()

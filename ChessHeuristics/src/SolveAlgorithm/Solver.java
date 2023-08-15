@@ -2,7 +2,7 @@ package SolveAlgorithm;
 
 import Heuristics.BoardInterface;
 import Heuristics.Detector.StateDetectorFactory;
-import Heuristics.DetectorInterface;
+import Heuristics.Detector.DetectorInterface;
 import Heuristics.Path;
 import StandardChess.*;
 

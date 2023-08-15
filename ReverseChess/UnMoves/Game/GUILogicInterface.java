@@ -1,3 +1,5 @@
+package Game;
+
 import StandardChess.Coordinate;
 
 public class GUILogicInterface extends Game {

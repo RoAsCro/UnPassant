@@ -1,3 +1,5 @@
+package Game;
+
 import StandardChess.*;
 
 import java.util.LinkedList;
@@ -10,7 +12,7 @@ public class Game {
     private final LinkedList<String> redoStates = new LinkedList<>();
 
 
-    public Game(String fen) {
+    public Game(String fen) throws IllegalArgumentException {
         this.board = fen.equals("")
                 ? BoardBuilder.buildBoard()
                 : BoardBuilder.buildBoard(fen);;

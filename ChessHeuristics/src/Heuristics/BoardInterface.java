@@ -8,9 +8,9 @@ import java.util.function.Predicate;
 
 public class BoardInterface {
 
-    private StandardObserver standardObserver = new StandardObserver();
+    private final StandardObserver standardObserver = new StandardObserver();
 
-    private ChessBoard board;
+    private final ChessBoard board;
     private Coordinate whiteKing;
     private Coordinate blackKing;
 

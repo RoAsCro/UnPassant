@@ -1,10 +1,9 @@
+import Game.Game;
 import StandardChess.Coordinate;
 import StandardChess.NullPiece;
 import StandardChess.StandardPieceFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
 
 public class GameTest {
 

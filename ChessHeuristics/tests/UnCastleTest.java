@@ -6,7 +6,7 @@ import Heuristics.Detector.Data.StandardPieceData;
 import Heuristics.Detector.Data.StandardPromotionData;
 import Heuristics.Detector.StandardStateDetector;
 import Heuristics.Detector.StateDetectorFactory;
-import Heuristics.DetectorInterface;
+import Heuristics.Detector.DetectorInterface;
 import Heuristics.Deductions.UnCastle;
 import StandardChess.BoardBuilder;
 import org.junit.jupiter.api.Assertions;

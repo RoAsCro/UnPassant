@@ -1,6 +1,7 @@
-package Heuristics;
+package Heuristics.Deductions;
 
 
+import Heuristics.BoardInterface;
 import Heuristics.Detector.StateDetector;
 
 public interface Deduction {

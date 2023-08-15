@@ -1,13 +1,12 @@
 package Heuristics.Detector;
 
 import Heuristics.BoardInterface;
-import Heuristics.Deduction;
+import Heuristics.Deductions.Deduction;
 import Heuristics.Deductions.*;
 import Heuristics.Detector.Data.StandardCaptureData;
 import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.Data.StandardPieceData;
 import Heuristics.Detector.Data.StandardPromotionData;
-import Heuristics.DetectorInterface;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 
@@ -23,9 +22,7 @@ public class StateDetectorFactory {
         PromotionMap prm = new PromotionMap();
         PromotedPawnSquares pps = new PromotedPawnSquares();
         UnCastle uc = new UnCastle();
-        return new Deduction[]{pp, cpm, pm, cl, prm, pps,
-                uc
-        };
+        return new Deduction[]{pp, cpm, pm, cl, prm, pps, uc};
     }
 
     public static SolverImpossibleStateDetector getDetector(ChessBoard board) {

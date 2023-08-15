@@ -1,8 +1,7 @@
 package Heuristics.Detector;
 
 import Heuristics.BoardInterface;
-import Heuristics.Deduction;
-import Heuristics.Deductions.UnCastle;
+import Heuristics.Deductions.Deduction;
 import Heuristics.Detector.Data.CaptureData;
 import Heuristics.Detector.Data.PawnData;
 import Heuristics.Detector.Data.PieceData;

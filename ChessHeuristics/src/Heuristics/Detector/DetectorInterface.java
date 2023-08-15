@@ -1,4 +1,7 @@
-package Heuristics;
+package Heuristics.Detector;
+
+import Heuristics.BoardInterface;
+import Heuristics.Path;
 
 import java.util.Map;
 

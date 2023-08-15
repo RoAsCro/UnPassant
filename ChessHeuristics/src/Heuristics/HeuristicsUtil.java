@@ -5,7 +5,6 @@ import java.util.Map;
 
 public class HeuristicsUtil {
     public static final List<String> PIECE_NAMES = List.of("pawn", "rook", "knight", "bishop", "queen", "king");
-
     public static final int MAX_PAWNS = 8;
     public static final int MAX_PIECES = 16;
     public static int FINAL_RANK_Y = 7;
@@ -22,7 +21,6 @@ public class HeuristicsUtil {
     public static int K_BISHOP_X = 5;
     public static int QUEEN_X = 3;
     public static int KING_X = 4;
-
 
     public final static Map<Integer, String> STANDARD_STARTS = Map.of(
             0, "rook", 1, "knight", 2, "bishop", 3, "queen", 4,
