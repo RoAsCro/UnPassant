@@ -28,18 +28,28 @@ public class CombinedPawnMap extends AbstractDeduction {
         this.whitePawnMap.registerDetector(this.detector);
         this.blackPawnMap.registerDetector(this.detector);
         this.whitePawnMap.deduce(board);
+        if (!this.whitePawnMap.getState()) {
+            this.errorMessage = this.whitePawnMap.errorMessage();
+            this.state = false;
+            return false;
+        }
         this.blackPawnMap.deduce(board);
+        if (!this.blackPawnMap.getState()) {
+            this.errorMessage = this.blackPawnMap.errorMessage();
+            this.state = false;
+            return false;
+        }
         boolean changed = true;
         boolean another = true;
         while (changed) {
-            HashSet<List<Path>> startingWhite = new HashSet<>(this.detector.getPawnPaths(true).values());
-            HashSet<List<Path>> startingBlack = new HashSet<>(this.detector.getPawnPaths(false).values());
+            HashSet<List<Path>> startingWhite = new HashSet<>(this.detector.getPawnData().getPawnPaths(true).values());
+            HashSet<List<Path>> startingBlack = new HashSet<>(this.detector.getPawnData().getPawnPaths(false).values());
 
             makeMaps(board, false);
             makeMaps(board, true);
             if ((!exclude(board, true) & !exclude(board, false))
-                    || (startingWhite.containsAll(new HashSet<>(this.detector.getPawnPaths(true).values()))
-                    && startingBlack.containsAll(new HashSet<>(this.detector.getPawnPaths(false).values())))
+                    || (startingWhite.containsAll(new HashSet<>(this.detector.getPawnData().getPawnPaths(true).values()))
+                    && startingBlack.containsAll(new HashSet<>(this.detector.getPawnData().getPawnPaths(false).values())))
             ) {
                 if (!another) {
                     changed = false;
@@ -49,11 +59,11 @@ public class CombinedPawnMap extends AbstractDeduction {
             }
         }
 
-        if (this.detector.getPawnPaths(true).values().stream().anyMatch(List::isEmpty)) {
-            this.errorMessage = generateErrorMessage(this.detector.getPawnPaths(true));
+        if (this.detector.getPawnData().getPawnPaths(true).values().stream().anyMatch(List::isEmpty)) {
+            this.errorMessage = generateErrorMessage(this.detector.getPawnData().getPawnPaths(true));
             this.state = false;
-        } else if (this.detector.getPawnPaths(false).values().stream().anyMatch(List::isEmpty)) {
-            this.errorMessage = generateErrorMessage(this.detector.getPawnPaths(false));
+        } else if (this.detector.getPawnData().getPawnPaths(false).values().stream().anyMatch(List::isEmpty)) {
+            this.errorMessage = generateErrorMessage(this.detector.getPawnData().getPawnPaths(false));
             this.state = false;
 
         }
@@ -75,9 +85,9 @@ public class CombinedPawnMap extends AbstractDeduction {
      * @return whether or not there was a change
      */
     protected boolean exclude(BoardInterface board, boolean white) {
-        Map<Coordinate, List<Path>> checkedPlayerPaths = this.detector.getPawnPaths(white);
+        Map<Coordinate, List<Path>> checkedPlayerPaths = this.detector.getPawnData().getPawnPaths(white);
 
-        Map<Coordinate, List<Path>> opposingPlayerPaths = this.detector.getPawnPaths(!white);
+        Map<Coordinate, List<Path>> opposingPlayerPaths = this.detector.getPawnData().getPawnPaths(!white);
         PiecePathFinderUtil pathFinderUtil = new PiecePathFinderUtil(this.detector);
         // Find every pawn of the opposing player with one origin and one possible path
         List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = new ArrayList<>(opposingPlayerPaths.entrySet()
@@ -103,8 +113,6 @@ public class CombinedPawnMap extends AbstractDeduction {
 
             return false;
         }
-
-        singleOriginPawns.forEach(entry -> this.detector.getSinglePawnPaths(!white).put(entry.getKey(), entry.getValue().get(0)));
         List<Path> newPaths = new LinkedList<>();
         singleOriginPawns.forEach(entry -> checkedPlayerPaths.entrySet()
                         .stream()
@@ -154,7 +162,8 @@ public class CombinedPawnMap extends AbstractDeduction {
                 forRemoval.add(new Coordinate[]{path.getLast(), path.getFirst()});
             }
         });
-        forRemoval.forEach(coordinates -> this.detector.getPawnOrigins(white).get(coordinates[0]).remove(coordinates[1]));
+        forRemoval.forEach(coordinates -> (white ? this.whitePawnMap : this.blackPawnMap)
+                .getPawnOrigins().get(coordinates[0]).remove(coordinates[1]));
         updateP();
         return !forRemoval.isEmpty() || !newPaths.isEmpty();
     }
@@ -175,7 +184,8 @@ public class CombinedPawnMap extends AbstractDeduction {
     }
 
     private void makeMaps(BoardInterface board, boolean white) {
-        this.detector.getPawnOrigins(white).entrySet()
+        (white ? this.whitePawnMap : this.blackPawnMap)
+                .getPawnOrigins().entrySet()
                 .stream()
                 .forEach(entry -> {
                     List<Path> paths = new LinkedList<>();
@@ -191,7 +201,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                                     paths.add(path);
                                 }
                             });
-                    this.detector.getPawnPaths(white).put(entry.getKey(), paths);
+                    this.detector.getPawnData().getPawnPaths(white).put(entry.getKey(), paths);
                 });
     }
 
@@ -200,7 +210,7 @@ public class CombinedPawnMap extends AbstractDeduction {
     }
 
     public static class PawnMap extends AbstractDeduction{
-
+        private Map<Coordinate, Path> pawnOrigins = new TreeMap<>();
         private final Map<Coordinate, Integer> captureSet = new TreeMap<>();
         private List<Set<Coordinate>> sets = new LinkedList<>();
         private int pieceNumbers = 0;
@@ -232,7 +242,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          * @return the max number of pieces minus the number of pieces the opponent is missing
          */
         protected int capturedPieces() {
-            return this.detector.pawnTakeablePieces(this.white) - (this.opponentPieceNumbers);
+            return this.detector.getCaptureData().pawnTakeablePieces(this.white) - (this.opponentPieceNumbers);
         }
 
         /**
@@ -266,7 +276,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                             }
                             starts.add(new Coordinate(x, start));
                         }
-                        this.detector.getPawnOrigins(white).put(pawn, starts);
+                        pawnOrigins.put(pawn, starts);
                     }
                 });
             }
@@ -292,7 +302,7 @@ public class CombinedPawnMap extends AbstractDeduction {
 
         protected void updateCaptureSet() {
             int maxOffset = capturedPieces() -
-                    this.detector.getPawnOrigins(this.white).entrySet().stream()
+                    pawnOrigins.entrySet().stream()
                             .map(entry -> {
                                 int x = entry.getKey().getX();
                                 Coordinate coordinate = entry.getValue().stream()
@@ -322,7 +332,7 @@ public class CombinedPawnMap extends AbstractDeduction {
         }
         private void reduce() {
             this.sets = new LinkedList<>();
-            List<Coordinate> origins = this.detector.getPawnOrigins(this.white).entrySet().stream()
+            List<Coordinate> origins = pawnOrigins.entrySet().stream()
                     .flatMap(f -> f.getValue().stream())
                     .collect(Collectors.toSet())
                     .stream().toList();
@@ -331,7 +341,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 List<Coordinate> originsTwo = new LinkedList<>(origins);
                 boolean change = true;
                 while (change){
-                    captures(this.detector.getPawnOrigins(white));
+                    captures(pawnOrigins);
                     change = reduceIter(new HashSet<>(), originsTwo);
 
                 }
@@ -348,7 +358,7 @@ public class CombinedPawnMap extends AbstractDeduction {
             boolean change = false;
             if (!set.isEmpty()) {
                 AtomicBoolean supersets = new AtomicBoolean(false);
-                List<Coordinate> subsets = this.detector.getPawnOrigins(white).entrySet().stream()
+                List<Coordinate> subsets = pawnOrigins.entrySet().stream()
                         .filter(entry -> {
                             Path path = entry.getValue();
                             if (path.stream().anyMatch(set::contains)) {
@@ -370,8 +380,8 @@ public class CombinedPawnMap extends AbstractDeduction {
 
                     // Check the total number of captures
                     Map<Coordinate, Path> map = new TreeMap<>();
-                    subsets.forEach(coordinate -> map.put(coordinate, Path.of(this.detector.getPawnOrigins(white).get(coordinate))));
-                    set.forEach(coordinate -> this.detector.getOriginFree(white).put(coordinate, false));
+                    subsets.forEach(coordinate -> map.put(coordinate, Path.of(pawnOrigins.get(coordinate))));
+                    set.forEach(coordinate -> this.detector.getPawnData().getOriginFree(white).put(coordinate, false));
                     this.sets.add(set);
                     reduceIterHelperStart(map);
                     return removeCoords(set, subsets);
@@ -431,7 +441,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 removalMap.put(currentPawn, forRemoval);
             }
 
-            removalMap.forEach((key, value) -> this.detector.getPawnOrigins(white).get(key).removeAll(value));
+            removalMap.forEach((key, value) -> pawnOrigins.get(key).removeAll(value));
 
         }
 
@@ -473,7 +483,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          */
         private boolean removeCoords(Set<Coordinate> forRemoval, List<Coordinate> ignore) {
 
-            return !this.detector.getPawnOrigins(white).entrySet()
+            return !pawnOrigins.entrySet()
                     .stream()
                     .filter(entry -> !ignore.contains(entry.getKey()))
                     .filter(entry -> entry.getValue().removeAll(forRemoval))
@@ -489,6 +499,10 @@ public class CombinedPawnMap extends AbstractDeduction {
         public Map<Coordinate, Integer> getCaptureSet() {
             return this.captureSet;
         }
+        public Map<Coordinate, Path> getPawnOrigins() {
+            return this.pawnOrigins;
+        }
+
 
     }
 

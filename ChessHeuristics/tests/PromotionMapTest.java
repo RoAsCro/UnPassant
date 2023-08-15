@@ -1,5 +1,9 @@
 import Heuristics.BoardInterface;
 import Heuristics.Deductions.*;
+import Heuristics.Detector.Data.StandardCaptureData;
+import Heuristics.Detector.Data.StandardPawnData;
+import Heuristics.Detector.Data.StandardPieceData;
+import Heuristics.Detector.Data.StandardPromotionData;
 import Heuristics.Detector.StandardStateDetector;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
@@ -30,7 +34,7 @@ public class PromotionMapTest {
         pieceMap = new PieceMap();
         captureLocations = new CaptureLocations();
         promotionMap = new PromotionMap();
-        standardStateDetector = new StandardStateDetector(pawnNumber, pieceNumber, combinedPawnMap, pieceMap, captureLocations, promotionMap);
+        standardStateDetector = new StandardStateDetector(pawnNumber, pieceNumber, new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(), combinedPawnMap, pieceMap,  captureLocations, promotionMap);
 
     }
     @Test
@@ -38,12 +42,12 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("4k3/8/8/3BB3/8/7P/2PPPPP1/RNBQKBNR w KQ - 0 1"));
 
         this.standardStateDetector.testState(boardInterface);
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        System.out.println(standardStateDetector.getPawnPaths(true));
+        
+        
+        System.out.println(standardStateDetector.getPawnData().getPawnPaths(true));
 
-        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(true).get(new Coordinate(7, 7)).size());
-        Assertions.assertEquals(2, standardStateDetector.getPawnOrigins(true).get(new Coordinate(6, 7)).size());
+        Assertions.assertEquals(1, standardStateDetector.getPawnData().getPawnPaths(true).get(new Coordinate(7, 7)).size());
+        Assertions.assertEquals(2, standardStateDetector.getPawnData().getPawnPaths(true).get(new Coordinate(6, 7)).size());
         Assertions.assertTrue(promotionMap.getState());
 
     }
@@ -53,9 +57,9 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("4k3/pppp4/8/3BB3/8/7P/2PPPPP1/RNBQKBNR w KQ - 0 1"));
 
         this.standardStateDetector.testState(boardInterface);
-        System.out.println(standardStateDetector.getPawnPaths(true));
-        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(true).get(new Coordinate(7, 7)).size());
-        Assertions.assertEquals(2, standardStateDetector.getPawnOrigins(true).get(new Coordinate(6, 7)).size());
+        System.out.println(standardStateDetector.getPawnData().getPawnPaths(true));
+        Assertions.assertEquals(1, standardStateDetector.getPawnData().getPawnPaths(true).get(new Coordinate(7, 7)).size());
+        Assertions.assertEquals(2, standardStateDetector.getPawnData().getPawnPaths(true).get(new Coordinate(6, 7)).size());
         Assertions.assertTrue(promotionMap.getState());
 
     }
@@ -65,12 +69,12 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("1nbqkbnr/1pppp1pp/5p2/2Q5/8/8/1PPPPPPP/RNBQKBNR w KQk - 0 1"));
 
         this.standardStateDetector.testState(boardInterface);
-        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(true).get(new Coordinate(0, 7)).size());
-        Assertions.assertFalse(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(5, 7)));
-        Assertions.assertFalse(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(2, 7)));
-        Assertions.assertFalse(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(4, 7)));
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        System.out.println(this.standardStateDetector.getPawnPaths(true));
+        Assertions.assertEquals(1, standardStateDetector.getPawnData().getPawnPaths(true).get(new Coordinate(0, 7)).size());
+        Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(5, 7)));
+        Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(2, 7)));
+        Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(4, 7)));
+        
+        System.out.println(this.standardStateDetector.getPawnData().getPawnPaths(true));
 //        Assertions.assertTrue(promotionMap.getPawnOrigins(true).containsKey(new Coordinate(1, 7)));
         Assertions.assertTrue(promotionMap.getState());
 
@@ -82,12 +86,12 @@ public class PromotionMapTest {
 
 
         this.standardStateDetector.testState(boardInterface);
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        Assertions.assertEquals(1, standardStateDetector.getPawnOrigins(true).get(new Coordinate(0, 7)).size());
-        Assertions.assertTrue(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
-        Assertions.assertFalse(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(1, 7)));
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        System.out.println(standardStateDetector.getPawnOrigins(true));
+        
+        Assertions.assertEquals(1, standardStateDetector.getPawnData().getPawnPaths(true).get(new Coordinate(0, 7)).size());
+        Assertions.assertTrue(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(0, 7)));
+        Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(1, 7)));
+        
+        
         Assertions.assertTrue(promotionMap.getState());
     }
 
@@ -99,7 +103,7 @@ public class PromotionMapTest {
         this.standardStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        Assertions.assertFalse(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
+        Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(0, 7)));
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
 //        Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(1, 7)));
@@ -117,9 +121,9 @@ public class PromotionMapTest {
         this.standardStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        Assertions.assertFalse(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
-        Assertions.assertTrue(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(1, 7)));
+        
+        Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(0, 7)));
+        Assertions.assertTrue(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(1, 7)));
 
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
@@ -135,12 +139,12 @@ public class PromotionMapTest {
         this.standardStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        System.out.println(standardStateDetector.getPawnPaths(true));
+        
+        System.out.println(standardStateDetector.getPawnData().getPawnPaths(true));
 
-        Assertions.assertTrue(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
-        Assertions.assertTrue(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(1, 7)));
-        Assertions.assertTrue(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(2, 7)));
+        Assertions.assertTrue(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(0, 7)));
+        Assertions.assertTrue(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(1, 7)));
+        Assertions.assertTrue(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(2, 7)));
 
 
 
@@ -157,10 +161,10 @@ public class PromotionMapTest {
         this.standardStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        Assertions.assertTrue(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
-        Assertions.assertTrue(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(1, 7)));
-        Assertions.assertTrue(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(2, 7)));
+        System.out.println(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList());
+        Assertions.assertTrue(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(0, 7)));
+        Assertions.assertTrue(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(1, 7)));
+        Assertions.assertTrue(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(2, 7)));
 
 
 
@@ -177,16 +181,16 @@ public class PromotionMapTest {
         this.standardStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        System.out.println(standardStateDetector.getPawnOrigins(false));
-        System.out.println(standardStateDetector.getPawnOrigins(true));
+        
+        
+        
 
 
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(x, 7)), "" + x);
+            Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(x, 7)), "" + x);
         }
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(standardStateDetector.getPawnOrigins(false).containsKey(new Coordinate(x, 0)), "" + x);
+            Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(false).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(x, 0)), "" + x);
         }
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
@@ -199,7 +203,7 @@ public class PromotionMapTest {
         BoardInterface boardInterface = new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/1ppppppp/8/3q4/3Q4/8/1PPPPPPP/2BQKBNR w - - 0 1"));
         this.standardStateDetector.testState(boardInterface);
 
-        Assertions.assertTrue(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(0, 7)));
+        Assertions.assertTrue(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(0, 7)));
         Assertions.assertTrue(promotionMap.getState());
     }
 
@@ -211,14 +215,14 @@ public class PromotionMapTest {
         this.standardStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        System.out.println(standardStateDetector.getPawnOrigins(false));
-        System.out.println(standardStateDetector.getPawnOrigins(true));
+        
+        
+        
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(standardStateDetector.getPawnOrigins(true).containsKey(new Coordinate(x, 7)), "" + x);
+            Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(x, 7)), "" + x);
         }
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(standardStateDetector.getPawnOrigins(false).containsKey(new Coordinate(x, 0)), "" + x);
+            Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(false).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(x, 0)), "" + x);
         }
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
@@ -234,15 +238,15 @@ public class PromotionMapTest {
         this.standardStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        System.out.println(standardStateDetector.getPawnOrigins(false));
-        System.out.println(standardStateDetector.getPawnOrigins(true));
+        
+        
+        
         // One of the below should be true, it doesn't matter which
         for (int x = 0 ; x < 8 ; x++) {
 //            Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(x, 7)), "" + x);
         }
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(standardStateDetector.getPawnOrigins(false).containsKey(new Coordinate(x, 0)), "" + x);
+            Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(false).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(x, 0)), "" + x);
         }
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
@@ -258,15 +262,15 @@ public class PromotionMapTest {
         this.standardStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        System.out.println(standardStateDetector.getPawnOrigins(false));
-        System.out.println(standardStateDetector.getPawnOrigins(true));
+        
+        
+        
         // One of the below should be true, it doesn't matter which
         for (int x = 0 ; x < 8 ; x++) {
 //            Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(x, 7)), "" + x);
         }
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(standardStateDetector.getPawnOrigins(false).containsKey(new Coordinate(x, 0)), "" + x);
+            Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(false).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(x, 0)), "" + x);
         }
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));
@@ -282,15 +286,15 @@ public class PromotionMapTest {
         this.standardStateDetector.testState(boardInterface);
 //        promotionMap.getPawnOrigins()
 //        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        System.out.println(standardStateDetector.getPawnOrigins(true));
-        System.out.println(standardStateDetector.getPawnOrigins(false));
-        System.out.println(standardStateDetector.getPawnOrigins(true));
+        
+        
+        
         // One of the below should be true, it doesn't matter which
         for (int x = 0 ; x < 8 ; x++) {
 //            Assertions.assertFalse(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(x, 7)), "" + x);
         }
         for (int x = 0 ; x < 8 ; x++) {
-            Assertions.assertFalse(standardStateDetector.getPawnOrigins(false).containsKey(new Coordinate(x, 0)), "" + x);
+            Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(false).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(x, 0)), "" + x);
         }
 
 //        Assertions.assertTrue(promotionMap.getPawnOrigins("white").containsKey(new Coordinate(0, 7)));

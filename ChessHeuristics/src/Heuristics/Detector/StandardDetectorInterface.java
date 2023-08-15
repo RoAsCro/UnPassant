@@ -17,7 +17,7 @@ public class StandardDetectorInterface implements DetectorInterface {
     }
     @Override
     public Map<String, Map<Path, Integer>> getPromotions(boolean white) {
-        List<Map.Entry<String, Map<Path, Integer>>> entryList = detector.getPromotionNumbers().entrySet()
+        List<Map.Entry<String, Map<Path, Integer>>> entryList = detector.getPromotionData().getPromotionNumbers().entrySet()
                 .stream()
                 .filter(e -> e.getKey().endsWith(white ? "w" : "b"))
                 .filter(e -> !e.getValue().isEmpty())
@@ -52,7 +52,7 @@ public class StandardDetectorInterface implements DetectorInterface {
 
     @Override
     public boolean canCastle(boolean white) {
-        return !(this.detector.getKingMovement(white) || (this.detector.getRookMovement(white, true) && this.detector.getRookMovement(white, false)));
+        return !(this.detector.getPieceData().getKingMovement(white) || (this.detector.getPieceData().getRookMovement(white, true) && this.detector.getPieceData().getRookMovement(white, false)));
     }
 
     @Override

@@ -31,7 +31,7 @@ public class PiecePathFinderUtil {
     public Predicate<Coordinate> secondRankCollision = coordinate -> {
         int y = coordinate.getY();
         if ((y == WHITE_PAWN_Y || y == BLACK_PAWN_Y)) {
-            Map<Coordinate, List<Path>> map = this.detector.getPawnPaths(y == 1);
+            Map<Coordinate, List<Path>> map = this.detector.getPawnData().getPawnPaths(y == 1);
             return !(map.containsKey(coordinate));
         }
         return true;
@@ -41,13 +41,13 @@ public class PiecePathFinderUtil {
         int y = path.getLast().getY();
         if (y == WHITE_ESCAPE_Y || y == BLACK_ESCAPE_Y) {
             boolean white = y == WHITE_ESCAPE_Y;
-            Path toCheck = this.detector.getPawnPaths(white).entrySet()
+            Path toCheck = this.detector.getPawnData().getPawnPaths(white).entrySet()
                     .stream().filter(e -> e.getKey().getY() == (white ? WHITE_ESCAPE_Y : BLACK_ESCAPE_Y))
                     .filter(e -> e.getValue().size() == 1)
                     .filter(e -> e.getValue().get(0).contains(path.getLast()))
                     .map(e -> e.getValue().get(0))
                     .findAny().orElse(null);
-            Map<Coordinate, List<Path>> map = this.detector.getPawnPaths(white);
+            Map<Coordinate, List<Path>> map = this.detector.getPawnData().getPawnPaths(white);
             return !(
                     map.containsKey(path.getLast())
                             && toCheck != null
@@ -60,10 +60,10 @@ public class PiecePathFinderUtil {
         return !(
                 (coordinate.getY() == 0 || coordinate.getY() == 7)
                         && !STANDARD_STARTS.get(coordinate.getX()).equals("rook")
-                        && this.detector.getStartLocations().containsKey(coordinate)
-                        && !this.detector.getStartLocations().get(coordinate).isEmpty()
-                        && this.detector.getCaged().containsKey(coordinate)
-                        && this.detector.getCaged().get(coordinate));
+                        && this.detector.getPieceData().getStartLocations().containsKey(coordinate)
+                        && !this.detector.getPieceData().getStartLocations().get(coordinate).isEmpty()
+                        && this.detector.getPieceData().getCaged().containsKey(coordinate)
+                        && this.detector.getPieceData().getCaged().get(coordinate));
     };
 
     private final Map<String, Predicate<Path>> pathConditions = Map.of(

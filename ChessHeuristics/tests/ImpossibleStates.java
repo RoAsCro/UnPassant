@@ -1,6 +1,10 @@
 import Heuristics.BoardInterface;
 import Heuristics.Deductions.*;
+import Heuristics.Detector.Data.StandardCaptureData;
+import Heuristics.Detector.Data.StandardPieceData;
+import Heuristics.Detector.Data.StandardPromotionData;
 import Heuristics.Detector.StandardDetectorInterface;
+import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.StandardStateDetector;
 import Heuristics.Observations.PawnNumber;
 import Heuristics.Observations.PieceNumber;
@@ -22,17 +26,17 @@ public class ImpossibleStates {
     public void setup() {
         this.pawnNumber = new PawnNumber();
         this.pieceNumber = new PieceNumber();
-        PawnMap pmw = new PawnMap(true);
-        PawnMap pmb = new PawnMap(false);
+//        CombinedPawnMap.PawnMap pmw = new CombinedPawnMap.PawnMap(true);
+//        CombinedPawnMap.PawnMap pmb = new CombinedPawnMap.PawnMap(false);
         CombinedPawnMap cpm = new CombinedPawnMap();
         this.pm = new PieceMap();
         CaptureLocations cl = new CaptureLocations();
         PromotionMap prm = new PromotionMap();
         PromotedPawnSquares pps = new PromotedPawnSquares();
         this.uc = new UnCastle();
-        this.detector = new StandardStateDetector(pawnNumber, pieceNumber,
-                pmw,
-                pmb,
+        this.detector = new StandardStateDetector(pawnNumber, pieceNumber, new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(),
+//                pmw,
+//                pmb,
                 cpm,
                 pm,
                 cl,
@@ -473,18 +477,17 @@ public class ImpossibleStates {
     void r() {
 
         System.out.println(test("r3kqR1/1p1ppp2/5BpP/6PN/4P2p/3Q1P2/2PK2pP/8 w - - 0 1"));
-        System.out.println(this.detector.getPromotionNumbers());
-        System.out.println(this.detector.getPromotedPieceMap());
-        System.out.println(this.detector.getPromotedPawns(false));
-        System.out.println(this.detector.getPromotionPaths(false));
+        System.out.println(this.detector.getPromotionData().getPromotionNumbers());
+        System.out.println(this.detector.getPromotionData().getPromotedPieceMap());
+        
         System.out.println(new StandardDetectorInterface(detector).getPromotions(true));
-        System.out.println(this.detector.getRookMovement(false, true));
+        System.out.println(this.detector.getPieceData().getRookMovement(false, true));
 
-        System.out.println(this.detector.getPawnPaths(false));
-        System.out.println(this.detector.getPawnPaths(true));
-        System.out.println(this.detector.getPromotionPaths(false));
+        System.out.println(this.detector.getPawnData().getPawnPaths(false));
+        System.out.println(this.detector.getPawnData().getPawnPaths(true));
+        
 
-        System.out.println(this.detector.getPromotionPaths(true));
+        
 
 
 
@@ -498,17 +501,16 @@ public class ImpossibleStates {
 //        System.out.println(this.detector.getPromotedPawns(true));
 //        System.out.println(this.detector.getPromotedPawns(false));
 //
-//        System.out.println(this.detector.getnonPawnCaptures(true));
-//        System.out.println(this.detector.getnonPawnCaptures(false
+//        System.out.println(this.detector.getNonPawnCaptures(true));
+//        System.out.println(this.detector.getNonPawnCaptures(false
 //        ));
 //        System.out.println(this.detector.getSinglePawnPaths(true));
 //        System.out.println(this.detector.getSinglePawnPaths(false));
         System.out.println(AbstractDeduction.pawnStarts);
-        System.out.println(this.detector.getStartLocations());
-        System.out.println(this.detector.getPromotionNumbers());
-        System.out.println(this.detector.getPromotedPieceMap());
-        System.out.println(this.detector.getPromotedPawns(false));
-        System.out.println(this.detector.getPromotionPaths(false));
+        System.out.println(this.detector.getPieceData().getStartLocations());
+        System.out.println(this.detector.getPromotionData().getPromotionNumbers());
+        System.out.println(this.detector.getPromotionData().getPromotedPieceMap());
+        
         System.out.println(new StandardDetectorInterface(detector).getPromotions(true));
 
 
