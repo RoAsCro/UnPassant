@@ -19,7 +19,6 @@ public class StateLog {
     public int test(BoardInterface boardInterface) {
 //        System.out.println(log.containsKey(boardInterface));
        Boolean present = log.getOrDefault(boardInterface.hashCode(), null);
-        System.out.println(present);
 //        System.out.println(boardInterface.getReader().toFEN() + " " + present);
 
         if (present == null) {

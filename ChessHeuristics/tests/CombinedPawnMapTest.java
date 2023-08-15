@@ -5,8 +5,6 @@ import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.Data.StandardPieceData;
 import Heuristics.Detector.Data.StandardPromotionData;
 import Heuristics.Detector.StandardStateDetector;
-import Heuristics.Observations.PawnNumber;
-import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
 import Heuristics.Pathfinder;
 import StandardChess.BoardBuilder;
@@ -26,7 +24,7 @@ public class CombinedPawnMapTest {
 //        this.pawnMapWhite = new PawnMap(true);
 //        this.pawnMapBlack = new PawnMap(false);
         this.combinedPawnMap = new CombinedPawnMap();
-        standardStateDetector = new StandardStateDetector(new PawnNumber(), new PieceNumber(), new StandardPawnData(), new StandardCaptureData(),
+        standardStateDetector = new StandardStateDetector(new StandardPawnData(), new StandardCaptureData(),
                 new StandardPromotionData(), new StandardPieceData(), this.combinedPawnMap);
     }
 

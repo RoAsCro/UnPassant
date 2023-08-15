@@ -5,8 +5,6 @@ import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.Data.StandardPieceData;
 import Heuristics.Detector.Data.StandardPromotionData;
 import Heuristics.Detector.StandardStateDetector;
-import Heuristics.Observations.PawnNumber;
-import Heuristics.Observations.PieceNumber;
 import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
 import org.junit.jupiter.api.Assertions;
@@ -22,7 +20,7 @@ public class PawnMapTest {
         CombinedPawnMap c = new CombinedPawnMap();
         this.pawnMapWhite = new CombinedPawnMap.PawnMap(true);
         this.pawnMapBlack = new CombinedPawnMap.PawnMap(false);
-        standardStateDetector = new StandardStateDetector(new PawnNumber(), new PieceNumber(), new StandardPawnData(), new StandardCaptureData(),
+        standardStateDetector = new StandardStateDetector(new StandardPawnData(), new StandardCaptureData(),
                 new StandardPromotionData(), new StandardPieceData(), pawnMapWhite, pawnMapBlack);
     }
 

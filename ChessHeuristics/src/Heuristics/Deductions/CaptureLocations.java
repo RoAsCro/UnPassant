@@ -223,7 +223,6 @@ public class CaptureLocations extends AbstractDeduction {
             Path pawnOrigins = Path.of(this.detector.getPawnData().getPawnPaths(white).values().stream()
                     .flatMap(l -> l.stream().map(LinkedList::getFirst))
                     .collect(Collectors.toSet()));
-            System.out.println(pawnOrigins);
 //            System.out.println(this.detector.getPawnOrigins(white).values().stream().flatMap(Path::stream).toList());
 
             for (int x = 0 ; x <= K_ROOK_X ; x++) {

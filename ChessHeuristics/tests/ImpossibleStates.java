@@ -6,8 +6,6 @@ import Heuristics.Detector.Data.StandardPromotionData;
 import Heuristics.Detector.StandardDetectorInterface;
 import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.StandardStateDetector;
-import Heuristics.Observations.PawnNumber;
-import Heuristics.Observations.PieceNumber;
 import Heuristics.Deductions.UnCastle;
 import StandardChess.BoardBuilder;
 import org.junit.jupiter.api.Assertions;
@@ -16,27 +14,19 @@ import org.junit.jupiter.api.Test;
 
 public class ImpossibleStates {
 
-    PawnNumber pawnNumber;
-    PieceNumber pieceNumber;
     StandardStateDetector detector;
     PieceMap pm;
     UnCastle uc;
 
     @BeforeEach
     public void setup() {
-        this.pawnNumber = new PawnNumber();
-        this.pieceNumber = new PieceNumber();
-//        CombinedPawnMap.PawnMap pmw = new CombinedPawnMap.PawnMap(true);
-//        CombinedPawnMap.PawnMap pmb = new CombinedPawnMap.PawnMap(false);
         CombinedPawnMap cpm = new CombinedPawnMap();
         this.pm = new PieceMap();
         CaptureLocations cl = new CaptureLocations();
         PromotionMap prm = new PromotionMap();
         PromotedPawnSquares pps = new PromotedPawnSquares();
         this.uc = new UnCastle();
-        this.detector = new StandardStateDetector(pawnNumber, pieceNumber, new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(),
-//                pmw,
-//                pmb,
+        this.detector = new StandardStateDetector(new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(),
                 cpm,
                 pm,
                 cl,

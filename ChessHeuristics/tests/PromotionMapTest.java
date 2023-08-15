@@ -5,8 +5,6 @@ import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.Data.StandardPieceData;
 import Heuristics.Detector.Data.StandardPromotionData;
 import Heuristics.Detector.StandardStateDetector;
-import Heuristics.Observations.PawnNumber;
-import Heuristics.Observations.PieceNumber;
 import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
 import org.junit.jupiter.api.Assertions;
@@ -25,16 +23,11 @@ public class PromotionMapTest {
     StandardStateDetector standardStateDetector;
     @BeforeEach
     void setup() {
-        PawnNumber pawnNumber = new PawnNumber();
-        PieceNumber pieceNumber = new PieceNumber();
-
-//        pawnMapWhite = new PawnMap(true);
-//        pawnMapBlack = new PawnMap(false);
         combinedPawnMap = new CombinedPawnMap();
         pieceMap = new PieceMap();
         captureLocations = new CaptureLocations();
         promotionMap = new PromotionMap();
-        standardStateDetector = new StandardStateDetector(pawnNumber, pieceNumber, new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(), combinedPawnMap, pieceMap,  captureLocations, promotionMap);
+        standardStateDetector = new StandardStateDetector(new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(), combinedPawnMap, pieceMap,  captureLocations, promotionMap);
 
     }
     @Test

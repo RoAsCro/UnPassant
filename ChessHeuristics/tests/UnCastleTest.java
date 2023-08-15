@@ -7,8 +7,6 @@ import Heuristics.Detector.Data.StandardPromotionData;
 import Heuristics.Detector.StandardStateDetector;
 import Heuristics.Detector.StateDetectorFactory;
 import Heuristics.DetectorInterface;
-import Heuristics.Observations.PawnNumber;
-import Heuristics.Observations.PieceNumber;
 import Heuristics.Deductions.UnCastle;
 import StandardChess.BoardBuilder;
 import org.junit.jupiter.api.Assertions;
@@ -19,8 +17,6 @@ import java.util.List;
 
 public class UnCastleTest {
 
-    PawnNumber pawnNumber;
-    PieceNumber pieceNumber;
     StandardStateDetector detector;
 //    PawnMap pmw;
 //    PawnMap pmb;
@@ -31,8 +27,6 @@ public class UnCastleTest {
 
     @BeforeEach
     public void setup() {
-        this.pawnNumber = new PawnNumber();
-        this.pieceNumber = new PieceNumber();
 //        this.pmw = new PawnMap(true);
 //        this.pmb = new PawnMap(false);
         CombinedPawnMap cpm = new CombinedPawnMap();
@@ -41,7 +35,7 @@ public class UnCastleTest {
         this.prm = new PromotionMap();
         this.pps = new PromotedPawnSquares();
         this.uc = new UnCastle();
-        this.detector = new StandardStateDetector(pawnNumber, pieceNumber, new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(),
+        this.detector = new StandardStateDetector(new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(),
 //                pmw,
 //                pmb,
                 cpm,

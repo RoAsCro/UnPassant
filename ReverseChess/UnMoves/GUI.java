@@ -111,12 +111,8 @@ public class GUI {
         Coordinate newCoordinate = new Coordinate(x / SQUARE_SIZE, 7 - y / SQUARE_SIZE);
         if (origin == null){
             origin = newCoordinate;
-            System.out.println("Origin set: " + origin);
-
         } else {
             target = newCoordinate;
-            System.out.println("Target set: " + target);
-
         }
         if (origin.equals(target)) {
 
@@ -231,10 +227,7 @@ public class GUI {
                     }
                 }
             }
-            System.out.println(System.nanoTime() - start);
         }
-
-
     }
 
 }

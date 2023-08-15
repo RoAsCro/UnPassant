@@ -5,8 +5,6 @@ import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.Data.StandardPieceData;
 import Heuristics.Detector.Data.StandardPromotionData;
 import Heuristics.Detector.StandardStateDetector;
-import Heuristics.Observations.PawnNumber;
-import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
 import Heuristics.Pathfinder;
 import StandardChess.BoardBuilder;
@@ -27,18 +25,11 @@ public class PieceMapTest {
 
     @BeforeEach
     void setup() {
-        PawnNumber pawnNumber = new PawnNumber();
-        PieceNumber pieceNumber = new PieceNumber();
-
-//        pawnMapWhite = new PawnMap(true);
-//        //
-//        pawnMapBlack = new PawnMap(false);
-        //
         combinedPawnMap = new CombinedPawnMap();
         //
         pieceMap = new PieceMap();
         //
-        this.standardStateDetector = new StandardStateDetector(pawnNumber, pieceNumber, new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(), combinedPawnMap, pieceMap);
+        this.standardStateDetector = new StandardStateDetector(new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(), combinedPawnMap, pieceMap);
 
 
     }

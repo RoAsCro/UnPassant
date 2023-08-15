@@ -56,7 +56,6 @@ public class Solver {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(solutions);
         return solutions;
 
     }

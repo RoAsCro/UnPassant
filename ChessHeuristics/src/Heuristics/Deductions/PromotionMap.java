@@ -23,7 +23,6 @@ public class PromotionMap extends AbstractDeduction {
 
     // <Promotion square, <Origin square, Number of captures>>
     private final Map<Coordinate, Map<Coordinate, Integer>> goalOrigins = new HashMap<>();
-//    private final Map<>
 
     public PromotionMap() {
         super("A promoted piece cannot reach its current location from an available pawn start");

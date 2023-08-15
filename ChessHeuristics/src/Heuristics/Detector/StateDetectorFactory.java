@@ -8,8 +8,6 @@ import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.Data.StandardPieceData;
 import Heuristics.Detector.Data.StandardPromotionData;
 import Heuristics.DetectorInterface;
-import Heuristics.Observations.PawnNumber;
-import Heuristics.Observations.PieceNumber;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 
@@ -23,34 +21,19 @@ public class StateDetectorFactory {
 
     private static Deduction[] getDeductions() {
         CombinedPawnMap cpm;
-//        System.out.println(Arrays.stream(deductions).toList());
-//        System.out.println(pmw);
         cpm = new CombinedPawnMap();
-
-//        System.out.println(pmw.getPawnOrigins());
-
         PawnPositions pp = new PawnPositions();
         PieceMap pm = new PieceMap();
         CaptureLocations cl = new CaptureLocations();
         PromotionMap prm = new PromotionMap();
         PromotedPawnSquares pps = new PromotedPawnSquares();
-//        Deduction[] deductions1 = new Deduction[]{};
-        return new Deduction[]{pp,
-
-                cpm,
-                pm,
-                cl,
-                prm,
-                pps
-        };
+        return new Deduction[]{pp, cpm, pm, cl, prm, pps};
     }
 
     public static SolverImpossibleStateDetector getDetector(ChessBoard board) {
-        PawnNumber pawnNumber = new PawnNumber();
-        PieceNumber pieceNumber = new PieceNumber();
         Deduction[] deductions = getDeductions();
         UnCastle unCastle = new UnCastle();
-        return new SolverImpossibleStateDetector(pawnNumber, pieceNumber, new StandardPawnData(), new StandardCaptureData(),
+        return new SolverImpossibleStateDetector(new StandardPawnData(), new StandardCaptureData(),
                 new StandardPromotionData(), new StandardPieceData(), unCastle, new BoardInterface(board), deductions);
     }
 
@@ -67,11 +50,9 @@ public class StateDetectorFactory {
     }
 
     public static SolverImpossibleStateDetector getDetector(String fen, Deduction... deductions) {
-        PawnNumber pawnNumber = new PawnNumber();
-        PieceNumber pieceNumber = new PieceNumber();
         UnCastle unCastle = new UnCastle();
 
-        return new SolverImpossibleStateDetector(pawnNumber, pieceNumber, new StandardPawnData(), new StandardCaptureData(),
+        return new SolverImpossibleStateDetector(new StandardPawnData(), new StandardCaptureData(),
                 new StandardPromotionData(), new StandardPieceData(), unCastle,
                 new BoardInterface(BoardBuilder.buildBoard(fen)), deductions);
     }

@@ -7,9 +7,6 @@ import Heuristics.Detector.Data.CaptureData;
 import Heuristics.Detector.Data.PawnData;
 import Heuristics.Detector.Data.PieceData;
 import Heuristics.Detector.Data.PromotionData;
-import Heuristics.HeuristicsUtil;
-import Heuristics.Observations.PawnNumber;
-import Heuristics.Observations.PieceNumber;
 import Heuristics.Path;
 import StandardChess.Coordinate;
 
@@ -20,23 +17,15 @@ public class StandardStateDetector implements StateDetector {
 
     private static final int MAX_PAWNS = 8;
     private static final int MAX_PIECES = 16;
-
-    private static final int WHITE = 0;
-    private static final int BLACK = 1;
-
-
     private final UnCastle unCastle = new UnCastle();
 
-    private final PawnNumber pawnNumber;
-    private final PieceNumber pieceNumber;
-
     private BoardInterface board;
-    private PawnData pawnData;
-    private CaptureData captureData;
-    private PromotionData promotionData;
-    private PieceData pieceData;
-    private List<Deduction> deductions;
-    private List<Deduction> finishedDeductions = new LinkedList();
+    private final PawnData pawnData;
+    private final CaptureData captureData;
+    private final PromotionData promotionData;
+    private final PieceData pieceData;
+    private final List<Deduction> deductions;
+    private final List<Deduction> finishedDeductions = new LinkedList<>();
     public static final Function<Path, Integer> PATH_DEVIATION = p -> p.stream()
             .reduce(new Coordinate(p.get(0).getX(), 0), (c, d) -> {
                 if (c.getX() != d.getX()) {
@@ -44,15 +33,10 @@ public class StandardStateDetector implements StateDetector {
                 }
                 return c;
             }).getY();
-
-    //PieceMap stuff
     private boolean state = false;
     private String errorMessage;
 
-
-    public StandardStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, PawnData pawnData, CaptureData captureData, PromotionData promotionData, PieceData pieceData, Deduction ... deductions) {
-        this.pawnNumber = pawnNumber;
-        this.pieceNumber = pieceNumber;
+    public StandardStateDetector(PawnData pawnData, CaptureData captureData, PromotionData promotionData, PieceData pieceData, Deduction ... deductions) {
         this.pawnData = pawnData;
         this.captureData = captureData;
         this.promotionData = promotionData;
@@ -61,8 +45,8 @@ public class StandardStateDetector implements StateDetector {
         this.deductions.forEach(d -> d.registerDetector(this));
     }
 
-    public StandardStateDetector(PawnNumber pawnNumber, PieceNumber pieceNumber, PawnData pawnData, CaptureData captureData, PromotionData promotionData, PieceData pieceData, BoardInterface board, Deduction ... deductions) {
-        this(pawnNumber, pieceNumber, pawnData, captureData, promotionData, pieceData, deductions);
+    public StandardStateDetector(PawnData pawnData, CaptureData captureData, PromotionData promotionData, PieceData pieceData, BoardInterface board, Deduction ... deductions) {
+        this(pawnData, captureData, promotionData, pieceData, deductions);
         this.board = board;
     }
 
@@ -78,19 +62,19 @@ public class StandardStateDetector implements StateDetector {
     @Override
     public boolean testState(BoardInterface board) {
 
-        this.pieceNumber.observe(board);
         if (board.inCheck(board.getTurn().equals("white") ? "black" : "white")) {
             this.state = false;
             return false;
         }
-        if (this.pieceNumber.getBlackPieces() > MAX_PIECES || this.pieceNumber.getWhitePieces() > MAX_PIECES) {
+        if (board.getBoardFacts().pieceNumbers(false) > MAX_PIECES
+                || board.getBoardFacts().pieceNumbers(true) > MAX_PIECES) {
             this.state = false;
 
             return false;
         }
 
-        this.pawnNumber.observe(board);
-        if (this.pawnNumber.getBlackPawns() > MAX_PAWNS || this.pawnNumber.getWhitePawns() > MAX_PAWNS) {
+        if (board.getBoardFacts().pawnNumber(false) > MAX_PAWNS
+                || board.getBoardFacts().pawnNumber(true) > MAX_PAWNS) {
             this.state = false;
 
             return false;

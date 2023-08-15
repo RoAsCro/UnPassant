@@ -5,8 +5,6 @@ import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.Data.StandardPieceData;
 import Heuristics.Detector.Data.StandardPromotionData;
 import Heuristics.Detector.StandardStateDetector;
-import Heuristics.Observations.PawnNumber;
-import Heuristics.Observations.PieceNumber;
 import StandardChess.BoardBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,25 +12,17 @@ import org.junit.jupiter.api.Test;
 
 public class PromotionSquaresTest {
 
-    PawnNumber pawnNumber;
-    PieceNumber pieceNumber;
     StandardStateDetector detector;
     PromotedPawnSquares pps;
 
     @BeforeEach
     public void setup() {
-        this.pawnNumber = new PawnNumber();
-        this.pieceNumber = new PieceNumber();
-//        PawnMap pmw = new PawnMap(true);
-//        PawnMap pmb = new PawnMap(false);
         CombinedPawnMap cpm = new CombinedPawnMap();
         PieceMap pm = new PieceMap();
         CaptureLocations cl = new CaptureLocations();
         PromotionMap prm = new PromotionMap();
         this.pps = new PromotedPawnSquares();
-        this.detector = new StandardStateDetector(pawnNumber, pieceNumber, new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(),
-//                pmw,
-//                pmb,
+        this.detector = new StandardStateDetector(new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(),
                 cpm,
                 pm,
                 cl,
