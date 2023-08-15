@@ -66,14 +66,14 @@ public class StateDetectorFactory {
         return getDetectorInterface(BoardBuilder.buildBoard(fen));
     }
 
-    public static SolverImpossibleStateDetector getDetector(ChessBoard board, Deduction... deductions) {
+    public static SolverImpossibleStateDetector getDetector(String fen, Deduction... deductions) {
         PawnNumber pawnNumber = new PawnNumber();
         PieceNumber pieceNumber = new PieceNumber();
         UnCastle unCastle = new UnCastle();
 
         return new SolverImpossibleStateDetector(pawnNumber, pieceNumber, new StandardPawnData(), new StandardCaptureData(),
                 new StandardPromotionData(), new StandardPieceData(), unCastle,
-                new BoardInterface(board), getDeductions());
+                new BoardInterface(BoardBuilder.buildBoard(fen)), deductions);
     }
 
     }
