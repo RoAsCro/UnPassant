@@ -133,32 +133,32 @@ public class Solver {
                 if (any) {
                     CheckUtil.switchTurns(currentBoard);
                     if (!legalFirst || testState(currentBoard)) {
-                        System.out.println("Down again..." + state);
+                        //System.out.println("Down again..." + state);
 
                         boolean pass = true;
                         if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
-                            System.out.println("check " + state);
+                            //System.out.println("check " + state);
                             pass = !iterate(currentState, 1, true).isEmpty();
                         }
                         if (pass) {
-                            System.out.println("finish " + state);
+                            //System.out.println("finish " + state);
 
                             finalStates.add(currentState + ":" + stateDescription[1]);
                             return finalStates;
                         }
-                        System.out.println("coming out");
+                        //System.out.println("coming out");
                     }else {
                     }
                 } else {
                     this.legalFirst = true;
-                    System.out.println("goinf down " + state);
+                    //System.out.println("goinf down " + state);
                     if (this.additionalDepth == 0 || !iterate(currentState, this.additionalDepth, true).isEmpty()) {
                         boolean pass = true;
 
                         if (this.additionalDepth == 0) {
                             CheckUtil.switchTurns(currentBoard);
                             if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
-                                System.out.println("check " + state);
+                                //System.out.println("check " + state);
                                 pass = !iterate(currentState, 1, true).isEmpty();
                             }
                         }
@@ -272,12 +272,12 @@ public class Solver {
                     i = 2;
                     continueFlag = false;
                 }
-//                System.out.println("--------");
-//                System.out.println(moves.length);
-//                System.out.println(origin);
+//                //System.out.println("--------");
+//                //System.out.println(moves.length);
+//                //System.out.println(origin);
 //
-//                System.out.println(direction);
-//                System.out.println(i);
+//                //System.out.println(direction);
+//                //System.out.println(i);
                 // For each UnTakeable piece
                 for (String piece : pieces) {
                     ChessBoard currentBoard = BoardBuilder.buildBoard(board);
@@ -345,15 +345,15 @@ public class Solver {
         detector = StateDetectorFactory.getDetectorInterface(board);
         boolean pass = detector.testState();
         if (pass) {
-            System.out.println("XXX");
+            //System.out.println("XXX");
 
             pass = castleCheck(board, detector);
             if (pass) {
                 pass = this.detectorPredicate.test(detector);
             }
         } else {
-            System.out.println(board.getReader().toFEN());
-            System.out.println(detector.getErrorMessage());
+            //System.out.println(board.getReader().toFEN());
+            //System.out.println(detector.getErrorMessage());
 
         }
 
@@ -384,13 +384,13 @@ public class Solver {
             for (int j = 0 ; j < 2 ; j++) {
                 if (board.canCastle(piece, white ? "white" : "black")) {
                     if (!detector.canCastle(white)) {
-                        //System.out.println(board.getReader().toFEN());
-                        //System.out.println(white);
+                        ////System.out.println(board.getReader().toFEN());
+                        ////System.out.println(white);
 
-                        //System.out.println("CAN:T CASTLE");
+                        ////System.out.println("CAN:T CASTLE");
                         return false;
                     } else if (white && piece.equals("queen")) {
-                        //System.out.println(board.getReader().toFEN());
+                        ////System.out.println(board.getReader().toFEN());
                     }
                 }
                 piece = "queen";

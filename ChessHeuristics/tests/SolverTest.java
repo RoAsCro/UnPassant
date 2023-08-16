@@ -1,6 +1,7 @@
-import SolveAlgorithm.Solver;
+import SolveAlgorithm.SolverV2;
 import Heuristics.Detector.SolverImpossibleStateDetector;
 import Heuristics.Detector.StateDetectorFactory;
+import SolveAlgorithm.SolverV2;
 import SolveAlgorithm.StateConditions;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
@@ -14,18 +15,12 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 public class SolverTest {
-    Predicate<String> monochrome =  s -> {
-        String move = s.split(":")[1];
-        String square1 = move.substring(1, 3);
-        String square2 = move.substring(move.length() - 2);
-        return (square1.charAt(0) - 97 + square1.charAt(1) - 49) % 2 == (square2.charAt(0) - 97 + square2.charAt(1) - 49);
-    };
 
 
     @Test
     public void chessMysteries1() {
         // Simple
-        Solver solver = new Solver();
+        SolverV2 solver = new SolverV2();
         solver.setAdditionalDepth(2);
         solver.setNumberOfSolutions(100);
         Assertions.assertEquals(4, solver.solve(BoardBuilder.buildBoard("k1K5/8/8/8/8/8/7P/6B1 b - - 0 1"), 2).size());
@@ -39,20 +34,20 @@ public class SolverTest {
         String board1 = "k1K5/4Q3/8/2B1P3/3P4/7P/8/7B";
         String board2 = "7B/8/7P/3P4/2B1P3/8/4Q3/k1K5";
         System.out.println("Testing 1...");
-        Assertions.assertEquals(0, new Solver().solve(BoardBuilder.buildBoard(board1 + " w"), 1).size());
+        Assertions.assertEquals(0, new SolverV2().solve(BoardBuilder.buildBoard(board1 + " w"), 1).size());
 
         System.out.println("Testing 2...");
-        Assertions.assertEquals(0, new Solver().solve(BoardBuilder.buildBoard(board1 + " b"), 1).size());
+        Assertions.assertEquals(0, new SolverV2().solve(BoardBuilder.buildBoard(board1 + " b"), 1).size());
 
         System.out.println("Testing 3...");
-        Assertions.assertEquals(0, new Solver().solve(BoardBuilder.buildBoard(board2 + " b"), 1).size());
+        Assertions.assertEquals(0, new SolverV2().solve(BoardBuilder.buildBoard(board2 + " b"), 1).size());
 
         System.out.println("Testing 4...");
-        Solver solver = new Solver();
+        SolverV2 solver = new SolverV2();
         solver.setAdditionalDepth(1);
         solver.setNumberOfSolutions(100);
         Assertions.assertEquals(3, solver.solve(BoardBuilder.buildBoard(board2 + " w"), 1).size());
-//        new SolveAlgorithm.Solver().solve(BoardBuilder.buildBoard(board2 + " w"), 1);
+//        new SolveAlgorithm.SolverV2().solve(BoardBuilder.buildBoard(board2 + " w"), 1);
         // Only one scenario, after eliminating impossible board states, has valid moves
 
 
@@ -66,17 +61,17 @@ public class SolverTest {
         String board1 = "B7/8/P7/4P3/5B2/4P3/3Q4/5K1k";
         String board2 = "k1K5/4Q3/3P4/2B5/3P4/7P/8/7B";
         System.out.println("Testing 1...");
-        Assertions.assertNotEquals(0, new Solver().solve(BoardBuilder.buildBoard(board1 + " w"), 1).size());
+        Assertions.assertNotEquals(0, new SolverV2().solve(BoardBuilder.buildBoard(board1 + " w"), 1).size());
 
         System.out.println("Testing 2...");
-        Assertions.assertEquals(0,new Solver().solve(BoardBuilder.buildBoard(board1 + " b"), 1).size());
+        Assertions.assertEquals(0,new SolverV2().solve(BoardBuilder.buildBoard(board1 + " b"), 1).size());
 
         System.out.println("Testing 3...");
-        Assertions.assertEquals(0,new Solver().solve(BoardBuilder.buildBoard(board2 + " b"), 1).size());
+        Assertions.assertEquals(0,new SolverV2().solve(BoardBuilder.buildBoard(board2 + " b"), 1).size());
 
         System.out.println("Testing 4...");
         // Set no. of solutions to 1
-        Solver solver = new Solver();
+        SolverV2 solver = new SolverV2();
         solver.setAdditionalDepth(2);
         solver.setNumberOfSolutions(1);
         Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard(board2 + " w"), 6).size());
@@ -118,7 +113,7 @@ public class SolverTest {
                 ChessBoard b = BoardBuilder.buildBoard(s);
                 b.setTurn(b.getTurn().equals("white") ? "black" : "white");
                 // set max states to 1?
-                Solver solver = new Solver();
+                SolverV2 solver = new SolverV2();
                 solver.setAdditionalDepth(2);
                 solver.setNumberOfSolutions(1);
                 if (!s.equals("2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4B/2PP2P1/4P2P/n7 b - - 0 1")) {
@@ -166,7 +161,7 @@ public class SolverTest {
                 ChessBoard b = BoardBuilder.buildBoard(s);
                 b.setTurn(b.getTurn().equals("white") ? "black" : "white");
                 // set max states to 100?
-                Solver solver = new Solver(string -> true, detectorInterface -> {
+                SolverV2 solver = new SolverV2(string -> true, detectorInterface -> {
                     return detectorInterface.canCastle(false);
                 }
                 );
@@ -175,7 +170,7 @@ public class SolverTest {
                 Assertions.assertEquals(0, solver.solve(b, 2).size());
                 System.out.println("Finished 1");
 
-                solver = new Solver();
+                solver = new SolverV2();
                 solver.setNumberOfSolutions(1);
                 solver.setAdditionalDepth(2);
                 b = BoardBuilder.buildBoard(s);
@@ -184,7 +179,7 @@ public class SolverTest {
                 System.out.println("Finished 2");
 
                 System.out.println("Testing alternative... r3k3/ppp3pp/N5p1/P2Kp2P/2B5/p5P1/PP3PP1/R7 w - - 0 1");
-                solver = new Solver(string -> !(Integer.parseInt(string.split(":")[2]) == 0) || string.split(":")[1].charAt(0) == 'N',
+                solver = new SolverV2(string -> !(Integer.parseInt(string.split(":")[2]) == 0) || string.split(":")[1].charAt(0) == 'N',
                         detectorInterface -> detectorInterface.canCastle(false));
                 solver.setNumberOfSolutions(1);
                 solver.setAdditionalDepth(2);
@@ -222,12 +217,12 @@ public class SolverTest {
     @Test
     public void ChessMysteries6() {
         // pp45
-        Solver solver = new Solver();
+        SolverV2 solver = new SolverV2();
         solver.setNumberOfSolutions(2);
         solver.setAdditionalDepth(2);
         Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w - - 0 1"), 2).size());
 
-        solver = new Solver();
+        solver = new SolverV2();
         solver.setNumberOfSolutions(2);
         solver.setAdditionalDepth(2);
         Assertions.assertEquals(0, solver.solve(BoardBuilder.buildBoard("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w k - 0 1"), 3).size());
@@ -238,7 +233,7 @@ public class SolverTest {
     @Test
     public void ChessMysteries7() {
         // pp46
-        Solver solver = new Solver(
+        SolverV2 solver = new SolverV2(
                 s -> {
 //                    System.out.println(s);
                     int depth = Integer.parseInt(s.split(":")[2]);
@@ -251,7 +246,7 @@ public class SolverTest {
         Assertions.assertTrue((solutions.get(0).contains("4k2r/8/8/2p5/8/5P2/2P2PP1/3bK2R") || solutions.get(0).contains("4k2r/8/8/8/2p5/5P2/2P1bPP1/4K2R"))
         && (solutions.get(1).contains("4k2r/8/8/2p5/8/5P2/2P2PP1/3bK2R") || solutions.get(1).contains("4k2r/8/8/8/2p5/5P2/2P1bPP1/4K2R"))) ;
 
-        solver = new Solver(
+        solver = new SolverV2(
                 s -> {
                     int depth = Integer.parseInt(s.split(":")[2]);
                     return depth >= 2 || !s.split(":")[1].contains("x");
@@ -272,7 +267,7 @@ public class SolverTest {
     @Test
     public void ChessMysteries8() {
         // pp49
-        Solver solver = new Solver();
+        SolverV2 solver = new SolverV2();
         solver.setNumberOfSolutions(1);
         solver.setNumberOfSolutions(1);
         solver.setAdditionalDepth(1);
@@ -297,7 +292,7 @@ public class SolverTest {
 
         );
         for (String st : list) {
-            Solver solver = new Solver(s -> {
+            SolverV2 solver = new SolverV2(s -> {
                 boolean black = s.split(" ")[1].equals("b");
                 String move = s.split(":")[1];
 
@@ -344,7 +339,7 @@ public class SolverTest {
         );
 
         for (String st : list) {
-            Solver solver = new Solver(
+            SolverV2 solver = new SolverV2(
             );
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
@@ -366,7 +361,7 @@ public class SolverTest {
         for (String st : list) {
             count++;
             StateConditions.NoPromotions noPromotions = new StateConditions.NoPromotions();
-            Solver solver = new Solver( s ->{
+            SolverV2 solver = new SolverV2( s ->{
 
                 return !(s.split(":")[1].charAt(0) == 'P'
                         && (s.split(":")[1].endsWith("1")  || s.split(":")[1].endsWith("8")));
@@ -396,7 +391,7 @@ public class SolverTest {
         int count = 0;
         for (String st : list) {
             count++;
-            Solver solver = new Solver(
+            SolverV2 solver = new SolverV2(
                     s ->{
                 return !(s.split(":")[1].charAt(0) == 'P'
                         && (s.split(":")[1].endsWith("1")  || s.split(":")[1].endsWith("8"))); //A piece does not promote
@@ -435,7 +430,7 @@ public class SolverTest {
         int count = 0;
         for (String st : list) {
             count++;
-            Solver solver = new Solver();
+            SolverV2 solver = new SolverV2();
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
@@ -462,7 +457,7 @@ public class SolverTest {
         int count = 0;
         for (String st : list) {
             count++;
-            Solver solver = new Solver();
+            SolverV2 solver = new SolverV2();
             solver.setNumberOfSolutions(2);
             solver.setAdditionalDepth(1);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
@@ -483,7 +478,7 @@ public class SolverTest {
         int count = 0;
         for (String st : list) {
             count++;
-            Solver solver = new Solver();
+            SolverV2 solver = new SolverV2();
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
@@ -505,7 +500,7 @@ public class SolverTest {
         int count = 0;
         for (String st : list) {
             count++;
-            Solver solver = new Solver();
+            SolverV2 solver = new SolverV2();
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
@@ -537,7 +532,7 @@ public class SolverTest {
         for (String st : list) {
             count++;
             System.out.println(count);
-            Solver solver = new Solver(s -> {
+            SolverV2 solver = new SolverV2(s -> {
                 String move = s.split(":")[1];
                 if (move.contains("x") && !(s.split(":")[2].equals("0") || s.split(" ")[1].contains("b"))) {
                     return false;
@@ -584,7 +579,7 @@ public class SolverTest {
         for (String st : list) {
             count++;
             System.out.println(count);
-            Solver solver = new Solver(s -> {
+            SolverV2 solver = new SolverV2(s -> {
                 String move = s.split(":")[1];
 //                System.out.println(s);
 
@@ -683,7 +678,7 @@ public class SolverTest {
         for (String st : list) {
             count++;
 //            System.out.println(count);
-            Solver solver = new Solver(
+            SolverV2 solver = new SolverV2(
                     s -> {
                 String move = s.split(":")[1];
 //                System.out.println(s.split(":")[2]);
@@ -722,13 +717,13 @@ public class SolverTest {
         for (String st : list) {
             count++;
 //            System.out.println(count);
-            Solver solver = new Solver();
+            SolverV2 solver = new SolverV2();
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(0);
 //            System.out.println(count);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
             Assertions.assertNotEquals(0, solutions.size());
-            solver = new Solver(
+            solver = new SolverV2(
                     s -> {
                         String move = s.split(":")[1];
                         if (s.split(":")[2].equals("0")) {
@@ -775,7 +770,7 @@ public class SolverTest {
         for (String st : list) {
             count++;
 //            System.out.println(count);
-            Solver solver = new Solver(
+            SolverV2 solver = new SolverV2(
                     s -> {
                         String move = s.split(":")[1];
 //                System.out.println(s);
@@ -792,7 +787,7 @@ public class SolverTest {
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 4);
             Assertions.assertEquals(0, solutions.size());
 
-            solver = new Solver(
+            solver = new SolverV2(
                     s -> true);
             solver.setNumberOfSolutions(5);
             solver.setAdditionalDepth(1);
@@ -847,7 +842,7 @@ public class SolverTest {
             if (!StateDetectorFactory.getDetector(board).testState()) {
                 continue;
             }
-            Solver solver = new Solver(
+            SolverV2 solver = new SolverV2(
                     s -> true);
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
@@ -882,7 +877,7 @@ public class SolverTest {
             if (!StateDetectorFactory.getDetector(board).testState()) {
                 continue;
             }
-            Solver solver = new Solver(
+            SolverV2 solver = new SolverV2(
                     s -> {
 
                         return true;
@@ -918,7 +913,7 @@ public class SolverTest {
             if (!StateDetectorFactory.getDetector(board).testState()) {
                 continue;
             }
-            Solver solver = new Solver(
+            SolverV2 solver = new SolverV2(
                     s -> {
 //                        System.out.println(s);
                         String move = s.split(":")[1];
@@ -951,7 +946,7 @@ public class SolverTest {
             if (!StateDetectorFactory.getDetector(board).testState()) {
                 continue;
             }
-            Solver solver = new Solver(
+            SolverV2 solver = new SolverV2(
                     s -> {
 //                        System.out.println(s);
                         String move = s.split(":")[1];
@@ -962,6 +957,7 @@ public class SolverTest {
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(0);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 8);
+            System.out.println(solutions);
         }
         // Another one where theoretically there should be no problem as it's a matter of iterating backwards
     }
@@ -992,7 +988,7 @@ public class SolverTest {
                     if (!StateDetectorFactory.getDetector(board).testState()) {
                         continue;
                     }
-                    Solver solver = new Solver(
+                    SolverV2 solver = new SolverV2(
                             s -> {
 //                        System.out.println(s);
                                 String move = s.split(":")[1];
@@ -1048,7 +1044,7 @@ public class SolverTest {
                     if (!StateDetectorFactory.getDetector(board).testState()) {
                         continue;
                     }
-                    Solver solver = new Solver(
+                    SolverV2 solver = new SolverV2(
                             s -> {
 //                        System.out.println(s);
                                 return true;
@@ -1095,7 +1091,7 @@ public class SolverTest {
             if (!StateDetectorFactory.getDetector(board).testState()) {
                 continue;
             }
-            Solver solver = new Solver(
+            SolverV2 solver = new SolverV2(
                     s -> {
                         return true;
                     }
@@ -1137,7 +1133,7 @@ public class SolverTest {
         for (String st : list) {
             count++;
 //            System.out.println(count);
-            Solver solver = new Solver(
+            SolverV2 solver = new SolverV2(
                     s -> {
                         String move = s.split(":")[1];
 //                System.out.println(s.split(":")[2]);
@@ -1181,7 +1177,7 @@ public class SolverTest {
         for (String st : list) {
             count++;
 //            System.out.println(count);
-            Solver solver = new Solver(
+            SolverV2 solver = new SolverV2(
                     s -> {
                         return true ;
                     }
@@ -1215,7 +1211,7 @@ public class SolverTest {
         for (String st : list) {
             count++;
 //            System.out.println(count);
-            Solver solver = new Solver(
+            SolverV2 solver = new SolverV2(
                     s -> true
                     ,d -> {
 //                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
@@ -1249,7 +1245,7 @@ public class SolverTest {
 //        int count = 0;
 //        for (String st : list) {
 //            count++;
-//            SolveAlgorithm.Solver solver = new SolveAlgorithm.Solver();
+//            SolveAlgorithm.SolverV2 solver = new SolveAlgorithm.SolverV2();
 //            solver.setNumberOfSolutions(3);
 //            solver.setAdditionalDepth(1);
 ////            if (count == 1) {
@@ -1268,13 +1264,13 @@ public class SolverTest {
     //54, maybe
     @Test
     public void testUnCastling() {
-        Solver solver = new Solver(p ->
+        SolverV2 solver = new SolverV2(p ->
             !(p.split(":")[1].contains("x")) && !(p.split(":")[1].startsWith("R")));
         solver.setAdditionalDepth(0);
         Assertions.assertTrue(solver.solve(BoardBuilder.buildBoard("5rk1/8/6K1/8/8/8/7P/8 b - - 0 1"), 1)
                 .stream().anyMatch(s -> s.contains("4k2r/8/6K1/8/8/8/7P/8")));
 
-        solver = new Solver(p ->
+        solver = new SolverV2(p ->
                 !(p.split(":")[1].contains("x")) && !(p.split(":")[1].startsWith("R")));
         solver.setAdditionalDepth(0);
         Assertions.assertTrue(solver.solve(BoardBuilder.buildBoard("2kr4/8/2K5/8/8/8/7P/8 b - - 0 1"), 1)

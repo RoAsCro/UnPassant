@@ -30,15 +30,15 @@ public class SolverV2 {
 
     private int count = 0;
 
-    public Solver(){};
+    public SolverV2(){};
 
-    public Solver(Predicate<String> fenPredicate, Predicate<DetectorInterface> detectorPredicate){
+    public SolverV2(Predicate<String> fenPredicate, Predicate<DetectorInterface> detectorPredicate){
         this.fenPredicate = fenPredicate;
         this.detectorPredicate = detectorPredicate;
         this.allowNonIntrusiveMovement = false;
     }
 
-    public Solver(Predicate<String> fenPredicate){
+    public SolverV2(Predicate<String> fenPredicate){
         this.fenPredicate = fenPredicate;
     }
 
@@ -63,104 +63,87 @@ public class SolverV2 {
     }
 
     private List<String> iterate(String startingFen, int depth, boolean any) throws InterruptedException {
-        LinkedList<String> states = new LinkedList<>();
-        LinkedList<String> finalStates = new LinkedList<>();
-        ArrayList<Integer> stateSizes = new ArrayList<>();
-        stateSizes.add(1);
-        int currentDepth = 0;
+        ArrayList<LinkedList<String>> stateArray = new ArrayList<>();
+        for (int i = 0 ; i <= depth ; i++) {
+            stateArray.add(i, new LinkedList<>());
+        }
         startingFen = startingFen + "::";
         if (any) {
             startingFen = startingFen + this.maxDepth;
         } else {
             startingFen = startingFen + "0";
         }
-        states.add(startingFen);
+        stateArray.get(0).add(startingFen);
+        LinkedList<String> finalStates = new LinkedList<>();
+        List<SolverV2.SolverRunner> runnerPool = new LinkedList<>();
+        while (true) {
+            List<SolverRunner> toRemove = runnerPool.stream().filter(r -> r.finished).toList();
+            toRemove.forEach(r -> {
+                runnerPool.remove(r);
+                r.states.forEach(s -> {
+                    stateArray.get(r.runnerDepth + 1).add(s.split(":")[0]
+                        + ":"
+                        + s.split(":")[1]
+                        + (r.previousMoves)
+                        + ":" + (r.runnerDepth + 1));});
+            });
 
-        while (!states.isEmpty()) {
-            if (finalStates.size() >= this.numberOfSolutions) {
+            if (finalStates.size() >= this.numberOfSolutions ||
+                    (stateArray.stream().allMatch(List::isEmpty) && runnerPool.isEmpty())) {
                 break;
             }
-            int toAdd = stateSizes.get(currentDepth);
-            stateSizes.remove(currentDepth);
-            stateSizes.add(currentDepth, toAdd - 1);
-            String state = states.pop();
+            if (runnerPool.size() > 10) {
+                continue;
+            }
+            String state = "";
+            int currentDepth = 0;
+            for (int i = depth ; i >= 0 ; i--) {
+                LinkedList<String> currentList = stateArray.get(i);
+                if (!currentList.isEmpty()) {
+                    state = stateArray.get(i).pop();
+                    currentDepth = i;
+                }
+            }
+            if (state.equals("")) {
+                continue;
+            }
             String[] stateDescription = state.split(":");
-            String currentState = stateDescription[0];
-            ChessBoard currentBoard = BoardBuilder.buildBoard(currentState);
-
+            String currentState = state;
+            ChessBoard currentBoard = BoardBuilder.buildBoard(stateDescription[0]);
             if (currentDepth != depth) {
                 List<Coordinate> pieces = allPieces(currentBoard);
-                List<String> newStates = new LinkedList<>();
-                List<Solver.SolverRunner> runnerPool = new LinkedList<>();
-                BoardInterface boardInterface = new BoardInterface(currentBoard);
                 for (Coordinate piece : pieces) {
                     if (!currentBoard.getEnPassant().equals(Coordinates.NULL_COORDINATE)) {
                         if (!piece.equals(currentBoard.getEnPassant())) {
                             continue;
                         }
                     }
-//                    SolverRunner runner = new SolverRunner(currentBoard, piece, state, any && currentDepth == depth - 1);
-//                    runnerPool.add(runner);
-//                    Thread thread = new Thread(runner);
-//                    thread.start();
-                    newStates.addAll(iterateThroughMoves(currentBoard, piece, state, any && currentDepth == depth - 1));
-//                    }
-                }
-                int sleepCount = 0;
-//                while (!runnerPool.stream().allMatch(SolverRunner::isFinished)) {
-//                    sleepCount++;
-//                    this.sleep();
-//                }
-//                List<String> newStates = runnerPool.stream().flatMap(r -> r.getStates().stream()).toList();
-                toAdd = 0;
-                if (stateSizes.size() >= currentDepth + 2) {
-                    toAdd = stateSizes.get(currentDepth + 1);
-                    stateSizes.remove(currentDepth + 1);
-                }
-                stateSizes.add(currentDepth + 1, toAdd + newStates.size());
-                int finalCurrentDepth = currentDepth;
-                newStates.forEach(s ->
-                        states.push(s.split(":")[0]
-                                + ":"
-                                + s.split(":")[1]
-                                + (stateDescription.length > 1 ? (", "
-                                + stateDescription[1]) : "")
-                                + ":" + (finalCurrentDepth + 1)));
-
-
-                if (stateSizes.get(currentDepth + 1) > 0) {
-                    currentDepth++;
+                    SolverRunner runner = new SolverRunner(currentBoard, piece, state,
+                            any && currentDepth == depth - 1, currentDepth);
+                    runnerPool.add(runner);
+                    Thread thread = new Thread(runner);
+                    thread.start();
                 }
             } else {
                 if (any) {
                     CheckUtil.switchTurns(currentBoard);
                     if (!legalFirst || testState(currentBoard)) {
-                        System.out.println("Down again..." + state);
-
                         boolean pass = true;
                         if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
-                            System.out.println("check " + state);
                             pass = !iterate(currentState, 1, true).isEmpty();
                         }
                         if (pass) {
-                            System.out.println("finish " + state);
-
                             finalStates.add(currentState + ":" + stateDescription[1]);
                             return finalStates;
                         }
-                        System.out.println("coming out");
-                    }else {
                     }
                 } else {
                     this.legalFirst = true;
-                    System.out.println("goinf down " + state);
                     if (this.additionalDepth == 0 || !iterate(currentState, this.additionalDepth, true).isEmpty()) {
                         boolean pass = true;
-
                         if (this.additionalDepth == 0) {
                             CheckUtil.switchTurns(currentBoard);
                             if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
-                                System.out.println("check " + state);
                                 pass = !iterate(currentState, 1, true).isEmpty();
                             }
                         }
@@ -173,15 +156,86 @@ public class SolverV2 {
                     }
                 }
             }
-            while (stateSizes.size() >= currentDepth + 1 && stateSizes.get(currentDepth) < 1) {
-                stateSizes.remove(currentDepth);
-                if (currentDepth != 0) {
-                    currentDepth--;
-                }
-            }
         }
         return finalStates;
     }
+
+    private void iteratePartTwo(String state, boolean any, int currentDepth, int depth) {
+        String[] stateDescription = state.split(":");
+        String currentState = stateDescription[0];
+        ChessBoard currentBoard = BoardBuilder.buildBoard(currentState);
+        List<Coordinate> pieces = allPieces(currentBoard);
+        List<String> newStates = new LinkedList<>();
+//                List<Solver.SolverRunner> runnerPool = new LinkedList<>();
+        BoardInterface boardInterface = new BoardInterface(currentBoard);
+        for (Coordinate piece : pieces) {
+            if (!currentBoard.getEnPassant().equals(Coordinates.NULL_COORDINATE)) {
+                if (!piece.equals(currentBoard.getEnPassant())) {
+                    continue;
+                }
+            }
+            newStates.addAll(iterateThroughMoves(currentBoard, piece, state, any && currentDepth == depth - 1));
+        }
+        LinkedList<String> states  = new LinkedList<>();
+        int finalCurrentDepth = currentDepth;
+        newStates.forEach(s ->
+                states.push(s.split(":")[0]
+                        + ":"
+                        + s.split(":")[1]
+                        + (stateDescription.length > 1 ? (", "
+                        + stateDescription[1]) : "")
+                        + ":" + (finalCurrentDepth + 1)));
+//            } else {
+//                if (any) {
+//                    CheckUtil.switchTurns(currentBoard);
+//                    if (!legalFirst || testState(currentBoard)) {
+//                        //System.out.println("Down again..." + state);
+//
+//                        boolean pass = true;
+//                        if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
+//                            //System.out.println("check " + state);
+//                            pass = !iterate(currentState, 1, true).isEmpty();
+//                        }
+//                        if (pass) {
+//                            //System.out.println("finish " + state);
+//
+//                            finalStates.add(currentState + ":" + stateDescription[1]);
+//                            return finalStates;
+//                        }
+//                        //System.out.println("coming out");
+//                    }else {
+//                    }
+//                } else {
+//                    this.legalFirst = true;
+//                    //System.out.println("goinf down " + state);
+//                    if (this.additionalDepth == 0 || !iterate(currentState, this.additionalDepth, true).isEmpty()) {
+//                        boolean pass = true;
+//
+//                        if (this.additionalDepth == 0) {
+//                            CheckUtil.switchTurns(currentBoard);
+//                            if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
+//                                //System.out.println("check " + state);
+//                                pass = !iterate(currentState, 1, true).isEmpty();
+//                            }
+//                        }
+//                        if (pass) {
+//                            finalStates.add(currentState + ":" + stateDescription[1]);
+//                        }
+//                    }
+//                    if (!legalFirstAlwaysTrue) {
+//                        this.legalFirst = false;
+//                    }
+//                }
+//            }
+//            while (stateSizes.size() >= currentDepth + 1 && stateSizes.get(currentDepth) < 1) {
+//                stateSizes.remove(currentDepth);
+//                if (currentDepth != 0) {
+//                    currentDepth--;
+//                }
+//            }
+    }
+
+
 
     private String toLAN(ChessBoard board, Coordinate origin, Coordinate target, String piece, boolean castle) {
         return board.at(target).getType().toUpperCase().charAt(board.at(target).getType().equals("knight") ? 1 : 0)+
@@ -274,12 +328,12 @@ public class SolverV2 {
                     i = 2;
                     continueFlag = false;
                 }
-//                System.out.println("--------");
-//                System.out.println(moves.length);
-//                System.out.println(origin);
+//                //System.out.println("--------");
+//                //System.out.println(moves.length);
+//                //System.out.println(origin);
 //
-//                System.out.println(direction);
-//                System.out.println(i);
+//                //System.out.println(direction);
+//                //System.out.println(i);
                 // For each UnTakeable piece
                 for (String piece : pieces) {
                     ChessBoard currentBoard = BoardBuilder.buildBoard(board);
@@ -347,15 +401,15 @@ public class SolverV2 {
         detector = StateDetectorFactory.getDetectorInterface(board);
         boolean pass = detector.testState();
         if (pass) {
-            System.out.println("XXX");
+            //System.out.println("XXX");
 
             pass = castleCheck(board, detector);
             if (pass) {
                 pass = this.detectorPredicate.test(detector);
             }
         } else {
-            System.out.println(board.getReader().toFEN());
-            System.out.println(detector.getErrorMessage());
+            //System.out.println(board.getReader().toFEN());
+            //System.out.println(detector.getErrorMessage());
 
         }
 
@@ -386,13 +440,13 @@ public class SolverV2 {
             for (int j = 0 ; j < 2 ; j++) {
                 if (board.canCastle(piece, white ? "white" : "black")) {
                     if (!detector.canCastle(white)) {
-                        //System.out.println(board.getReader().toFEN());
-                        //System.out.println(white);
+                        ////System.out.println(board.getReader().toFEN());
+                        ////System.out.println(white);
 
-                        //System.out.println("CAN:T CASTLE");
+                        ////System.out.println("CAN:T CASTLE");
                         return false;
                     } else if (white && piece.equals("queen")) {
-                        //System.out.println(board.getReader().toFEN());
+                        ////System.out.println(board.getReader().toFEN());
                     }
                 }
                 piece = "queen";
@@ -422,18 +476,21 @@ public class SolverV2 {
         private final boolean any;
         private boolean finished = false;
         private List<String> states = new LinkedList<>();
+        private String previousMoves;
+        private int runnerDepth;
 
-        SolverRunner(ChessBoard board, Coordinate origin, String currentState, boolean any) {
+        SolverRunner(ChessBoard board, Coordinate origin, String currentState, boolean any, int currentDepth) {
             this.board = board;
             this.origin = origin;
-            this.currentState = currentState;
+            this.currentState = currentState.split(":")[0];
+            this.previousMoves = currentState.split(":")[1];
             this.any = any;
+            this.runnerDepth = currentDepth;
         }
         @Override
         public void run() {
             this.states = iterateThroughMoves(this.board, this.origin, this.currentState, this.any);
             this.finished = true;
-//            Solver.this.notify();
         }
         public List<String> getStates() {
             return this.states;
