@@ -2,7 +2,6 @@ package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
 import Heuristics.Path;
-import Heuristics.Pathfinder;
 import StandardChess.BoardReader;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
@@ -138,7 +137,9 @@ public class CombinedPawnMap extends AbstractDeduction {
                         .forEach(innerEntry -> {
                             //system.out.println("inner entry" + innerEntry);
                             innerEntry.getValue()
-                                    .stream().filter(path -> Pathfinder.pathsExclusive(entry.getValue().get(0), path))
+                                    .stream().filter(path ->
+                                            new PiecePathFinderUtil(detector)
+                                                    .pathsExclusive(entry.getValue().get(0), path))
                                     .forEach(path -> {
 
                                         Path toPut = makeExclusiveMaps(board, path, white, singleOriginPawns);

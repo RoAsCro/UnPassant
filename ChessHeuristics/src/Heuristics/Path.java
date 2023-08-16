@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 
+/**
+ * An ordered List of Coordinates extending java.util.LinkedList.
+ */
 public class Path extends LinkedList<Coordinate> {
 
     public static Path of(Coordinate ... coordinates) {

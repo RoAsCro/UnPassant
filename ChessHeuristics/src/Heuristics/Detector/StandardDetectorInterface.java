@@ -18,6 +18,11 @@ public class StandardDetectorInterface implements DetectorInterface {
     }
 
     @Override
+    public boolean canCastle(boolean white) {
+        return !(this.detector.getPieceData().getKingMovement(white) || (this.detector.getPieceData().getRookMovement(white, true) && this.detector.getPieceData().getRookMovement(white, false)));
+    }
+
+    @Override
     public Map<String, Map<Path, Integer>> getPromotions(boolean white) {
         System.out.println(detector.getPromotionData().getPromotionNumbers());
         List<Map.Entry<String, Map<Path, Integer>>> entryList =
@@ -59,6 +64,10 @@ public class StandardDetectorInterface implements DetectorInterface {
                 .map(Map.Entry::getKey)
                 .toList());
     }
+    @Override
+    public Path getPiecesNotCapturedByPawns(boolean white) {
+        return Path.of(this.detector.getCaptureData().getNonPawnCaptures(white));
+    }
 
     @Override
     public boolean testState(BoardInterface boardInterface) {
@@ -68,11 +77,6 @@ public class StandardDetectorInterface implements DetectorInterface {
     @Override
     public boolean testState() {
         return this.detector.testState();
-    }
-
-    @Override
-    public boolean canCastle(boolean white) {
-        return !(this.detector.getPieceData().getKingMovement(white) || (this.detector.getPieceData().getRookMovement(white, true) && this.detector.getPieceData().getRookMovement(white, false)));
     }
 
     @Override

@@ -835,10 +835,6 @@ public class PieceMapTest {
         Map<Coordinate, Map<Coordinate, Path>> map = this.standardStateDetector.getPieceData().getStartLocations();
 
         System.out.println(this.standardStateDetector.getPieceData().getStartLocations());
-        
-        
-
-        
         System.out.println(standardStateDetector.getPromotionData().getPromotedPieceMap());
         for (int i = 0 ; i < 0 ; i++) {
             Assertions.assertEquals(2, standardStateDetector.getPromotionData().getPromotedPieceMap().get(new Coordinate(i, 7)).size(), new Coordinate(i, 7).toString());

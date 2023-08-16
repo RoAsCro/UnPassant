@@ -6,7 +6,7 @@ import StandardChess.Coordinate;
 import java.util.Map;
 
 public interface PieceData {
-    Map<Coordinate, Boolean> getCaged(); //Important
+    Map<Coordinate, Boolean> getCaged();
     Map<Coordinate, Map<Coordinate, Path>> getStartLocations();
 
     boolean getKingMovement(boolean white);

@@ -35,13 +35,22 @@ public class StandardDetectorInterfaceTest {
         detectorInterface.getPromotions(true).remove("knight");
         Assertions.assertTrue(detectorInterface.getPromotions(true).containsKey("knight"));
         detectorInterface.getPromotions(true).get("knight").put(Path.of(Coordinates.NULL_COORDINATE), 0);
-        Assertions.assertFalse(detectorInterface.getPromotions(true).get("knight").containsKey(Path.of(Coordinates.NULL_COORDINATE)));
+        Assertions.assertFalse(detectorInterface.getPromotions(true).get("knight")
+                .containsKey(Path.of(Coordinates.NULL_COORDINATE)));
         Path path = Path.of(new Coordinate(1, 0), new Coordinate(6, 0), new Coordinate(7, 2));
         detectorInterface.getPromotions(true).get("knight").remove(path);
         Assertions.assertTrue(detectorInterface.getPromotions(true).get("knight").containsKey(path));
         detectorInterface.getPromotions(true).get("knight").keySet().forEach(k -> k.remove(new Coordinate(1, 0)));
         Assertions.assertTrue(detectorInterface.getPromotions(true).get("knight").containsKey(path));
+    }
 
+    @Test
+    public void pawnCapturesReadOnly() {
+        DetectorInterface detectorInterface = StateDetectorFactory
+                .getDetectorInterface("rnbqkbn1/pppppp2/4rp2/8/8/8/1PPPPPP1/RNBQKBNR w KQq - 0 1");
+        detectorInterface.testState();
+        detectorInterface.getPiecesNotCapturedByPawns(true).clear();
+        Assertions.assertFalse(detectorInterface.getPiecesNotCapturedByPawns(true).isEmpty());
     }
 
 

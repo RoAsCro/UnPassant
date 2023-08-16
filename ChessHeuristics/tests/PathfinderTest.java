@@ -9,8 +9,6 @@ import StandardChess.StandardPieces.StandardPiece;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Function;
 
 public class PathfinderTest {

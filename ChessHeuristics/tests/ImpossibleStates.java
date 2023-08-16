@@ -484,7 +484,7 @@ public class ImpossibleStates {
     } @Test
     void r2() {
 
-        System.out.println(test("rnbqkbnr/2p1p1p1/4qb2/2Q5/8/5B2/1PP1PP2/R1BQKBNR w - - 0 1"));
+        System.out.println(test("rnbqkbn1/pppppp2/4rp2/8/8/5B2/1PPP1PP1/RNBQKBNR w KQq - 0 1"));
 //        System.out.println(test("r3kqR1/1p1pppp1/5B1P/6PN/4P2p/3Q1P2/2PK2pP/8 b q - 0 1"));
 //        System.out.println(this.detector.getPawnsCapturedByPawns(true));
 //        System.out.println(this.detector.getPawnsCapturedByPawns(false));
@@ -497,7 +497,8 @@ public class ImpossibleStates {
 //        System.out.println(this.detector.getSinglePawnPaths(true));
 //        System.out.println(this.detector.getSinglePawnPaths(false));
         System.out.println(AbstractDeduction.pawnStarts);
-        System.out.println(this.detector.getPieceData().getStartLocations());
+        System.out.println(this.detector.getCaptureData().getNonPawnCaptures(true));
+        System.out.println(this.detector.getCaptureData().getNonPawnCaptures(false));
         System.out.println(this.detector.getPromotionData().getPromotionNumbers());
         System.out.println(this.detector.getPromotionData().getPromotedPieceMap());
         

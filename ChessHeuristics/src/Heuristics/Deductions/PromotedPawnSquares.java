@@ -5,6 +5,8 @@ import Heuristics.Path;
 import StandardChess.Coordinate;
 
 import java.util.*;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static Heuristics.Deductions.PiecePathFinderUtil.PATH_DEVIATION;
@@ -20,6 +22,9 @@ import static Heuristics.HeuristicsUtil.*;
  * promoted, otherwise it will not be accurate.
  */
 public class PromotedPawnSquares extends AbstractDeduction{
+
+    private static final BiPredicate<Coordinate, Boolean> PAWN_PREDICATE =
+            (c, b) -> c.getY() == (b ? WHITE_PAWN_Y : BLACK_PAWN_Y);
     public PromotedPawnSquares() {
         super("Promoted piece cannot reach a promotion square.");
     }
@@ -31,23 +36,31 @@ public class PromotedPawnSquares extends AbstractDeduction{
 
         putPaths(emptyWhiteOrigins, board, true);
         putPaths(emptyBlackOrigins, board, false);
+
         return false;
     }
 
     private void putPaths(Path emptyOrigins, BoardInterface board, boolean white)  {
         if (!emptyOrigins.isEmpty()) {
-
             List<Path> tempPaths = pathToFinalRank(board, !white, emptyOrigins);
-            List<Path> whitePaths = getCaptures(!white, tempPaths, board);
+            List<Path> pathsInUse = getCaptures(!white, tempPaths, board);
 
-            if (whitePaths.size() < this.detector.getCaptureData().getPawnsCapturedByPawns(white)) {
+            if (pathsInUse.size() < this.detector.getCaptureData().getPawnsCapturedByPawns(white)) {
                 this.state = false;
                 return;
             }
+            List<Coordinate> coordsToIgnore = pathsInUse.stream().map(Path::getFirst).toList();
+            this.detector.getCaptureData().getNonPawnCaptures(white)
+                    .stream().filter(c -> PAWN_PREDICATE.test(c, white))
+                    .filter(c -> !coordsToIgnore.contains(c))
+                            .toList()
+                            .forEach(c -> this.detector.getCaptureData().getNonPawnCaptures(white).remove(c));
+
+
             //
             // If promotions start failing it's probably because of the bit commented out below
             // that method has been removed and the part of UnCastle that uses it too
-            whitePaths.forEach(p -> {
+            pathsInUse.forEach(p -> {
                 if (!this.detector.getPawnData().getPawnPaths(white).containsKey(p.getLast())) {
                     this.detector.getPawnData().getPawnPaths(white).put(p.getLast(), new LinkedList<>());
                 }
@@ -56,7 +69,7 @@ public class PromotedPawnSquares extends AbstractDeduction{
 //            this.detector.getPromotionPaths(white).addAll(whitePaths);
             //
             String pawn = "pawn" + (white ? "w" : "b");
-            whitePaths.forEach(path -> {
+            pathsInUse.forEach(path -> {
                 if (!this.detector.getPromotionData().getPromotionNumbers().containsKey(pawn)) {
                     this.detector.getPromotionData().getPromotionNumbers().put(pawn, new HashMap<>());
                 }
@@ -67,7 +80,7 @@ public class PromotedPawnSquares extends AbstractDeduction{
 
     private Path findEmptyOrigins(boolean white) {
         Path promotedPawns = Path.of(this.detector.getCaptureData().getNonPawnCaptures(white)
-                .stream().filter(c -> c.getY() == (white ? WHITE_PAWN_Y : BLACK_PAWN_Y))
+                .stream().filter(c -> PAWN_PREDICATE.test(c, white))
                 .collect(Collectors.toList()));
         return Path.of(promotedPawns.stream().filter(c -> (this.detector.getPawnData().getPawnPaths(white))
                     .values().stream()

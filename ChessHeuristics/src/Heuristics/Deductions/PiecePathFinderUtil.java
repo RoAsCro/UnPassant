@@ -8,7 +8,6 @@ import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 import StandardChess.StandardPieceFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
@@ -144,13 +143,6 @@ public class PiecePathFinderUtil {
                 endCondition,
                 board,
                 p -> PATH_DEVIATION.apply(p) <= maxDeviation);
-
-//        Pathfinder.findAllPawnPaths(
-//                StandardPieceFactory.getInstance().getPiece(white ? "p" : "P"),
-//                entry.getValue().get(0).getFirst(),
-//                (b, c) -> c.equals(entry.getKey()),
-//                board,
-//                p -> PATH_DEVIATION.apply(p) <= this.detector.getMaxCaptures(!white, entry.getKey()))
     }
 
 
@@ -194,24 +186,8 @@ public class PiecePathFinderUtil {
         return p2;
     }
 
-
-//    public Map<Coordinate, Path> singleOriginPawns(BoardInterface board, boolean white) {
-//        Map<Coordinate, List<Path>> checkedPlayerPaths = this.detector.getPawnPaths(white);
-//
-//        Map<Coordinate, List<Path>> opposingPlayerPaths = this.detector.getPawnPaths(!white);
-////        PiecePathFinderUtil pathFinderUtil = new PiecePathFinderUtil(this.detector);
-//        // Find every pawn of the opposing player with one origin and one possible path
-//        List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = new ArrayList<>(opposingPlayerPaths.entrySet()
-//                .stream()
-//                .filter(entry -> entry.getValue().size() == 1 && !(entry.getValue().get(0).size() == 1))
-//                .filter(entry ->
-//                        findAllPawnPath(board, entry.getValue().get(0).getFirst(), getMaxCaptures(!white, entry.getKey()),
-//                                        (b, c) -> c.equals(entry.getKey()), !white)
-//                                .size() == 1)
-//                .toList());
-//        singleOriginPawns.addAll(opposingPlayerPaths.entrySet()
-//                .stream().filter(entry ->entry.getValue().size() == 1 && entry.getValue().get(0).size() == 1).toList());
-//    }
-
+    public boolean pathsExclusive(Path path1, Path path2) {
+        return Pathfinder.pathsExclusive(path1, path2);
+    }
 
 }

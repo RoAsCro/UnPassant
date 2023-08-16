@@ -61,15 +61,11 @@ public class Solver {
     }
 
     private List<String> iterate(String startingFen, int depth, boolean any) throws InterruptedException {
-//        Map<String, CombinedPawnMap>
-
-
         LinkedList<String> states = new LinkedList<>();
         LinkedList<String> finalStates = new LinkedList<>();
         ArrayList<Integer> stateSizes = new ArrayList<>();
         stateSizes.add(1);
         int currentDepth = 0;
-//        LinkedList<List<Coordinate>> statePieces
         startingFen = startingFen + "::";
         if (any) {
             startingFen = startingFen + this.maxDepth;
@@ -90,9 +86,6 @@ public class Solver {
             String[] stateDescription = state.split(":");
             String currentState = stateDescription[0];
             ChessBoard currentBoard = BoardBuilder.buildBoard(currentState);
-//            if (any && legalFirst) {
-//                System.out.println(currentState);
-//            }
 
             if (currentDepth != depth) {
                 List<Coordinate> pieces = allPieces(currentBoard);
