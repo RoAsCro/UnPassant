@@ -9,6 +9,7 @@ public class CheckUtil {
         return !board.inCheck(board.getTurn().equals("white") ? "black" : "white");
     }
     public static boolean eitherInCheck(BoardInterface board) {
+//        board.getReader().toFEN().split();
         return (board.inCheck("white") || board.inCheck("black"));
     }
 

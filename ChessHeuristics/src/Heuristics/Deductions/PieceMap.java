@@ -131,7 +131,7 @@ public class PieceMap extends AbstractDeduction{
         boolean certainPromotionCheck = allPiecesAccountedFor(board);
         if (!certainPromotionCheck){
             this.errorMessage =
-                    "There are pieces that reach their current location from an origin or a promotion square.";
+                    "There are pieces cannot that reach their current location from an origin or a promotion square.";
             this.state = false;
             return;
         }

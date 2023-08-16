@@ -1,15 +1,17 @@
 package SolveAlgorithm;
 
 import Heuristics.BoardInterface;
-import Heuristics.Detector.StateDetectorFactory;
 import Heuristics.Detector.DetectorInterface;
+import Heuristics.Detector.StateDetectorFactory;
 import Heuristics.Path;
 import StandardChess.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Predicate;
 
-public class Solver {
+public class SolverV2 {
 
     Predicate<String> fenPredicate = p -> true;
     private Predicate<DetectorInterface> detectorPredicate = d -> true;
@@ -89,7 +91,7 @@ public class Solver {
             if (currentDepth != depth) {
                 List<Coordinate> pieces = allPieces(currentBoard);
                 List<String> newStates = new LinkedList<>();
-                List<SolverRunner> runnerPool = new LinkedList<>();
+                List<Solver.SolverRunner> runnerPool = new LinkedList<>();
                 BoardInterface boardInterface = new BoardInterface(currentBoard);
                 for (Coordinate piece : pieces) {
                     if (!currentBoard.getEnPassant().equals(Coordinates.NULL_COORDINATE)) {
@@ -123,7 +125,7 @@ public class Solver {
                                 + s.split(":")[1]
                                 + (stateDescription.length > 1 ? (", "
                                 + stateDescription[1]) : "")
-                        + ":" + (finalCurrentDepth + 1)));
+                                + ":" + (finalCurrentDepth + 1)));
 
 
                 if (stateSizes.get(currentDepth + 1) > 0) {
@@ -288,7 +290,7 @@ public class Solver {
                         String move = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece, castle);
                         CheckUtil.switchTurns(currentBoard);
                         if (CheckUtil.check(new BoardInterface(currentBoard))
-                        && this.fenPredicate.test(move +
+                                && this.fenPredicate.test(move +
                                 (currentState.split(":").length > 1 ? (":" + currentState.split(":")[2])
                                         : ":0"))) {
                             boolean pass = false;
@@ -309,7 +311,7 @@ public class Solver {
                                     currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
                                 }
                                 String boardAndMove = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece, castle);
-                                     states.add(boardAndMove);
+                                states.add(boardAndMove);
                                 if (!legalFirst && any) {
                                     break;
                                 }
@@ -443,6 +445,4 @@ public class Solver {
 
 
     }
-
-
 }

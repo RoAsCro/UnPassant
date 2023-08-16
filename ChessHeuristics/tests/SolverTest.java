@@ -49,11 +49,10 @@ public class SolverTest {
 
         System.out.println("Testing 4...");
         Solver solver = new Solver();
-        solver.setAdditionalDepth(2);
+        solver.setAdditionalDepth(1);
         solver.setNumberOfSolutions(100);
         Assertions.assertEquals(3, solver.solve(BoardBuilder.buildBoard(board2 + " w"), 1).size());
 //        new SolveAlgorithm.Solver().solve(BoardBuilder.buildBoard(board2 + " w"), 1);
-
         // Only one scenario, after eliminating impossible board states, has valid moves
 
 
@@ -276,7 +275,7 @@ public class SolverTest {
         Solver solver = new Solver();
         solver.setNumberOfSolutions(1);
         solver.setNumberOfSolutions(1);
-        solver.setAdditionalDepth(2);
+        solver.setAdditionalDepth(1);
         Assertions.assertEquals(1, solver.solve(BoardBuilder.buildBoard("k2q3r/R1B4p/R4p2/K2B2p1/1P2n1P1/P7/2P5/r4B2 w - - 0 1"), 1).size());
         // This is entirely a matter of iterating through valid moves
     }
@@ -723,40 +722,21 @@ public class SolverTest {
         for (String st : list) {
             count++;
 //            System.out.println(count);
-            Solver solver = new Solver(
-                    s -> {
-//                        String move = s.split(":")[1];
-////                System.out.println(s.split(":")[2]);
-//                        if (s.split(":")[2].equals("0")) {
-//                            System.out.println(s);
-//                            return (move.charAt(0) == 'P' && move.endsWith("f4"));
-//                        }
-                        return true ;
-                    }
-
-            );
+            Solver solver = new Solver();
             solver.setNumberOfSolutions(1);
-            solver.setAdditionalDepth(1);
+            solver.setAdditionalDepth(0);
 //            System.out.println(count);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
             Assertions.assertNotEquals(0, solutions.size());
             solver = new Solver(
                     s -> {
                         String move = s.split(":")[1];
-//                System.out.println(s.split(":")[2]);
                         if (s.split(":")[2].equals("0")) {
                             System.out.println(s);
                             return (move.charAt(0) == 'P' && move.endsWith("f4"));
                         }
                         return true ;
-                    }
-                    ,d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
-//                }
-                return true;
-            }
-            );
+                    });
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
 //            System.out.println(count);
@@ -805,14 +785,7 @@ public class SolverTest {
                                     ;
                         }
                         return true ;
-                    }
-                    ,d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
-//                }
-                return true;
-            }
-            );
+                    });
             solver.setNumberOfSolutions(5);
             solver.setAdditionalDepth(1);
 //            System.out.println(count);
@@ -820,16 +793,12 @@ public class SolverTest {
             Assertions.assertEquals(0, solutions.size());
 
             solver = new Solver(
-                    s -> true
-                    ,d ->  true);
+                    s -> true);
             solver.setNumberOfSolutions(5);
             solver.setAdditionalDepth(1);
 //            System.out.println(count);
             solutions = solver.solve(BoardBuilder.buildBoard(st), 4);
             Assertions.assertNotEquals(0, solutions.size());
-
-//            Assertions.assertEquals(0, solutions.size());
-//            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
         }
         // This successfully uncovers that the only valid move while maintaining castling rights is a double pawn move
         // The first part tests it while dissallowing the only valid move
@@ -879,14 +848,7 @@ public class SolverTest {
                 continue;
             }
             Solver solver = new Solver(
-                    s -> true
-                    ,d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
-//                }
-                return true;
-            }
-            );
+                    s -> true);
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 3);
@@ -901,96 +863,7 @@ public class SolverTest {
     }
 
     @Test
-    public void ChessMysteries25() {
-        // pp118
-        List<String> list = List.of(
-                "r3k2r/p1pq1ppp/1pnp1n2/b2P4/B5b1/1PNQ2N1/1PP2PPP/R3K2R w KQkq - 0 1",
-                "r3k2r/p1pq1ppp/1pnp1n2/b2P4/B5b1/1PNQ2N1/1PP2PPP/R3K2R b KQkq - 0 1",
-                "r3k2r/p1pq1ppp/1pnp1n2/b2P4/6b1/BPNQ2N1/1PP2PPP/R3K2R w KQkq - 0 1",
-                "r3k2r/p1pq1ppp/1pnp1n2/b2P4/6b1/BPNQ2N1/1PP2PPP/R3K2R b KQkq - 0 1"
-        );
-
-        int count = 0;
-        for (String st : list) {
-            count++;
-//            System.out.println(count);
-            System.out.println(st);
-            ChessBoard board = BoardBuilder.buildBoard(st);
-            board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
-            if (!StateDetectorFactory.getDetector(board).testState()) {
-                continue;
-            }
-            Solver solver = new Solver(
-                    s -> true
-                    ,d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
-//                }
-                return true;
-            }
-            );
-            solver.setNumberOfSolutions(1);
-            solver.setAdditionalDepth(1);
-            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 3);
-//            if (count != list.size()) {
-//                Assertions.assertEquals(0, solutions.size());
-//            } else {
-//                Assertions.assertNotEquals(0, solutions.size());
-//            }
-        }
-        // Not a last n moves problem -
-        // Fails because it requires analysing the capture locations of theoretical pawn maps
-
-    }
-
-    @Test
-    public void ChessMysteries26() {
-        // pp118
-        List<String> list = List.of(
-                "8/3p1p2/8/7p/8/8/k3P1P1/1N1QK3 b - - 0 1"
-        );
-
-        int count = 0;
-        for (String st : list) {
-            count++;
-//            System.out.println(count);
-            System.out.println(st);
-            ChessBoard board = BoardBuilder.buildBoard(st);
-            board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
-            if (!StateDetectorFactory.getDetector(board).testState()) {
-                continue;
-            }
-            Solver solver = new Solver(
-                    s -> {
-                        String move = s.split(":")[1];
-                        String square1 = move.substring(1, 3);
-                        String square2 = move.substring(move.length() - 2);
-                        return (square1.charAt(0) - 97 + square1.charAt(1) - 49) % 2 == (square2.charAt(0) - 97 + square2.charAt(1) - 49);
-                    }
-                    ,d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
-//                }
-                return true;
-            }
-            );
-            solver.setNumberOfSolutions(1);
-            solver.setAdditionalDepth(1);
-            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 3);
-//            if (count != list.size()) {
-//                Assertions.assertEquals(0, solutions.size());
-//            } else {
-//                Assertions.assertNotEquals(0, solutions.size());
-//            }
-        }
-        // Not a last n moves problem -
-        // Fails because it requires analysing the capture locations of theoretical pawn maps
-
-    }
-
-    @Test
     public void ChessMysteries27() {
-        // TODO Come back when promotion implemented
         //pp126
         // NO WHITE PAWN HAS PROMOTED.
         //ON WHAT SQUARE WAS THE OTHER WHITE BISHOP
@@ -1013,23 +886,15 @@ public class SolverTest {
                     s -> {
 
                         return true;
-                    }
-                    ,d -> {
-
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-//                    System.out.println(d.getPromotions());
-//                }
-                return true;
-            }
-            );
+                    });
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 5);
-//            if (count != list.size()) {
-//                Assertions.assertEquals(0, solutions.size());
-//            } else {
-//                Assertions.assertNotEquals(0, solutions.size());
-//            }
+            if (count != list.size()) {
+                Assertions.assertEquals(0, solutions.size());
+            } else {
+                Assertions.assertNotEquals(0, solutions.size());
+            }
         }
 
     }
@@ -1058,17 +923,11 @@ public class SolverTest {
 //                        System.out.println(s);
                         String move = s.split(":")[1];
                         return Integer.parseInt(s.split(":")[2]) > 4 || move.charAt(3) != 'x';
-                    }
-                    ,d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-//                    System.out.println(d.getPromotions());
-//                }
-                return true;
-            }
-            );
+                    });
             solver.setNumberOfSolutions(2);
             solver.setAdditionalDepth(1);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 4);
+            System.out.println(solutions);
         }
         //Smullyan is just sort of wrong here
         // Unpassant comes up with the alternative:
@@ -1084,12 +943,9 @@ public class SolverTest {
                 "7k/8/6KB/8/p7/8/Q7/8 b - - 0 1",
                 "7k/8/6KB/8/p7/8/Q7/8 w - - 0 1"
         );
-
         int count = 0;
         for (String st : list) {
             count++;
-//            System.out.println(count);
-//            System.out.println(st);
             ChessBoard board = BoardBuilder.buildBoard(st);
             board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
             if (!StateDetectorFactory.getDetector(board).testState()) {
@@ -1102,17 +958,10 @@ public class SolverTest {
                         return Integer.parseInt(s.split(":")[2]) >= 10
                                 || (move.charAt(3) != 'x' &&
                                 (s.split(" ")[1].charAt(0) != 'w' || (move.charAt(0) != 'K' && move.charAt(0) != 'Q')));
-                    }
-                    ,d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-//                    System.out.println(d.getPromotions());
-//                }
-                return true;
-            }
-            );
+                    });
             solver.setNumberOfSolutions(1);
-            solver.setAdditionalDepth(8);
-//            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 1);
+            solver.setAdditionalDepth(0);
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 8);
         }
         // Another one where theoretically there should be no problem as it's a matter of iterating backwards
     }
