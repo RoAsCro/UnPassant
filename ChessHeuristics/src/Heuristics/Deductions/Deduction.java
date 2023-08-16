@@ -8,9 +8,9 @@ public interface Deduction {
 
     void registerDetector(StateDetector detector);
 
-    public boolean deduce(BoardInterface board);
+    void deduce(BoardInterface board);
 
-    public Boolean getState();
+    boolean getState();
 
     String errorMessage();
     void update();

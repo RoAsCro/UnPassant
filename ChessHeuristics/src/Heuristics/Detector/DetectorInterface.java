@@ -37,4 +37,6 @@ public interface DetectorInterface {
     boolean canCastle(boolean white);
 
     boolean getState();
+
+    String getErrorMessage();
 }

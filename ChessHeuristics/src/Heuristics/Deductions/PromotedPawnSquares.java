@@ -29,14 +29,14 @@ public class PromotedPawnSquares extends AbstractDeduction{
     }
 
     @Override
-    public boolean deduce(BoardInterface board) {
+    public void deduce(BoardInterface board) {
         Path emptyWhiteOrigins = findEmptyOrigins(true);
         Path emptyBlackOrigins = findEmptyOrigins(false);
 
         putPaths(emptyWhiteOrigins, board, true);
         putPaths(emptyBlackOrigins, board, false);
 
-        return false;
+        return;
     }
 
     private void putPaths(Path emptyOrigins, BoardInterface board, boolean white)  {

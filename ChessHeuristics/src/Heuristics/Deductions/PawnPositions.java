@@ -17,9 +17,8 @@ public class PawnPositions extends AbstractDeduction {
     }
 
     @Override
-    public boolean deduce(BoardInterface board) {
+    public void deduce(BoardInterface board) {
         this.state = board.getBoardFacts().getCoordinates(true, "pawn").stream().noneMatch(pawnCheck)
                 && board.getBoardFacts().getCoordinates(false, "pawn").stream().noneMatch(pawnCheck);
-        return false;
     }
 }

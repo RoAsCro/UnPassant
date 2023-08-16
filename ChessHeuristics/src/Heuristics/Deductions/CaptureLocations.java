@@ -39,7 +39,7 @@ public class CaptureLocations extends AbstractDeduction {
     }
 
     @Override
-    public boolean deduce(BoardInterface board) {
+    public void deduce(BoardInterface board) {
         int whiteRemovals = reductions(board, true);
         int blackRemovals = reductions(board, false);
         if (
@@ -54,7 +54,6 @@ public class CaptureLocations extends AbstractDeduction {
         this.detector.getCaptureData().getNonPawnCaptures(true).addAll(pawnCaptureLocations(true, board));
         this.detector.getCaptureData().getNonPawnCaptures(false).addAll(pawnCaptureLocations(false, board));
         //System.out.println(promotedBlackPawns);
-        return false ;
     }
 
     private int reductions(BoardInterface board, boolean white) {

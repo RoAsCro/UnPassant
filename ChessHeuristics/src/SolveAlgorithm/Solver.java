@@ -132,14 +132,42 @@ public class Solver {
                 }
             } else {
                 if (any) {
+                    currentBoard.setTurn(currentBoard.getTurn().equals("white") ? "black" : "white");
                     if (!legalFirst || testState(currentBoard)) {
-                        finalStates.add(currentState + ":" + stateDescription[1]);
-                        return finalStates;
+                        System.out.println("Down again..." + state);
+
+//                        currentBoard.setTurn(currentBoard.getTurn().equals("white") ? "white" : "black");
+//                        currentBoard.setTurn(currentBoard.getTurn().equals("white") ? "white" : "black")
+                        boolean pass = true;
+                        if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
+                            System.out.println("check " + state);
+                            pass = !iterate(currentState, 1, true).isEmpty();
+                        }
+                        if (pass) {
+                            System.out.println("finish " + state);
+
+                            finalStates.add(currentState + ":" + stateDescription[1]);
+                            return finalStates;
+                        }
+                        System.out.println("coming out");
+                    }else {
                     }
                 } else {
                     this.legalFirst = true;
+                    System.out.println("goinf down " + state);
                     if (this.additionalDepth == 0 || !iterate(currentState, this.additionalDepth, true).isEmpty()) {
-                        finalStates.add(currentState + ":" + stateDescription[1]);
+                        boolean pass = true;
+
+                        if (this.additionalDepth == 0) {
+                            currentBoard.setTurn(currentBoard.getTurn().equals("white") ? "black" : "white");
+                            if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
+                                System.out.println("check " + state);
+                                pass = !iterate(currentState, 1, true).isEmpty();
+                            }
+                        }
+                        if (pass) {
+                            finalStates.add(currentState + ":" + stateDescription[1]);
+                        }
                     }
                     if (!legalFirstAlwaysTrue) {
                         this.legalFirst = false;
@@ -331,10 +359,16 @@ public class Solver {
         detector = StateDetectorFactory.getDetectorInterface(board);
         boolean pass = detector.testState();
         if (pass) {
+            System.out.println("XXX");
+
             pass = castleCheck(board, detector);
             if (pass) {
                 pass = this.detectorPredicate.test(detector);
             }
+        } else {
+            System.out.println(board.getReader().toFEN());
+            System.out.println(detector.getErrorMessage());
+
         }
 
         return pass;

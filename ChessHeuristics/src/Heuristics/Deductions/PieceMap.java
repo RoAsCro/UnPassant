@@ -72,10 +72,11 @@ public class PieceMap extends AbstractDeduction{
     /**
      * Finds and puts paths between pieces and their start locations, promoted pieces and their promotion squares,
      * determines if start locations are caged, and whether as a result kings have moved.
+     *
      * @param board the board to be tested
      */
     @Override
-    public boolean deduce(BoardInterface board) {
+    public void deduce(BoardInterface board) {
         Arrays.stream(new int[]{2, 5, 4, 3, 0, 7}).forEach(x -> {
             findFromOrigin(board, x, true, false);
             findFromOrigin(board, x, false, false);
@@ -132,7 +133,7 @@ public class PieceMap extends AbstractDeduction{
             this.errorMessage =
                     "There are pieces that reach their current location from an origin or a promotion square.";
             this.state = false;
-            return false;
+            return;
         }
         // There are not more promotions than available missing pawns
         int numberOfPotentialPromotions = potentialPromotions.size();
@@ -158,7 +159,6 @@ public class PieceMap extends AbstractDeduction{
             this.errorMessage = "Too many promotions.";
             this.state = false;
         }
-        return false;
     }
 
     /**

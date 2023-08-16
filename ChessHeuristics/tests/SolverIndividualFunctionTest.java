@@ -1,11 +1,14 @@
 import SolveAlgorithm.Solver;
+import SolveAlgorithm.UnMoveCondition;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SolverSingleMovesTest {
+import java.util.List;
+
+public class SolverIndividualFunctionTest {
 
     public void makeMoveTest(String fen, Coordinate origin, Coordinate target, boolean pass, String piece, boolean promotion) {
         makeMoveTest(fen, origin, target, pass, piece, promotion, false);
@@ -26,8 +29,6 @@ public class SolverSingleMovesTest {
                 origin, target, piece, promotion, enPassant), (board.getReader().toFEN()));
         System.out.println(board.getReader().toFEN());
     }
-
-
 
     @Test
     public void makeMoveTestOne() {
@@ -167,6 +168,68 @@ public class SolverSingleMovesTest {
         makeMoveTest("r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w q - 0 1",
                 new Coordinate(5, 2), new Coordinate(7, 1),
                 false, "", false, false);
+    }
+
+    @Test
+    public void continueWhileInCheck() {
+        Solver solver = new Solver(new UnMoveCondition(true, 0, 0 ,
+                '-', "-", "-",
+                'K', '-', "-", false));
+        solver.setAdditionalDepth(0);
+        solver.setNumberOfSolutions(3);
+        List<String> solutions = solver.solve(BoardBuilder.buildBoard("k7/7R/8/8/8/7r/K7/RRRRRRR1 b - - 0 1"), 3);
+        System.out.println(solutions);
+        Assertions.assertEquals(2, solutions.size());
+        Assertions.assertTrue(solutions.get(0).contains("k7/7R/8/8/8/7r/1K6/RRRRRRR1")
+                || solutions.get(0).contains("2k5/7R/8/8/8/7r/1K6/RRRRRRR1")
+                && solutions.get(1).contains("k7/7R/8/8/8/7r/1K6/RRRRRRR1")
+                || solutions.get(1).contains("2k5/7R/8/8/8/7r/1K6/RRRRRRR1"));
+    }
+
+    @Test
+    public void continueWhileInCheckAdditionalDepth() {
+        Solver solver = new Solver(new UnMoveCondition(true, 0, 0 ,
+                '-', "-", "-",
+                'K', '-', "-", false));
+        solver.setAdditionalDepth(1);
+        solver.setNumberOfSolutions(3);
+        List<String> solutions = solver.solve(BoardBuilder.buildBoard("k7/7R/8/8/8/7r/K7/RRRRRRR1 b - - 0 1"), 3);
+        System.out.println(solutions);
+        Assertions.assertEquals(2, solutions.size());
+        Assertions.assertTrue(solutions.get(0).contains("k7/7R/8/8/8/7r/1K6/RRRRRRR1")
+                || solutions.get(0).contains("2k5/7R/8/8/8/7r/1K6/RRRRRRR1")
+                && solutions.get(1).contains("k7/7R/8/8/8/7r/1K6/RRRRRRR1")
+                || solutions.get(1).contains("2k5/7R/8/8/8/7r/1K6/RRRRRRR1"));
+    }
+
+
+    @Test
+    public void ChessMysteries13() {
+        // pp73
+        List<String> list = List.of(
+                "8/8/8/8/NN1Q4/1k1B4/8/R1B1K2R w - - 0 1",
+                "8/8/8/8/NN1Q4/1k1B4/8/R1B1K2R b - - 0 1",
+                "R2K1B1R/8/4B1k1/4Q1NN/8/8/8/8 b - - 0 1");
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+            Solver solver = new Solver();
+            solver.setNumberOfSolutions(1);
+            solver.setAdditionalDepth(1);
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
+            if (count == 1) {
+                Assertions.assertNotEquals(0, solutions.size());
+//            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
+            } else if (count == 2) {
+                Assertions.assertEquals(0, solutions.size());
+            } else if (count == 3) {
+                Assertions.assertNotEquals(0, solutions.size());
+
+            }
+        }
+        // This is a question of iterating
+
     }
 
 //    @Test

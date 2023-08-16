@@ -43,6 +43,7 @@ public class UnMoveCondition implements Predicate<String>{
                 (this.what2 != '-' && movement.substring(movement.length()-2,
                         movement.length()-1).charAt(0) != this.what2) ||
                 (!movement.contains(this.how))) {
+//            System.out.println(move);
             return this.not;
         }
         return !this.not;

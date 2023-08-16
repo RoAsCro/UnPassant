@@ -67,17 +67,19 @@ public class StandardStateDetector implements StateDetector {
 
         if (board.inCheck(board.getTurn().equals("white") ? "black" : "white")) {
             this.state = false;
+            this.errorMessage = "Player put themselves in check.";
             return false;
         }
         if (board.getBoardFacts().pieceNumbers(false) > MAX_PIECES
                 || board.getBoardFacts().pieceNumbers(true) > MAX_PIECES) {
             this.state = false;
-
+            this.errorMessage = "More than 16 pieces.";
             return false;
         }
 
         if (board.getBoardFacts().pawnNumber(false) > MAX_PAWNS
                 || board.getBoardFacts().pawnNumber(true) > MAX_PAWNS) {
+            this.errorMessage = "More than 8 pawns.";
             this.state = false;
 
             return false;

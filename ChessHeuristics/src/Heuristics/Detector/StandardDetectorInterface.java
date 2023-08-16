@@ -83,6 +83,10 @@ public class StandardDetectorInterface implements DetectorInterface {
     public boolean getState() {
         return this.detector.getState();
     }
+    @Override
+    public String getErrorMessage() {
+        return this.detector.getErrorMessage();
+    }
 
     @Override
     public String toString() {

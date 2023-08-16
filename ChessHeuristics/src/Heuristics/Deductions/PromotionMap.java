@@ -48,11 +48,11 @@ public class PromotionMap extends AbstractDeduction {
     }
 
     @Override
-    public boolean deduce(BoardInterface board) {
+    public void deduce(BoardInterface board) {
         // Replace
         if (this.detector.getPromotionData().getPromotedPieceMap().values().stream().allMatch(AbstractCollection::isEmpty)) {
             this.state = true;
-            return true;
+            return;
         }
         setOriginAndTargets();
         // Generate map of promotion squares and pawn eligible pawn origins
@@ -63,13 +63,13 @@ public class PromotionMap extends AbstractDeduction {
         // Fail if a piece has no valid origin
         if (pieceSquareOriginWhite.containsValue(List.of()) || pieceSquareOriginBlack.containsValue(List.of())) {
             this.state = false;
-            return false;
+            return;
         }
         // Fail if a set of pieces does not have enough valid origins
         // Note - this check might include the above check naturally
         if (!checkPromotionNumbers(pieceSquareOriginWhite, pieceSquareOriginBlack)) {
             this.state = false;
-            return false;
+            return;
         }
         // The number of promotions each player has made
         int promotionsWhite = this.detector.getPromotionData().getPromotionNumbers().values().stream()
@@ -95,7 +95,7 @@ public class PromotionMap extends AbstractDeduction {
         if (promotionsWhite >  this.origins.stream().filter(coordinate -> coordinate.getY() == 1).toList().size()
                 || promotionsBlack > this.origins.stream().filter(coordinate -> coordinate.getY() == 6).toList().size()) {
             this.state = false;
-            return false;
+            return;
         }
         // Get a valid piece / origin set
         Map<Path, Integer> pathIntegerMap = this.detector.getPromotionData().getPromotionNumbers().values().stream()
@@ -109,7 +109,7 @@ public class PromotionMap extends AbstractDeduction {
         if (!(checkReductionOfPieceOrigins(true, board, pieceOriginWhite)
                 && checkReductionOfPieceOrigins(false, board, pieceOriginBlack))) {
             this.state = false;
-            return false;
+            return;
         }
 
         // Attempt to generate a valid combination of pieces, squares, and origins
@@ -119,11 +119,10 @@ public class PromotionMap extends AbstractDeduction {
         reduceClaims(false, pieceSquareOriginBlack, board);
         if ((this.claimsBlack.isEmpty() && promotionsBlack != 0) || (this.claimsWhite.isEmpty() && promotionsWhite != 0)) {
             this.state = false;
-            return false;
+            return;
         }
         this.state = false;
         stateIterateStart(board);
-        return false;
     }
 
     private void beginOriginClaim(Map<Path, List<Path>> pieceSquareOrigin,
@@ -461,8 +460,8 @@ public class PromotionMap extends AbstractDeduction {
             this.blackPawnMap = black;
         }
         @Override
-        public boolean deduce(BoardInterface boardInterface){
-            return super.deduce(boardInterface);
+        public void deduce(BoardInterface boardInterface){
+            super.deduce(boardInterface);
         }
     }
 
@@ -471,13 +470,12 @@ public class PromotionMap extends AbstractDeduction {
             super(white);
         }
         @Override
-        public boolean deduce(BoardInterface board) {
+        public void deduce(BoardInterface board) {
             if (this.maxPieces == MAX_PIECES) {
                 this.detector.getCaptureData().getNonPawnCaptures(getColour())
                         .addAll(PromotionMap.this.detector.getCaptureData().getNonPawnCaptures(getColour()));
             }
             super.deduce(board);
-            return false;
         }
 
         /**

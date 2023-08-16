@@ -28,20 +28,20 @@ public class CombinedPawnMap extends AbstractDeduction {
     };
 
     @Override
-    public boolean deduce(BoardInterface board) {
+    public void deduce(BoardInterface board) {
         this.whitePawnMap.registerDetector(this.detector);
         this.blackPawnMap.registerDetector(this.detector);
         this.whitePawnMap.deduce(board);
         if (!this.whitePawnMap.getState()) {
             this.errorMessage = this.whitePawnMap.errorMessage();
             this.state = false;
-            return false;
+            return;
         }
         this.blackPawnMap.deduce(board);
         if (!this.blackPawnMap.getState()) {
             this.errorMessage = this.blackPawnMap.errorMessage();
             this.state = false;
-            return false;
+            return;
         }
         boolean changed = true;
         boolean another = true;
@@ -71,7 +71,6 @@ public class CombinedPawnMap extends AbstractDeduction {
             this.state = false;
 
         }
-        return false;
     }
 
     private String generateErrorMessage(Map<Coordinate, List<Path>> paths) {
@@ -235,11 +234,10 @@ public class CombinedPawnMap extends AbstractDeduction {
         }
 
         @Override
-        public boolean deduce(BoardInterface board) {
+        public void deduce(BoardInterface board) {
             this.opponentPieceNumbers = board.getBoardFacts().pieceNumbers(!this.white);
             rawMap(board, this.white);
             reduce();
-            return false;
         }
 
         public void update() {

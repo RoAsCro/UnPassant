@@ -37,7 +37,7 @@ public abstract class AbstractDeduction implements Deduction {
     }
 
     @Override
-    public Boolean getState() {
+    public boolean getState() {
         return this.state;
     }
 

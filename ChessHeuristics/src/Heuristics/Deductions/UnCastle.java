@@ -34,9 +34,9 @@ public class UnCastle extends AbstractDeduction{
 //    }
 
     @Override
-    public boolean deduce(BoardInterface board) {
+    public void deduce(BoardInterface board) {
         hasMoved();
-        return false;
+        return;
     }
 
     public List<boolean[]> hasMoved() {
