@@ -12,6 +12,16 @@ import java.util.stream.Collectors;
 
 import static Heuristics.HeuristicsUtil.*;
 
+/**
+ * The PromotionMap looks at every promoted piece on the board and determines whether there is a valid set of
+ * pawn origins, promotion squares, and promoted pieces for each one, then adds these to the existing pawn
+ * paths stored in the PawnData.
+ * The state will be set to false if any promoted piece does not have a valid Path from a pawn origin
+ * to a promotion square, then to the piece, without exceeding the maximum number of captures that may take place.
+ * PromotionMap must only be run after the pawns and pieces have been mapped, promoted pieces determined and linked
+ * to promotion squares, and the maximum number of captures possible by pawns determined, otherwise it will not be
+ * accurate.
+ */
 public class PromotionMap extends AbstractDeduction {
 
     private final static int HIGH_NUMBER = 99;
@@ -463,8 +473,8 @@ public class PromotionMap extends AbstractDeduction {
         @Override
         public boolean deduce(BoardInterface board) {
             if (this.maxPieces == MAX_PIECES) {
-                this.detector.getCaptureData().getNonPawnCaptures(white)
-                        .addAll(PromotionMap.this.detector.getCaptureData().getNonPawnCaptures(white));
+                this.detector.getCaptureData().getNonPawnCaptures(getColour())
+                        .addAll(PromotionMap.this.detector.getCaptureData().getNonPawnCaptures(getColour()));
             }
             super.deduce(board);
             return false;
@@ -520,12 +530,12 @@ public class PromotionMap extends AbstractDeduction {
 
         @Override
         protected void captures(Map<Coordinate, Path> origins) {
-            flip(false, white);
+            flip(false, getColour());
             super.captures(origins);
-            flip(true, white);
+            flip(true, getColour());
             Map<Coordinate, Integer> newCaptures = new HashMap<>();
             getPawnOrigins().entrySet().stream()
-                    .filter(entry -> entry.getKey().getY() == (white ? FINAL_RANK_Y : FIRST_RANK_Y))
+                    .filter(entry -> entry.getKey().getY() == (getColour() ? FINAL_RANK_Y : FIRST_RANK_Y))
                     .forEach(entry -> {
                         Coordinate entryKey = entry.getKey();
                         entry.getValue().forEach(coordinate -> {
@@ -545,9 +555,9 @@ public class PromotionMap extends AbstractDeduction {
 
         @Override
         protected boolean reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
-            flip(false, this.white);
+            flip(false, getColour());
             boolean reduction = super.reduceIter(set, origins);
-            flip(true, this.white);
+            flip(true, getColour());
             return reduction;
         }
     }

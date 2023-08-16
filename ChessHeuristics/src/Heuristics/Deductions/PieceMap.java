@@ -12,9 +12,17 @@ import java.util.stream.Collectors;
 
 import static Heuristics.HeuristicsUtil.*;
 
+/**
+ * The PieceMap is a Deductions which attempts to form Paths between squares on the 1st and 8th ranks and
+ * non-pawn pieces of the corresponding colour. In the process of doing so, it determines which pieces and which
+ * squares are caged, and which pieces are promoted.
+ * The state is set to false if there is a piece on the board that cannot path to a corresponding origin or
+ * promotion square.
+ * PieceMap must only run deduce() after the pawns have been mapped, otherwise its results will not be
+ * accurate.
+ */
 public class PieceMap extends AbstractDeduction{
 
-    // Get rid of the one usage of this
     private PiecePathFinderUtil pathFinderUtil;
     Predicate<Path> kingCollisionWhite = path -> !path.getLast().equals(Coordinates.WHITE_KING);
     Predicate<Path> kingCollisionBlack = path -> !path.getLast().equals(Coordinates.BLACK_KING);

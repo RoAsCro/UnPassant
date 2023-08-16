@@ -13,6 +13,15 @@ import java.util.stream.Stream;
 
 import static Heuristics.HeuristicsUtil.*;
 
+/**
+ * CaptureLocations is a Deduction that determines which missing pieces may not have been captured by pawns.
+ * It does not take into account the captures of or by pawns that have promoted, and will not fail under the
+ * assumption that these have not taken place, i.e., if a missing pawn cannot have been captured if it did
+ * not promote, it will not be accounted for when the other deductions are rerun.
+ * The state is set to false if after rerunning the previously completed Deductions, any of them are set to false.
+ * CaptureLocations must only run deduce() after the pawns and pieces have been mapped, cages determined,
+ * and certain promotions discovered, otherwise its results will not be accurate.
+ */
 public class CaptureLocations extends AbstractDeduction {
     private PiecePathFinderUtil pathFinderUtil;
     private static final BiPredicate<Coordinate, Coordinate> DARK_TEST =

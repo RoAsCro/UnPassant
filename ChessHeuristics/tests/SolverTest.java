@@ -167,11 +167,7 @@ public class SolverTest {
                 b.setTurn(b.getTurn().equals("white") ? "black" : "white");
                 // set max states to 100?
                 Solver solver = new Solver(string -> true, detectorInterface -> {
-                    if (detectorInterface.canCastle(false)) {
-                        System.out.println("XXX" + detectorInterface);
-                        return true;
-                    }
-                    return false;
+                    return detectorInterface.canCastle(false);
                 }
                 );
                 solver.setNumberOfSolutions(1);

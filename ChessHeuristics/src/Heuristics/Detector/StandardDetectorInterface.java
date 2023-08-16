@@ -77,6 +77,10 @@ public class StandardDetectorInterface implements DetectorInterface {
 
     @Override
     public String toString() {
+        if (!this.detector.getState()) {
+            return this.detector.getErrorMessage();
+        }
+
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("Pawn origins:\n");

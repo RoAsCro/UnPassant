@@ -11,6 +11,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * UnCastle is a Deduction that determines whether promoted pieces must have displaced kings or rooks in the process
+ * of promoting.
+ * This Deduction's state will never be false.
+ * UnCastle must only be run after pawns, pieces, promoted pieces, missing promoted pieces, and paths from pawn origins
+ * to promotion squares have all been determined and mapped, otherwise its results will not be accurate.
+ */
 public class UnCastle extends AbstractDeduction{
 
     private final static List<Integer> criticalXs = List.of(3, 4, 5);
@@ -73,6 +80,12 @@ public class UnCastle extends AbstractDeduction{
         return List.of(this.whiteData, this.blackData);
     }
 
+    /**
+     * Determines if a promoted bishop that is on a promotion square had to have put the opposing king in check
+     * in the course of promoting. As it was not taken, the king must therefore have moved.
+     * This uses the pattern of a bishop being on d1/8 or f1/8, with opposing pawns caging it in.
+     * @return whether a promoted bishop on its promotion square put an opposing king in check.
+     */
     private boolean[] bishops() {
         List<Coordinate> onPSquare = this.detector.getPromotionData().getPromotedPieceMap().entrySet()
                 .stream()
@@ -88,7 +101,8 @@ public class UnCastle extends AbstractDeduction{
                 .collect(Collectors.toSet()));
         boolean[] returnBooleans = new boolean[]{false, false};
         bishops.forEach(c -> {
-            List<Coordinate> criticalCoords = List.of(new Coordinate(c.getX() + 1, Math.abs(c.getY() - 1)), new Coordinate(c.getX() - 1, Math.abs(c.getY() - 1)));
+            List<Coordinate> criticalCoords = List.of(new Coordinate(c.getX() + 1, Math.abs(c.getY() - 1)),
+                    new Coordinate(c.getX() - 1, Math.abs(c.getY() - 1)));
             if (this.detector.getPawnData().getPawnPaths(true).keySet().containsAll(criticalCoords)) {
                 returnBooleans[0] = true;
             }

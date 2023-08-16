@@ -14,6 +14,11 @@ import java.util.stream.Collectors;
 import static Heuristics.HeuristicsUtil.FINAL_RANK_Y;
 import static Heuristics.HeuristicsUtil.FIRST_RANK_Y;
 
+/**
+ * The CombinedPawnMap is a Deduction which forms a map of potential Paths from squares on the 2nd and 7th ranks to
+ * pawns of the corresponding colour. The state will be set to false if any pawn on the does not have a valid Path
+ * from an origin.
+ */
 public class CombinedPawnMap extends AbstractDeduction {
 
     protected PawnMap whitePawnMap = new PawnMap(true);
@@ -175,7 +180,6 @@ public class CombinedPawnMap extends AbstractDeduction {
 
     private Path makeExclusiveMaps(BoardInterface board, Path path, boolean white, List<Map.Entry<Coordinate, List<Path>>> forbiddenPaths) {
 
-        //TODO current forbidden paths won't contain paths that are one coordinate long
         Coordinate target = path.getLast();
         return new PiecePathFinderUtil(detector).findShortestPawnPath(board,
                 path.getFirst(), getMaxCaptures(white, target),
@@ -209,16 +213,20 @@ public class CombinedPawnMap extends AbstractDeduction {
         return (white ? whitePawnMap : blackPawnMap).getCapturedPieces() + (white ? whitePawnMap : blackPawnMap).getCaptureSet().get(coordinate);
     }
 
+    /**
+     * The PawnMap is a Deduction that links squares on the 2nd or 7th ranks to pawns of the colour given at
+     * instantiation. The state will be set to false if there is a pawn of the given colour that cannot be
+     * linked to an origin.
+     */
     public static class PawnMap extends AbstractDeduction{
-        private Map<Coordinate, Path> pawnOrigins = new TreeMap<>();
+        private final Map<Coordinate, Path> pawnOrigins = new TreeMap<>();
         private final Map<Coordinate, Integer> captureSet = new TreeMap<>();
         private List<Set<Coordinate>> sets = new LinkedList<>();
-        private int pieceNumbers = 0;
         private int opponentPieceNumbers = 0;
         private int capturedPieces;
         protected int maxPieces = 16;
 
-        protected boolean white;
+        private boolean white;
 
         public PawnMap(Boolean white) {
             super("Illegal pawn structure.");
@@ -227,7 +235,6 @@ public class CombinedPawnMap extends AbstractDeduction {
 
         @Override
         public boolean deduce(BoardInterface board) {
-            this.pieceNumbers = board.getBoardFacts().pieceNumbers(this.white);
             this.opponentPieceNumbers = board.getBoardFacts().pieceNumbers(!this.white);
             rawMap(board, this.white);
             reduce();
@@ -501,6 +508,9 @@ public class CombinedPawnMap extends AbstractDeduction {
         }
         public Map<Coordinate, Path> getPawnOrigins() {
             return this.pawnOrigins;
+        }
+        public boolean getColour() {
+            return this.white;
         }
 
 
