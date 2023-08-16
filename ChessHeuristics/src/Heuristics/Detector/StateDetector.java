@@ -13,8 +13,6 @@ public interface StateDetector {
     boolean testState(BoardInterface board);
     void reTest(BoardInterface boardInterface);
     String getErrorMessage();
-
-    // Pawn Data
     PawnData getPawnData();
     PieceData getPieceData();
     PromotionData getPromotionData();

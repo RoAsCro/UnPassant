@@ -1,6 +1,7 @@
 import SolveAlgorithm.Solver;
 import Heuristics.Detector.SolverImpossibleStateDetector;
 import Heuristics.Detector.StateDetectorFactory;
+import SolveAlgorithm.StateConditions;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
@@ -365,25 +366,16 @@ public class SolverTest {
         int count = 0;
         for (String st : list) {
             count++;
+            StateConditions.NoPromotions noPromotions = new StateConditions.NoPromotions();
             Solver solver = new Solver( s ->{
 
                 return !(s.split(":")[1].charAt(0) == 'P'
                         && (s.split(":")[1].endsWith("1")  || s.split(":")[1].endsWith("8")));
 
             },
-                    d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-//                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
-//                }
-                return d.getPromotions(true).values()
-                        .stream().flatMap(m -> m.keySet().stream())
-                        .toList().isEmpty()
-                        &&
-                        d.getPromotions(false).values()
-                                .stream().flatMap(m -> m.keySet().stream())
-                                .toList().isEmpty();
-                    }
+                    noPromotions
             );
+
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
             if (count == 1) {

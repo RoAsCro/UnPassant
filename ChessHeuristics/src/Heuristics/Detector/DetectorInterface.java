@@ -18,4 +18,6 @@ public interface DetectorInterface {
     boolean testState();
 
     public boolean canCastle(boolean white);
+
+    boolean getState();
 }

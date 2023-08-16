@@ -111,12 +111,8 @@ public class PieceMap extends AbstractDeduction{
         potentialPromotions.forEach((key, value) -> {
             Map<Path, Integer> toPut = new HashMap<Path, Integer>();
             toPut.put(value, pieceNumber.get(key));
-//            if (value != null) {
-                this.detector.getPromotionData().getPromotionNumbers().put(key, toPut);
-//            }
+            this.detector.getPromotionData().getPromotionNumbers().put(key, toPut);
         });
-
-        //system.out.println(this.promotionNumbers);
 
         Map<String, Path> certainPromotions = new TreeMap<>();
         Path foundPieces = Path.of(this.detector.getPieceData().getStartLocations().values()
@@ -186,11 +182,7 @@ public class PieceMap extends AbstractDeduction{
                 String pieceCode = entry.getKey().getY() == 0
                         ? pieceName.substring(0, 1).toUpperCase()
                         : pieceName.substring(0, 1).toLowerCase();
-                //system.out.println("FINDING PATH" + pieceName);
                 if (this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, origin, entry.getKey()).isEmpty()){
-                    //system.out.println("or" + origin);
-                    //system.out.println("t" + entry.getKey());
-
                     coordinatesToRemove.add(origin);
                 }
             });
@@ -207,8 +199,6 @@ public class PieceMap extends AbstractDeduction{
                 .flatMap(entry -> entry.getValue().stream()).toList());
         List<Coordinate> accountedPieces = new ArrayList<>(this.detector.getPromotionData().getPromotedPieceMap().values().stream().flatMap(Path::stream).toList());
         accountedPieces.addAll(this.detector.getPieceData().getStartLocations().values().stream().map(Map::keySet).flatMap(Set::stream).toList());
-        //system.out.println(allPieces);
-        //system.out.println(accountedPieces);
 
         boolean certainPromotionCheck = new HashSet<>(accountedPieces).containsAll(allPieces);
 
@@ -232,10 +222,6 @@ public class PieceMap extends AbstractDeduction{
                 .toList()
                 .size();
 
-        //system.out.println("AP" + accountedPromotions);
-        //system.out.println("NPP" + numberOfPotentialPromotions);
-
-
         if (!certainPromotionCheck || accountedPromotions != numberOfPotentialPromotions){
             if (!certainPromotionCheck) {
                 this.errorMessage = "Not all promoted pieces can path from a promotion square.";
@@ -249,7 +235,6 @@ public class PieceMap extends AbstractDeduction{
     }
 
     private void configureCastling(BoardInterface board) {
-//        System.out.println("tripped");
         if (board.canKingMove(true)) {
             this.detector.getPieceData().getCaged().put(Coordinates.WHITE_KING, true);
         }
@@ -258,20 +243,9 @@ public class PieceMap extends AbstractDeduction{
         }
         if (board.canMove(true, true)) {
             this.detector.getPieceData().getCaged().put(Coordinates.WHITE_QUEEN_ROOK, true);
-//            this.startLocations.get(Coordinates.WHITE_QUEEN_ROOK).keySet()
-//                    .stream()
-//                    .filter(c -> !c.equals(Coordinates.WHITE_QUEEN_ROOK))
-//                    .collect(Collectors.toList())
-//                    .forEach(c -> this.startLocations.get(Coordinates.WHITE_QUEEN_ROOK).remove(c));
-//            this.startLocations.get(Coordinates.WHITE_KING_ROOK).keySet().remove(Coordinates.WHITE_QUEEN_ROOK);
         }
         if (board.canMove(true, false)) {
             this.detector.getPieceData().getCaged().put(Coordinates.WHITE_KING_ROOK, true);
-//            this.startLocations.get(Coordinates.WHITE_KING_ROOK).keySet()
-//                    .stream()
-//                    .filter(c -> !c.equals(Coordinates.WHITE_KING_ROOK))
-//                    .collect(Collectors.toList())
-//                    .forEach(c -> this.startLocations.get(Coordinates.WHITE_KING_ROOK).remove(c));
         }
         if (board.canMove(false, true)) {
             this.detector.getPieceData().getCaged().put(Coordinates.BLACK_QUEEN_ROOK, true);
@@ -279,7 +253,7 @@ public class PieceMap extends AbstractDeduction{
         if (board.canMove(false, false)) {
             this.detector.getPieceData().getCaged().put(Coordinates.BLACK_KING_ROOK, true);
         }
-//        System.out.println(this.caged);
+
     }
     private void configureCastlingPartTwo(BoardInterface board) {
 //        Path rookCoords = Path.of(Coordinates.WHITE_QUEEN_ROOK, Coordinates.WHITE_KING_ROOK, Coordinates.BLACK_QUEEN_ROOK, Coordinates.BLACK_KING_ROOK);
@@ -393,7 +367,6 @@ public class PieceMap extends AbstractDeduction{
                     coordinatesToRemove.add(origin);
                 }
             });
-            //system.out.println("c" +coordinatesToRemove);
             coordinatesToRemove.forEach(coordinate -> entry.getValue().remove(coordinate));
         });
     }
@@ -460,7 +433,6 @@ public class PieceMap extends AbstractDeduction{
 
                 if (originX == Coordinates.WHITE_KING.getX() && pieceName.equals("king")
                         && !target.equals(white ? Coordinates.WHITE_KING : Coordinates.BLACK_KING)) {
-//                    System.out.println(target);
                     this.detector.getPieceData().setKingMovement(white, true);
                 }
                 if (pieceName.equals("bishop") && Coordinates.light(start) != Coordinates.light(target)) {
