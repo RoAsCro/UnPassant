@@ -17,25 +17,37 @@ import static Heuristics.HeuristicsUtil.*;
  * non-pawn pieces of the corresponding colour. In the process of doing so, it determines which pieces and which
  * squares are caged, and which pieces are promoted, and whether the king has been displaced by rook and queen
  * movement.
+ * <></>
+ * For the purposes of the PieceMap, two Coordinates are considered to be able to be able to path to one another
+ * if they can both either a. path to the other Coordinate, or b. path to a Coordinate(x, y) such that 2 < y < 7.
+ * These Paths must also not be exclusive, as defined in the documentation of class Pathfinder, with any pawn Path.
+ * <></>
  * The state is set to false if there is a piece on the board that cannot path to a corresponding origin or
  * promotion square, or if there are more promotions than available pawns.
+ * <></>
  * PieceMap must only run deduce() after the pawns have been mapped, otherwise its results will not be
  * accurate.
  */
 public class PieceMap extends AbstractDeduction{
+    /**A Path containing standard rook coordinates for use in various methods */
     private final static Path ROOK_COORDS = Path.of(Coordinates.WHITE_QUEEN_ROOK,
             Coordinates.WHITE_KING_ROOK, Coordinates.BLACK_QUEEN_ROOK, Coordinates.BLACK_KING_ROOK);
     /**A Path predicate checking collision with the white king**/
     private static final Predicate<Path> kingCollisionWhite = path -> !path.getLast().equals(Coordinates.WHITE_KING);
     /**A Path predicate checking collision with the black king**/
     private static final Predicate<Path> kingCollisionBlack = path -> !path.getLast().equals(Coordinates.BLACK_KING);
+    /**A string of the word "knight" to avoid repeated use of a literal String*/
     private static final String KNIGHT = "knight";
+    /**A Map of Coordinates of start locations and whether they are caged*/
     private Map<Coordinate, Boolean> caged;
-    /**A map**/
+    /**A Map of Coordinates of promotion squares and a Path listing the Coordinates of pieces that
+     * can path to and from that square**/
     private Map<Coordinate, Path> promotedPieceMap;
-
-    private Map<Coordinate, Map<Coordinate, Path>> startLocations;
-    private PiecePathFinderUtil pathFinderUtil;
+    /**A Map of Coordinates of start locations, and Maps of Coordinates of corresponding pieces that
+     * can path to and from those start locations, and paths from those start locations to those pieces*/
+    private Map<Coordinate, Map<Coordinate, Path>> pieceMap;
+    /** Stores a reference to PathFinderUtil to avoid repeated instantiation */
+    private PathfinderUtil pathFinderUtil;
 
     /**
      * Instantiates a PieceMap with the standard error message
@@ -51,8 +63,8 @@ public class PieceMap extends AbstractDeduction{
     @Override
     public void registerDetector(StateDetector detector) {
         super.registerDetector(detector);
-        this.pathFinderUtil = new PiecePathFinderUtil(detector);
-        this.startLocations = this.detector.getPieceData().getStartLocations();
+        this.pathFinderUtil = new PathfinderUtil(detector);
+        this.pieceMap = this.detector.getPieceData().getPiecePaths();
         this.caged = this.detector.getPieceData().getCaged();
         this.promotedPieceMap = this.detector.getPromotionData().getPromotedPieceMap();
     }
@@ -75,7 +87,7 @@ public class PieceMap extends AbstractDeduction{
         configureCastlingPartTwo(board);
 
         // For each start location, have each piece associated with it attempt to path to that start
-        pathFromOtherDirection(board, this.startLocations);
+        pathFromOtherDirection(board, this.pieceMap);
 
         // Check if King and Rooks have been displaced
         kingMovementUpdate(board);
@@ -98,7 +110,7 @@ public class PieceMap extends AbstractDeduction{
         });
 
         // Find certain promotions
-        Path foundPieces = Path.of(this.startLocations.values()
+        Path foundPieces = Path.of(this.pieceMap.values()
                 .stream().map(Map::keySet).flatMap(Collection::stream).toList());
         Map<String, Path> certainPromotions = getCertainPromotions(board, foundPieces);
         findPromotionPaths(board, certainPromotions);
@@ -167,7 +179,7 @@ public class PieceMap extends AbstractDeduction{
         List<Coordinate> accountedPieces = new ArrayList<>(this.detector.getPromotionData()
                 .getPromotedPieceMap().values().stream().flatMap(Path::stream).toList());
         accountedPieces.addAll(this.detector.getPieceData()
-                .getStartLocations().values().stream().map(Map::keySet).flatMap(Set::stream).toList());
+                .getPiecePaths().values().stream().map(Map::keySet).flatMap(Set::stream).toList());
         return new HashSet<>(accountedPieces).containsAll(allPieces);
     }
 
@@ -282,7 +294,7 @@ public class PieceMap extends AbstractDeduction{
                 }
                 if (!this.caged.get(origin)) {
                     Set<Coordinate> pieceLocations = this.detector.getPieceData()
-                            .getStartLocations().get(origin).keySet();
+                            .getPiecePaths().get(origin).keySet();
                     String name = STANDARD_STARTS.get(x);
                     if (name.equals("bishop")) {
                         name = name +
@@ -344,12 +356,12 @@ public class PieceMap extends AbstractDeduction{
 
         ROOK_COORDS.forEach((r) -> {
             if (board.canMove(r.getY() == FIRST_RANK_Y, r.getX() == Q_ROOK_X)) {
-                this.startLocations.get(r).keySet()
+                this.pieceMap.get(r).keySet()
                         .stream()
                         .filter(c -> !c.equals(r))
                         .toList()
-                        .forEach(c -> this.startLocations.get(r).remove(c));
-                this.startLocations.get(new Coordinate(Math.abs(r.getX() - K_ROOK_X), r.getY())).keySet().remove(r);
+                        .forEach(c -> this.pieceMap.get(r).remove(c));
+                this.pieceMap.get(new Coordinate(Math.abs(r.getX() - K_ROOK_X), r.getY())).keySet().remove(r);
             }
         });
     }
@@ -404,9 +416,9 @@ public class PieceMap extends AbstractDeduction{
                     || (!white && !this.detector.getPieceData().getKingMovement(false))) {
                 Coordinate finalCurrentQueen = currentQueen;
                 boolean finalWhite = white;
-                if (this.startLocations.containsKey(currentQueen) && ((this.startLocations.get(currentQueen)
+                if (this.pieceMap.containsKey(currentQueen) && ((this.pieceMap.get(currentQueen)
                         .keySet().stream().anyMatch(c -> disturbsKing(board, "queen", PIECE_CODES.get("queen"), finalCurrentQueen, c, finalWhite)))
-                        || (this.startLocations.get(currentQueen).isEmpty() && currentAllPieces && disturbsKing(board, "queen", PIECE_CODES.get("queen"), finalCurrentQueen, Coordinates.NULL_COORDINATE, white)))
+                        || (this.pieceMap.get(currentQueen).isEmpty() && currentAllPieces && disturbsKing(board, "queen", PIECE_CODES.get("queen"), finalCurrentQueen, Coordinates.NULL_COORDINATE, white)))
                 ) {
                     this.detector.getPieceData().setKingMovement(white, true);
                 }
@@ -535,7 +547,7 @@ public class PieceMap extends AbstractDeduction{
                     pieces.add(target);
                 }
             }
-            this.startLocations.put(start, candidatePaths);
+            this.pieceMap.put(start, candidatePaths);
         }
 
     }
@@ -551,28 +563,28 @@ public class PieceMap extends AbstractDeduction{
         Path rooks = board.getBoardFacts().getCoordinates(white, rook);
         Coordinate kingRook = white ? Coordinates.WHITE_KING_ROOK : Coordinates.BLACK_KING_ROOK;
         Coordinate queenRook = white ? Coordinates.WHITE_QUEEN_ROOK : Coordinates.BLACK_QUEEN_ROOK;
-        if (allPiecesTakenByPawns && (!this.startLocations.containsKey(kingRook) || (
-                this.startLocations.get(kingRook).isEmpty()
-                        || (this.startLocations.get(kingRook).size() == 1 &&
-                        this.startLocations.get(kingRook).containsKey(queenRook)))
+        if (allPiecesTakenByPawns && (!this.pieceMap.containsKey(kingRook) || (
+                this.pieceMap.get(kingRook).isEmpty()
+                        || (this.pieceMap.get(kingRook).size() == 1 &&
+                        this.pieceMap.get(kingRook).containsKey(queenRook)))
         )) {
             rooks.add(Coordinates.NULL_COORDINATE);
         }
-        else if (allPiecesTakenByPawns && (!this.startLocations.containsKey(queenRook) || (
-                this.startLocations.get(queenRook).isEmpty()
-                        || (this.startLocations.get(queenRook).size() == 1 &&
-                        this.startLocations.get(queenRook).containsKey(kingRook)))
+        else if (allPiecesTakenByPawns && (!this.pieceMap.containsKey(queenRook) || (
+                this.pieceMap.get(queenRook).isEmpty()
+                        || (this.pieceMap.get(queenRook).size() == 1 &&
+                        this.pieceMap.get(queenRook).containsKey(kingRook)))
         ))  {
             rooks.add(Coordinates.NULL_COORDINATE);
         }
-        boolean kk = (!this.startLocations.containsKey(kingRook) || (
-                this.startLocations.get(kingRook).isEmpty()
+        boolean kk = (!this.pieceMap.containsKey(kingRook) || (
+                this.pieceMap.get(kingRook).isEmpty()
                         || (
-                        !this.startLocations.get(kingRook).containsKey(kingRook))));
-        boolean qq = (!this.startLocations.containsKey(queenRook) || (
-                this.startLocations.get(queenRook).isEmpty()
+                        !this.pieceMap.get(kingRook).containsKey(kingRook))));
+        boolean qq = (!this.pieceMap.containsKey(queenRook) || (
+                this.pieceMap.get(queenRook).isEmpty()
                         || (
-                        !this.startLocations.get(queenRook).containsKey(queenRook))));
+                        !this.pieceMap.get(queenRook).containsKey(queenRook))));
         boolean kingMoved = false;
         for (Coordinate c : rooks) {
             if (c.equals(queenRook) || c.equals(kingRook)) {
@@ -582,11 +594,11 @@ public class PieceMap extends AbstractDeduction{
                 continue;
             }
             boolean king = c.equals(Coordinates.NULL_COORDINATE)
-                    || (this.startLocations.containsKey(kingRook)
-                    && this.startLocations.get(kingRook).containsKey(c));
+                    || (this.pieceMap.containsKey(kingRook)
+                    && this.pieceMap.get(kingRook).containsKey(c));
             boolean queen = c.equals(Coordinates.NULL_COORDINATE)
-                    || (this.startLocations.containsKey(queenRook)
-                    && this.startLocations.get(queenRook).containsKey(c));
+                    || (this.pieceMap.containsKey(queenRook)
+                    && this.pieceMap.get(queenRook).containsKey(c));
 
             if (qq && queen) {
                 kingMoved = disturbsKing(board, rook, "r", queenRook, c, white);

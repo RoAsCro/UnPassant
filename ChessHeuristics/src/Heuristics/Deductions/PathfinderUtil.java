@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 
 import static Heuristics.HeuristicsUtil.*;
 
-public class PiecePathFinderUtil {
+public class PathfinderUtil {
     private StateDetector detector;
 
     public static final Function<Path, Integer> PATH_DEVIATION = p -> p.stream()
@@ -59,8 +59,8 @@ public class PiecePathFinderUtil {
         return !(
                 (coordinate.getY() == 0 || coordinate.getY() == 7)
                         && !STANDARD_STARTS.get(coordinate.getX()).equals("rook")
-                        && this.detector.getPieceData().getStartLocations().containsKey(coordinate)
-                        && !this.detector.getPieceData().getStartLocations().get(coordinate).isEmpty()
+                        && this.detector.getPieceData().getPiecePaths().containsKey(coordinate)
+                        && !this.detector.getPieceData().getPiecePaths().get(coordinate).isEmpty()
                         && this.detector.getPieceData().getCaged().containsKey(coordinate)
                         && this.detector.getPieceData().getCaged().get(coordinate));
     };
@@ -84,7 +84,7 @@ public class PiecePathFinderUtil {
 
     );
 
-    public PiecePathFinderUtil(StateDetector detector) {
+    public PathfinderUtil(StateDetector detector) {
         this.detector = detector;
     }
 
@@ -97,7 +97,7 @@ public class PiecePathFinderUtil {
 
     /**
      * Finds a path from the given origin using the given (non-pawn) piece's move set to the given target or to 1 < y < 6
-     * The pathfinder will use that piece's collision conditions as specified in PiecePathFinderUtil.pathConditions
+     * The pathfinder will use that piece's collision conditions as specified in PathfinderUtil.pathConditions
      * as well as any addtionally specified conditions
      *
      * @param board

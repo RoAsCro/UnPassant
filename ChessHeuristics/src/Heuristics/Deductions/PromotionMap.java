@@ -25,7 +25,7 @@ import static Heuristics.HeuristicsUtil.*;
 public class PromotionMap extends AbstractDeduction {
 
     private final static int HIGH_NUMBER = 99;
-    private PiecePathFinderUtil pathFinderUtil = new PiecePathFinderUtil(detector);
+    private PathfinderUtil pathFinderUtil = new PathfinderUtil(detector);
     private final List<Map<Path, Path>> claimsWhite = new LinkedList<>();
     private final List<Map<Path, Path>> claimsBlack = new LinkedList<>();
     private Path origins;
@@ -42,7 +42,7 @@ public class PromotionMap extends AbstractDeduction {
     @Override
     public void registerDetector(StateDetector detector) {
         super.registerDetector(detector);
-        this.pathFinderUtil = new PiecePathFinderUtil(detector);
+        this.pathFinderUtil = new PathfinderUtil(detector);
 //        this.promotionPawnMapWhite.registerDetector(this.detector);
 //        this.promotionPawnMapBlack.registerDetector(this.detector);
     }
@@ -402,7 +402,7 @@ public class PromotionMap extends AbstractDeduction {
                                 BoardInterface board,
                                 List<Path> forbiddenWhitePaths, List<Path> forbiddenBlackPaths,
                                 Coordinate target) {
-        Path shortest = new PiecePathFinderUtil(this.detector).findShortestPawnPath(
+        Path shortest = new PathfinderUtil(this.detector).findShortestPawnPath(
                 board, origin, 0, (b, c) -> target.equals(c),
                 origin.getY() == 1 || origin.getY() == 0, false, origin.getY() == 1 || origin.getY() == 7
                         ? forbiddenBlackPaths
@@ -417,7 +417,7 @@ public class PromotionMap extends AbstractDeduction {
                 pathCagedCaptures(captureY, change, shortest, cagedCaptures, board, white);
             }
             this.goalOrigins.putIfAbsent(origin, new HashMap<>());
-            this.goalOrigins.get(origin).put(target, PiecePathFinderUtil.PATH_DEVIATION.apply(shortest));
+            this.goalOrigins.get(origin).put(target, PathfinderUtil.PATH_DEVIATION.apply(shortest));
         }
 
     }

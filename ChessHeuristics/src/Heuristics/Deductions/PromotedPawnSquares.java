@@ -6,10 +6,9 @@ import StandardChess.Coordinate;
 
 import java.util.*;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static Heuristics.Deductions.PiecePathFinderUtil.PATH_DEVIATION;
+import static Heuristics.Deductions.PathfinderUtil.PATH_DEVIATION;
 import static Heuristics.HeuristicsUtil.*;
 
 /**
@@ -96,7 +95,7 @@ public class PromotedPawnSquares extends AbstractDeduction{
         int enemyCaptures = (this.detector.getCaptureData().pawnTakeablePieces(notWhite) - board.getBoardFacts().pieceNumbers(!notWhite))
                 - this.detector.getPawnData().minimumPawnCaptures(notWhite);
         List<Path> paths = new LinkedList<>();
-        PiecePathFinderUtil pathFinderUtil = new PiecePathFinderUtil(this.detector);
+        PathfinderUtil pathFinderUtil = new PathfinderUtil(this.detector);
         List<Map.Entry<Coordinate, List<Path>>> forbidden = this.detector.getPawnData().getPawnPaths(notWhite).entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() == 1)

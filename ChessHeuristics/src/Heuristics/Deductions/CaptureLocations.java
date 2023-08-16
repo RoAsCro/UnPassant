@@ -9,7 +9,6 @@ import StandardChess.Coordinates;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static Heuristics.HeuristicsUtil.*;
 
@@ -23,7 +22,7 @@ import static Heuristics.HeuristicsUtil.*;
  * and certain promotions discovered, otherwise its results will not be accurate.
  */
 public class CaptureLocations extends AbstractDeduction {
-    private PiecePathFinderUtil pathFinderUtil;
+    private PathfinderUtil pathFinderUtil;
     private static final BiPredicate<Coordinate, Coordinate> DARK_TEST =
             (c1, c2) -> (c2.getX() != c1.getX() || c1.equals(c2) ) && !Coordinates.light(c1);
     private static final BiPredicate<Coordinate, Coordinate> LIGHT_TEST =
@@ -36,7 +35,7 @@ public class CaptureLocations extends AbstractDeduction {
     @Override
     public void registerDetector(StateDetector detector) {
         super.registerDetector(detector);
-        this.pathFinderUtil = new PiecePathFinderUtil(detector);
+        this.pathFinderUtil = new PathfinderUtil(detector);
     }
 
     @Override
@@ -65,13 +64,13 @@ public class CaptureLocations extends AbstractDeduction {
                 .filter(entry -> entry.getKey().getY() == y)
                 .filter(Map.Entry::getValue) //Is Caged
                 .filter(entry -> {
-                    Map<Coordinate, Path> map = this.detector.getPieceData().getStartLocations().get(entry.getKey());
+                    Map<Coordinate, Path> map = this.detector.getPieceData().getPiecePaths().get(entry.getKey());
                     if (map.isEmpty()){
                         return true;
                     }
                     if (map.size() == 1) {
 //                        System.out.println(entry.getKey());
-                        return this.detector.getPieceData().getStartLocations()
+                        return this.detector.getPieceData().getPiecePaths()
                                 .get(new Coordinate(Math.abs(FINAL_RANK_Y - entry.getKey().getX()), entry.getKey().getY()))
                                 .containsKey(map.keySet().stream().findAny().orElse(Coordinates.NULL_COORDINATE))
                                 && entry.getKey().getX() == 0;
@@ -109,7 +108,7 @@ public class CaptureLocations extends AbstractDeduction {
         // Account for bishops being taken on the correct colour
         // this is only done in situations where all captures made by pawns are made by certain pawn paths
         List<BiPredicate<Coordinate, Coordinate>> predicates =
-                new LinkedList<>(this.detector.getPieceData().getStartLocations().entrySet().stream()
+                new LinkedList<>(this.detector.getPieceData().getPiecePaths().entrySet().stream()
                         .filter(entry -> entry.getKey().getY() == (white ? FINAL_RANK_Y : FIRST_RANK_Y)) //Correct colour
                         .filter(entry -> entry.getKey().getX() == Q_BISHOP_X || entry.getKey().getX() == K_BISHOP_X) //Is a Bishop
                         .filter(entry -> !(this.detector.getPieceData().getCaged().get(entry.getKey()))) //Is not Caged
@@ -181,7 +180,7 @@ public class CaptureLocations extends AbstractDeduction {
     private boolean pawnCaptures(Map<Coordinate, List<Path>> singlePawns, boolean white) {
         int otherValue = singlePawns.values().stream()
                 .map(pathList -> pathList
-                        .stream().map(PiecePathFinderUtil.PATH_DEVIATION)
+                        .stream().map(PathfinderUtil.PATH_DEVIATION)
                         .reduce((i, j) -> i < j ? i : j)
                         .orElse(0))
                 .reduce(0, Integer::sum);
@@ -297,7 +296,7 @@ public class CaptureLocations extends AbstractDeduction {
                 .filter(entry -> !returnMap.containsKey(entry.getKey()))
                 .filter(entry -> entry.getValue().size() == 1 && !(entry.getValue().get(0).size() == 1))
                 .filter(e -> {
-                    int deviation = PiecePathFinderUtil.PATH_DEVIATION.apply(e.getValue().get(0));
+                    int deviation = PathfinderUtil.PATH_DEVIATION.apply(e.getValue().get(0));
                     return (
 //                            deviation >= getMaxCaptures(!white, e.getKey()) ||
                             deviation >= Math.abs(e.getKey().getY() - e.getValue().get(0).getFirst().getY()) ||

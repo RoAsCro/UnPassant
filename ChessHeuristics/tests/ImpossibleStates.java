@@ -496,13 +496,12 @@ public class ImpossibleStates {
 //        ));
 //        System.out.println(this.detector.getSinglePawnPaths(true));
 //        System.out.println(this.detector.getSinglePawnPaths(false));
-        System.out.println(AbstractDeduction.pawnStarts);
-        System.out.println(this.detector.getCaptureData().getNonPawnCaptures(true));
-        System.out.println(this.detector.getCaptureData().getNonPawnCaptures(false));
-        System.out.println(this.detector.getPromotionData().getPromotionNumbers());
         System.out.println(this.detector.getPromotionData().getPromotedPieceMap());
-        
-        System.out.println(new StandardDetectorInterface(detector).getPromotions(true));
+        System.out.println(this.detector.getPromotionData().getPromotedPieceMap());
+
+        System.out.println(this.detector.getPieceData().getPiecePaths());
+
+
 
 
 

@@ -1,6 +1,5 @@
 package Heuristics.Detector.Data;
 
-import Heuristics.Detector.Data.PieceData;
 import Heuristics.Path;
 import StandardChess.Coordinate;
 
@@ -11,7 +10,7 @@ public class StandardPieceData implements PieceData {
     private static final int WHITE = 0;
     private static final int BLACK = 1;
     private final Map<Coordinate, Boolean> caged = new TreeMap<>();
-    private final Map<Coordinate, Map<Coordinate, Path>> startLocations = new TreeMap<>();
+    private final Map<Coordinate, Map<Coordinate, Path>> piecePaths = new TreeMap<>();
 
     private final boolean[][] kingRookMovement = new boolean[][]{{false, false, false}, {false, false, false}};
 
@@ -38,7 +37,7 @@ public class StandardPieceData implements PieceData {
     }
 
     @Override
-    public Map<Coordinate, Map<Coordinate, Path>> getStartLocations() {
-        return this.startLocations;
+    public Map<Coordinate, Map<Coordinate, Path>> getPiecePaths() {
+        return this.piecePaths;
     }
 }

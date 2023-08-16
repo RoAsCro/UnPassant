@@ -92,13 +92,13 @@ public class CombinedPawnMap extends AbstractDeduction {
         Map<Coordinate, List<Path>> checkedPlayerPaths = this.detector.getPawnData().getPawnPaths(white);
 
         Map<Coordinate, List<Path>> opposingPlayerPaths = this.detector.getPawnData().getPawnPaths(!white);
-        PiecePathFinderUtil pathFinderUtil = new PiecePathFinderUtil(this.detector);
+        PathfinderUtil pathFinderUtil = new PathfinderUtil(this.detector);
         // Find every pawn of the opposing player with one origin and one possible path
         List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = new ArrayList<>(opposingPlayerPaths.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() == 1 && !(entry.getValue().get(0).size() == 1))
 //                .filter(e -> {
-//                    int deviation = PiecePathFinderUtil.PATH_DEVIATION.apply(e.getValue().get(0));
+//                    int deviation = PathfinderUtil.PATH_DEVIATION.apply(e.getValue().get(0));
 //                    return (
 ////                            deviation >= getMaxCaptures(!white, e.getKey()) ||
 //                            deviation >= Math.abs(e.getKey().getY() - e.getValue().get(0).getFirst().getY()) ||
@@ -138,7 +138,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                             //system.out.println("inner entry" + innerEntry);
                             innerEntry.getValue()
                                     .stream().filter(path ->
-                                            new PiecePathFinderUtil(detector)
+                                            new PathfinderUtil(detector)
                                                     .pathsExclusive(entry.getValue().get(0), path))
                                     .forEach(path -> {
 
@@ -182,7 +182,7 @@ public class CombinedPawnMap extends AbstractDeduction {
     private Path makeExclusiveMaps(BoardInterface board, Path path, boolean white, List<Map.Entry<Coordinate, List<Path>>> forbiddenPaths) {
 
         Coordinate target = path.getLast();
-        return new PiecePathFinderUtil(detector).findShortestPawnPath(board,
+        return new PathfinderUtil(detector).findShortestPawnPath(board,
                 path.getFirst(), getMaxCaptures(white, target),
                 (b, c) -> c.equals(target),
                 white, true, forbiddenPaths.stream().flatMap(e -> e.getValue().stream()).toList());
@@ -197,7 +197,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                     entry.getValue().stream()
                             .forEach(coordinate -> {
                                 Path path =
-                                        new PiecePathFinderUtil(this.detector).findShortestPawnPath(
+                                        new PathfinderUtil(this.detector).findShortestPawnPath(
                                                 board, coordinate, getMaxCaptures(white, entry.getKey()),
                                                 (b, c) -> c.equals(entry.getKey()), white, true, new LinkedList<>()
                                 );
