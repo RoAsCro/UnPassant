@@ -16,6 +16,7 @@ public class StandardDetectorInterface implements DetectorInterface {
     public StandardDetectorInterface(StandardStateDetector detector) {
         this.detector = detector;
     }
+
     @Override
     public Map<String, Map<Path, Integer>> getPromotions(boolean white) {
         System.out.println(detector.getPromotionData().getPromotionNumbers());
@@ -108,9 +109,9 @@ public class StandardDetectorInterface implements DetectorInterface {
         white = true;
         for (int i = 0 ; i < 2 ; i++) {
             stringBuilder.append(white ? "White" : "Black").append(":\n");
-            getPromotions(white).entrySet().forEach(e -> {
-                stringBuilder.append(e.getKey()).append(":\n");
-                stringBuilder.append(e.getValue().entrySet()
+            getPromotions(white).forEach((key, value) -> {
+                stringBuilder.append(key).append(":\n");
+                stringBuilder.append(value.entrySet()
                         .stream().map(e1 -> e1.getKey() + ", " + e1.getValue() + "\n")
                         .collect(Collectors.joining(", ")));
             });
