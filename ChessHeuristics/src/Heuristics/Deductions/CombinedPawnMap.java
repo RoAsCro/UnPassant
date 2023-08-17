@@ -31,7 +31,8 @@ public class CombinedPawnMap extends AbstractDeduction {
     private Map<Coordinate, List<Path>> whitePawnPaths;
 
     /**
-     * Standard constructor
+     * Standard constructor, setting the error message to
+     * "Illegal pawn structure - pawns cannot reach their current position."
      */
     public CombinedPawnMap(){
         super("Illegal pawn structure - pawns cannot reach their current position.");
@@ -142,7 +143,7 @@ public class CombinedPawnMap extends AbstractDeduction {
      * only one possible path. It then returns whether there was a change to the pawn Paths.
      * @param board the board being checked
      * @param white the currently checked player's colour, true if white, false if black
-     * @return whether there was a change
+     * @return whether there was a change in the pawn Paths
      */
     protected boolean exclude(BoardInterface board, boolean white) {
         // Find pawns of the opposing player with single paths
@@ -173,11 +174,11 @@ public class CombinedPawnMap extends AbstractDeduction {
                     }
                     return false;
                 }).forEach(innerEntry -> {
-                    innerEntry.getValue()
-                            .stream().filter(path ->
-                                    new PathfinderUtil(detector)
-                                            .pathsExclusive(opposingPaths.get(0), path))
+                    innerEntry.getValue().stream().filter(path ->
+                                    // If exclusive
+                                    new PathfinderUtil(detector).pathsExclusive(opposingPaths.get(0), path))
                             .forEach(path -> {
+                                //Attempt to make a new path
                                 Path toPut = makeExclusiveMaps(board, path, white, singleOriginPawns);
                                 if (toPut.isEmpty()) {
                                     toPut.add(path.getFirst());
@@ -190,7 +191,9 @@ public class CombinedPawnMap extends AbstractDeduction {
         // Remove those paths that cannot be remade after being found to be exclusive
         List<Coordinate[]> forRemoval = new LinkedList<>();
         newPaths.forEach(path -> {
+            // Get the pawn's Paths
             List<Path> pathList = checkedPlayerPaths.get(path.getLast());
+            // Remove those Paths that are one Coordinate long
             Path toRemove = pathList
                     .stream().filter(path2 -> path2.getFirst() == path.getFirst())
                     .findFirst()
@@ -199,6 +202,7 @@ public class CombinedPawnMap extends AbstractDeduction {
             if (!(path.contains(Coordinates.NULL_COORDINATE))) {
                 pathList.add(path);
             } else {
+                //Remove those the origin that cannot be pathed from from the pawnOrigin of the player
                 forRemoval.add(new Coordinate[]{path.getLast(), path.getFirst()});
             }
         });
@@ -212,8 +216,8 @@ public class CombinedPawnMap extends AbstractDeduction {
      * Updates the PawnMaps
      */
     protected void updatePawnMaps() {
-        this.blackPawnMap.update();
-        this.whitePawnMap.update();
+        this.blackPawnMap.reduce();
+        this.whitePawnMap.reduce();
     }
 
     /**
@@ -273,34 +277,52 @@ public class CombinedPawnMap extends AbstractDeduction {
 
     /**
      * The PawnMap is a Deduction that links squares on the 2nd or 7th ranks to pawns of the colour given at
-     * instantiation. The state will be set to false if there is a pawn of the given colour that cannot be
+     * instantiation. A PawnMap is initialised with a boolean representing which player's pawns it is mapping,
+     * true if white, false if black.
+     * <></>
+     * The state will be set to false if there is a pawn of the given colour that cannot be
      * linked to an origin.
      */
     public static class PawnMap extends AbstractDeduction{
-        private final Map<Coordinate, Path> pawnOrigins = new TreeMap<>();
+        /**The colour of the pawns being checked, true if white, false if black*/
+        private final boolean white;
+        /**A Map of Coordinates of pawns and the minimum number of captures that pawn must has made*/
         private final Map<Coordinate, Integer> captureSet = new TreeMap<>();
-        private List<Set<Coordinate>> sets = new LinkedList<>();
+        /**A Map of pawn Coordinates and Paths of Coordinates from which they may originate*/
+        private final Map<Coordinate, Path> pawnOrigins = new TreeMap<>();
+        /**The number of pieces the opposing player has on the board*/
         private int opponentPieceNumbers = 0;
+        /**Sets of Coordinates that have been claimed during discovery of valid combinations of pawns and origins*/
+        private List<Set<Coordinate>> sets = new LinkedList<>();
+        /**The number the total pieces any pawn can capture in excess of the sum of the minimum number of captures
+         * all pawns of this colour can make*/
         private int capturedPieces;
-        protected int maxPieces = 16;
-
-        private boolean white;
-
+        /**
+         * Constructor setting the colour of pawns this PawnMap represents, ture if white, false if black.
+         * Sets the errorMessage as "Illegal pawn structure."
+         * @param white the colour of the pawns represented by this PawnMap, true for white, false for black.
+         */
         public PawnMap(Boolean white) {
             super("Illegal pawn structure.");
             this.white = white;
         }
 
+        /**
+         * Creates maps of Coordinates of pawns of the set player's colour to Coordinates of origins they may have
+         * come from and stores them in the PawnData.
+         * This is pawn/origin combinations whose x difference does not exceed their y difference,
+         * minus any that have already been claimed by other pawns or set of pawns. Any subsets origins from which
+         * a subset of the pawns on the board of an equal size may have come from, if the pawns may not have come
+         * from any other origins, is marked in the PawnData's originFree as not free.
+         * @param board
+         */
         @Override
         public void deduce(BoardInterface board) {
             this.opponentPieceNumbers = board.getBoardFacts().pieceNumbers(!this.white);
-            rawMap(board, this.white);
+            rawMap(board);
             reduce();
         }
 
-        public void update() {
-            reduce();
-        }
         /**
          * Returns the max number of pieces pawns can capture. This is the standard number of pieces, 16,
          * minus the number of missing opposing pieces that cannot be taken by pawns according to what is currently
@@ -314,23 +336,20 @@ public class CombinedPawnMap extends AbstractDeduction {
         }
 
         /**
-         * When pieces are accounted for elsewhere, the maxPieces needs to be updated
-         * @param subtrahend the number of pieces that cannot be captured by pawns
+         * Forms a Map of Coordinates of pawns of the PawnMap's player and Coordinate of origins
+         * in combinations such that the x difference does not exceed the y difference. This is stored in the
+         * PawnData.
+         * @param board the board to be checked
          */
-        @Deprecated
-        public void updateMaxCapturedPieces(int subtrahend) {
-            this.maxPieces -= subtrahend;
-        }
-
-        protected void rawMap(BoardInterface board, boolean white) {
-            int start = Math.abs((white ? FIRST_RANK_Y : FINAL_RANK_Y) - 1);
-            int increment = white ? 1 : -1;
+        protected void rawMap(BoardInterface board) {
+            int start = Math.abs((this.white ? FIRST_RANK_Y : FINAL_RANK_Y) - 1);
+            int increment = this.white ? 1 : -1;
             BoardReader reader = board.getReader();
             for (int y = 0; y < FINAL_RANK_Y - 1; y++) {
                 reader.to(new Coordinate(0, start + y * increment));
                 int finalY = y;
                 reader.nextWhile(Coordinates.RIGHT, coordinate -> coordinate.getX() <= FINAL_RANK_Y, piece -> {
-                    if (piece.getType().equals("pawn") && piece.getColour().equals(white ? "white"  : "black")) {
+                    if (piece.getType().equals("pawn") && piece.getColour().equals(this.white ? "white"  : "black")) {
                         Coordinate pawn = reader.getCoord();
                         int potentialPaths = finalY * 2 + 1;
                         Path starts = new Path();
@@ -348,8 +367,6 @@ public class CombinedPawnMap extends AbstractDeduction {
                     }
                 });
             }
-            //Sys tem.out.println("?!?!");
-            //Sys tem.out.println(this.detector.getPawnOrigins(white));
         }
 
         /**
@@ -363,7 +380,8 @@ public class CombinedPawnMap extends AbstractDeduction {
             origins.forEach((key, value) -> {
                 int x = key.getX();
                 value.removeAll(value.stream()
-                        .filter(coordinate -> Math.abs(x - coordinate.getX()) > this.capturedPieces + this.captureSet.get(key))
+                        .filter(coordinate -> Math.abs(x - coordinate.getX()) >
+                                this.capturedPieces + this.captureSet.get(key))
                         .toList());
             });
         }
@@ -378,20 +396,12 @@ public class CombinedPawnMap extends AbstractDeduction {
          */
         protected void updateCaptureSet() {
             int maxOffset = capturedPieces() -
-                    pawnOrigins.entrySet().stream()
-                            .map(entry -> {
+                    pawnOrigins.entrySet().stream().map(entry -> {
                                 int x = entry.getKey().getX();
-                                Coordinate coordinate = entry.getValue().stream()
-                                        .reduce((c1, c2) -> {
-                                            int x1 = Math.abs(x - c1.getX());
-                                            int x2 = Math.abs(x - c2.getX());
-                                            if (x1 < x2) {
-                                                return c1;
-                                            }
-                                            return c2;
-                                        })
-                                        .orElse(Coordinates.NULL_COORDINATE);
-                                int minCaptures = Math.abs(x - coordinate.getX());
+                                int minCaptures =entry.getValue().stream()
+                                        .map(c -> Math.abs(x - c.getX()))
+                                        .reduce(Integer::min)
+                                        .orElse(0);
                                 this.captureSet.put(entry.getKey(), minCaptures);
                                 return minCaptures;})
                             .reduce(Integer::sum)
@@ -402,6 +412,11 @@ public class CombinedPawnMap extends AbstractDeduction {
             }
             setCapturedPieces(maxOffset);
         }
+
+        /**
+         * Begins the reductions of pawn/origin combinations, repeating the reduceIter method until there is no
+         * change in the pawnOrigins.
+         */
         private void reduce() {
             this.sets = new LinkedList<>();
             List<Coordinate> origins = pawnOrigins.entrySet().stream()
@@ -423,8 +438,8 @@ public class CombinedPawnMap extends AbstractDeduction {
         /**
          * Iterates through every combination of origins looking for set for which
          * there exists an equal number of pieces whose origin sets are a subset of it.
-         * If such exists, no other piece may have any origin in that set as one of its possible origins.
-         *
+         * If such exists, no other piece may have any origin in that set as one of its possible origins,
+         * and the method removes those origins from its set of origins..
          */
         protected boolean reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
             boolean change = false;
@@ -441,24 +456,22 @@ public class CombinedPawnMap extends AbstractDeduction {
                         })
                         .map(Map.Entry::getKey)
                         .toList();
-                // If the number of subsets of the current set is the same as the number of origins in the set
                 int subsetSize = subsets.size();
                 int setSize = set.size();
                 if (subsetSize > setSize) {
                     this.state = false;
                 }
-
+                // If the number of subsets of the current set is the same as the number of origins in the set
                 if (subsetSize == setSize) {
-
                     // Check the total number of captures
-                    Map<Coordinate, Path> map = new TreeMap<>();
-                    subsets.forEach(coordinate -> map.put(coordinate, Path.of(pawnOrigins.get(coordinate))));
+                    Map<Coordinate, Path> pawnOriginsSubset = new TreeMap<>();
+                    subsets.forEach(coordinate -> pawnOriginsSubset.put(coordinate, Path.of(pawnOrigins.get(coordinate))));
                     set.forEach(coordinate -> this.detector.getPawnData().getOriginFree(white).put(coordinate, false));
                     this.sets.add(set);
-                    reduceIterHelperStart(map);
+                    reduceIterHelperStart(pawnOriginsSubset);
                     return removeCoords(set, subsets);
                 }
-                // If there does not exist a set that contains this set
+                // If there does not exist a set of pawn origins that contains this set origins
                 if (!supersets.get()) {
                     return false;
                 }
@@ -471,21 +484,27 @@ public class CombinedPawnMap extends AbstractDeduction {
                 newSet.add(currentCoord);
                 List<Coordinate> newOrigins = new LinkedList<>(origins);
                 newOrigins.remove(currentCoord);
-
                 if (reduceIter(newSet, newOrigins)) {
-
                     change = true;
                     if(!set.isEmpty()) {
                         break;
                     }
                 }
-
             }
             return change;
         }
-        protected void reduceIterHelperStart(Map<Coordinate, Path> map) {
+
+        /**
+         * Begins the iteration of the reduceIterHelper, ensuring there is no set of mutually required
+         * amounts of captures in the given Map of pawns and origins that exceed the possible captures that pawns
+         * can make. Recursively goes through each possible combination of pawns and origins to achieve this.
+         * It then removes those pawn/origin combinations from the Map that are found to be impossible
+         * due to their being no set of pawns/origins that permits them.
+         * @param currentPawnOrigins The subset of the pawnOrigins being checked
+         */
+        protected void reduceIterHelperStart(Map<Coordinate, Path> currentPawnOrigins) {
             Map<Coordinate, Path> removalMap = new TreeMap<>();
-            List<Coordinate> remainingPawns = new LinkedList<>(map.keySet());
+            List<Coordinate> remainingPawns = new LinkedList<>(currentPawnOrigins.keySet());
 
             int maxCaptures = capturedPieces();
 
@@ -493,7 +512,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 List<Coordinate> newRemainingPawns = new LinkedList<>(remainingPawns);
                 newRemainingPawns.remove(currentPawn);
                 Path forRemoval = new Path();
-                for (Coordinate currentOrigin : map.get(currentPawn)) {
+                for (Coordinate currentOrigin : currentPawnOrigins.get(currentPawn)) {
 
                     int totalCaptures = Math.abs(currentPawn.getX() - currentOrigin.getX());
                     if (totalCaptures > maxCaptures) {
@@ -506,33 +525,35 @@ public class CombinedPawnMap extends AbstractDeduction {
                     List<Coordinate> usedOrigins = new LinkedList<>();
                     usedOrigins.add(currentOrigin);
 
-                    if (!reduceIterHelper(usedOrigins, newRemainingPawns, map, totalCaptures)) {
+                    if (!reduceIterHelper(usedOrigins, newRemainingPawns, currentPawnOrigins, totalCaptures)) {
                         forRemoval.add(currentOrigin);
                     }
                 }
                 removalMap.put(currentPawn, forRemoval);
             }
-
             removalMap.forEach((key, value) -> pawnOrigins.get(key).removeAll(value));
-
         }
 
         /**
-         * Checks there aren't mutually required capture amounts that exceed the maximum capture amount
+         * The recursive part of reduceIterHelper, finding impossible combinations of pawns and origins in a subset
+         * of the pawnOrigins when captures are taken into account.
+         * @param usedOrigins the origins currently in use in other pawn/origin combinations
+         * @param remainingPawns the pawns that are not currently part of another set of pawn/origins
+         * @param currentPawnOrigins the subset of pawnOrigins currently in use
+         * @param totalCaptures the current running total of minimum captures in the current set of pawn/origins
+         * @return true if a set of pawn/origins that doesn't exceed the capture amount is found, false otherwise
          */
         private boolean reduceIterHelper(List<Coordinate> usedOrigins, List<Coordinate> remainingPawns,
-                                         Map<Coordinate, Path> map, int totalCaptures) {
+                                         Map<Coordinate, Path> currentPawnOrigins, int totalCaptures) {
             int maxCaptures = capturedPieces();
 
             Coordinate currentPawn = remainingPawns.get(remainingPawns.size()-1);
             remainingPawns = new LinkedList<>(remainingPawns);
             remainingPawns.remove(currentPawn);
-            for (Coordinate currentOrigin : map.get(currentPawn)) {
+            for (Coordinate currentOrigin : currentPawnOrigins.get(currentPawn)) {
 
                 int newTotalCaptures = Math.abs(currentPawn.getX() - currentOrigin.getX()) + totalCaptures;
-                if (usedOrigins.contains(currentOrigin) ||
-                        newTotalCaptures
-                                > maxCaptures) {
+                if (usedOrigins.contains(currentOrigin) || newTotalCaptures > maxCaptures) {
                     continue;
                 }
                 if (remainingPawns.isEmpty()) {
@@ -541,7 +562,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 List<Coordinate> usedOriginsTwo = new LinkedList<>(usedOrigins);
                 usedOriginsTwo.add(currentOrigin);
 
-                if (reduceIterHelper(usedOriginsTwo, remainingPawns, map, newTotalCaptures)) {
+                if (reduceIterHelper(usedOriginsTwo, remainingPawns, currentPawnOrigins, newTotalCaptures)) {
                     return true;
                 }
 
@@ -550,11 +571,13 @@ public class CombinedPawnMap extends AbstractDeduction {
         }
 
         /**
-         *
-         * @return true if something is removed
+         * Removes the given set of Coordinates of origins from the pawnOrigins, leaving out the pawns whose
+         * Coordinates are in the ignore list. Returns true if any origins are removed from the pawnOrigins.
+         * @param forRemoval the Coordinates to be removed
+         * @param ignore the Coordinates of pawns to be ignored
+         * @return true if any origins are removed, false otherwise
          */
         private boolean removeCoords(Set<Coordinate> forRemoval, List<Coordinate> ignore) {
-
             return !pawnOrigins.entrySet()
                     .stream()
                     .filter(entry -> !ignore.contains(entry.getKey()))
@@ -571,20 +594,40 @@ public class CombinedPawnMap extends AbstractDeduction {
         private int getCapturedPieces() {
             return capturedPieces;
         }
+
+        /**Sets the total pieces any pawn can capture in excess of the sum of the minimum number of captures
+         * all pawns of this colour can make.
+         * @param capturedPieces the new number of pieces
+         */
         private void setCapturedPieces(int capturedPieces) {
             this.capturedPieces = capturedPieces;
         }
+
+        /**
+         * Returns the captureSet, the Map of Coordinates of pawns of the PawnMap's colour on the board,
+         * and the minimum number of captures that pawn must make to reach its position/
+         * @return the captureSet.
+         */
         public Map<Coordinate, Integer> getCaptureSet() {
             return this.captureSet;
         }
+
+        /**
+         * Returns the pawnOrigins, the Map of Coordinates of pawns of the PawnMap's colour on the board,
+         * and Paths of Coordinates of possible origins for that Pawn.
+         * @return the pawnOrigins
+         */
         public Map<Coordinate, Path> getPawnOrigins() {
             return this.pawnOrigins;
         }
+
+        /**
+         * Returns a boolean value representing the colour of the pawns this PawnMap represents, true if white,
+         * false if black.
+         * @return the boolean value of the PawnMap's colour, true if white, false if black
+         */
         public boolean getColour() {
             return this.white;
         }
-
-
     }
-
 }

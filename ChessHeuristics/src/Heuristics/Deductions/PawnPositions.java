@@ -10,6 +10,7 @@ import java.util.function.Predicate;
  * It will be set to false if this is the case.
  */
 public class PawnPositions extends AbstractDeduction {
+    /**A P*/
     private final static Predicate<Coordinate> pawnCheck = c -> c.getY() == 0 || c.getY() == 7;
 
     public PawnPositions() {

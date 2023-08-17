@@ -471,10 +471,10 @@ public class PromotionMap extends AbstractDeduction {
         }
         @Override
         public void deduce(BoardInterface board) {
-            if (this.maxPieces == MAX_PIECES) {
-                this.detector.getCaptureData().getNonPawnCaptures(getColour())
-                        .addAll(PromotionMap.this.detector.getCaptureData().getNonPawnCaptures(getColour()));
-            }
+//            if (this.maxPieces == MAX_PIECES) {
+            this.detector.getCaptureData().getNonPawnCaptures(getColour())
+                    .addAll(PromotionMap.this.detector.getCaptureData().getNonPawnCaptures(getColour()));
+//            }
             super.deduce(board);
         }
 
@@ -511,12 +511,12 @@ public class PromotionMap extends AbstractDeduction {
             getPawnOrigins().putAll(newOrigins);
         }
         @Override
-        protected void rawMap(BoardInterface board, boolean white) {
-            Map<Coordinate, Path> toAddOne = PromotionMap.this.detector.getPawnData().getPawnPaths(white).entrySet().stream()
+        protected void rawMap(BoardInterface board) {
+            Map<Coordinate, Path> toAddOne = PromotionMap.this.detector.getPawnData().getPawnPaths(getColour()).entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> Path.of(e.getValue().stream().map(LinkedList::getFirst).toList())));
             toAddOne.forEach((key, value) -> getPawnOrigins().put(key, Path.of(value)));
             Map<Coordinate, Path> toAddTwo = new HashMap<>();
-            int y = (white ? FINAL_RANK_Y : FIRST_RANK_Y);
+            int y = (getColour() ? FINAL_RANK_Y : FIRST_RANK_Y);
             Path targetsFiltered = Path.of(origins.stream().filter(coordinate ->
                     coordinate.getY() == Math.abs(y - (BLACK_PAWN_Y))).toList());
             targets.stream().filter(coordinate -> coordinate.getY() == y)
@@ -563,7 +563,7 @@ public class PromotionMap extends AbstractDeduction {
     private class TheoreticalPawnMap extends CombinedPawnMap.PawnMap {
         public TheoreticalPawnMap(boolean white) {
             super(white);
-            this.maxPieces = PromotionMap.this.detector.getCaptureData().pawnTakeablePieces(white);
+//            this.maxPieces = PromotionMap.this.detector.getCaptureData().pawnTakeablePieces(white);
         }
         private void reduce(Map<Coordinate, Path> pawnOrigins) {
             getPawnOrigins().clear();
@@ -581,7 +581,7 @@ public class PromotionMap extends AbstractDeduction {
             }
         }
         @Override
-        protected void reduceIterHelperStart(Map<Coordinate, Path> map) {}
+        protected void reduceIterHelperStart(Map<Coordinate, Path> currentPawnOrigins) {}
     }
 
 }

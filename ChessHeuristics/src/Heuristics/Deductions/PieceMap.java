@@ -305,7 +305,6 @@ public class PieceMap extends AbstractDeduction{
                     } else {
                         name = name + "b";
                     }
-
                     if (pieces.containsKey(name)) {
                         pieces.get(name).addAll(pieceLocations);
                         pieceNumber.put(name, pieceNumber.get(name) + 1);
