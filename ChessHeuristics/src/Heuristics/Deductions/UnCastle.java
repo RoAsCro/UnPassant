@@ -36,7 +36,6 @@ public class UnCastle extends AbstractDeduction{
     @Override
     public void deduce(BoardInterface board) {
         hasMoved();
-        return;
     }
 
     public List<boolean[]> hasMoved() {

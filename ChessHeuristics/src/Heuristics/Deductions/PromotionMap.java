@@ -16,41 +16,59 @@ import static Heuristics.HeuristicsUtil.*;
  * The PromotionMap looks at every promoted piece on the board and determines whether there is a valid set of
  * pawn origins, promotion squares, and promoted pieces for each one, then adds these to the existing pawn
  * paths stored in the PawnData.
+ * <></>
  * The state will be set to false if any promoted piece does not have a valid Path from a pawn origin
  * to a promotion square, then to the piece, without exceeding the maximum number of captures that may take place.
+ * <></>
  * PromotionMap must only be run after the pawns and pieces have been mapped, promoted pieces determined and linked
  * to promotion squares, and the maximum number of captures possible by pawns determined, otherwise it will not be
  * accurate.
  */
 public class PromotionMap extends AbstractDeduction {
-
+    /**An arbitrarily high number for reducing claims*/
     private final static int HIGH_NUMBER = 99;
+    /**An instance of PathFinderUtil*/
     private PathfinderUtil pathFinderUtil = new PathfinderUtil(detector);
+    /**A List of Maps of Paths of Coordinates of set of promoted pieces and Paths of origins the may have come from*/
     private final List<Map<Path, Path>> claimsWhite = new LinkedList<>();
+    /**A List of Maps of Paths of Coordinates of set of promoted pieces and Paths of origins the may have come from*/
     private final List<Map<Path, Path>> claimsBlack = new LinkedList<>();
+    /**A Path of all potential pawn origins of promoted pieces*/
     private Path origins;
+    /**A Path of all potential promotion squares of promoted pieces*/
     private Path targets;
-
-    // <Promotion square, <Origin square, Number of captures>>
+    /**A Map of all Coordinates of promotion squares, and maps of Coordinates of pawn origins, and the number of
+     * captures required to reach them*/
     private final Map<Coordinate, Map<Coordinate, Integer>> goalOrigins = new HashMap<>();
 
+    /**
+     * A constructor setting the error message to
+     * "A promoted piece cannot reach its current location from an available pawn start."
+     */
     public PromotionMap() {
-        super("A promoted piece cannot reach its current location from an available pawn start");
+        super("A promoted piece cannot reach its current location from an available pawn start.");
     }
 
-
+    /**
+     * Registers a StateDetector as specified in the documentation of interface Deduction and stores a reference to
+     * an instance of a PathFinderUtil.
+     * @param detector the StateDetector to be registered
+     */
     @Override
     public void registerDetector(StateDetector detector) {
         super.registerDetector(detector);
         this.pathFinderUtil = new PathfinderUtil(detector);
-//        this.promotionPawnMapWhite.registerDetector(this.detector);
-//        this.promotionPawnMapBlack.registerDetector(this.detector);
     }
 
+    /**
+     * For every previously discovered promoted piece, deduces if it was possible for a missing pawn to have promoted
+     * and then reached the location of the promoted piece, setting the state to false if not.
+     * @param board the board whose information the deduction will draw from
+     */
     @Override
     public void deduce(BoardInterface board) {
-        // Replace
-        if (this.detector.getPromotionData().getPromotedPieceMap().values().stream().allMatch(AbstractCollection::isEmpty)) {
+        if (this.detector.getPromotionData().getPromotedPieceMap().values().stream()
+                .allMatch(AbstractCollection::isEmpty)) {
             this.state = true;
             return;
         }

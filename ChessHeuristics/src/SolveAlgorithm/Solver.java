@@ -9,6 +9,9 @@ import StandardChess.*;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static Heuristics.HeuristicsUtil.FINAL_RANK_Y;
+import static Heuristics.HeuristicsUtil.FIRST_RANK_Y;
+
 public class Solver {
     private int numberOfTests = 0;
     private long timeSpentOnTests = 0;
@@ -83,9 +86,6 @@ public class Solver {
             if (finalStates.size() >= this.numberOfSolutions) {
                 break;
             }
-//            int toAdd = stateSizes.get(currentDepth);
-//            stateSizes.remove(currentDepth);
-//            stateSizes.add(currentDepth, toAdd - 1);
             String state;
             /* If in an Any state, there's a good chance the algorithm is trying to get out of check */
             if (any) {
@@ -105,18 +105,9 @@ public class Solver {
             String currentState = stateDescription[0];
             ChessBoard currentBoard = BoardBuilder.buildBoard(currentState);
             CheckUtil.switchTurns(currentBoard);
-//            if (currentDepth == depth || !this.allowNonIntrusiveMovement || !nonIntrusiveMovement(state)) {
-            System.out.println(state);
             if (!testState(currentBoard)) {
-                System.out.println("afila");
                 continue;
             }
-            if (state.equals("k1K5/3pQ3/8/2B1P3/3P4/7P/8/7B w - d5:Pd7-d5, Pe5xPd6, :2")) {
-                System.out.println(currentBoard.getEnPassant());
-            }
-            System.out.println("pass");
-
-//            System.out.println(states);
 
             CheckUtil.switchTurns(currentBoard);
             if (currentDepth != depth + recursionDepth) {
@@ -131,12 +122,6 @@ public class Solver {
                     newStates.addAll(iterateThroughMoves(currentBoard, piece, state, any && currentDepth == depth - 1));
 
                 }
-//                toAdd = 0;
-//                if (stateSizes.size() >= currentDepth + 2) {
-////                    toAdd = stateSizes.get(currentDepth + 1);
-////                    stateSizes.remove(currentDepth + 1);
-//                }
-////                stateSizes.add(currentDepth + 1, toAdd + newStates.size());
                 newStates.forEach(s ->
                         states.push(s.split(":")[0]
                                 + ":"
@@ -144,9 +129,7 @@ public class Solver {
                                 + (stateDescription.length > 1 ? (", "
                                 + stateDescription[1]) : "")
                         + ":" + (currentDepth + 1)));
-//                if (stateSizes.get(currentDepth + 1) > 0) {
-//                    currentDepth++;
-//                }
+
 
             } else {
                 if (any) {
@@ -154,32 +137,22 @@ public class Solver {
                     if (!legalFirst || testState(currentBoard)) {
                         boolean pass = true;
                         if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
-                            System.out.println("going down");
-
-                            System.out.println("going down");
-
-                            pass = !iterate(currentState.split(":")[0], 1, true, recursionDepth + depth).isEmpty();
-                            System.out.println("coming out");
-
+                            pass = !iterate(currentState.split(":")[0],
+                                    1, true, recursionDepth + depth).isEmpty();
                         }
                         if (pass) {
                             finalStates.add(currentState + ":" + stateDescription[1]);
                             return finalStates;
                         }
-                        //System.out.println("coming out");
                     }
                 } else {
 //                    this.legalFirst = true;
-                    System.out.println("going down");
-                    if (this.additionalDepth == 0 || !iterate(currentState.split(":")[0], this.additionalDepth, true, recursionDepth + depth).isEmpty()) {
-                        System.out.println("coming out");
-
+                    if (this.additionalDepth == 0 || !iterate(currentState.split(":")[0],
+                            this.additionalDepth, true, recursionDepth + depth).isEmpty()) {
                         boolean pass = true;
                         if (this.additionalDepth == 0) {
                             CheckUtil.switchTurns(currentBoard);
                             if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
-                                System.out.println("going down");
-
                                 pass = !iterate(currentState.split(":")[0], 1, true, recursionDepth + depth).isEmpty();
                             }
                         }
@@ -187,17 +160,9 @@ public class Solver {
                             finalStates.add(currentState + ":" + stateDescription[1]);
                         }
                     }
-//                    if (!legalFirstAlwaysTrue) {
-//                        this.legalFirst = false;
-//                    }
+
                 }
             }
-//            while (stateSizes.size() >= currentDepth + 1 && stateSizes.get(currentDepth) < 1) {
-//                stateSizes.remove(currentDepth);
-//                if (currentDepth != 0) {
-//                    currentDepth--;
-//                }
-//            }
         }
         return finalStates;
     }
@@ -217,6 +182,9 @@ public class Solver {
     }
 
     public List<String> iterateThroughMoves(ChessBoard board, Coordinate origin, String currentState, boolean any) {
+        // TODO might not be accurate if not all moves are returned with new implementation -
+        //  watch out for changes made during the method, like enpassant flags!
+        //
         // If piece is on final rank, allow it to be a pawn.
         List<String> states = new LinkedList<>();
 
@@ -234,7 +202,7 @@ public class Solver {
                 return states;
             }
         }
-        if (((white && y == 7) || (!white && y == 0)) && !king) {
+        if (((white && y == FINAL_RANK_Y) || (!white && y == FIRST_RANK_Y)) && !king) {
             Coordinate[] additionalMoves = StandardPieceFactory.getInstance().getPiece(white ? "p" : "P").getMoves(origin);
             states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, true, false, any, false));
             if (!legalFirst && any && !states.isEmpty()) {
@@ -304,16 +272,6 @@ public class Solver {
                         && this.fenPredicate.test(move +
                                 (currentState.split(":").length > 1 ? (":" + currentState.split(":")[2])
                                         : ":0"))) {
-                            //                            String movedPiece = currentBoard.at(target).getType();
-
-//                            if (legalFirst) {
-                            //                            } else if (this.allowNonIntrusiveMovement && nonIntrusiveMovement(promotion, piece, movedPiece)) {
-//                                pass = true;
-////                                this.stateLog.register(new BoardInterface(currentBoard), true);
-//
-//                            } else if (testState(currentBoard)) {
-//                                pass = true;
-//                            }
                             CheckUtil.switchTurns(currentBoard);
                             if (previousEnPassant) {
                                 currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
