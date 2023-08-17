@@ -71,8 +71,8 @@ public class PieceMap extends AbstractDeduction{
 
     /**
      * Finds and puts paths between pieces and their start locations, promoted pieces and their promotion squares,
-     * determines if start locations are caged, and whether as a result kings have moved.
-     *
+     * determines if start locations are caged, and whether as a result kings have moved. These results are stored
+     * in the PieceData and PromotionData.
      * @param board the board to be tested
      */
     @Override

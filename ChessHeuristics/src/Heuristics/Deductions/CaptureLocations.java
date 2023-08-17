@@ -17,59 +17,85 @@ import static Heuristics.HeuristicsUtil.*;
  * It does not take into account the captures of or by pawns that have promoted, and will not fail under the
  * assumption that these have not taken place, i.e., if a missing pawn cannot have been captured if it did
  * not promote, it will not be accounted for when the other deductions are rerun.
- * The state is set to false if after rerunning the previously completed Deductions, any of them are set to false.
+ * <></>
+ * The state will never be set to false, but in the course of making deductions, the CaptureLocations may
+ * make a call to its registered StateDetector to rerun previously run Deductions with the new information it
+ * has found.
+ * <></>
  * CaptureLocations must only run deduce() after the pawns and pieces have been mapped, cages determined,
  * and certain promotions discovered, otherwise its results will not be accurate.
  */
 public class CaptureLocations extends AbstractDeduction {
-    private PathfinderUtil pathFinderUtil;
+    /**A BiPredicate of two Coordinates testing if the two coordinates do not have the same x and that one is dark,
+     * for use in testing the colour pawn captures are made on*/
     private static final BiPredicate<Coordinate, Coordinate> DARK_TEST =
             (c1, c2) -> (c2.getX() != c1.getX() || c1.equals(c2) ) && !Coordinates.light(c1);
+    /**A BiPredicate of two Coordinates testing if the two coordinates do not have the same x and that one is light,
+     * for use in testing the colour pawn captures are made on*/
     private static final BiPredicate<Coordinate, Coordinate> LIGHT_TEST =
             (c1, c2) -> (c2.getX() != c1.getX() || c1.equals(c2))  && Coordinates.light(c1);
+    /**A pathFinderUtil to be used for finding Paths*/
+    private PathfinderUtil pathFinderUtil;
+    /**Stores a reference to the piecePaths stored in the StateDetector's PieceData*/
+    private Map<Coordinate, Map<Coordinate, Path>> piecePaths;
 
+    /**
+     * A constructor setting the errorMessage to "Too many pawn captures - not all missing pieces are reachable."
+     */
     public CaptureLocations() {
         super("Too many pawn captures - not all missing pieces are reachable.");
     }
 
+    /**
+     * Register's a StateDetector as described in the Deduction documentation, and sets the PathFinderUtil.
+     * @param detector the StateDetector to be registered
+     */
     @Override
     public void registerDetector(StateDetector detector) {
         super.registerDetector(detector);
         this.pathFinderUtil = new PathfinderUtil(detector);
+        this.piecePaths = this.detector.getPieceData().getPiecePaths();
     }
 
+    /**
+     * Finds those missing pieces that cannot have been captured by any pawn on the board as a pawn, storing them in the
+     * PromotionData and CaptureData. If it is found that there exists missing pieces that cannot have been captured
+     * by pawns,the StateDetector's reTest() method will be called.
+     * @param board the board to be checked
+     */
     @Override
     public void deduce(BoardInterface board) {
-        int whiteRemovals = reductions(board, true);
-        int blackRemovals = reductions(board, false);
-        if (
-                whiteRemovals + blackRemovals != 0
-        ) {
-            //System.out.println("sdsds" + whiteRemovals + " " + blackRemovals);
-//            this.detector.reducePawnTakeablePieces(true, whiteRemovals);
-//            this.detector.reducePawnTakeablePieces(false, blackRemovals);
+        int whiteRemovals = pieceReductions(board, true);
+        int blackRemovals = pieceReductions(board, false);
+        if (whiteRemovals + blackRemovals != 0) {
             this.detector.reTest(board);
         }
-
         this.detector.getCaptureData().getNonPawnCaptures(true).addAll(pawnCaptureLocations(true, board));
         this.detector.getCaptureData().getNonPawnCaptures(false).addAll(pawnCaptureLocations(false, board));
-        //System.out.println(promotedBlackPawns);
     }
 
-    private int reductions(BoardInterface board, boolean white) {
+    /**
+     * Finds those missing non-pawn pieces of the opposing player that cannot have been captured
+     * by the given player's pawns, storing them ni the CaptureData, and returning the quantity.
+     * @param board the board to be checked
+     * @param white the player whose pawns' captures are being checked, true if white, false if black
+     * @return the number of non-pawn pieces of the opposing player that cannot have been captured by pawns
+     */
+    private int pieceReductions(BoardInterface board, boolean white) {
         int y = white ? FINAL_RANK_Y : FIRST_RANK_Y;
         int capturesToRemove = 0;
         Path ofWhichCaged = Path.of(this.detector.getPieceData().getCaged().entrySet().stream()
-                .filter(entry -> entry.getKey().getY() == y)
+                .filter(entry -> entry.getKey().getY() == y) //Belongs to the opponent
                 .filter(Map.Entry::getValue) //Is Caged
                 .filter(entry -> {
-                    Map<Coordinate, Path> map = this.detector.getPieceData().getPiecePaths().get(entry.getKey());
+                    Map<Coordinate, Path> map = this.piecePaths.get(entry.getKey());
                     if (map.isEmpty()){
                         return true;
                     }
                     if (map.size() == 1) {
+                        Coordinate pieceCoordinate = entry.getKey();
 //                        System.out.println(entry.getKey());
-                        return this.detector.getPieceData().getPiecePaths()
+                        return this.piecePaths
                                 .get(new Coordinate(Math.abs(FINAL_RANK_Y - entry.getKey().getX()), entry.getKey().getY()))
                                 .containsKey(map.keySet().stream().findAny().orElse(Coordinates.NULL_COORDINATE))
                                 && entry.getKey().getX() == 0;
@@ -107,7 +133,7 @@ public class CaptureLocations extends AbstractDeduction {
         // Account for bishops being taken on the correct colour
         // this is only done in situations where all captures made by pawns are made by certain pawn paths
         List<BiPredicate<Coordinate, Coordinate>> predicates =
-                new LinkedList<>(this.detector.getPieceData().getPiecePaths().entrySet().stream()
+                new LinkedList<>(this.piecePaths.entrySet().stream()
                         .filter(entry -> entry.getKey().getY() == (white ? FINAL_RANK_Y : FIRST_RANK_Y)) //Correct colour
                         .filter(entry -> entry.getKey().getX() == Q_BISHOP_X || entry.getKey().getX() == K_BISHOP_X) //Is a Bishop
                         .filter(entry -> !(this.detector.getPieceData().getCaged().get(entry.getKey()))) //Is not Caged

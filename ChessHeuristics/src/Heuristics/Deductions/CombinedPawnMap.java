@@ -298,7 +298,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          * all pawns of this colour can make*/
         private int capturedPieces;
         /**
-         * Constructor setting the colour of pawns this PawnMap represents, ture if white, false if black.
+         * Constructor setting the colour of pawns this PawnMap represents, true if white, false if black.
          * Sets the errorMessage as "Illegal pawn structure."
          * @param white the colour of the pawns represented by this PawnMap, true for white, false for black.
          */
@@ -314,7 +314,9 @@ public class CombinedPawnMap extends AbstractDeduction {
          * minus any that have already been claimed by other pawns or set of pawns. Any subsets origins from which
          * a subset of the pawns on the board of an equal size may have come from, if the pawns may not have come
          * from any other origins, is marked in the PawnData's originFree as not free.
-         * @param board
+         * <></>
+         * If any pawn does not have a valid origin, this Deduction is set to false.
+         * @param board the board to be checked
          */
         @Override
         public void deduce(BoardInterface board) {
