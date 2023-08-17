@@ -86,7 +86,18 @@ public class Solver {
 //            int toAdd = stateSizes.get(currentDepth);
 //            stateSizes.remove(currentDepth);
 //            stateSizes.add(currentDepth, toAdd - 1);
-            String state = states.pop();
+            String state;
+            /* If in an Any state, there's a good chance the algorithm is trying to get out of check */
+//            if (any) {
+//                state =
+//                        states.stream().filter(s -> s.charAt(s.length() - 1)
+//                                        == states.getFirst().charAt(states.getFirst().length() - 1))
+//                                .filter(s -> !CheckUtil.eitherInCheck(new BoardInterface(BoardBuilder.buildBoard(s.split(":")[0]))))
+//                                .findAny()
+//                                .orElse(states.getFirst());
+//                states.remove(state);
+//            }
+            state = states.pop();
 
             String[] stateDescription = state.split(":");
             int currentDepth = Integer.parseInt(stateDescription[2]);
@@ -133,7 +144,13 @@ public class Solver {
                     if (!legalFirst || testState(currentBoard)) {
                         boolean pass = true;
                         if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
+                            System.out.println("going down");
+
+                            System.out.println("going down");
+
                             pass = !iterate(currentState.split(":")[0], 1, true, recursionDepth + depth).isEmpty();
+                            System.out.println("coming out");
+
                         }
                         if (pass) {
                             finalStates.add(currentState + ":" + stateDescription[1]);
@@ -143,11 +160,16 @@ public class Solver {
                     }
                 } else {
 //                    this.legalFirst = true;
+                    System.out.println("going down");
                     if (this.additionalDepth == 0 || !iterate(currentState.split(":")[0], this.additionalDepth, true, recursionDepth + depth).isEmpty()) {
+                        System.out.println("coming out");
+
                         boolean pass = true;
                         if (this.additionalDepth == 0) {
                             CheckUtil.switchTurns(currentBoard);
                             if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
+                                System.out.println("going down");
+
                                 pass = !iterate(currentState.split(":")[0], 1, true, recursionDepth + depth).isEmpty();
                             }
                         }
@@ -283,6 +305,7 @@ public class Solver {
                             currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
                             states.add(move);
                             if (!legalFirst && any) {
+
                                 break;
                             }
                         }
