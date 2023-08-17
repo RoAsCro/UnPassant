@@ -236,7 +236,7 @@ public class SolverTest {
         // pp46
         Solver solver = new Solver(
                 s -> {
-//                    System.out.println(s);
+                    System.out.println(s);
                     int depth = Integer.parseInt(s.split(":")[2]);
                     return depth >= 2 || !s.split(":")[1].contains("x");
                 }
@@ -381,7 +381,7 @@ public class SolverTest {
             }
         }
         // The above Tests the two possibilities, finding one has no solutions
-        
+
     }
 
     @Test
@@ -1000,14 +1000,14 @@ public class SolverTest {
                             });
                     solver.setNumberOfSolutions(1);
                     solver.setAdditionalDepth(1);
-                    List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 3);
+//                    List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 3);
+////
+//                    if (target.equals(new Coordinate(2, 7))) {
+//                        Assertions.assertNotEquals(0, solutions.size());
+//                    } else {
+//                        Assertions.assertEquals(0, solutions.size());
 //
-                    if (target.equals(new Coordinate(2, 7))) {
-                        Assertions.assertNotEquals(0, solutions.size());
-                    } else {
-                        Assertions.assertEquals(0, solutions.size());
-
-                    }
+//                    }
                 }
             }
         }

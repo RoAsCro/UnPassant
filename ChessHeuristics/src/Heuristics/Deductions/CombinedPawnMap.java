@@ -235,7 +235,7 @@ public class CombinedPawnMap extends AbstractDeduction {
     }
 
     /**
-     * Makes the initial paths
+     *
      * @param board
      * @param white
      */

@@ -484,7 +484,7 @@ public class ImpossibleStates {
     } @Test
     void r2() {
 
-        System.out.println(test("rnbqkbn1/pppppp2/4rp2/8/8/5B2/1PPP1PP1/RNBQKBNR w KQq - 0 1"));
+        System.out.println(test("r1N1k2r/p1p1p1p1/1p3p1p/8/8/7b/PPPPPPPP/2BQKB2 b - - 0 1"));
 //        System.out.println(test("r3kqR1/1p1pppp1/5B1P/6PN/4P2p/3Q1P2/2PK2pP/8 b q - 0 1"));
 //        System.out.println(this.detector.getPawnsCapturedByPawns(true));
 //        System.out.println(this.detector.getPawnsCapturedByPawns(false));
