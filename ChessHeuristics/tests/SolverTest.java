@@ -151,7 +151,6 @@ public class SolverTest {
 
     @Test
     public void chessMysteries5() {
-        // TODO fix test
         //pp 39
         List<String> list = List.of(
                 "r3k3/ppp3pp/6p1/P2Kp2P/1NB5/p5P1/PP3PP1/R7 w - - 0 1"

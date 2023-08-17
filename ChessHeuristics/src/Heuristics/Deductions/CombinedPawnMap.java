@@ -36,7 +36,7 @@ public class CombinedPawnMap extends AbstractDeduction {
      */
     public CombinedPawnMap(){
         super("Illegal pawn structure - pawns cannot reach their current position.");
-    };
+    }
 
     /**
      * Registers a StateDetector as described in the Deduction interface.
@@ -173,21 +173,19 @@ public class CombinedPawnMap extends AbstractDeduction {
                         return opposingPawnPath.contains(playerPath.get(playerPath.size() - 2));
                     }
                     return false;
-                }).forEach(innerEntry -> {
-                    innerEntry.getValue().stream().filter(path ->
-                                    // If exclusive
-                                    new PathfinderUtil(detector).pathsExclusive(opposingPaths.get(0), path))
-                            .forEach(path -> {
-                                //Attempt to make a new path
-                                Path toPut = makeExclusiveMaps(board, path, white, singleOriginPawns);
-                                if (toPut.isEmpty()) {
-                                    toPut.add(path.getFirst());
-                                    toPut.add(Coordinates.NULL_COORDINATE);
-                                    toPut.add(innerEntry.getKey());
-                                }
-                                newPaths.add(toPut);
-                            });
-                }));
+                }).forEach(innerEntry -> innerEntry.getValue().stream().filter(path ->
+                                // If exclusive
+                                new PathfinderUtil(detector).pathsExclusive(opposingPaths.get(0), path))
+                        .forEach(path -> {
+                            //Attempt to make a new path
+                            Path toPut = makeExclusiveMaps(board, path, white, singleOriginPawns);
+                            if (toPut.isEmpty()) {
+                                toPut.add(path.getFirst());
+                                toPut.add(Coordinates.NULL_COORDINATE);
+                                toPut.add(innerEntry.getKey());
+                            }
+                            newPaths.add(toPut);
+                        })));
         // Remove those paths that cannot be remade after being found to be exclusive
         List<Coordinate[]> forRemoval = new LinkedList<>();
         newPaths.forEach(path -> {

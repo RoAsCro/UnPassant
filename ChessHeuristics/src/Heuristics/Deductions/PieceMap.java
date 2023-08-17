@@ -143,13 +143,13 @@ public class PieceMap extends AbstractDeduction{
                 int promotions = this.detector.getPromotionData()
                         .getPromotionNumbers()
                         .get(entry.getKey()).get(promotedPieces);
-                int potentiallyPromoted = 0;
-                for (Coordinate coordinate : promotedPieces) {
-                    // TODO what does this do?
-                    this.promotedPieceMap
-                            .values().stream().flatMap(Path::stream).anyMatch(c -> c.equals(coordinate));
-                    potentiallyPromoted++;
-                }
+                int potentiallyPromoted = promotedPieces.size();
+//                for (Coordinate coordinate : promotedPieces) {
+//                    // TODO what does this do?
+////                    this.promotedPieceMap
+////                            .values().stream().flatMap(Path::stream).anyMatch(c -> c.equals(coordinate));
+//                    potentiallyPromoted++;
+//                }
                 return potentiallyPromoted >= promotedPieces.size() - promotions;
             }
             return false;})

@@ -24,15 +24,6 @@ public class Game {
             this.redoStates.clear();
             this.undoStates.clear();
         }
-//        try {
-//            this.board = BoardBuilder.buildBoard(fen);
-//            this.redoStates.clear();
-//            this.undoStates.clear();
-//        } catch (IllegalArgumentException e) {
-//            // TODO
-//            return;
-//        }
-//        this.unMoveMaker = new StandardChess.UnMoveMaker(board);
     }
 
     private boolean trySetFEN(String fen) {
