@@ -10,16 +10,17 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class Solver {
-
+    private int numberOfTests = 0;
+    private long timeSpentOnTests = 0;
     Predicate<String> fenPredicate = p -> true;
     private Predicate<DetectorInterface> detectorPredicate = d -> true;
     private boolean allowNonIntrusiveMovement = true;
     String originalBoard;
     private boolean legalFirstAlwaysTrue = false;
-    private boolean legalFirst = false;
+    private boolean legalFirst = true;
     private int additionalDepth = 2;
     private int maxDepth;
-    private int numberOfSolutions = 100;
+    private int numberOfSolutions = 10;
     private StateLog stateLog = new StateLog();
 
 //    private LinkedList<String> finalStates = new LinkedList<>();
@@ -56,6 +57,10 @@ public class Solver {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("TESTS");
+        System.out.println(numberOfTests);
+        System.out.println(timeSpentOnTests);
+
         return solutions;
 
     }
@@ -78,6 +83,10 @@ public class Solver {
             if (finalStates.size() >= this.numberOfSolutions) {
                 break;
             }
+//            System.out.println("----");
+//            System.out.println(currentDepth);
+//            System.out.println(states.size());
+
             int toAdd = stateSizes.get(currentDepth);
             stateSizes.remove(currentDepth);
             stateSizes.add(currentDepth, toAdd - 1);
@@ -89,27 +98,17 @@ public class Solver {
             if (currentDepth != depth) {
                 List<Coordinate> pieces = allPieces(currentBoard);
                 List<String> newStates = new LinkedList<>();
-                List<SolverRunner> runnerPool = new LinkedList<>();
-                BoardInterface boardInterface = new BoardInterface(currentBoard);
+//                List<SolverRunner> runnerPool = new LinkedList<>();
+//                BoardInterface boardInterface = new BoardInterface(currentBoard);
                 for (Coordinate piece : pieces) {
                     if (!currentBoard.getEnPassant().equals(Coordinates.NULL_COORDINATE)) {
                         if (!piece.equals(currentBoard.getEnPassant())) {
                             continue;
                         }
                     }
-//                    SolverRunner runner = new SolverRunner(currentBoard, piece, state, any && currentDepth == depth - 1);
-//                    runnerPool.add(runner);
-//                    Thread thread = new Thread(runner);
-//                    thread.start();
                     newStates.addAll(iterateThroughMoves(currentBoard, piece, state, any && currentDepth == depth - 1));
-//                    }
+
                 }
-                int sleepCount = 0;
-//                while (!runnerPool.stream().allMatch(SolverRunner::isFinished)) {
-//                    sleepCount++;
-//                    this.sleep();
-//                }
-//                List<String> newStates = runnerPool.stream().flatMap(r -> r.getStates().stream()).toList();
                 toAdd = 0;
                 if (stateSizes.size() >= currentDepth + 2) {
                     toAdd = stateSizes.get(currentDepth + 1);
@@ -147,10 +146,9 @@ public class Solver {
                             return finalStates;
                         }
                         //System.out.println("coming out");
-                    }else {
                     }
                 } else {
-                    this.legalFirst = true;
+//                    this.legalFirst = true;
                     //System.out.println("goinf down " + state);
                     if (this.additionalDepth == 0 || !iterate(currentState, this.additionalDepth, true).isEmpty()) {
                         boolean pass = true;
@@ -166,9 +164,9 @@ public class Solver {
                             finalStates.add(currentState + ":" + stateDescription[1]);
                         }
                     }
-                    if (!legalFirstAlwaysTrue) {
-                        this.legalFirst = false;
-                    }
+//                    if (!legalFirstAlwaysTrue) {
+//                        this.legalFirst = false;
+//                    }
                 }
             }
             while (stateSizes.size() >= currentDepth + 1 && stateSizes.get(currentDepth) < 1) {
@@ -298,7 +296,7 @@ public class Solver {
                                 pass = true;
                             } else if (this.allowNonIntrusiveMovement && nonIntrusiveMovement(promotion, piece, movedPiece)) {
                                 pass = true;
-                                this.stateLog.register(new BoardInterface(currentBoard), true);
+//                                this.stateLog.register(new BoardInterface(currentBoard), true);
 
                             } else if (testState(currentBoard)) {
                                 pass = true;
@@ -343,20 +341,17 @@ public class Solver {
     public boolean testState(ChessBoard board) {
         DetectorInterface detector;
         detector = StateDetectorFactory.getDetectorInterface(board);
+        numberOfTests++;
+        long start = System.nanoTime();
         boolean pass = detector.testState();
+        this.timeSpentOnTests += (start - System.nanoTime()) / 1000;
         if (pass) {
             //System.out.println("XXX");
-
             pass = castleCheck(board, detector);
             if (pass) {
                 pass = this.detectorPredicate.test(detector);
             }
-        } else {
-            //System.out.println(board.getReader().toFEN());
-            //System.out.println(detector.getErrorMessage());
-
         }
-
         return pass;
     }
 
@@ -412,37 +407,37 @@ public class Solver {
         this.numberOfSolutions = numberOfSolutions;
     }
 
-    private class SolverRunner implements Runnable {
-
-        private final ChessBoard board;
-        private final Coordinate origin;
-        private final String currentState;
-        private final boolean any;
-        private boolean finished = false;
-        private List<String> states = new LinkedList<>();
-
-        SolverRunner(ChessBoard board, Coordinate origin, String currentState, boolean any) {
-            this.board = board;
-            this.origin = origin;
-            this.currentState = currentState;
-            this.any = any;
-        }
-        @Override
-        public void run() {
-            this.states = iterateThroughMoves(this.board, this.origin, this.currentState, this.any);
-            this.finished = true;
-//            Solver.this.notify();
-        }
-        public List<String> getStates() {
-            return this.states;
-        }
-
-        public boolean isFinished() {
-            return finished;
-        }
-
-
-    }
+//    private class SolverRunner implements Runnable {
+//
+//        private final ChessBoard board;
+//        private final Coordinate origin;
+//        private final String currentState;
+//        private final boolean any;
+//        private boolean finished = false;
+//        private List<String> states = new LinkedList<>();
+//
+//        SolverRunner(ChessBoard board, Coordinate origin, String currentState, boolean any) {
+//            this.board = board;
+//            this.origin = origin;
+//            this.currentState = currentState;
+//            this.any = any;
+//        }
+//        @Override
+//        public void run() {
+//            this.states = iterateThroughMoves(this.board, this.origin, this.currentState, this.any);
+//            this.finished = true;
+////            Solver.this.notify();
+//        }
+//        public List<String> getStates() {
+//            return this.states;
+//        }
+//
+//        public boolean isFinished() {
+//            return finished;
+//        }
+//
+//
+//    }
 
 
 }

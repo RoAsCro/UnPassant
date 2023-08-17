@@ -175,14 +175,12 @@ public class PathfinderUtil {
             return p2;
         }
         if (!p2NotExclusive) {
-            //system.out.println("p2 exclusive");
             return p1;
         }
 
         if (!p1.isEmpty() && PATH_DEVIATION.apply(p1) < PATH_DEVIATION.apply(p2)) {
             return p1;
         }
-        //system.out.println("both not exclusive");
         return p2;
     }
 

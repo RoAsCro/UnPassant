@@ -1,6 +1,7 @@
 package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
+import Heuristics.Detector.StateDetector;
 import Heuristics.Path;
 import StandardChess.BoardReader;
 import StandardChess.Coordinate;
@@ -15,18 +16,44 @@ import static Heuristics.HeuristicsUtil.FIRST_RANK_Y;
 
 /**
  * The CombinedPawnMap is a Deduction which forms a map of potential Paths from squares on the 2nd and 7th ranks to
- * pawns of the corresponding colour. The state will be set to false if any pawn on the does not have a valid Path
- * from an origin.
+ * pawns of the corresponding colour.
+ * <></>
+ * The state will be set to false if any pawn on the does not have a valid Path from an origin.
  */
 public class CombinedPawnMap extends AbstractDeduction {
-
-    protected PawnMap whitePawnMap = new PawnMap(true);
+    /**A PawnMap of black pawns*/
     protected PawnMap blackPawnMap = new PawnMap(false);
+    /**A PawnMap of white pawns*/
+    protected PawnMap whitePawnMap = new PawnMap(true);
+    /**Stores a reference to the black pawn Paths from the PawnData*/
+    private Map<Coordinate, List<Path>> blackPawnPaths;
+    /**Stores a reference to the white pawn Paths from the PawnData*/
+    private Map<Coordinate, List<Path>> whitePawnPaths;
 
+    /**
+     * Standard constructor
+     */
     public CombinedPawnMap(){
         super("Illegal pawn structure - pawns cannot reach their current position.");
     };
 
+    /**
+     * Registers a StateDetector as described in the Deduction interface.
+     * @param detector the StateDetector from which data will be drawn and put
+     */
+    @Override
+    public void registerDetector(StateDetector detector) {
+        super.registerDetector(detector);
+        this.blackPawnPaths = this.detector.getPawnData().getPawnPaths(true);
+        this.whitePawnPaths = this.detector.getPawnData().getPawnPaths(false);
+    }
+
+
+    /**
+     * Forms a map of the given board, creating Paths from pawn/origin combinations established by the individual
+     * PawnMaps and makink sure none of them are exclusive with Paths of the other player's pawns.
+     * @param board the board to be checked
+     */
     @Override
     public void deduce(BoardInterface board) {
         this.whitePawnMap.registerDetector(this.detector);
@@ -44,117 +71,124 @@ public class CombinedPawnMap extends AbstractDeduction {
             return;
         }
         boolean changed = true;
-        boolean another = true;
+        boolean secondChange = true;
         while (changed) {
-            HashSet<List<Path>> startingWhite = new HashSet<>(this.detector.getPawnData().getPawnPaths(true).values());
-            HashSet<List<Path>> startingBlack = new HashSet<>(this.detector.getPawnData().getPawnPaths(false).values());
+            HashSet<List<Path>> startingWhite = new HashSet<>(this.whitePawnPaths.values());
+            HashSet<List<Path>> startingBlack = new HashSet<>(this.blackPawnPaths.values());
 
             makeMaps(board, false);
             makeMaps(board, true);
             if ((!exclude(board, true) & !exclude(board, false))
-                    || (startingWhite.containsAll(new HashSet<>(this.detector.getPawnData().getPawnPaths(true).values()))
-                    && startingBlack.containsAll(new HashSet<>(this.detector.getPawnData().getPawnPaths(false).values())))
+                    || (startingWhite.containsAll(new HashSet<>(this.whitePawnPaths.values()))
+                    && startingBlack.containsAll(new HashSet<>(this.blackPawnPaths.values())))
             ) {
-                if (!another) {
+                if (!secondChange) {
                     changed = false;
                 } else {
-                    another = false;
+                    secondChange = false;
                 }
             }
         }
 
-        if (this.detector.getPawnData().getPawnPaths(true).values().stream().anyMatch(List::isEmpty)) {
-            this.errorMessage = generateErrorMessage(this.detector.getPawnData().getPawnPaths(true));
+        if (this.whitePawnPaths.values().stream().anyMatch(List::isEmpty)) {
+            this.errorMessage = generateErrorMessage(this.whitePawnPaths);
             this.state = false;
-        } else if (this.detector.getPawnData().getPawnPaths(false).values().stream().anyMatch(List::isEmpty)) {
-            this.errorMessage = generateErrorMessage(this.detector.getPawnData().getPawnPaths(false));
+        } else if (this.blackPawnPaths.values().stream().anyMatch(List::isEmpty)) {
+            this.errorMessage = generateErrorMessage(this.blackPawnPaths);
             this.state = false;
 
         }
     }
 
+    /**
+     * Generates am error message specifying which has no valid path from an origin.
+     * @param paths the Map of pawn paths to be used
+     * @return am error message as a String
+     */
     private String generateErrorMessage(Map<Coordinate, List<Path>> paths) {
         return "Illegal pawn structure - pawn at " + paths.entrySet()
                 .stream().filter(e -> e.getValue().isEmpty())
                 .map(Map.Entry::getKey)
                 .findAny()
-                .orElse(Coordinates.NULL_COORDINATE)
-                .toString() + " cannot reach its position.";
+                .orElse(Coordinates.NULL_COORDINATE) + " cannot reach its position.";
     }
 
-
     /**
-     *
-     * @return whether or not there was a change
+     * Returns all Coordinate/Path Maps of the opposing player to the given player that have only one possible origin and one
+     * possible Path from that origin, not including those pawns currently on their origin.
+     * @param board the board being checked
+     * @param white the player whose opponent's pawns  are to be checked, true for white, false for black
+     * @return the paths of the opposing player which have one origin and one possible Path
      */
-    protected boolean exclude(BoardInterface board, boolean white) {
-        Map<Coordinate, List<Path>> checkedPlayerPaths = this.detector.getPawnData().getPawnPaths(white);
-
+    private Map<Coordinate, List<Path>> getSinglePathPawns(BoardInterface board, boolean white) {
         Map<Coordinate, List<Path>> opposingPlayerPaths = this.detector.getPawnData().getPawnPaths(!white);
         PathfinderUtil pathFinderUtil = new PathfinderUtil(this.detector);
         // Find every pawn of the opposing player with one origin and one possible path
         List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = new ArrayList<>(opposingPlayerPaths.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() == 1 && !(entry.getValue().get(0).size() == 1))
-//                .filter(e -> {
-//                    int deviation = PathfinderUtil.PATH_DEVIATION.apply(e.getValue().get(0));
-//                    return (
-////                            deviation >= getMaxCaptures(!white, e.getKey()) ||
-//                            deviation >= Math.abs(e.getKey().getY() - e.getValue().get(0).getFirst().getY()) ||
-//                            deviation == 0);
-//                } )
-                    .filter(entry ->
-                            pathFinderUtil.findAllPawnPath(board, entry.getValue().get(0).getFirst(), getMaxCaptures(!white, entry.getKey()),
-                                    (b, c) -> c.equals(entry.getKey()), !white)
-                            .size() == 1)
+                .filter(entry ->
+                        pathFinderUtil.findAllPawnPath(board, entry.getValue().get(0).getFirst(),
+                                        getMaxCaptures(!white, entry.getKey()),
+                                        (b, c) -> c.equals(entry.getKey()), !white)
+                                .size() == 1)
                 .toList());
         singleOriginPawns.addAll(opposingPlayerPaths.entrySet()
                 .stream().filter(entry ->entry.getValue().size() == 1 && entry.getValue().get(0).size() == 1).toList());
-        if (singleOriginPawns.isEmpty()) {
-            // New implementation may hugely impact performance here
-            updateP();
+        return singleOriginPawns.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
 
+    /**
+     * Ensures that found pawn paths are not exclusive with existing pawn paths of the opposing player that have
+     * only one possible path. It then returns whether there was a change to the pawn Paths.
+     * @param board the board being checked
+     * @param white the currently checked player's colour, true if white, false if black
+     * @return whether there was a change
+     */
+    protected boolean exclude(BoardInterface board, boolean white) {
+        // Find pawns of the opposing player with single paths
+        Map<Coordinate, List<Path>> singleOriginPawns = getSinglePathPawns(board, white);
+        Map<Coordinate, List<Path>> checkedPlayerPaths = this.detector.getPawnData().getPawnPaths(white);
+        if (singleOriginPawns.isEmpty()) {
+            updatePawnMaps();
             return false;
         }
+        // Find which paths of the current player are exclusive with single-path pawns and replace those that are
         List<Path> newPaths = new LinkedList<>();
-        singleOriginPawns.forEach(entry -> checkedPlayerPaths.entrySet()
-                        .stream()
-                        .filter(innerEntry -> !innerEntry.getValue().isEmpty())
-                        .filter(innerEntry -> {
-                            Coordinate entryKey = entry.getKey();
-                            Coordinate innerEntryKey = innerEntry.getKey();
-                            if (entry.getValue().get(0).contains(innerEntryKey)
-                                    || innerEntry.getValue().get(0).contains(entryKey)) {
-                                return true;
-                            }
-                            int y2 = innerEntryKey.getY();
-                            if (y2 == FINAL_RANK_Y || y2 == FIRST_RANK_Y) {
-                                return entry.getValue().get(0).contains(innerEntry.getValue().get(0).get(innerEntry.getValue().get(0).size() - 2));
-                            }
-                            return false;
-                        })
-                        .forEach(innerEntry -> {
-                            //system.out.println("inner entry" + innerEntry);
-                            innerEntry.getValue()
-                                    .stream().filter(path ->
-                                            new PathfinderUtil(detector)
-                                                    .pathsExclusive(entry.getValue().get(0), path))
-                                    .forEach(path -> {
-
-                                        Path toPut = makeExclusiveMaps(board, path, white, singleOriginPawns);
-                                        if (toPut.isEmpty()) {
-                                            toPut.add(path.getFirst());
-                                            toPut.add(Coordinates.NULL_COORDINATE);
-                                            toPut.add(innerEntry.getKey());
-                                        }
-                                        newPaths.add(toPut);
-                                    });
-                        }));
-
-
-
+        singleOriginPawns.forEach((opposingPawn, opposingPaths) -> checkedPlayerPaths.entrySet()
+                .stream()
+                .filter(innerEntry -> !innerEntry.getValue().isEmpty())
+                .filter(innerEntry -> { //Get
+                    Coordinate playerPawn = innerEntry.getKey();
+                    Path opposingPawnPath = opposingPaths.get(0);
+                    Path playerPath = innerEntry.getValue().get(0);
+                    if (opposingPawnPath.contains(playerPawn)
+                            || playerPath.contains(opposingPawn)) {
+                        return true;
+                    }
+                    int y2 = playerPawn.getY();
+                    if (y2 == FINAL_RANK_Y || y2 == FIRST_RANK_Y) {
+                        return opposingPawnPath.contains(playerPath.get(playerPath.size() - 2));
+                    }
+                    return false;
+                }).forEach(innerEntry -> {
+                    innerEntry.getValue()
+                            .stream().filter(path ->
+                                    new PathfinderUtil(detector)
+                                            .pathsExclusive(opposingPaths.get(0), path))
+                            .forEach(path -> {
+                                Path toPut = makeExclusiveMaps(board, path, white, singleOriginPawns);
+                                if (toPut.isEmpty()) {
+                                    toPut.add(path.getFirst());
+                                    toPut.add(Coordinates.NULL_COORDINATE);
+                                    toPut.add(innerEntry.getKey());
+                                }
+                                newPaths.add(toPut);
+                            });
+                }));
+        // Remove those paths that cannot be remade after being found to be exclusive
         List<Coordinate[]> forRemoval = new LinkedList<>();
-        newPaths.stream().forEach(path -> {
+        newPaths.forEach(path -> {
             List<Path> pathList = checkedPlayerPaths.get(path.getLast());
             Path toRemove = pathList
                     .stream().filter(path2 -> path2.getFirst() == path.getFirst())
@@ -169,36 +203,51 @@ public class CombinedPawnMap extends AbstractDeduction {
         });
         forRemoval.forEach(coordinates -> (white ? this.whitePawnMap : this.blackPawnMap)
                 .getPawnOrigins().get(coordinates[0]).remove(coordinates[1]));
-        updateP();
+        updatePawnMaps();
         return !forRemoval.isEmpty() || !newPaths.isEmpty();
     }
 
-    protected void updateP() {
+    /**
+     * Updates the PawnMaps
+     */
+    protected void updatePawnMaps() {
         this.blackPawnMap.update();
         this.whitePawnMap.update();
     }
 
-    private Path makeExclusiveMaps(BoardInterface board, Path path, boolean white, List<Map.Entry<Coordinate, List<Path>>> forbiddenPaths) {
-
+    /**
+     * Attempts to create a path from the first Coordinate of the given Path and the last Coordinate of the
+     * given Path that isn't exclusive with the given forbidden Paths.
+     * @param board the board checked
+     * @param path the Path whose first and Last Coordinates are to be used as the target and origin
+     * @param white the player whose pawn is pathing, true if white, false if black
+     * @param forbiddenPaths the Paths that the new Path cannot be exclusive with
+     * @return the new Path, empty if none is found
+     */
+    private Path makeExclusiveMaps(BoardInterface board, Path path,
+                                   boolean white, Map<Coordinate, List<Path>> forbiddenPaths) {
         Coordinate target = path.getLast();
         return new PathfinderUtil(detector).findShortestPawnPath(board,
                 path.getFirst(), getMaxCaptures(white, target),
                 (b, c) -> c.equals(target),
-                white, true, forbiddenPaths.stream().flatMap(e -> e.getValue().stream()).toList());
+                white, true, forbiddenPaths.entrySet()
+                        .stream().flatMap(e -> e.getValue().stream()).toList());
     }
 
+    /**
+     * Makes the initial paths
+     * @param board
+     * @param white
+     */
     private void makeMaps(BoardInterface board, boolean white) {
         (white ? this.whitePawnMap : this.blackPawnMap)
                 .getPawnOrigins().entrySet()
-                .stream()
                 .forEach(entry -> {
                     List<Path> paths = new LinkedList<>();
-                    entry.getValue().stream()
-                            .forEach(coordinate -> {
-                                Path path =
-                                        new PathfinderUtil(this.detector).findShortestPawnPath(
-                                                board, coordinate, getMaxCaptures(white, entry.getKey()),
-                                                (b, c) -> c.equals(entry.getKey()), white, true, new LinkedList<>()
+                    entry.getValue().forEach(coordinate -> {
+                        Path path = new PathfinderUtil(this.detector).findShortestPawnPath(
+                                board, coordinate, getMaxCaptures(white, entry.getKey()),
+                                (b, c) -> c.equals(entry.getKey()), white, true, new LinkedList<>()
                                 );
                                 if (!path.isEmpty()) {
 

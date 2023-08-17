@@ -24,7 +24,6 @@ public class StandardDetectorInterface implements DetectorInterface {
 
     @Override
     public Map<String, Map<Path, Integer>> getPromotions(boolean white) {
-        System.out.println(detector.getPromotionData().getPromotionNumbers());
         List<Map.Entry<String, Map<Path, Integer>>> entryList =
                 detector.getPromotionData().getPromotionNumbers().entrySet().stream()
                 .filter(e -> e.getKey().endsWith(white ? "w" : "b"))
@@ -135,9 +134,6 @@ public class StandardDetectorInterface implements DetectorInterface {
             stringBuilder.append("\n");
             white =false;
         }
-
-
-
          return stringBuilder.toString();
     }
 }
