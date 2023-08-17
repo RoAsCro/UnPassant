@@ -88,16 +88,17 @@ public class Solver {
 //            stateSizes.add(currentDepth, toAdd - 1);
             String state;
             /* If in an Any state, there's a good chance the algorithm is trying to get out of check */
-//            if (any) {
-//                state =
-//                        states.stream().filter(s -> s.charAt(s.length() - 1)
-//                                        == states.getFirst().charAt(states.getFirst().length() - 1))
-//                                .filter(s -> !CheckUtil.eitherInCheck(new BoardInterface(BoardBuilder.buildBoard(s.split(":")[0]))))
-//                                .findAny()
-//                                .orElse(states.getFirst());
-//                states.remove(state);
-//            }
-            state = states.pop();
+            if (any) {
+                state =
+                        states.stream().filter(s -> s.charAt(s.length() - 1)
+                                        == states.getFirst().charAt(states.getFirst().length() - 1))
+                                .filter(s -> !CheckUtil.eitherInCheck(new BoardInterface(BoardBuilder.buildBoard(s.split(":")[0]))))
+                                .findAny()
+                                .orElse(states.getFirst());
+                states.remove(state);
+            } else {
+                state = states.pop();
+            }
 
             String[] stateDescription = state.split(":");
             int currentDepth = Integer.parseInt(stateDescription[2]);
@@ -105,9 +106,18 @@ public class Solver {
             ChessBoard currentBoard = BoardBuilder.buildBoard(currentState);
             CheckUtil.switchTurns(currentBoard);
 //            if (currentDepth == depth || !this.allowNonIntrusiveMovement || !nonIntrusiveMovement(state)) {
+            System.out.println(state);
             if (!testState(currentBoard)) {
+                System.out.println("afila");
                 continue;
             }
+            if (state.equals("k1K5/3pQ3/8/2B1P3/3P4/7P/8/7B w - d5:Pd7-d5, Pe5xPd6, :2")) {
+                System.out.println(currentBoard.getEnPassant());
+            }
+            System.out.println("pass");
+
+//            System.out.println(states);
+
             CheckUtil.switchTurns(currentBoard);
             if (currentDepth != depth + recursionDepth) {
                 List<Coordinate> pieces = allPieces(currentBoard);
@@ -272,7 +282,10 @@ public class Solver {
             }
             // Revert the coordinate to directions
             Coordinate direction = Coordinates.add(currentMove, new Coordinate(-origin.getX(), -origin.getY()));
-            List<String> pieces = enPassant ?  List.of("p") : PIECES;
+            List<String> pieces = PIECES;
+            if (enPassant) {
+                pieces = List.of("p");
+            }
             for (int i = 1 ; ; i++) {
                 boolean continueFlag = true;
                 if (previousEnPassant) {
@@ -302,8 +315,11 @@ public class Solver {
 //                                pass = true;
 //                            }
                             CheckUtil.switchTurns(currentBoard);
-                            currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
-                            states.add(move);
+                            if (previousEnPassant) {
+                                currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
+                            }
+                            String boardAndMove = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece, castle);
+                            states.add(boardAndMove);
                             if (!legalFirst && any) {
 
                                 break;
@@ -357,7 +373,7 @@ public class Solver {
             moveMaker.setPromotionFlag(true);
         }
         if (enPassant) {
-            moveMaker.setEnPassantFlag(true);
+            moveMaker.setEnPassantFlag(enPassant);
         }
         if (!piece.equals("")) {
             moveMaker.setCaptureFlag(true);
