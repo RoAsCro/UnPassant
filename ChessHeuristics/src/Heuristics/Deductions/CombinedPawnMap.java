@@ -121,14 +121,13 @@ public class CombinedPawnMap extends AbstractDeduction {
      * @return the paths of the opposing player which have one origin and one possible Path
      */
     private Map<Coordinate, List<Path>> getSinglePathPawns(BoardInterface board, boolean white) {
-        Map<Coordinate, List<Path>> opposingPlayerPaths = this.detector.getPawnData().getPawnPaths(!white);
+        Map<Coordinate, List<Path>> opposingPlayerPaths = (!white ? this.blackPawnPaths : this.whitePawnPaths);
         PathfinderUtil pathFinderUtil = new PathfinderUtil(this.detector);
         // Find every pawn of the opposing player with one origin and one possible path
         List<Map.Entry<Coordinate, List<Path>>> singleOriginPawns = new ArrayList<>(opposingPlayerPaths.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() == 1 && !(entry.getValue().get(0).size() == 1))
-                .filter(entry ->
-                        pathFinderUtil.findAllPawnPath(board, entry.getValue().get(0).getFirst(),
+                .filter(entry -> pathFinderUtil.findAllPawnPath(board, entry.getValue().get(0).getFirst(),
                                         getMaxCaptures(!white, entry.getKey()),
                                         (b, c) -> c.equals(entry.getKey()), !white)
                                 .size() == 1)
@@ -158,15 +157,17 @@ public class CombinedPawnMap extends AbstractDeduction {
         singleOriginPawns.forEach((opposingPawn, opposingPaths) -> checkedPlayerPaths.entrySet()
                 .stream()
                 .filter(innerEntry -> !innerEntry.getValue().isEmpty())
-                .filter(innerEntry -> { //Get
+                .filter(innerEntry -> {
+                    // Find what opposing pawns are inside the pawn's Path and vice versa
                     Coordinate playerPawn = innerEntry.getKey();
                     Path opposingPawnPath = opposingPaths.get(0);
                     Path playerPath = innerEntry.getValue().get(0);
                     if (opposingPawnPath.contains(playerPawn)
-                            || playerPath.contains(opposingPawn)) {
+                            && playerPath.contains(opposingPawn)) {
                         return true;
                     }
                     int y2 = playerPawn.getY();
+                    //If a pawn is on the first or final rank, it can still be exclusive without both paths containing one another
                     if (y2 == FINAL_RANK_Y || y2 == FIRST_RANK_Y) {
                         return opposingPawnPath.contains(playerPath.get(playerPath.size() - 2));
                     }
@@ -235,31 +236,39 @@ public class CombinedPawnMap extends AbstractDeduction {
     }
 
     /**
-     *
-     * @param board
-     * @param white
+     * Makes the pawn Paths independent of exclusion for the given player.
+     * @param board the board being checked
+     * @param white whether the player being checked, true if white, false if black
      */
     private void makeMaps(BoardInterface board, boolean white) {
         (white ? this.whitePawnMap : this.blackPawnMap)
-                .getPawnOrigins().entrySet()
-                .forEach(entry -> {
+                .getPawnOrigins().forEach((key, value) -> {
                     List<Path> paths = new LinkedList<>();
-                    entry.getValue().forEach(coordinate -> {
+                    value.forEach(coordinate -> {
                         Path path = new PathfinderUtil(this.detector).findShortestPawnPath(
-                                board, coordinate, getMaxCaptures(white, entry.getKey()),
-                                (b, c) -> c.equals(entry.getKey()), white, true, new LinkedList<>()
-                                );
-                                if (!path.isEmpty()) {
+                                board, coordinate, getMaxCaptures(white, key),
+                                (b, c) -> c.equals(key), white, true, new LinkedList<>()
+                        );
+                        if (!path.isEmpty()) {
 
-                                    paths.add(path);
-                                }
-                            });
-                    this.detector.getPawnData().getPawnPaths(white).put(entry.getKey(), paths);
+                            paths.add(path);
+                        }
+                    });
+                    this.detector.getPawnData().getPawnPaths(white).put(key, paths);
                 });
     }
 
+    /**
+     * Returns the maximum number of captures a given pawn of the given player can make.
+     * This is calculated as the number of captures any pawn can make in excess of their minimum captures
+     * plus the minimum captures that pawn can make to reach their current location.
+     * @param white the player whose pawn is being checked, true if white, false if black
+     * @param coordinate the Coordinate of the pawn being checked
+     * @return the maximum number of captures the given pawn can make
+     */
     public int getMaxCaptures(boolean white, Coordinate coordinate) {
-        return (white ? whitePawnMap : blackPawnMap).getCapturedPieces() + (white ? whitePawnMap : blackPawnMap).getCaptureSet().get(coordinate);
+        return (white ? whitePawnMap : blackPawnMap).getCapturedPieces()
+                + (white ? whitePawnMap : blackPawnMap).getCaptureSet().get(coordinate);
     }
 
     /**
@@ -293,8 +302,12 @@ public class CombinedPawnMap extends AbstractDeduction {
             reduce();
         }
         /**
-         * Returns the max number of pieces minus the number of pieces the opponent is missing
-         * @return the max number of pieces minus the number of pieces the opponent is missing
+         * Returns the max number of pieces pawns can capture. This is the standard number of pieces, 16,
+         * minus the number of missing opposing pieces that cannot be taken by pawns according to what is currently
+         * stored in the PawnData, minus the number of pieces the opposing player has remaining:
+         * <></>
+         * (16 - takeable pieces) - opponent's remaining pieces
+         * @return the max number of pieces the pawns can collectively take
          */
         protected int capturedPieces() {
             return this.detector.getCaptureData().pawnTakeablePieces(this.white) - (this.opponentPieceNumbers);
@@ -355,6 +368,14 @@ public class CombinedPawnMap extends AbstractDeduction {
             });
         }
 
+        /**
+         * Updates the player's captureSet - a Map of Coordinates of pawns and the minimum number of pieces that
+         * pawn must take. This is the smallest difference between the pawn's current x and the x's if it's potential
+         * origins in pawnOrigins.
+         * <></>
+         * If the sum of minimum captures exceeds the maximum number of pieces all pawns can take, the state is set
+         * to false. If it does not, the remainder of this amount is set as the capturedPieces.
+         */
         protected void updateCaptureSet() {
             int maxOffset = capturedPieces() -
                     pawnOrigins.entrySet().stream()
@@ -370,11 +391,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                                             return c2;
                                         })
                                         .orElse(Coordinates.NULL_COORDINATE);
-
-                                //Sys tem.out.println(entry.getKey());
-
                                 int minCaptures = Math.abs(x - coordinate.getX());
-                                //Sys tem.out.println(minCaptures);
                                 this.captureSet.put(entry.getKey(), minCaptures);
                                 return minCaptures;})
                             .reduce(Integer::sum)
@@ -545,10 +562,16 @@ public class CombinedPawnMap extends AbstractDeduction {
                     .toList()
                     .isEmpty();
         }
-        public int getCapturedPieces() {
+
+        /**
+         * Returns the total pieces any pawn can capture in excess of the sum of the minimum number of captures
+         * all pawns of this colour can make.
+         * @return the number of captures any pawn can make in excess of their minimum captures
+         */
+        private int getCapturedPieces() {
             return capturedPieces;
         }
-        public void setCapturedPieces(int capturedPieces) {
+        private void setCapturedPieces(int capturedPieces) {
             this.capturedPieces = capturedPieces;
         }
         public Map<Coordinate, Integer> getCaptureSet() {
