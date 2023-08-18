@@ -7,6 +7,7 @@ import Heuristics.Detector.StandardDetectorInterface;
 import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.StandardStateDetector;
 import Heuristics.Deductions.UnCastle;
+import SolveAlgorithm.Solver;
 import StandardChess.BoardBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -484,7 +485,8 @@ public class ImpossibleStates {
     } @Test
     void r2() {
 
-        System.out.println(test("r1N1k2r/p1p1p1p1/1p3p1p/8/8/7b/PPPPPPPP/2BQKB2 b - - 0 1"));
+        System.out.println(test("rnbqkb1r/pppp1ppp/5n2/4P3/4P3/8/PPP2PPP/RNBQKBNR w KQkq -"));
+        System.out.println(new Solver().solve(BoardBuilder.buildBoard("rnbqkb1r/pppp1ppp/5n2/4P3/4P3/8/PPP2PPP/RNBQKBNR b KQkq"), 1));
 //        System.out.println(test("r3kqR1/1p1pppp1/5B1P/6PN/4P2p/3Q1P2/2PK2pP/8 b q - 0 1"));
 //        System.out.println(this.detector.getPawnsCapturedByPawns(true));
 //        System.out.println(this.detector.getPawnsCapturedByPawns(false));

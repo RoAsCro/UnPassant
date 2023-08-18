@@ -29,6 +29,8 @@ public class UnMoveMaker {
         Piece piece = this.board.at(origin);
         Coordinate captureLocation = origin;
         if (!this.board.getTurn().equals(piece.getColour())) {
+            System.out.println(piece.getColour());
+
             return false;
         }
         boolean isWhite = this.board.getTurn().equals("white");

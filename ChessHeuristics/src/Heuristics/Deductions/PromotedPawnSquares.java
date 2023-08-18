@@ -35,7 +35,6 @@ public class PromotedPawnSquares extends AbstractDeduction{
 
         putPaths(emptyWhiteOrigins, board, true);
         putPaths(emptyBlackOrigins, board, false);
-
         return;
     }
 

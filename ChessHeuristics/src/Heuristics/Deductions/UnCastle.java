@@ -74,6 +74,7 @@ public class UnCastle extends AbstractDeduction{
         this.detector.getPieceData().setKingMovement(true, this.whiteData[0]);
         this.detector.getPieceData().setRookMovement(true, true, this.whiteData[1]);
         this.detector.getPieceData().setRookMovement(true, false, this.whiteData[2]);
+
         return List.of(this.whiteData, this.blackData);
     }
 

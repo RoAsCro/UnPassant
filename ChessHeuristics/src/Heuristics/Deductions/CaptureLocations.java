@@ -3,6 +3,7 @@ package Heuristics.Deductions;
 import Heuristics.BoardInterface;
 import Heuristics.Path;
 import Heuristics.Detector.StateDetector;
+import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 
@@ -34,6 +35,8 @@ public class CaptureLocations extends AbstractDeduction {
      * for use in testing the colour pawn captures are made on*/
     private static final BiPredicate<Coordinate, Coordinate> LIGHT_TEST =
             (c1, c2) -> (c2.getX() != c1.getX() || c1.equals(c2))  && Coordinates.light(c1);
+    /**An arbitrarily high number that would never ordinarily come up*/
+    private final static int ARBITRARILY_HIGH_NUMBER = 99;
     /**A pathFinderUtil to be used for finding Paths*/
     private PathfinderUtil pathFinderUtil;
     /**Stores a reference to the piecePaths stored in the StateDetector's PieceData*/
@@ -72,6 +75,7 @@ public class CaptureLocations extends AbstractDeduction {
         }
         this.detector.getCaptureData().getNonPawnCaptures(true).addAll(pawnCaptureLocations(true, board));
         this.detector.getCaptureData().getNonPawnCaptures(false).addAll(pawnCaptureLocations(false, board));
+
     }
 
     /**
@@ -145,9 +149,9 @@ public class CaptureLocations extends AbstractDeduction {
         if (!predicates.isEmpty()) {
             Map<Coordinate, List<Path>> paths = everySingularPawnPath(white);//Every path that's a single path;
 
-            if (pawnCaptures(paths, white)) {
+            if (pawnCaptures(paths, white) == 0) {
                 if (!predicates.isEmpty()) {
-                    capturesToRemove += predicateIterate(white, predicates).size();
+                    capturesToRemove += predicateIterate(white, predicates, false).size();
                     Path.of(new Coordinate(Q_BISHOP_X, y), new Coordinate(K_BISHOP_X, y)).forEach(c -> {
                         if (predicates.stream().anyMatch(p -> p.test(c, c))) {
                             nonPawnCaptures.add(c);
@@ -206,21 +210,25 @@ public class CaptureLocations extends AbstractDeduction {
     }
 
     /**
-     * Returns true if the number of captures made on the givenPpaths is equal to
+     * Returns the difference between the number of captures made on the givenPaths and the
      * minimum number of captures made by pawns of the given player
      * @param singlePawns a Map of Coordinates and lists of Paths to be checked
      * @param white the player whose pawns are in the Map, true if white, false if black
-     * @return whether the number of captures made on those Paths is equal to the minimum number of captures made by
-     * pawns of the given player
+     * @return the difference between the number of captures made on the givenPaths ant the
+     * minimum number of captures made by pawns of the given player, or an arbitrarily high number if the number
+     * of captures is 0
      */
-    private boolean pawnCaptures(Map<Coordinate, List<Path>> singlePawns, boolean white) {
+    private int pawnCaptures(Map<Coordinate, List<Path>> singlePawns, boolean white) {
         int allCaptures = singlePawns.values().stream()
                 .map(pathList -> pathList
                         .stream().map(PathfinderUtil.PATH_DEVIATION)
                         .reduce(Integer::min)
                         .orElse(0))
                 .reduce(0, Integer::sum);
-        return allCaptures == this.detector.getPawnData().minimumPawnCaptures(white) && allCaptures != 0;
+        if (allCaptures == 0 ) {
+            return ARBITRARILY_HIGH_NUMBER;
+        }
+        return this.detector.getPawnData().minimumPawnCaptures(white) - allCaptures;
     }
 
     /**
@@ -269,17 +277,18 @@ public class CaptureLocations extends AbstractDeduction {
                     if (pawnOrigins
                             .stream().filter(c1 -> c1.getY() == y)
                             .noneMatch(c::equals)) {
-                        pawnPredicates.add((c1, c2) -> (c1.equals(c) && c2.equals(c)) || c1.getX() != c2.getX() && Math.abs(c2.getX() - c.getX()) <= unaccountedCaptures);
+                        pawnPredicates.add((c1, c2) ->(c1.equals(c) && c2.equals(c)) || c1.getX() != c2.getX() && Math.abs(c2.getX() - c.getX()) <= unaccountedCaptures);
                         missingPawns.add(c);
                     }
                 }
-                predicateIterate(!white, pawnPredicates);
+            predicateIterate(!white, pawnPredicates ,true);
                 if (Math.abs(pawnPredicates.size() - missingPawns.size()) >= pawnCapturesByOpp) {
                     return new LinkedList<>();
                 }
                 this.detector.getCaptureData().setPawnsCapturedByPawns(white, pawnCapturesByOpp
                         - Math.abs(pawnPredicates.size() - missingPawns.size()));
-                return missingPawns.stream().filter(c -> pawnPredicates.stream().anyMatch(p -> p.test(c, c))).toList();
+
+            return missingPawns.stream().filter(c -> pawnPredicates.stream().anyMatch(p -> p.test(c, c))).toList();
         }
         return new LinkedList<>();
     }
@@ -290,14 +299,22 @@ public class CaptureLocations extends AbstractDeduction {
      * the BiPredicate condition. Used to check whether pawns of the given player have captured the pieces represented
      * by the BiPredicates. Two BiPredicates' conditions may not be fulfilled by the same two Coordinates on the Paths.
      * Returns the List of BiPredicates with the ones that have had their condition fulfilled removed.
+     * If there are
+     * <></>
+     * If pawn = true all pawn Paths will be checked, otherwise only the Paths of pawns with one origin and one
+     * Path from that origin.
      * @param white the player whose pawns are being checked, true if white, false if black
      * @param predicates the List of BiPredicates whose conditions are being checked
+     * @param pawn whether pawns are being checked
      * @return the given List of BiPredicates with the ones fulfilled by the pawns removed
      */
     private List<BiPredicate<Coordinate, Coordinate>> predicateIterate(boolean white,
-                                       List<BiPredicate<Coordinate, Coordinate>> predicates) {
-        Map<Coordinate, List<Path>> paths = everySingularPawnPath(white);
-        if (pawnCaptures(paths, white)) {
+                                                                       List<BiPredicate<Coordinate, Coordinate>> predicates,
+                                                                       boolean pawn) {
+        Map<Coordinate, List<Path>> paths = pawn
+                ? this.detector.getPawnData().getPawnPaths(white)
+                : everySingularPawnPath(white);
+        if (pawnCaptures(paths, white) < predicates.size()) {
             for (List<Path> pathList : paths.values()) {
                 Path path = pathList.get(0);
                 Iterator<BiPredicate<Coordinate, Coordinate>> predicateIterator = predicates.iterator();
@@ -312,6 +329,16 @@ public class CaptureLocations extends AbstractDeduction {
                 }
             }
         }
+        else {
+            //TODO update documentation to mention this
+            predicates.clear();
+            return new LinkedList<>();
+        }
+//        Map<Coordinate, Path> pawnOrigins = this.detector.getPawnData().getPawnPaths(white).entrySet().stream()
+//                .collect(Collectors.toMap(Map.Entry::getKey, entry ->
+//                        Path.of(entry.getValue().stream().map(Path::getFirst).toList())));
+//        pawnOrigins.forEach((k, v) -> v.forEach(c -> pathFinderUtil.findAllPawnPath(board, k, c, ))
+//        );
         return predicates;
     }
 

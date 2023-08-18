@@ -1,16 +1,45 @@
+import SolveAlgorithm.Solver;
+import StandardChess.BoardBuilder;
+import StandardChess.Coordinate;
+import StandardChess.Coordinates;
+import StandardChess.UnMoveMaker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ForwardGameTest {
-    // With thanks to https://github.com/lukasmonk/lucaschess/blob/master/IntFiles/miniaturas.gm for the list of games
-    // in long algebraic notation
-    TestGamePlayer tester = new TestGamePlayer();
+import java.util.Arrays;
+
+public class SolverGameTest {
+    public class GamePlayerTwo extends TestGamePlayer {
+
+        public void playWithRetroCheck(String game) {
+            String[] moves = game.split(" ");
+            Arrays.stream(moves).forEach(s -> {
+                Coordinate origin = new Coordinate(s.charAt(0) - 97, s.charAt(1) - 49);
+                Coordinate target = new Coordinate(s.charAt(2) - 97, s.charAt(3) - 49);
+                System.out.println("origin = " + origin);
+                System.out.println("target = " + target);
+                Assertions.assertTrue(moveMaker.makeMove(origin, target));
+                Solver solver = new Solver();
+                solver.setNumberOfSolutions(1);
+                solver.setAdditionalDepth(0);
+                Coordinate enPassant = this.board.getEnPassant();
+                this.board.setEnPassant(Coordinates.NULL_COORDINATE);
+
+                Assertions.assertNotEquals(0, solver.solve(this.board, 1).size(), this.board.getReader().toFEN());
+                this.board.setEnPassant(enPassant);
+
+            });
+
+            }
+    }
+
+    GamePlayerTwo tester = new GamePlayerTwo();
     @Test
     public void testOne() {
         //Sebastien Midoux vs Christopher Baumgartner
         //Reykjavik Open (2016), Reykjavik ISL, rd 5, Mar-11
-        tester.play("e2e4 e7e5 d2d4 g8f6 d4e5 f6e4 f1c4 d8h4 d1f3 d7d5 c4d5 f7f5 e5f6 e4f6 f3e2 f8e7 g1f3 h4b4 c2c3 b4b6 d5b3 b8c6 b1a3 c8g4 c1e3 b6a5 e1c1 e7a3 e3c5 c6e7 e2e7");
-        Assertions.assertEquals("r3k2r/ppp1Q1pp/5n2/q1B5/6b1/bBP2N2/PP3PPP/2KR3R w kq -", tester.getBoard().getReader().toFEN());
+        tester.playWithRetroCheck("e2e4 e7e5 d2d4 g8f6 d4e5 f6e4 f1c4 d8h4 d1f3 d7d5 c4d5 f7f5 e5f6 e4f6 f3e2 f8e7 g1f3 h4b4 c2c3 b4b6 d5b3 b8c6 b1a3 c8g4 c1e3 b6a5 e1c1 e7a3 e3c5 c6e7 e2e7");
+//        Assertions.assertEquals("r3k2r/ppp1Q1pp/5n2/q1B5/6b1/bBP2N2/PP3PPP/2KR3R w kq -", tester.getBoard().getReader().toFEN());
     }
 
     @Test

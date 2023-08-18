@@ -323,7 +323,8 @@ public class Solver {
         DetectorInterface detector;
         detector = StateDetectorFactory.getDetectorInterface(board);
         numberOfTests++;
-        return detector.testState() && castleCheck(board, detector) && this.detectorPredicate.test(detector);
+        boolean pass =  detector.testState() && castleCheck(board, detector) && this.detectorPredicate.test(detector);
+        return pass;
     }
 
     private boolean makeJustMove(ChessBoard board, Coordinate origin, Coordinate target,
