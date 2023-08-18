@@ -1,8 +1,6 @@
 import SolveAlgorithm.Solver;
-import StandardChess.BoardBuilder;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
-import StandardChess.UnMoveMaker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

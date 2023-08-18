@@ -1,6 +1,9 @@
 package StandardChess.StandardPieces;
 
-import StandardChess.*;
+import StandardChess.ChessBoard;
+import StandardChess.Coordinate;
+import StandardChess.Coordinates;
+import StandardChess.Piece;
 
 public class KingStrategy extends AbstractStrategy{
 

@@ -1,6 +1,7 @@
 package SolveAlgorithm;
 
 import Heuristics.Detector.DetectorInterface;
+
 import java.util.function.Predicate;
 
 public abstract class StateCondition implements Predicate<DetectorInterface> {

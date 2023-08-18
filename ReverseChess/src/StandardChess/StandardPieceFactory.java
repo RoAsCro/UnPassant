@@ -1,6 +1,7 @@
 package StandardChess;
 
 import StandardChess.StandardPieces.*;
+
 import java.util.Map;
 
 public class StandardPieceFactory implements PieceFactory {

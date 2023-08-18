@@ -4,7 +4,6 @@ import Heuristics.Detector.DetectorInterface;
 import Heuristics.HeuristicsUtil;
 import Heuristics.Path;
 
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;

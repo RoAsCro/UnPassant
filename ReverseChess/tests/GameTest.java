@@ -42,10 +42,10 @@ public class GameTest {
         Assertions.assertTrue(FEN.contains("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
     }
 
-    @Test
-    public void diagnose() {
-        System.out.println(gameTest("x a4 - a6 p/- h3 - g4 -/- a6 - a4 -/x h2 - h3 p/x h6+ - a6 p/- g2 - h2 -/- g6 - h6 -/- a7 - c7 -/- e3 - d2 -/- e7 - a7 -/- d2 - e3 -/- f2 - g2 -/- d4 - e2 -/- a7 - e7 -/- g4 - g3 -/- a2+ - a7 -/- c1 - d2 -/- e3 - f2 -/x f5 - g4 p/x f4 - e3 p/- h6 - g6 -/- a8 - a2 -/- f6 - f5 -/- f3 - e4 -/- f7 - f6 -/- g2 - f3 -/- f8 q f7 -/",
-                "r4Q2/8/7R/3p4/3N1k2/2P5/6b1/2K5 w - - 0 1"));
-    }
+//    @Test
+//    public void diagnose() {
+//        System.out.println(gameTest("x a4 - a6 p/- h3 - g4 -/- a6 - a4 -/x h2 - h3 p/x h6+ - a6 p/- g2 - h2 -/- g6 - h6 -/- a7 - c7 -/- e3 - d2 -/- e7 - a7 -/- d2 - e3 -/- f2 - g2 -/- d4 - e2 -/- a7 - e7 -/- g4 - g3 -/- a2+ - a7 -/- c1 - d2 -/- e3 - f2 -/x f5 - g4 p/x f4 - e3 p/- h6 - g6 -/- a8 - a2 -/- f6 - f5 -/- f3 - e4 -/- f7 - f6 -/- g2 - f3 -/- f8 q f7 -/",
+//                "r4Q2/8/7R/3p4/3N1k2/2P5/6b1/2K5 w - - 0 1"));
+//    }
 
 }

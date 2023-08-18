@@ -363,7 +363,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                             }
                             starts.add(new Coordinate(x, start));
                         }
-                        pawnOrigins.put(pawn, starts);
+                        this.pawnOrigins.put(pawn, starts);
                     }
                 });
             }
@@ -396,7 +396,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          */
         protected void updateCaptureSet() {
             int maxOffset = capturedPieces() -
-                    pawnOrigins.entrySet().stream().map(entry -> {
+                    this.pawnOrigins.entrySet().stream().map(entry -> {
                                 int x = entry.getKey().getX();
                                 int minCaptures =entry.getValue().stream()
                                         .map(c -> Math.abs(x - c.getX()))
@@ -419,7 +419,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          */
         private void reduce() {
             this.sets = new LinkedList<>();
-            List<Coordinate> origins = pawnOrigins.entrySet().stream()
+            List<Coordinate> origins = this.pawnOrigins.entrySet().stream()
                     .flatMap(f -> f.getValue().stream())
                     .collect(Collectors.toSet())
                     .stream().toList();
@@ -428,7 +428,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 List<Coordinate> originsTwo = new LinkedList<>(origins);
                 boolean change = true;
                 while (change){
-                    captures(pawnOrigins);
+                    captures(this.pawnOrigins);
                     change = reduceIter(new HashSet<>(), originsTwo);
 
                 }
@@ -439,13 +439,16 @@ public class CombinedPawnMap extends AbstractDeduction {
          * Iterates through every combination of origins looking for set for which
          * there exists an equal number of pieces whose origin sets are a subset of it.
          * If such exists, no other piece may have any origin in that set as one of its possible origins,
-         * and the method removes those origins from its set of origins..
+         * and the method removes those origins from its set of origins.
+         * @param set the set of Coordinates of pawns being checked
+         * @param origins the set of Coordinates of origins being checked
+         * @return true if there was a change in the pawnOrigins, false otherwise
          */
         protected boolean reduceIter(Set<Coordinate> set, List<Coordinate> origins) {
             boolean change = false;
             if (!set.isEmpty()) {
                 AtomicBoolean supersets = new AtomicBoolean(false);
-                List<Coordinate> subsets = pawnOrigins.entrySet().stream()
+                List<Coordinate> subsets = this.pawnOrigins.entrySet().stream()
                         .filter(entry -> {
                             Path path = entry.getValue();
                             if (path.stream().anyMatch(set::contains)) {
@@ -465,7 +468,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 if (subsetSize == setSize) {
                     // Check the total number of captures
                     Map<Coordinate, Path> pawnOriginsSubset = new TreeMap<>();
-                    subsets.forEach(coordinate -> pawnOriginsSubset.put(coordinate, Path.of(pawnOrigins.get(coordinate))));
+                    subsets.forEach(coordinate -> pawnOriginsSubset.put(coordinate, Path.of(this.pawnOrigins.get(coordinate))));
                     set.forEach(coordinate -> this.detector.getPawnData().getOriginFree(white).put(coordinate, false));
                     this.sets.add(set);
                     reduceIterHelperStart(pawnOriginsSubset);
@@ -500,7 +503,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          * can make. Recursively goes through each possible combination of pawns and origins to achieve this.
          * It then removes those pawn/origin combinations from the Map that are found to be impossible
          * due to their being no set of pawns/origins that permits them.
-         * @param currentPawnOrigins The subset of the pawnOrigins being checked
+         * @param currentPawnOrigins the subset of the pawnOrigins being checked
          */
         protected void reduceIterHelperStart(Map<Coordinate, Path> currentPawnOrigins) {
             Map<Coordinate, Path> removalMap = new TreeMap<>();
@@ -531,7 +534,7 @@ public class CombinedPawnMap extends AbstractDeduction {
                 }
                 removalMap.put(currentPawn, forRemoval);
             }
-            removalMap.forEach((key, value) -> pawnOrigins.get(key).removeAll(value));
+            removalMap.forEach((key, value) -> this.pawnOrigins.get(key).removeAll(value));
         }
 
         /**
@@ -578,7 +581,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          * @return true if any origins are removed, false otherwise
          */
         private boolean removeCoords(Set<Coordinate> forRemoval, List<Coordinate> ignore) {
-            return !pawnOrigins.entrySet()
+            return !this.pawnOrigins.entrySet()
                     .stream()
                     .filter(entry -> !ignore.contains(entry.getKey()))
                     .filter(entry -> entry.getValue().removeAll(forRemoval))

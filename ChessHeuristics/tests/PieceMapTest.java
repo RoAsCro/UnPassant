@@ -1,5 +1,6 @@
 import Heuristics.BoardInterface;
-import Heuristics.Deductions.*;
+import Heuristics.Deductions.CombinedPawnMap;
+import Heuristics.Deductions.PieceMap;
 import Heuristics.Detector.Data.StandardCaptureData;
 import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.Data.StandardPieceData;

@@ -2,7 +2,6 @@ package Heuristics.Detector;
 
 import Heuristics.BoardInterface;
 import Heuristics.Deductions.Deduction;
-import Heuristics.Deductions.UnCastle;
 import Heuristics.Detector.Data.CaptureData;
 import Heuristics.Detector.Data.PawnData;
 import Heuristics.Detector.Data.PieceData;
@@ -10,7 +9,9 @@ import Heuristics.Detector.Data.PromotionData;
 import Heuristics.Path;
 import StandardChess.Coordinate;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Function;
 
 public class StandardStateDetector implements StateDetector {

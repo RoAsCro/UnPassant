@@ -1,9 +1,8 @@
 package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
-import Heuristics.Path;
 import Heuristics.Detector.StateDetector;
-import StandardChess.BoardBuilder;
+import Heuristics.Path;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 

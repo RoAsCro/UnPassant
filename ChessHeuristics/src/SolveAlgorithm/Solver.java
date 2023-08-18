@@ -1,12 +1,13 @@
 package SolveAlgorithm;
 
 import Heuristics.BoardInterface;
-import Heuristics.Detector.StateDetectorFactory;
 import Heuristics.Detector.DetectorInterface;
+import Heuristics.Detector.StateDetectorFactory;
 import Heuristics.Path;
 import StandardChess.*;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Predicate;
 
 import static Heuristics.HeuristicsUtil.FINAL_RANK_Y;

@@ -1,8 +1,8 @@
 package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
-import Heuristics.Path;
 import Heuristics.Detector.StateDetector;
+import Heuristics.Path;
 import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 
@@ -191,10 +191,9 @@ public class PieceMap extends AbstractDeduction{
         Path certainPromotionsPath = Path.of(certainPromotions.values().stream()
                 .filter(value -> !(value == null))
                 .flatMap(Collection::stream).toList());
-        this.promotedPieceMap.entrySet().forEach(entry -> {
-            Coordinate key = entry.getKey();
+        this.promotedPieceMap.forEach((key, value) -> {
             Path coordinatesToRemove = new Path();
-            entry.getValue().forEach(origin -> {
+            value.forEach(origin -> {
                 String pieceName;
                 Map<String, Path> stringOrigin;
                 if (certainPromotionsPath.contains(origin)) {
@@ -215,11 +214,11 @@ public class PieceMap extends AbstractDeduction{
                 String pieceCode = key.getY() == 0
                         ? pieceName.substring(0, 1).toUpperCase()
                         : pieceName.substring(0, 1).toLowerCase();
-                if (this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, origin, key).isEmpty()){
+                if (this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, origin, key).isEmpty()) {
                     coordinatesToRemove.add(origin);
                 }
             });
-            coordinatesToRemove.forEach(coordinate -> entry.getValue().remove(coordinate));
+            coordinatesToRemove.forEach(value::remove);
         });
     }
 
@@ -250,7 +249,6 @@ public class PieceMap extends AbstractDeduction{
                                       Map<String, Path> certainPromotions, Path foundPieces) {
         Arrays.stream(new int[]{Q_ROOK_X, Q_BISHOP_X, QUEEN_X}).forEach(x -> {
             String pieceName = STANDARD_STARTS.get(x);
-            int y = white ? FIRST_RANK_Y : FINAL_RANK_Y;
             boolean bishopAddition = pieceName.charAt(0) == 'b';
             Path promotions = Path.of(board.getBoardFacts().getCoordinates(white, pieceName)
                     .stream()
@@ -366,7 +364,7 @@ public class PieceMap extends AbstractDeduction{
      */
     private void kingMovementUpdate(BoardInterface board){
         String rook = "rook";
-        ROOK_COORDS.stream().forEach(r -> {
+        ROOK_COORDS.forEach(r -> {
             if (!board.getBoardFacts().getCoordinates(r.getY() == FIRST_RANK_Y, rook)
                     .contains(r)) {
                 this.detector.getPieceData().setRookMovement(r.getY() == FIRST_RANK_Y, r.getX() == Q_ROOK_X,
@@ -435,19 +433,18 @@ public class PieceMap extends AbstractDeduction{
      * @param paths the Coordinate/(Coordinate/Path)Map Map of piece locations, origins, and paths from that origin
      */
     private void pathFromOtherDirection(BoardInterface board, Map<Coordinate, Map<Coordinate, Path>> paths) {
-        paths.entrySet().forEach(entry -> {
-            Coordinate key = entry.getKey();
+        paths.forEach((key, value) -> {
             Path coordinatesToRemove = new Path();
             String pieceName = STANDARD_STARTS.get(key.getX());
             String pieceCode = key.getY() == FIRST_RANK_Y
                     ? pieceName.substring(0, 1).toUpperCase()
                     : pieceName.substring(0, 1).toLowerCase();
-            entry.getValue().keySet().forEach(origin -> {
-                if (this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, origin, key).isEmpty()){
+            value.keySet().forEach(origin -> {
+                if (this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, origin, key).isEmpty()) {
                     coordinatesToRemove.add(origin);
                 }
             });
-            coordinatesToRemove.forEach(coordinate -> entry.getValue().remove(coordinate));
+            coordinatesToRemove.forEach(value::remove);
         });
     }
 
@@ -513,10 +510,8 @@ public class PieceMap extends AbstractDeduction{
         if (white){
             pieceCode = pieceCode.toUpperCase();
         }
-        //
         List<Coordinate> candidatePieces = board.getBoardFacts().getCoordinates(white, pieceName);
         Map<Coordinate, Path> candidatePaths = new TreeMap<>();
-        Path pieces = new Path();
         if (cage) {
             if (!(this.caged.containsKey(start) &&
                     this.caged.get(start))) {
@@ -537,7 +532,6 @@ public class PieceMap extends AbstractDeduction{
                 Path foundPath = this.pathFinderUtil.findPiecePath(board, pieceName, pieceCode, start, target);
                 if (!foundPath.isEmpty()) {
                     candidatePaths.put(target, foundPath);
-                    pieces.add(target);
                 }
             }
             this.pieceMap.put(start, candidatePaths);

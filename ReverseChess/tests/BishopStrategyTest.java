@@ -1,4 +1,7 @@
-import StandardChess.*;
+import StandardChess.BoardBuilder;
+import StandardChess.ChessBoard;
+import StandardChess.Coordinate;
+import StandardChess.Piece;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

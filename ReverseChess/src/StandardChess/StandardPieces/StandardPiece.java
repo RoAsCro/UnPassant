@@ -1,8 +1,8 @@
 package StandardChess.StandardPieces;
 
 import StandardChess.ChessBoard;
-import StandardChess.Piece;
 import StandardChess.Coordinate;
+import StandardChess.Piece;
 
 public class StandardPiece implements Piece {
 

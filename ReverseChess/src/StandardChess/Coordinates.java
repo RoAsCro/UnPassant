@@ -1,8 +1,5 @@
 package StandardChess;
 
-import java.util.List;
-import java.util.Objects;
-
 public class Coordinates {
 
     public static final int LOWER_ASCII_A = 97;

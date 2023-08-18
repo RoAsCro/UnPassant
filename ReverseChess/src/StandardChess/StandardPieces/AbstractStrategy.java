@@ -1,6 +1,9 @@
 package StandardChess.StandardPieces;
 
-import StandardChess.*;
+import StandardChess.ChessBoard;
+import StandardChess.Coordinate;
+import StandardChess.Coordinates;
+import StandardChess.Piece;
 
 import java.util.Arrays;
 import java.util.function.BiPredicate;

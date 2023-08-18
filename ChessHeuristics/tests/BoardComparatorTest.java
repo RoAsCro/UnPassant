@@ -3,7 +3,6 @@ import SolveAlgorithm.BoardComparator;
 import StandardChess.BoardBuilder;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.Hashtable;
 
 public class BoardComparatorTest {

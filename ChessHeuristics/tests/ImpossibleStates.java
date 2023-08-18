@@ -1,12 +1,11 @@
 import Heuristics.BoardInterface;
 import Heuristics.Deductions.*;
 import Heuristics.Detector.Data.StandardCaptureData;
+import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.Data.StandardPieceData;
 import Heuristics.Detector.Data.StandardPromotionData;
 import Heuristics.Detector.StandardDetectorInterface;
-import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.StandardStateDetector;
-import Heuristics.Deductions.UnCastle;
 import SolveAlgorithm.Solver;
 import StandardChess.BoardBuilder;
 import org.junit.jupiter.api.Assertions;

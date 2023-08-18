@@ -1,6 +1,9 @@
 package StandardChess;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 public class StandardBoard implements ChessBoard{
 

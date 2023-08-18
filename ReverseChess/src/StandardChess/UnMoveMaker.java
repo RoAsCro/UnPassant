@@ -1,7 +1,5 @@
 package StandardChess;
 
-import StandardChess.*;
-
 public class UnMoveMaker {
     private boolean captureFlag = false;
     private boolean enPassantFlag = false;

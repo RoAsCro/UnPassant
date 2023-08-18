@@ -1,13 +1,9 @@
 package SolveAlgorithm;
-import Games.Game;
+
 import Heuristics.Detector.DetectorInterface;
 import Heuristics.Detector.StateDetectorFactory;
 import StandardChess.BoardBuilder;
-import StandardChess.Coordinate;
-import StandardChess.Coordinates;
 
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 public class HumanInterface {

@@ -1,8 +1,6 @@
-import SolveAlgorithm.Solver;
-import SolveAlgorithm.SolverV2;
 import Heuristics.Detector.SolverImpossibleStateDetector;
 import Heuristics.Detector.StateDetectorFactory;
-import SolveAlgorithm.SolverV2;
+import SolveAlgorithm.Solver;
 import SolveAlgorithm.StateConditions;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
@@ -13,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 public class SolverTest {
 

@@ -1,6 +1,5 @@
 package Heuristics.Detector.Data;
 
-import Heuristics.Detector.Data.PawnData;
 import Heuristics.Path;
 import StandardChess.Coordinate;
 

@@ -1,5 +1,8 @@
 import Heuristics.BoardInterface;
-import Heuristics.Deductions.*;
+import Heuristics.Deductions.CaptureLocations;
+import Heuristics.Deductions.CombinedPawnMap;
+import Heuristics.Deductions.PieceMap;
+import Heuristics.Deductions.PromotionMap;
 import Heuristics.Detector.Data.StandardCaptureData;
 import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.Data.StandardPieceData;
@@ -172,13 +175,6 @@ public class PromotionMapTest {
 
 
         this.standardStateDetector.testState(boardInterface);
-//        promotionMap.getPawnOrigins()
-//        Assertions.assertEquals(1, promotionMap.getPawnOrigins("white").get(new Coordinate(0, 7)).size());
-        
-        
-        
-
-
         for (int x = 0 ; x < 8 ; x++) {
             Assertions.assertFalse(standardStateDetector.getPawnData().getPawnPaths(true).values().stream().map(l -> l.stream().map(p -> p.getLast()).toList()).flatMap(p -> p.stream()).toList().contains(new Coordinate(x, 7)), "" + x);
         }

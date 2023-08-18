@@ -1,12 +1,8 @@
 package SolveAlgorithm;
 
 import Heuristics.BoardInterface;
-import StandardChess.ChessBoard;
-import StandardChess.Coordinate;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public class StateLog {
