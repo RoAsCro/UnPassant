@@ -330,15 +330,9 @@ public class CaptureLocations extends AbstractDeduction {
             }
         }
         else {
-            //TODO update documentation to mention this
             predicates.clear();
             return new LinkedList<>();
         }
-//        Map<Coordinate, Path> pawnOrigins = this.detector.getPawnData().getPawnPaths(white).entrySet().stream()
-//                .collect(Collectors.toMap(Map.Entry::getKey, entry ->
-//                        Path.of(entry.getValue().stream().map(Path::getFirst).toList())));
-//        pawnOrigins.forEach((k, v) -> v.forEach(c -> pathFinderUtil.findAllPawnPath(board, k, c, ))
-//        );
         return predicates;
     }
 

@@ -485,8 +485,12 @@ public class ImpossibleStates {
     } @Test
     void r2() {
 
-        System.out.println(test("rnbqkb1r/pppp1ppp/5n2/4P3/4P3/8/PPP2PPP/RNBQKBNR w KQkq -"));
-        System.out.println(new Solver().solve(BoardBuilder.buildBoard("rnbqkb1r/pppp1ppp/5n2/4P3/4P3/8/PPP2PPP/RNBQKBNR b KQkq"), 1));
+        System.out.println("Test = " + test("rnR1k2r/pp1p1ppp/4p3/1N1nP3/q4P2/5Q2/P2B2PP/4KB1R w Kkq -"));
+        Solver solver = new Solver();
+        solver.setAdditionalDepth(0);
+        solver.setNumberOfSolutions(1);
+        System.out.println(solver.solve(BoardBuilder.buildBoard("rnR1k2r/pp1p1ppp/4p3/1N1nP3/q4P2/5Q2/P2B2PP/4KB1R b Kkq - "), 1));
+
 //        System.out.println(test("r3kqR1/1p1pppp1/5B1P/6PN/4P2p/3Q1P2/2PK2pP/8 b q - 0 1"));
 //        System.out.println(this.detector.getPawnsCapturedByPawns(true));
 //        System.out.println(this.detector.getPawnsCapturedByPawns(false));
@@ -498,10 +502,10 @@ public class ImpossibleStates {
 //        ));
 //        System.out.println(this.detector.getSinglePawnPaths(true));
 //        System.out.println(this.detector.getSinglePawnPaths(false));
-        System.out.println(this.detector.getPromotionData().getPromotedPieceMap());
-        System.out.println(this.detector.getPromotionData().getPromotedPieceMap());
-
-        System.out.println(this.detector.getPieceData().getPiecePaths());
+//        System.out.println(this.detector.getPromotionData().getPromotedPieceMap());
+//        System.out.println(this.detector.getPromotionData().getPromotedPieceMap());
+//
+//        System.out.println(this.detector.getPieceData().getPiecePaths());
 
 
 

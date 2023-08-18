@@ -199,8 +199,14 @@ public class Solver {
         boolean rook = type.equals("rook");
         if (king || rook) {
             String colour = white ? "white" : "black";
-            if ((rook && board.canCastle(origin.getX() == Coordinates.WHITE_KING_ROOK.getX() ? "king" : "queen", colour))
-                    || (king && board.canCastle("queen", colour) || board.canCastle("king", colour))) {
+            if ((rook && (origin.equals(Coordinates.WHITE_KING_ROOK) || origin.equals(Coordinates.WHITE_QUEEN_ROOK) ||
+                    origin.equals(Coordinates.BLACK_KING_ROOK) || origin.equals(Coordinates.BLACK_QUEEN_ROOK))
+            && board.canCastle(origin.getX() == Coordinates.WHITE_KING_ROOK.getX() ? "king" : "queen", colour))
+                    || (king && (board.canCastle("queen", colour) || board.canCastle("king", colour)))) {
+//                System.out.println((rook && (origin.equals(Coordinates.WHITE_KING_ROOK) || origin.equals(Coordinates.WHITE_QUEEN_ROOK))
+//                        && board.canCastle(origin.equals(Coordinates.WHITE_KING_ROOK) ? "king" : "queen", colour)));
+//                System.out.println((king && (board.canCastle("queen", colour) || board.canCastle("king", colour))));
+//                System.out.println(origin);
                 return states;
             }
         }
@@ -266,6 +272,7 @@ public class Solver {
                 for (String piece : pieces) {
                     ChessBoard currentBoard = BoardBuilder.buildBoard(board);
                     Coordinate target = Coordinates.add(origin, new Coordinate(direction.getX() * i, direction.getY() * i));
+
                     if (makeJustMove(currentBoard, origin, target, piece, promotion, enPassant)){
                         CheckUtil.switchTurns(currentBoard);
                         String move = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece, castle, enPassant);
@@ -274,6 +281,7 @@ public class Solver {
                         && this.fenPredicate.test(move +
                                 (currentState.split(":").length > 1 ? (":" + currentState.split(":")[2])
                                         : ":0"))) {
+
                             CheckUtil.switchTurns(currentBoard);
                             if (previousEnPassant) {
                                 currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
@@ -320,6 +328,8 @@ public class Solver {
     }
 
     public boolean testState(ChessBoard board) {
+//        System.out.println("State" + board.getReader().toFEN());
+
         DetectorInterface detector;
         detector = StateDetectorFactory.getDetectorInterface(board);
         numberOfTests++;

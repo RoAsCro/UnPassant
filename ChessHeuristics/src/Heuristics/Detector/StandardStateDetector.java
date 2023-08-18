@@ -17,7 +17,6 @@ public class StandardStateDetector implements StateDetector {
 
     private static final int MAX_PAWNS = 8;
     private static final int MAX_PIECES = 16;
-    private final UnCastle unCastle = new UnCastle();
     private BoardInterface board;
     private final PawnData pawnData;
     private final CaptureData captureData;
@@ -68,6 +67,7 @@ public class StandardStateDetector implements StateDetector {
         if (board.inCheck(board.getTurn().equals("white") ? "black" : "white")) {
             this.state = false;
             this.errorMessage = "Player put themselves in check.";
+            System.out.println("GG");
             return false;
         }
         if (board.getBoardFacts().pieceNumbers(false) > MAX_PIECES

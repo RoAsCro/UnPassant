@@ -144,12 +144,6 @@ public class PieceMap extends AbstractDeduction{
                         .getPromotionNumbers()
                         .get(entry.getKey()).get(promotedPieces);
                 int potentiallyPromoted = promotedPieces.size();
-//                for (Coordinate coordinate : promotedPieces) {
-//                    // TODO what does this do?
-////                    this.promotedPieceMap
-////                            .values().stream().flatMap(Path::stream).anyMatch(c -> c.equals(coordinate));
-//                    potentiallyPromoted++;
-//                }
                 return potentiallyPromoted >= promotedPieces.size() - promotions;
             }
             return false;})

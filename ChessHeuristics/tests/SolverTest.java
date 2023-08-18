@@ -1110,6 +1110,244 @@ public class SolverTest {
     }
 
     @Test
+    public void MeisterwerkederRetroAnalyse() {
+        //Karl Fabel's in Die Schwalbe in 1985
+
+        List<String> list = List.of(
+                "6K1/7B/4Pk2/8/6Q1/4Q3/8/B7"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+            System.out.println(st);
+            ChessBoard board = BoardBuilder.buildBoard(st);
+            board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
+            if (!StateDetectorFactory.getDetector(board).testState()) {
+                System.out.println("c");
+                continue;
+            }
+            Solver solver = new Solver();
+            solver.setNumberOfSolutions(2);
+            solver.setAdditionalDepth(1);
+
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 6);
+            System.out.println(solutions);
+            Assertions.assertEquals(1, solutions.size());
+            Assertions.assertTrue( solutions.get(0).contains("6K1/4pp1B/4k3/4P3/3P2Q1/4Q3/8/B7"));
+
+        }
+    }
+
+    @Test
+    public void DieScwalze1() {
+        //pp 36
+
+        List<String> list = List.of(
+                "B1Q5/4p1p1/7p/1P3r1q/1P6/P5K1/P2P4/7k w - - 0 1"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+            System.out.println(st);
+            ChessBoard board = BoardBuilder.buildBoard(st);
+            board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
+            if (!StateDetectorFactory.getDetector(board).testState()) {
+                System.out.println("c");
+                continue;
+            }
+            Solver solver = new Solver();
+            solver.setNumberOfSolutions(2);
+            solver.setAdditionalDepth(1);
+
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 5);
+            Assertions.assertNotEquals(0, solutions.size());
+            Assertions.assertTrue(solutions.get(0).contains("Kf3xPg3"));
+            System.out.println(solutions);
+
+            solver = new Solver(s ->
+                    !(s.split(":")[2].equals("0") && s.contains("Kf3xPg3")));
+            solver.setNumberOfSolutions(2);
+            solver.setAdditionalDepth(1);
+
+            solutions = solver.solve(BoardBuilder.buildBoard(st), 5);
+            System.out.println(solutions);
+            Assertions.assertEquals(0, solutions.size());
+        }
+        // Check it's finding no solutions but the one given
+    }
+
+    @Test
+    public void skakbladet1() {
+        //https://skak.dk/images/skakbladet/1924/1924-08.pdf
+        //Type A
+        // pp88
+        // N. Hoeg
+        // http://www.anselan.com/length/length.html number 1
+
+        List<String> list = List.of(
+                "8/8/8/8/P7/kP6/prP5/K7 w - - 0 1",
+                "8/8/8/8/P7/kP6/prP5/K7 b - - 0 1"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+            System.out.println(st);
+            ChessBoard board = BoardBuilder.buildBoard(st);
+            board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
+            if (!StateDetectorFactory.getDetector(board).testState()) {
+                System.out.println("c");
+                continue;
+            }
+            Solver solver = new Solver();
+            solver.setNumberOfSolutions(2);
+            solver.setAdditionalDepth(2);
+
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 1);
+            if (count == 2) {
+                Assertions.assertNotEquals(0, solutions.size());
+                Assertions.assertTrue(solutions.get(0).contains("Kb4xNa3"));
+            } else {
+                Assertions.assertEquals(0, solutions.size());
+
+            }
+            System.out.println(solutions);
+        }
+        // Type A - after both, only black is found to have an availbale move, and it must be Kb4xNa3
+    }
+
+    @Test
+    public void Schwarzkopf() {
+        //Bernd Schwarzkopf
+        //Retro Mailing List, 24-Apr-2007
+        //Black to move. Last 4 single moves?
+        //(1 + 5)
+        // http://www.anselan.com/length/length.html number 13 - original not found
+        // Type B
+
+        List<String> list = List.of(
+                "b7/8/8/8/8/4p3/2k1Kp2/5r2 w - - 0 1"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+            System.out.println(st);
+            ChessBoard board = BoardBuilder.buildBoard(st);
+            board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
+            if (!StateDetectorFactory.getDetector(board).testState()) {
+                System.out.println("c");
+                continue;
+            }
+            Solver solver = new Solver();
+            solver.setNumberOfSolutions(2);
+            solver.setAdditionalDepth(1);
+
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 4);
+            Assertions.assertEquals(1, solutions.size());
+            Assertions.assertTrue(solutions.get(0).contains("b7/8/8/3p4/8/5K2/2k1Pp2/5r2"));
+
+
+            System.out.println(solutions);
+        }
+        // Type B - Finds the only last 4 moves available, set to 2 solutions, finds 1
+    }
+
+    @Test
+    public void Schwarzkopf2() {
+        //Bernd Schwarzkopf
+        //feenschach n°64, 1983
+        //Last 3 single moves? Duplex.
+        //(12 + 5)
+        // http://www.anselan.com/length/length.html number 30 - original not found
+        // Type B
+
+        List<String> list = List.of(
+                "8/8/8/8/8/3PPPPP/1PPrR1RB/2brBkbK w - - 0 1",
+                "8/8/8/8/8/3PPPPP/1PPrR1RB/2brBkbK b - - 0 1"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+            System.out.println(st);
+            ChessBoard board = BoardBuilder.buildBoard(st);
+            board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
+            if (!StateDetectorFactory.getDetector(board).testState()) {
+                System.out.println("c");
+                continue;
+            }
+            Solver solver = new Solver();
+            solver.setNumberOfSolutions(2);
+            solver.setAdditionalDepth(2);
+
+//            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 3);
+//            System.out.println(solutions);
+
+//            Assertions.assertEquals(1, solutions.size());
+//            Assertions.assertTrue(solutions.get(0).contains("b7/8/8/3p4/8/5K2/2k1Pp2/5r2"));
+
+
+        }
+        // Fails  - Doesn't account for later piece cages
+        // Type D - Finds the only last 4 moves available, set to 2 solutions, finds 1
+    }
+
+    @Test
+    public void Dittmann () {
+        //Wolfgang Dittmann
+        //feenschach n°64, 1983
+        //Last single move? Duplex.
+        //(5 + 3)
+        // http://www.anselan.com/length/length.html number 28 - original not found
+        // Type B
+
+        List<String> list = List.of(
+                "8/8/8/8/8/4P1P1/3Prp1P/5K1k w - - 0 1",
+                "8/8/8/8/8/4P1P1/3Prp1P/5K1k b - - 0 1"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+            System.out.println(st);
+            ChessBoard board = BoardBuilder.buildBoard(st);
+            board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
+            if (!StateDetectorFactory.getDetector(board).testState()) {
+                System.out.println("c");
+                continue;
+            }
+            Solver solver = new Solver();
+            solver.setNumberOfSolutions(2);
+            solver.setAdditionalDepth(2);
+
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 1);
+            System.out.println(solutions);
+            if (count == 1) {
+                Assertions.assertEquals(1, solutions.size());
+                Assertions.assertTrue(solutions.get(0).contains("8/8/8/8/8/4P3/3PrpPP/5K1k"));
+            } else {
+                Assertions.assertEquals(1, solutions.size());
+                Assertions.assertTrue(solutions.get(0).contains("8/8/8/8/8/4PpP1/3Pr2P/5K1k"));
+
+
+            }
+
+
+        }
+        // Fails  - Doesn't account for later piece cages
+        // Type D - Finds the only last 4 moves available, set to 2 solutions, finds 1
+    }
+
+    @Test
     public void ChessMysteries() {
         // pp89
         List<String> list = List.of(
