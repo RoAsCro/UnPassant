@@ -87,12 +87,13 @@ public class Solver {
                 break;
             }
             String state;
-            /* If in an Any state, there's a good chance the algorithm is trying to get out of check */
+            /* If in an 'any' state, there's a good chance the algorithm is trying to get out of check */
             if (any) {
                 state =
                         states.stream().filter(s -> s.charAt(s.length() - 1)
                                         == states.getFirst().charAt(states.getFirst().length() - 1))
-                                .filter(s -> !CheckUtil.eitherInCheck(new BoardInterface(BoardBuilder.buildBoard(s.split(":")[0]))))
+                                .filter(s ->!CheckUtil.eitherInCheck(
+                                        new BoardInterface(BoardBuilder.buildBoard(s.split(":")[0]))))
                                 .findAny()
                                 .orElse(states.getFirst());
                 states.remove(state);
@@ -136,7 +137,7 @@ public class Solver {
                     CheckUtil.switchTurns(currentBoard);
                     if (!legalFirst || testState(currentBoard)) {
                         boolean pass = true;
-                        if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
+                        if (compulsoryContinuation(currentBoard)) {
                             pass = !iterate(currentState.split(":")[0],
                                     1, true, recursionDepth + depth).isEmpty();
                         }
@@ -152,7 +153,7 @@ public class Solver {
                         boolean pass = true;
                         if (this.additionalDepth == 0) {
                             CheckUtil.switchTurns(currentBoard);
-                            if (CheckUtil.eitherInCheck(new BoardInterface(currentBoard))) {
+                            if (compulsoryContinuation(currentBoard)) {
                                 pass = !iterate(currentState.split(":")[0], 1, true, recursionDepth + depth).isEmpty();
                             }
                         }
@@ -167,10 +168,11 @@ public class Solver {
         return finalStates;
     }
 
-    private String toLAN(ChessBoard board, Coordinate origin, Coordinate target, String piece, boolean castle) {
+    private String toLAN(ChessBoard board, Coordinate origin, Coordinate target, String piece,
+                         boolean castle, boolean enPassant) {
         return board.at(target).getType().toUpperCase().charAt(board.at(target).getType().equals("knight") ? 1 : 0)+
                 Coordinates.readableString(target)
-                + (piece.equals("") ? "-" : "x")
+                + (enPassant ? "e.p." : piece.equals("") ? "-" : "x")
                 + (castle ? (Math.abs(origin.getX() - target.getX()) == 2 ? "O-O" : "O-O-O") : "")
                 + piece.toUpperCase()
                 + Coordinates.readableString(origin);
@@ -266,7 +268,7 @@ public class Solver {
                     Coordinate target = Coordinates.add(origin, new Coordinate(direction.getX() * i, direction.getY() * i));
                     if (makeJustMove(currentBoard, origin, target, piece, promotion, enPassant)){
                         CheckUtil.switchTurns(currentBoard);
-                        String move = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece, castle);
+                        String move = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece, castle, enPassant);
                         CheckUtil.switchTurns(currentBoard);
                         if (CheckUtil.check(new BoardInterface(currentBoard))
                         && this.fenPredicate.test(move +
@@ -276,7 +278,7 @@ public class Solver {
                             if (previousEnPassant) {
                                 currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
                             }
-                            String boardAndMove = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece, castle);
+                            String boardAndMove = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece, castle, enPassant);
                             states.add(boardAndMove);
                             if (!legalFirst && any) {
 
@@ -356,6 +358,11 @@ public class Solver {
             white = false;
         }
         return true;
+    }
+
+    private boolean compulsoryContinuation(ChessBoard board) {
+        return CheckUtil.eitherInCheck(new BoardInterface(board))
+                || !board.getReader().toFEN().split(" ")[3].equals("-");
     }
 
     public int getAdditionalDepth() {

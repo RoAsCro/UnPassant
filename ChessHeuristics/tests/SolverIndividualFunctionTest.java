@@ -1,5 +1,5 @@
 import SolveAlgorithm.Solver;
-import SolveAlgorithm.UnMoveCondition;
+import SolveAlgorithm.UnMoveConditions.UnMoveCondition;
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
@@ -172,9 +172,8 @@ public class SolverIndividualFunctionTest {
 
     @Test
     public void continueWhileInCheck() {
-        Solver solver = new Solver(new UnMoveCondition(true, 0, 0 ,
-                '-', "-", "-",
-                'K', '-', "-", false));
+        Solver solver = new Solver(new UnMoveCondition(0, 99, '-', "-", "-", 'K',
+                '-', "-", false));
         solver.setAdditionalDepth(0);
         solver.setNumberOfSolutions(3);
         List<String> solutions = solver.solve(BoardBuilder.buildBoard("k7/7R/8/8/8/7r/K7/RRRRRRR1 b - - 0 1"), 3);
@@ -188,9 +187,8 @@ public class SolverIndividualFunctionTest {
 
     @Test
     public void continueWhileInCheckAdditionalDepth() {
-        Solver solver = new Solver(new UnMoveCondition(true, 0, 0 ,
-                '-', "-", "-",
-                'K', '-', "-", false));
+        Solver solver = new Solver(new UnMoveCondition(0, 99, '-', "-", "-", 'K',
+                '-', "-", false));
         solver.setAdditionalDepth(1);
         solver.setNumberOfSolutions(3);
         List<String> solutions = solver.solve(BoardBuilder.buildBoard("k7/7R/8/8/8/7r/K7/RRRRRRR1 b - - 0 1"), 3);
@@ -202,11 +200,25 @@ public class SolverIndividualFunctionTest {
                 || solutions.get(1).contains("2k5/7R/8/8/8/7r/1K6/RRRRRRR1"));
     }
 
-//    @Test
-//    public void unPassantBadPosition() {
-//        makeMoveTest("rnbqk1nr/pppp2pp/8/4P3/8/6P1/PPPP1P1P/RNBQK1NR w - - 0 1",
-//                new Coordinate(4, 4), new Coordinate(5, 3),
-//                false, "p", false, true);
-//    }
+    @Test
+    public void continueWhileEnPassant() {
+        // Find en passant under regular circumstances
+        UnMoveCondition enPassantFirstPly = new UnMoveCondition(0, 1, '-', "-", "-",
+                '-', '-', "e.p.", false);
+        Solver solver = new Solver(enPassantFirstPly);
+        solver.setAdditionalDepth(0);
+        solver.setNumberOfSolutions(3);
+        List<String> solutions = solver.solve(BoardBuilder.buildBoard("k7/8/4P1K1/8/8/8/8/8 w - - 0 1"), 1);
+        System.out.println(solutions);
+        Assertions.assertEquals(2, solutions.size());
+
+        // Cannot double move away from having the opposing king in check
+        solver = new Solver(enPassantFirstPly);
+        solver.setAdditionalDepth(0);
+        solver.setNumberOfSolutions(3);
+        solutions = solver.solve(BoardBuilder.buildBoard("k7/8/4PK2/8/8/8/8/8 w - - 0 1"), 1);
+        System.out.println(solutions);
+        Assertions.assertEquals(0, solutions.size());
+    }
 
 }

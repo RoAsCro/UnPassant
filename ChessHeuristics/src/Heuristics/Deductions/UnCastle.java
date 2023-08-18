@@ -46,14 +46,12 @@ public class UnCastle extends AbstractDeduction{
         this.whiteData[1] = this.detector.getPieceData().getRookMovement(true, true);
         this.whiteData[2] = this.detector.getPieceData().getRookMovement(true, false);
 
-//        if (this.detector.getState()) {
         if (!this.blackData[0]) {
             checkPromotionMap(true);
         }
         if (!this.whiteData[0]) {
             checkPromotionMap(false);
         }
-//        }
         if (!(this.blackData[0] && this.whiteData[0])) {
             boolean[] bishops = bishops();
             if (bishops[0]) {

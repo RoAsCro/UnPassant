@@ -9,6 +9,10 @@ import java.util.function.Predicate;
 
 import static Heuristics.HeuristicsUtil.PIECE_CODES;
 
+/**
+ * A wrapper for ChessBoards to use with the Heuristics package, containing additional information and functions
+ * to assist in making deductions about board states.
+ */
 public class BoardInterface {
 
     private final StandardObserver standardObserver = new StandardObserver();
