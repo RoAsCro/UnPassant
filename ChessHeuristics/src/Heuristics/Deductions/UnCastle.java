@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static Heuristics.HeuristicsUtil.*;
+
 /**
  * UnCastle is a Deduction that determines whether promoted pieces must have displaced kings or rooks in the process
  * of promoting.
@@ -21,61 +23,76 @@ import java.util.stream.Collectors;
  * to promotion squares have all been determined and mapped, otherwise its results will not be accurate.
  */
 public class UnCastle extends AbstractDeduction{
+    /**The array location of the king's movement*/
+    private final static int KING = 0;
+    /**The array location of the king rook's movement*/
+    private final static int KING_ROOK = 2;
+    /**The array location of the queen rook's movement*/
+    private final static int QUEEN_ROOK = 1;
+    /**Stores the currently discovered castling data for black, values are true if the corresponding piece has moved*/
+    private final boolean[] blackData = new boolean[]{false, false, false};
+    /**Stores the currently discovered castling data for white, values are true if the corresponding piece has moved*/
+    private final boolean[] whiteData = new boolean[]{false, false, false};
 
-    private final static List<Integer> criticalXs = List.of(3, 4, 5);
-    boolean[] whiteData = new boolean[]{false, false, false};
-    boolean[] blackData = new boolean[]{false, false, false};
-
+    /**
+     * A constructor setting the error message to blank.
+     */
     public UnCastle() {
         super("");
     }
-//    @Override
-//    public void registerDetector(StateDetector detector) {
-//        super.registerDetector(detector);
-//        System.out.println("G");
-//    }
 
+    /**
+     * Looks over the previously acquired board data and checks whether, as a consequence of all that's been found,
+     * a rook or king will have been forced to move, and update the PieceData accordingly.
+     * @param board the board whose information the deduction will draw from
+     */
     @Override
     public void deduce(BoardInterface board) {
         hasMoved();
     }
 
+    /**
+     * Looks over the previously acquired board data and checks whether, as a consequence of all that's been found,
+     * a rook or king will have been forced to move, and update the PieceData accordingly.
+     * @return a List of boolean arrays for each player representing whether that player's king, queen rook, and
+     * king rook respectively must have moved during the game
+     */
     public List<boolean[]> hasMoved() {
-        this.blackData[0] = this.detector.getPieceData().getKingMovement(false);
-        this.blackData[1] = this.detector.getPieceData().getRookMovement(false, true);
-        this.blackData[2] = this.detector.getPieceData().getRookMovement(false, false);
-        this.whiteData[0] = this.detector.getPieceData().getKingMovement(true);
-        this.whiteData[1] = this.detector.getPieceData().getRookMovement(true, true);
-        this.whiteData[2] = this.detector.getPieceData().getRookMovement(true, false);
+        this.blackData[KING] = this.detector.getPieceData().getKingMovement(false);
+        this.blackData[QUEEN_ROOK] = this.detector.getPieceData().getRookMovement(false, true);
+        this.blackData[KING_ROOK] = this.detector.getPieceData().getRookMovement(false, false);
+        this.whiteData[KING] = this.detector.getPieceData().getKingMovement(true);
+        this.whiteData[QUEEN_ROOK] = this.detector.getPieceData().getRookMovement(true, true);
+        this.whiteData[KING_ROOK] = this.detector.getPieceData().getRookMovement(true, false);
 
-        if (!this.blackData[0]) {
+        if (!this.blackData[KING]) {
             checkPromotionMap(true);
         }
-        if (!this.whiteData[0]) {
+        if (!this.whiteData[KING]) {
             checkPromotionMap(false);
         }
-        if (!(this.blackData[0] && this.whiteData[0])) {
+        if (!(this.blackData[KING] && this.whiteData[KING])) {
             boolean[] bishops = bishops();
             if (bishops[0]) {
-                this.whiteData[0] = true;
+                this.whiteData[KING] = true;
             }
             if (bishops[1]) {
-                this.blackData[0] = true;
+                this.blackData[KING] = true;
             }
         }
 
-        if (this.blackData[1] && this.blackData[2]) {
-            this.blackData[0] = true;
+        if (this.blackData[QUEEN_ROOK] && this.blackData[KING_ROOK]) {
+            this.blackData[KING] = true;
         }
-        if (this.whiteData[1] && this.whiteData[2]) {
-            this.whiteData[0] = true;
+        if (this.whiteData[QUEEN_ROOK] && this.whiteData[KING_ROOK]) {
+            this.whiteData[KING] = true;
         }
-        this.detector.getPieceData().setKingMovement(false, this.blackData[0]);
-        this.detector.getPieceData().setRookMovement(false, true, this.blackData[1]);
-        this.detector.getPieceData().setRookMovement(false, false, this.blackData[2]);
-        this.detector.getPieceData().setKingMovement(true, this.whiteData[0]);
-        this.detector.getPieceData().setRookMovement(true, true, this.whiteData[1]);
-        this.detector.getPieceData().setRookMovement(true, false, this.whiteData[2]);
+        this.detector.getPieceData().setKingMovement(false, this.blackData[KING]);
+        this.detector.getPieceData().setRookMovement(false, true, this.blackData[QUEEN_ROOK]);
+        this.detector.getPieceData().setRookMovement(false, false, this.blackData[KING_ROOK]);
+        this.detector.getPieceData().setKingMovement(true, this.whiteData[KING]);
+        this.detector.getPieceData().setRookMovement(true, true, this.whiteData[QUEEN_ROOK]);
+        this.detector.getPieceData().setRookMovement(true, false, this.whiteData[KING_ROOK]);
 
         return List.of(this.whiteData, this.blackData);
     }
@@ -86,6 +103,7 @@ public class UnCastle extends AbstractDeduction{
      * This uses the pattern of a bishop being on d1/8 or f1/8, with opposing pawns caging it in.
      * @return whether a promoted bishop on its promotion square put an opposing king in check.
      */
+
     private boolean[] bishops() {
         List<Coordinate> onPSquare = this.detector.getPromotionData().getPromotedPieceMap().entrySet()
                 .stream()
@@ -97,7 +115,7 @@ public class UnCastle extends AbstractDeduction{
                 .filter(entry -> entry.getKey().startsWith("bi"))
                 .flatMap(e -> e.getValue().keySet().stream().filter(Objects::nonNull).flatMap(Collection::stream))
                 .filter(onPSquare::contains)
-                .filter(c -> c.getX() == 3 || c.getX() == 5)
+                .filter(c -> c.getX() == HeuristicsUtil.QUEEN_X || c.getX() == HeuristicsUtil.K_BISHOP_X)
                 .collect(Collectors.toSet()));
         boolean[] returnBooleans = new boolean[]{false, false};
         bishops.forEach(c -> {
@@ -114,32 +132,37 @@ public class UnCastle extends AbstractDeduction{
         return returnBooleans;
     }
 
+    /**
+     * Checks the PawnData's pawnPaths to see if any have at any point stood on the king or one of the rooks'
+     * starting squares of the opposing player, or either of the two squares at diagonals from  the king's starting
+     * square, meaning, as this will put the king in check, and as the pawn must either be on the board or
+     * promoted to be in the pawnPaths, the king moved.
+     * @param white the colour of the pawns being checked, true if white, false if black
+     */
     private void checkPromotionMap(boolean white) {
-        int y = white ? 6 : 1;
+        int y = white ? HeuristicsUtil.BLACK_PAWN_Y : HeuristicsUtil.WHITE_PAWN_Y;
         int offSet = white ? 1 : -1;
         Map<Coordinate, List<Path>> pawnPaths = this.detector.getPawnData().getPawnPaths(white);
-        List<Coordinate> criticalCoords = List.of(new Coordinate(HeuristicsUtil.QUEEN_X, y), new Coordinate(5, y), new Coordinate(4, y + offSet));
-        List<Coordinate> rookCoords = List.of(new Coordinate(0, y + offSet), new Coordinate(7, y + offSet));
+        List<Coordinate> criticalCoords = List.of(new Coordinate(HeuristicsUtil.QUEEN_X, y),
+                new Coordinate(HeuristicsUtil.K_BISHOP_X, y),
+                new Coordinate(HeuristicsUtil.KING_X, y + offSet));
+        List<Coordinate> rookCoords = List.of(new Coordinate(Q_ROOK_X, y + offSet),
+                new Coordinate(K_ROOK_X, y + offSet));
         boolean[] data = !white ? this.whiteData : this.blackData;
         pawnPaths.entrySet().stream()
-                .filter(entry -> entry.getKey().getY() == 7  || entry.getKey().getY() == 0)
-//                .filter(entry -> entry.getValue().size() == 1)
-                .forEach(entry -> {
-                    entry.getValue().forEach(innerEntry -> {
-                        if (innerEntry.stream().anyMatch(criticalCoords::contains)) {
-                            data[0] = true;
+                .filter(entry -> entry.getKey().getY() == FINAL_RANK_Y  || entry.getKey().getY() == FIRST_RANK_Y)
+                .forEach(entry -> entry.getValue().forEach(innerEntry -> {
+                    if (innerEntry.stream().anyMatch(criticalCoords::contains)) {
+                        data[KING] = true;
+                    }
+                    innerEntry.forEach(c -> {
+                        if (rookCoords.get(0).equals(c)) {
+                            data[QUEEN_ROOK] = true;
+                        } else if (rookCoords.get(1).equals(c)) {
+                            data[KING_ROOK] = true;
                         }
-                        innerEntry.forEach(c -> {
-                            if (rookCoords.get(0).equals(c)) {
-                                data[1] = true;
-                            } else if (rookCoords.get(1).equals(c)) {
-                                data[2] = true;
-                            }
-                        });
                     });
-
-                });
-
+                }));
     }
 
 }
