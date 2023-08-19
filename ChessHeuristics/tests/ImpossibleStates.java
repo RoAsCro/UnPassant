@@ -484,7 +484,7 @@ public class ImpossibleStates {
     } @Test
     void r2() {
 
-        System.out.println("Test = " + test("rnR1k2r/pp1p1ppp/4p3/1N1nP3/q4P2/5Q2/P2B2PP/4KB1R w Kkq -"));
+        System.out.println("Test = " + test("rnbqkb2/pppppp2/8/2B5/8/BP3N2/P1PPPP2/RN1QKB2 w Qq - 0 1"));
         Solver solver = new Solver();
         solver.setAdditionalDepth(0);
         solver.setNumberOfSolutions(1);
@@ -501,7 +501,7 @@ public class ImpossibleStates {
 //        ));
 //        System.out.println(this.detector.getSinglePawnPaths(true));
 //        System.out.println(this.detector.getSinglePawnPaths(false));
-//        System.out.println(this.detector.getPromotionData().getPromotedPieceMap());
+        System.out.println(this.detector.getPromotionData().getPromotedPieceMap());
 //        System.out.println(this.detector.getPromotionData().getPromotedPieceMap());
 //
 //        System.out.println(this.detector.getPieceData().getPiecePaths());

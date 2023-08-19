@@ -7,16 +7,20 @@ import java.util.List;
 
 import static Heuristics.HeuristicsUtil.MAX_PIECES;
 
+/**
+ * An implementation of CaptureData.
+ */
 public class StandardCaptureData implements CaptureData {
     /**The location of black in the stored arrays and Lists*/
     private static final int BLACK = 1;
     /**The location of white in the stored arrays and Lists*/
     private static final int WHITE = 0;
+    /**Stores for each colour the maximum number of pieces that pawns of the given colour can captures*/
+    private final int[] pawnsCapturedByPawns = new int[]{0, 0};
+
     /**A List of Paths of Coordinates of pieces that cannot, as they are listed in the Path, have been captured
      * by any pawns of the opposing colour currently on the board*/
     private final List<Path> nonPawnCaptures = List.of(new Path(), new Path());
-    /**Stores for each colour the maximum number of pieces that pawns of the given colour can captures*/
-    private final int[] pawnsCapturedByPawns = new int[]{0, 0};
 
     /**
      * Retrieves a Path of Coordinates of pieces that cannot, as they are listed in the Path, have been captured
