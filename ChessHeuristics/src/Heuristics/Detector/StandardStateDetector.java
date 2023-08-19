@@ -6,13 +6,13 @@ import Heuristics.Detector.Data.CaptureData;
 import Heuristics.Detector.Data.PawnData;
 import Heuristics.Detector.Data.PieceData;
 import Heuristics.Detector.Data.PromotionData;
-import Heuristics.Path;
-import StandardChess.Coordinate;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Function;
+
+import static Heuristics.HeuristicsUtil.MAX_PAWNS;
+import static Heuristics.HeuristicsUtil.MAX_PIECES;
 
 /**
  * An implementation of the StateDetector intended to work with Deductions to produce information about the legality
@@ -21,10 +21,6 @@ import java.util.function.Function;
  * boards will not produce accurate results.
  */
 public class StandardStateDetector implements StateDetector {
-    /**The maximum number of pawns per side in a chess game*/
-    private static final int MAX_PAWNS = 8;
-    /**The maximum number of pieces per side in a chess game*/
-    private static final int MAX_PIECES = 16;
     /**The board being tested*/
     private BoardInterface board;
     /**The PawnData from which Deductions will draw and store information*/
@@ -120,6 +116,9 @@ public class StandardStateDetector implements StateDetector {
      * given at instantiation. For each, the deduce() method is called, and the state of that Deduction and all
      * previous deductions checked. If at any stage any Deduction's state is false, testing ceases, and false
      * returned.
+     * <></>
+     * The board's turn should be the turn of the colour that would theoretically move next in an ordinary
+     * chess game, or the turn of whoever just made an un-move.
      * @param board the BoardInterface representing the board to be checked
      * @return the legality of the board state, true if legal, false otherwise
      */

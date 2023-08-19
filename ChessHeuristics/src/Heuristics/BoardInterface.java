@@ -7,17 +7,26 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * A wrapper for ChessBoards to use with the Heuristics package, containing additional information and functions
- * to assist in making deductions about board states.
+ * An interface for ChessBoards to use with the Heuristics package, providing read-only access to information
+ * and containing additional information and functions to assist in making deductions about board states.
  */
 public class BoardInterface {
-
-    private final StandardObserver standardObserver = new StandardObserver();
-
+    /**The ChessBoard this BoardInterface wraps, initialised at instantiation*/
     private final ChessBoard board;
-    private Coordinate whiteKing;
+    /**An observer providing facts about the board state derived from the information standardly available from a
+     * ChessBoard*/
+    private final Observer observer = new Observer();
+    /**The Coordinate of the black king, found at instantiation*/
     private Coordinate blackKing;
+    /**The Coordinate of the white king, found at instantiation*/
+    private Coordinate whiteKing;
 
+
+    /**
+     * A constructor taking a ChessBoard that this BoardInterface will represent.
+     * Additionally, locates kings and pieces to be stored in the Observer
+     * @param board the ChessBoard this BoardInterface will represent
+     */
     public BoardInterface(ChessBoard board) {
         this.board = board;
         findKings();
@@ -25,6 +34,10 @@ public class BoardInterface {
         correctCastling();
     }
 
+    /**
+     * Corrects bad Castling parameters given by a FEN. If a rook is not at their start location, castling for
+     * that rook  is set to false.
+     */
     private void correctCastling() {
         Map<Coordinate,String> rookCoords = Map.of(Coordinates.WHITE_QUEEN_ROOK, "tt",
                 Coordinates.WHITE_KING_ROOK, "tf",
@@ -33,7 +46,7 @@ public class BoardInterface {
             boolean white = s.charAt(0) == 't';
             boolean queen = s.charAt(1) == 't';
             Piece rook = board.at(c);
-            if (canMove(white, queen)) {
+            if (canCastle(white, queen)) {
                 if (!rook.getType().equals("rook") || !rook.getColour().equals(white ? "white" : "black")) {
                     board.setCastle(queen ? "queen" : "king", white ? "white" : "black", false);
                 }
@@ -41,6 +54,12 @@ public class BoardInterface {
         });
     }
 
+    /**
+     * A function for iterating over the board depending on a given Coordinate Predicate condition to continue
+     * iterating and carrying out a Coordinate Function at each Coordinate.
+     * @param condition the condition for continuing
+     * @param function the function carried out on the board
+     */
     private void iterateOverBoard(Predicate<Coordinate> condition, Consumer<Coordinate> function) {
         BoardReader reader = this.board.getReader();
         reader.to(new Coordinate(0, 0));
@@ -49,15 +68,22 @@ public class BoardInterface {
                 p -> function.accept(reader.getCoord()));
     }
 
+    /**
+     * Finds every piece on the board and stores their locations in the Observer.
+     */
     private void findPieces() {
         iterateOverBoard(c -> true, c -> {
             String type = this.board.at(c).getType();
             String colour = this.board.at(c).getColour();
             if (!type.equals("null")) {
-                standardObserver.put(colour.equals("white"), type, c);
+                observer.put(colour.equals("white"), type, c);
             }
         });
     }
+
+    /**
+     * Find the kings and stores their locations.
+     */
     private void findKings() {
         iterateOverBoard(c -> true, c -> {
             Piece p = this.board.at(c);
@@ -71,24 +97,40 @@ public class BoardInterface {
         });
     }
 
+    /**
+     * Returns a String representing which colour's turn it is.
+     * @return the colour as a String of which colour's turn it is, white if white, black if black
+     */
     public String getTurn() {
         return this.board.getTurn();
     }
 
-
-    public StandardObserver getBoardFacts() {
-        return this.standardObserver;
+    /**
+     * Returns an Observer, an object containing derived facts about the board.
+     * @return this BoardInterface's Observer
+     */
+    public Observer getBoardFacts() {
+        return this.observer;
     }
 
+    /**
+     * Returns the BoardReader that the ChessBoard this BoardInterface represents returns
+     * @return the ChessBoard's BoardReader
+     */
     public BoardReader getReader() {
         return board.getReader();
     }
 
-
+    /**
+     * Returns whether the king of the given colour is in check.
+     * @param player the colour whose king is being checked, white or black
+     * @return whether the king is in check
+     */
     public boolean inCheck(String player) {
         Coordinate king = player.equals("white") ? this.whiteKing : this.blackKing;
         if (king == null) {
             findKings();
+            king = player.equals("white") ? this.whiteKing : this.blackKing;
             if (king == null) {
                 return false;
             }
@@ -96,48 +138,24 @@ public class BoardInterface {
         return this.board.getReader().inCheck(king);
     }
 
-    public boolean canKingMove(boolean white) {
-        return canMove(white, true) || canMove(white, false);
+    /**
+     * Returns whether the king of the given colour can castle on at least one side.
+     * For a retrograde board in UnPassant, a piece being marked as able to castle means it has never moved.
+     * @param white the colour of the king, true if white, false if black
+     * @return whether the king can castle on at least one side
+     */
+    public boolean canKingCastle(boolean white) {
+        return canCastle(white, true) || canCastle(white, false);
     }
 
-    public boolean canMove(boolean white, boolean queenSide) {
+    /**
+     * Returns whether the rook of the given colour and side can castle.
+     * For a retrograde board in UnPassant, a piece being marked as able to castle means it has never moved.
+     * @param white the colour of the rook, true if white, false if black
+     * @param queenSide the side of the rook, true if queenside, false if kingside
+     * @return whether the rook can castle
+     */
+    public boolean canCastle(boolean white, boolean queenSide) {
         return this.board.canCastle(queenSide ? "queen" : "king", white ? "white" : "black");
     }
-//        @Override
-//    public int hashCode() {
-//        String[] o1FEN = getReader().toFEN().split(" ");
-//        String[] o1Board = o1FEN[0].split("/");
-//        String criticalRegion = o1Board[0] + o1Board[1] + o1Board[6] + o1Board[7];
-//
-//        return Objects.hash(criticalRegion, getBoardFacts().getCoordinates(true, "pawn"), getBoardFacts().getCoordinates(false, "pawn"),
-//                getBoardFacts().getCoordinates(false, "rook").size(), getBoardFacts().getCoordinates(false, "bishop").size(),
-//                getBoardFacts().getCoordinates(false, "knight").size(), getBoardFacts().getCoordinates(false, "queen").size(),
-//                getBoardFacts().getCoordinates(true, "rook").size(), getBoardFacts().getCoordinates(true, "bishop").size(),
-//                getBoardFacts().getCoordinates(true, "knight").size(), getBoardFacts().getCoordinates(true, "queen").size());
-//    }
-//
-//    @Override
-//    public boolean equals(Object o) {
-//        if (o instanceof BoardInterface o2) {
-//            boolean equal = this.getBoardFacts().getCoordinates(true, "pawn").equals(o2.getBoardFacts().getCoordinates(true, "pawn"))
-//                    &&
-//                    this.getBoardFacts().getCoordinates(false, "pawn").equals(o2.getBoardFacts().getCoordinates(false, "pawn"))
-//                    &&
-//                    PIECE_CODES.keySet().stream().allMatch(piece ->
-//                            this.getBoardFacts().getCoordinates(false, piece).size() == o2.getBoardFacts().getCoordinates(false, piece).size()
-//                                    &&
-//                                    this.getBoardFacts().getCoordinates(true, piece).size() == o2.getBoardFacts().getCoordinates(true, piece).size());
-//            if (equal) {
-//                String[] o1FEN = this.getReader().toFEN().split(" ");
-//                String[] o2FEN = o2.getReader().toFEN().split(" ");
-//                String[] o1Board = o1FEN[0].split("/");
-//                String[] o2Board = o2FEN[0].split("/");
-//                String o1CriticalRegion = o1Board[0] + o1Board[1] + o1Board[6] + o1Board[7];
-//                String o2CriticalRegion = o2Board[0] + o2Board[1] + o2Board[6] + o2Board[7];
-//                equal = o1CriticalRegion.equals(o2CriticalRegion) && o1FEN[2].equals(o2FEN[2]);
-//            }
-//            return equal;
-//        }
-//        return false;
-//    }
 }

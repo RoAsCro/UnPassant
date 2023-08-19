@@ -326,14 +326,14 @@ public class PieceMap extends AbstractDeduction{
      * @param board the board to check
      */
     private void configureCastling(BoardInterface board) {
-        if (board.canKingMove(true)) {
+        if (board.canKingCastle(true)) {
             this.caged.put(Coordinates.WHITE_KING, true);
         }
-        if (board.canKingMove(false)) {
+        if (board.canKingCastle(false)) {
             this.caged.put(Coordinates.BLACK_KING, true);
         }
         ROOK_COORDS.forEach((r) -> {
-            if (board.canMove(r.getY() == FIRST_RANK_Y, r.getX() == Q_ROOK_X)) {
+            if (board.canCastle(r.getY() == FIRST_RANK_Y, r.getX() == Q_ROOK_X)) {
                 this.caged.put(r, true);
             }
         });
@@ -346,7 +346,7 @@ public class PieceMap extends AbstractDeduction{
     private void configureCastlingPartTwo(BoardInterface board) {
 
         ROOK_COORDS.forEach((r) -> {
-            if (board.canMove(r.getY() == FIRST_RANK_Y, r.getX() == Q_ROOK_X)) {
+            if (board.canCastle(r.getY() == FIRST_RANK_Y, r.getX() == Q_ROOK_X)) {
                 this.pieceMap.get(r).keySet()
                         .stream()
                         .filter(c -> !c.equals(r))
