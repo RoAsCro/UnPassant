@@ -159,7 +159,7 @@ public class UnCastleTest {
         Assertions.assertTrue(this.detector.getPieceData().getKingMovement(false));
         DetectorInterface detectorInterface = StateDetectorFactory.getDetectorInterface(BoardBuilder.buildBoard("r7/pppk2pp/6p1/P3p2P/1NB1K3/p5P1/PP3PP1/R7 w - - 0 1"));
         detectorInterface.testState();
-        Assertions.assertFalse(detectorInterface.canCastle(false));
+        Assertions.assertFalse(detectorInterface.canCastle(false, true) || detectorInterface.canCastle(false, false));
     }
 
 

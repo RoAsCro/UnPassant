@@ -171,6 +171,33 @@ public class SolverIndividualFunctionTest {
     }
 
     @Test
+    public void castleViolation3() {
+        makeMoveTest("rnbqkbnr/ppppppp1/6p1/8/5Q2/8/PPPPPPP1/RNBQKB1R b KQkq - 0 1",
+                new Coordinate(6, 7), new Coordinate(5, 5),
+                false, "", false, false);
+    }
+
+    @Test
+    public void castleViolation3CounterExample() {
+        makeMoveTest("rnbqkbnr/ppppppp1/6p1/8/5Q2/8/PPPPPPP1/RNBQKB1R b KQq - 0 1",
+                new Coordinate(6, 7), new Coordinate(5, 5),
+                true, "", false, false);
+    }
+    @Test
+    public void castleViolation3CounterExample3() {
+        makeMoveTest("rnbqkbnr/ppppppp1/6p1/8/5Q2/8/PPPPPPP1/RNBQKB1R b KQk - 0 1",
+                new Coordinate(6, 7), new Coordinate(5, 5),
+                false, "", false, false);
+    }
+
+    @Test
+    public void castleViolation3CounterExampl2e() {
+        makeMoveTest("rnbqkbnr/ppppppp1/6p1/8/5Q2/8/PPPPPPP1/RNBQKB1R b KQ - 0 1",
+                new Coordinate(6, 7), new Coordinate(5, 5),
+                true, "", false, false);
+    }
+
+    @Test
     public void continueWhileInCheck() {
         Solver solver = new Solver(new UnMoveCondition(0, 99, '-', "-", "-", 'K',
                 '-', "-", false));

@@ -429,14 +429,12 @@ public class SolverV3 {
             String piece = "king";
             for (int j = 0 ; j < 2 ; j++) {
                 if (board.canCastle(piece, white ? "white" : "black")) {
-                    if (!detector.canCastle(white)) {
+                    if (!detector.canCastle(white, piece.equals("queen"))) {
                         ////System.out.println(board.getReader().toFEN());
                         ////System.out.println(white);
 
                         ////System.out.println("CAN:T CASTLE");
                         return false;
-                    } else if (white && piece.equals("queen")) {
-                        ////System.out.println(board.getReader().toFEN());
                     }
                 }
                 piece = "queen";

@@ -361,7 +361,7 @@ public class Solver {
             String piece = "king";
             for (int j = 0 ; j < 2 ; j++) {
                 if (board.canCastle(piece, white ? "white" : "black")) {
-                    if (!detector.canCastle(white)) {
+                    if (!detector.canCastle(white, piece.equals("queen"))) {
                         return false;
                     }
                 }

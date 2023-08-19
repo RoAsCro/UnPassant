@@ -1,4 +1,6 @@
+import Heuristics.Detector.DetectorInterface;
 import Heuristics.Detector.SolverImpossibleStateDetector;
+import Heuristics.Detector.StateDetector;
 import Heuristics.Detector.StateDetectorFactory;
 import SolveAlgorithm.Solver;
 import SolveAlgorithm.StateConditions;
@@ -159,7 +161,7 @@ public class SolverTest {
                 b.setTurn(b.getTurn().equals("white") ? "black" : "white");
                 // set max states to 100?
                 Solver solver = new Solver(string -> true, detectorInterface -> {
-                    return detectorInterface.canCastle(false);
+                    return detectorInterface.canCastle(false, true) || detectorInterface.canCastle(false, false);
                 }
                 );
                 solver.setNumberOfSolutions(1);
@@ -177,7 +179,7 @@ public class SolverTest {
 
                 System.out.println("Testing alternative... r3k3/ppp3pp/N5p1/P2Kp2P/2B5/p5P1/PP3PP1/R7 w - - 0 1");
                 solver = new Solver(string -> !(Integer.parseInt(string.split(":")[2]) == 0) || string.split(":")[1].charAt(0) == 'N',
-                        detectorInterface -> detectorInterface.canCastle(false));
+                        detectorInterface -> detectorInterface.canCastle(false, true) || detectorInterface.canCastle(false, false));
                 solver.setNumberOfSolutions(1);
                 solver.setAdditionalDepth(2);
                 b = BoardBuilder.buildBoard("r3k3/ppp3pp/6p1/P2Kp2P/1NB5/p5P1/PP3PP1/R7 b - - 0 1");
@@ -747,11 +749,13 @@ public class SolverTest {
         List<String> list = List.of(
                 "r2qk2r/p1pp1pp1/1pn3n1/2b1p3/2B1P1P1/N1P3N1/P1PP1P1P/R2QK2R w KQkq - 0 1"
         );
-        SolverImpossibleStateDetector detector = StateDetectorFactory.getDetector(list.get(0));
+        DetectorInterface detector = StateDetectorFactory.getDetectorInterface(list.get(0));
 
         System.out.println(detector.testState());
-        System.out.println(detector.getPromotions().values().stream().flatMap(s -> s.stream()).toList());
-        Assertions.assertFalse(detector.getPromotions().values().stream().flatMap(s -> s.stream()).toList().isEmpty());
+        Assertions.assertNotEquals(0, (int) detector.getPromotions(true).values().stream()
+                .map(e -> e.values().stream().reduce(Integer::sum).orElse(0)).reduce(Integer::sum).orElse(0)
+        + (int) detector.getPromotions(false).values().stream()
+                .map(e -> e.values().stream().reduce(Integer::sum).orElse(0)).reduce(Integer::sum).orElse(0));
         // Simply checking there has been a promotion
     }
 

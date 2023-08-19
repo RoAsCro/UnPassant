@@ -24,13 +24,13 @@ public class StateDetectorFactory {
         return new Deduction[]{pp, cpm, pm, cl, prm, pps, uc};
     }
 
-    public static SolverImpossibleStateDetector getDetector(ChessBoard board) {
+    public static StateDetector getDetector(ChessBoard board) {
         Deduction[] deductions = getDeductions();
         return new SolverImpossibleStateDetector(new StandardPawnData(), new StandardCaptureData(),
                 new StandardPromotionData(), new StandardPieceData(), new BoardInterface(board), deductions);
     }
 
-    public static SolverImpossibleStateDetector getDetector(String fen) {
+    public static StateDetector getDetector(String fen) {
         return getDetector(BoardBuilder.buildBoard(fen));
     }
 
@@ -42,7 +42,7 @@ public class StateDetectorFactory {
         return getDetectorInterface(BoardBuilder.buildBoard(fen));
     }
 
-    public static SolverImpossibleStateDetector getDetector(String fen, Deduction... deductions) {
+    public static StateDetector getDetector(String fen, Deduction... deductions) {
         return new SolverImpossibleStateDetector(new StandardPawnData(), new StandardCaptureData(),
                 new StandardPromotionData(), new StandardPieceData(),
                 new BoardInterface(BoardBuilder.buildBoard(fen)), deductions);

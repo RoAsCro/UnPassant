@@ -7,7 +7,8 @@ import Heuristics.Path;
  */
 public interface CaptureData {
     /**
-     * Retrieves a Path of Coordinates of pieces that cannot, as they are listed in the Path, have been captured
+     * Retrieves a Path of Coordinates of pieces of the given colour that cannot,
+     * as they are listed in the Path, have been captured
      * by any pawns of the opposing colour currently on the board.
      * @param white the colour of the pieces being retrieved, true if white, false if black
      * @return a Path coordinates of pieces of the given colour that cannot have been captured by opposing pawns
