@@ -328,7 +328,9 @@ public class PromotionMap extends AbstractDeduction {
                 new PromotionCombinedPawnMap(promotionPawnMapWhite, promotionPawnMapBlack);
         StateDetector stateDetector = StateDetectorFactory.getDetector(board.getReader().toFEN(), combinedPawnMap);
         combinedPawnMap.registerDetector(stateDetector);
-        stateDetector.testState(board);
+//        promotionPawnMapWhite.deduce(board);
+//        promotionPawnMapBlack.deduce(board);
+        combinedPawnMap.deduce(board);
         if (promotionPawnMapBlack.state && promotionPawnMapWhite.state && combinedPawnMap.state) {
             this.detector.getPawnData().getPawnPaths(true)
                     .putAll(stateDetector.getPawnData().getPawnPaths(true));

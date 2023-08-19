@@ -1,6 +1,4 @@
 import Heuristics.Detector.DetectorInterface;
-import Heuristics.Detector.SolverImpossibleStateDetector;
-import Heuristics.Detector.StateDetector;
 import Heuristics.Detector.StateDetectorFactory;
 import SolveAlgorithm.Solver;
 import SolveAlgorithm.StateConditions;
@@ -47,7 +45,6 @@ public class SolverTest {
         solver.setAdditionalDepth(1);
         solver.setNumberOfSolutions(100);
         Assertions.assertEquals(3, solver.solve(BoardBuilder.buildBoard(board2 + " w"), 1).size());
-//        new SolveAlgorithm.SolverV2().solve(BoardBuilder.buildBoard(board2 + " w"), 1);
         // Only one scenario, after eliminating impossible board states, has valid moves
 
 
@@ -61,13 +58,13 @@ public class SolverTest {
         String board1 = "B7/8/P7/4P3/5B2/4P3/3Q4/5K1k";
         String board2 = "k1K5/4Q3/3P4/2B5/3P4/7P/8/7B";
         System.out.println("Testing 1...");
-//        Assertions.assertNotEquals(0, new Solver().solve(BoardBuilder.buildBoard(board1 + " w"), 1).size());
-//
-//        System.out.println("Testing 2...");
-//        Assertions.assertEquals(0,new Solver().solve(BoardBuilder.buildBoard(board1 + " b"), 1).size());
-//
-//        System.out.println("Testing 3...");
-//        Assertions.assertEquals(0,new Solver().solve(BoardBuilder.buildBoard(board2 + " b"), 1).size());
+        Assertions.assertNotEquals(0, new Solver().solve(BoardBuilder.buildBoard(board1 + " w"), 1).size());
+
+        System.out.println("Testing 2...");
+        Assertions.assertEquals(0,new Solver().solve(BoardBuilder.buildBoard(board1 + " b"), 1).size());
+
+        System.out.println("Testing 3...");
+        Assertions.assertEquals(0,new Solver().solve(BoardBuilder.buildBoard(board2 + " b"), 1).size());
 
         System.out.println("Testing 4...");
         // Set no. of solutions to 1
@@ -615,6 +612,7 @@ public class SolverTest {
             solver.setAdditionalDepth(0);
 //            System.out.println(count);
 //            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), count);
+//            System.out.println(solutions);
 //            Assertions.assertEquals(0, solutions.size());
 //            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
         }
@@ -1142,7 +1140,7 @@ public class SolverTest {
     }
 
     @Test
-    public void DieScwalze1() {
+    public void DieScwalbe1() {
         //pp 36
 
         List<String> list = List.of(
@@ -1179,6 +1177,49 @@ public class SolverTest {
             Assertions.assertEquals(0, solutions.size());
         }
         // Check it's finding no solutions but the one given
+    }
+
+    @Test
+    public void DieScwalbe2() {
+        //pp 122 no.385
+
+        List<String> list = List.of(
+                "r3k3/2p1p3/2P1P3/2KpP3/8/8/8/8 b q - 0 1"
+        );
+
+        int count = 0;
+        for (String st : list) {
+            count++;
+//            System.out.println(count);
+            System.out.println(st);
+            ChessBoard board = BoardBuilder.buildBoard(st);
+            board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
+            DetectorInterface detectorInterface = StateDetectorFactory.getDetectorInterface(board);
+            if (!detectorInterface.testState()) {
+                System.out.println(detectorInterface.getErrorMessage());
+                continue;
+            }
+
+            Solver solver = new Solver();
+            solver.setNumberOfSolutions(2);
+            solver.setAdditionalDepth(1);
+
+            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
+            Assertions.assertNotEquals(0, solutions.size());
+            Assertions.assertTrue(solutions.get(0).contains("Pd7-d5"));
+            System.out.println(solutions);
+
+            solver = new Solver(s ->
+                    !(s.split(":")[2].equals("0") && s.contains("Pd7-d5")));
+            solver.setNumberOfSolutions(2);
+            solver.setAdditionalDepth(1);
+
+            solutions = solver.solve(BoardBuilder.buildBoard(st), 2);
+            System.out.println(solutions);
+            Assertions.assertEquals(0, solutions.size());
+        }
+        // Check it's finding no solutions but the one given
+        // The question here is one of whether en passant must have taken place if castling is possible
     }
 
     @Test
@@ -1450,6 +1491,7 @@ public class SolverTest {
             solver.setAdditionalDepth(1);
 //            System.out.println(count);
 //            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 30);
+//            System.out.println(solutions);
 //            Assertions.assertEquals(0, solutions.size());
 //            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
         }
@@ -1488,20 +1530,7 @@ public class SolverTest {
 
     // PP 66 is a question of timing, not last n moves
     //54, maybe
-    @Test
-    public void testUnCastling() {
-        Solver solver = new Solver(p ->
-            !(p.split(":")[1].contains("x")) && !(p.split(":")[1].startsWith("R")));
-        solver.setAdditionalDepth(0);
-        Assertions.assertTrue(solver.solve(BoardBuilder.buildBoard("5rk1/8/6K1/8/8/8/7P/8 b - - 0 1"), 1)
-                .stream().anyMatch(s -> s.contains("4k2r/8/6K1/8/8/8/7P/8")));
 
-        solver = new Solver(p ->
-                !(p.split(":")[1].contains("x")) && !(p.split(":")[1].startsWith("R")));
-        solver.setAdditionalDepth(0);
-        Assertions.assertTrue(solver.solve(BoardBuilder.buildBoard("2kr4/8/2K5/8/8/8/7P/8 b - - 0 1"), 1)
-                .stream().anyMatch(s -> s.contains("r3k3/8/2K5/8/8/8/7P/8 w")));
-    }
 
 
 

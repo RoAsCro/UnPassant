@@ -150,7 +150,4 @@ public class BoardReaderTest {
 //        reader.nextWhile(Coordinates.RIGHT, c -> !board.at(c).getType().equals("failing string"));
 //        Assertions.assertEquals(new Coordinate(7, 0), reader.getCoord());
 //    }
-
-
-    // TODO test other functions
 }

@@ -47,4 +47,13 @@ public class ForwardGameTest {
         tester.play("e2e4 c7c5 g1f3 e7e6 d2d4 c5d4 f3d4 g8f6 b1c3 f8b4 e4e5 f6d5 c1d2 b4c3 b2c3 d8c7 f2f4 d5c3 d1f3 c3d5 d4b5 c7c2 a1c1 c2a4 c1c8 e8e7 c8h8 a4a2 b5d6 d5c7 d6c8");
         Assertions.assertEquals("rnN4R/ppnpkppp/4p3/4P3/5P2/5Q2/q2B2PP/4KB1R w KQ -", tester.getBoard().getReader().toFEN());
     }
+
+    @Test
+    public void testSix() {
+        //Taylor, Richard (1888) vs Wei, Louie (1669)
+        //Date:	2016-01-07
+        //Event:	123rd ch-NZL Open 2016, Auckland NZL
+        tester.play("e2e4 g8f6 e4e5 f6d5 d2d4 d7d6 g1f3 b8c6 c2c4 d5b6 c1f4 c8g4 f1e2 d6e5 f4e5 c6e5 f3e5 g4e2 d1e2 d8d4 b1c3 g7g6 a1d1 d4f4 g2g3 f4f5 c3b5 f5c8 c4c5 b6a4 b5c7 c8c7 e2b5 c7c6 e5c6 b7c6 b5c6");
+        Assertions.assertEquals("r3kb1r/p3pp1p/2Q3p1/2P5/n7/6P1/PP3P1P/3RK2R w KQkq -", tester.getBoard().getReader().toFEN());
+    }
 }

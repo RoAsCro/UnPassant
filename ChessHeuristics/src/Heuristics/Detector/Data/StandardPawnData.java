@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static Heuristics.Detector.StandardStateDetector.PATH_DEVIATION;
+import static Heuristics.Deductions.PathfinderUtil.PATH_DEVIATION;
 /**
  * An implementation of PawnData
  */

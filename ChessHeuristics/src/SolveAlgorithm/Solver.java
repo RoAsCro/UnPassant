@@ -10,12 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static Heuristics.HeuristicsUtil.FINAL_RANK_Y;
-import static Heuristics.HeuristicsUtil.FIRST_RANK_Y;
+import static Heuristics.HeuristicsUtil.*;
 
 public class Solver {
-    private int numberOfTests = 0;
-    private long timeSpentOnTests = 0;
     Predicate<String> fenPredicate = p -> true;
     private Predicate<DetectorInterface> detectorPredicate = d -> true;
     private boolean allowNonIntrusiveMovement = true;
@@ -25,9 +22,6 @@ public class Solver {
     private int additionalDepth = 2;
     private int maxDepth;
     private int numberOfSolutions = 10;
-    private StateLog stateLog = new StateLog();
-
-//    private LinkedList<String> finalStates = new LinkedList<>();
 
     private final static List<String> PIECES = List.of("", "p", "r", "b", "n", "q");
 
@@ -62,8 +56,6 @@ public class Solver {
             throw new RuntimeException(e);
         }
         System.out.println("TESTS");
-        System.out.println(numberOfTests);
-        System.out.println(timeSpentOnTests);
         System.out.println(solutions);
 
         return solutions;
@@ -128,9 +120,9 @@ public class Solver {
                         states.push(s.split(":")[0]
                                 + ":"
                                 + s.split(":")[1]
-                                + (stateDescription.length > 1 ? (", "
-                                + stateDescription[1]) : "")
-                        + ":" + (currentDepth + 1)));
+                                + ", "
+                                + stateDescription[1]
+                                + ":" + (currentDepth + 1)));
 
 
             } else {
@@ -155,7 +147,8 @@ public class Solver {
                         if (this.additionalDepth == 0) {
                             CheckUtil.switchTurns(currentBoard);
                             if (compulsoryContinuation(currentBoard)) {
-                                pass = !iterate(currentState.split(":")[0], 1, true, recursionDepth + depth).isEmpty();
+                                pass = !iterate(currentState.split(":")[0],
+                                        1, true,recursionDepth + depth).isEmpty();
                             }
                         }
                         if (pass) {
@@ -200,47 +193,42 @@ public class Solver {
         boolean rook = type.equals("rook");
         if (king || rook) {
             String colour = white ? "white" : "black";
+            // Don't try to move pieces that are locked by UnCastling
             if ((rook && (origin.equals(Coordinates.WHITE_KING_ROOK) || origin.equals(Coordinates.WHITE_QUEEN_ROOK) ||
                     origin.equals(Coordinates.BLACK_KING_ROOK) || origin.equals(Coordinates.BLACK_QUEEN_ROOK))
             && board.canCastle(origin.getX() == Coordinates.WHITE_KING_ROOK.getX() ? "king" : "queen", colour))
                     || (king && (board.canCastle("queen", colour) || board.canCastle("king", colour)))) {
-//                System.out.println((rook && (origin.equals(Coordinates.WHITE_KING_ROOK) || origin.equals(Coordinates.WHITE_QUEEN_ROOK))
-//                        && board.canCastle(origin.equals(Coordinates.WHITE_KING_ROOK) ? "king" : "queen", colour)));
-//                System.out.println((king && (board.canCastle("queen", colour) || board.canCastle("king", colour))));
-//                System.out.println(origin);
                 return states;
             }
         }
+        Coordinate[] additionalMoves = new Coordinate[0];
+        boolean addEnPassant = false;
+        boolean addCastle = false;
+        boolean addPromotion = false;
+        // UnPromotion
         if (((white && y == FINAL_RANK_Y) || (!white && y == FIRST_RANK_Y)) && !king) {
-            Coordinate[] additionalMoves = StandardPieceFactory.getInstance().getPiece(white ? "p" : "P").getMoves(origin);
-            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, true, false, any, false));
-            if (!legalFirst && any && !states.isEmpty()) {
-                return states;
-            }
-
-        } else if (((white && y == 5) || (!white && y == 2)) && type.equals("pawn")) {
+            additionalMoves = StandardPieceFactory.getInstance().getPiece(white ? "p" : "P").getMoves(origin);
+            addPromotion = true;
+        // UnPassant
+        } else if (((white && y == BLACK_ESCAPE_Y) || (!white && y == WHITE_ESCAPE_Y)) && type.equals("pawn")) {
             int offfset = white ? -1 : 1;
-            Coordinate[] additionalMoves = new Coordinate[]{new Coordinate(x + 1, y + offfset), new Coordinate(x - 1, y + offfset)};
-            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, true, any, false));
-            if (!legalFirst && any && !states.isEmpty()) {
-                return states;
-            }
+            additionalMoves = new Coordinate[]{new Coordinate(x + 1, y + offfset),
+                    new Coordinate(x - 1, y + offfset)};
+            addEnPassant = true;
+        // UnCastle
         } else if (king) {
-            Coordinate[] additionalMoves = new Coordinate[]{new Coordinate(x - 2, y), new Coordinate(x + 2, y)};
-            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, false, any, true));
-            if (!legalFirst && any && !states.isEmpty()) {
-                return states;
-            }
-
+            additionalMoves = new Coordinate[]{new Coordinate(x - 2, y), new Coordinate(x + 2, y)};
+            addCastle = true;
+        // UnDoubleMove
         } else if (type.equals("pawn")) {
-            Coordinate[] additionalMoves = new Coordinate[]{new Coordinate(x, y +  (white ? -2 : 2))};
-            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState, false, false, any, false));
-            if (!legalFirst && any && !states.isEmpty()) {
-                return states;
-            }
-
+            additionalMoves = new Coordinate[]{new Coordinate(x, y +  (white ? -2 : 2))};
         }
-        states.addAll(iterateThroughMovesHelper(board, moves, origin, currentState, false, false, any, false));
+        if (additionalMoves.length != 0) {
+            states.addAll(iterateThroughMovesHelper(board, additionalMoves, origin, currentState,
+                    addPromotion, addEnPassant, any, addCastle));
+        }
+        states.addAll(iterateThroughMovesHelper(board, moves, origin, currentState,
+                false, false, any, false));
         return states;
     }
 
@@ -333,7 +321,6 @@ public class Solver {
 
         DetectorInterface detector;
         detector = StateDetectorFactory.getDetectorInterface(board);
-        numberOfTests++;
         boolean pass =  detector.testState() && castleCheck(board, detector) && this.detectorPredicate.test(detector);
         return pass;
     }

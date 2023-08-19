@@ -52,5 +52,12 @@ public class StandardDetectorInterfaceTest {
         Assertions.assertFalse(detectorInterface.getPiecesNotCapturedByPawns(true).isEmpty());
     }
 
+    @Test
+    public void toStringTest() {
+        DetectorInterface detectorInterface = StateDetectorFactory
+                .getDetectorInterface("rnbqkbn1/pppppp2/4rp2/8/8/8/1PPPPPP1/RNBQKBNR w KQq - 0 1");
+        detectorInterface.testState();
+        System.out.println(detectorInterface);
+    }
 
 }

@@ -248,4 +248,19 @@ public class SolverIndividualFunctionTest {
         Assertions.assertEquals(0, solutions.size());
     }
 
+    @Test
+    public void testUnCastling() {
+        Solver solver = new Solver(p ->
+                !(p.split(":")[1].contains("x")) && !(p.split(":")[1].startsWith("R")));
+        solver.setAdditionalDepth(0);
+        Assertions.assertTrue(solver.solve(BoardBuilder.buildBoard("5rk1/8/6K1/8/8/8/7P/8 b - - 0 1"), 1)
+                .stream().anyMatch(s -> s.contains("4k2r/8/6K1/8/8/8/7P/8")));
+
+        solver = new Solver(p ->
+                !(p.split(":")[1].contains("x")) && !(p.split(":")[1].startsWith("R")));
+        solver.setAdditionalDepth(0);
+        Assertions.assertTrue(solver.solve(BoardBuilder.buildBoard("2kr4/8/2K5/8/8/8/7P/8 b - - 0 1"), 1)
+                .stream().anyMatch(s -> s.contains("r3k3/8/2K5/8/8/8/7P/8 w")));
+    }
+
 }

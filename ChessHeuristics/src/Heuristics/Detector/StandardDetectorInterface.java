@@ -11,16 +11,18 @@ import java.util.stream.Collectors;
 
 /**
  * An implementation of DetectorInterface, implementing all its methods plus a human-readable toString method.
+ * <></>
+ * StandardDetectorInterface is meant to work specifically with the implementation of StandardStateDetector
  */
 public class StandardDetectorInterface implements DetectorInterface {
     /**The StateDetector the DetectorInterface represents*/
-    private final StateDetector detector;
+    private final StandardStateDetector detector;
 
     /**
      * A constructor that takes a StateDetector as the StateDetector the DetectorInterface will represent.
      * @param detector the StateDetector to be represented
      */
-    public StandardDetectorInterface(StateDetector detector) {
+    public StandardDetectorInterface(StandardStateDetector detector) {
         this.detector = detector;
     }
 
@@ -46,6 +48,7 @@ public class StandardDetectorInterface implements DetectorInterface {
      * Where s is a String describing the piece's type, as well as whether it's light or dark if it's a bishop,
      * p is a Path containing the Coordinates of all pieces that may be promoted of that type,
      * and i is the number of those pieces that must be promoted.
+     * For promoted pieces of unknown type and location, a potential promotion square is listed instead.
      * @param white the player whose promotions are to be returned, true if white, false if black
      * @return a Map of promotions made by the given player
      */
@@ -63,6 +66,8 @@ public class StandardDetectorInterface implements DetectorInterface {
                     name = name.substring(0, name.length()-1);
                     if (name.startsWith("bishop")) {
                         name = name.substring(0, name.length() - 1) + (name.endsWith("l") ? " (light)" : " (dark)");
+                    } else if (name.startsWith("pawn")) {
+                        name = "Unknown (promotion squares)";
                     }
                     return name;
                 }, e ->
@@ -155,11 +160,12 @@ public class StandardDetectorInterface implements DetectorInterface {
      */
     @Override
     public String toString() {
-        if (!this.detector.getState()) {
-            return this.detector.getErrorMessage();
-        }
 
         StringBuilder stringBuilder = new StringBuilder();
+
+        if (!this.detector.getState()) {
+            stringBuilder.append("Board is not valid: ").append(this.detector.getErrorMessage());
+        }
 
         stringBuilder.append("Pawn origins:\n");
         boolean white = true;
@@ -200,6 +206,14 @@ public class StandardDetectorInterface implements DetectorInterface {
             stringBuilder.append("\n");
             white =false;
         }
+
+        stringBuilder.append("Castling rights :\n")
+                .append("White:\n")
+                .append("Queenside - ").append(canCastle(true, true)).append("; ")
+                .append("Kingside - ").append(canCastle(true, false))
+                .append("\nBlack:\n")
+                .append("Queenside - ").append(canCastle(false, true)).append("; ")
+                .append("Kingside - ").append(canCastle(false, false));
          return stringBuilder.toString();
     }
 }

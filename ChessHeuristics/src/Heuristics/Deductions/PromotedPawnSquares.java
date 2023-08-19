@@ -29,10 +29,10 @@ public class PromotedPawnSquares extends AbstractDeduction{
             (c, b) -> c.getY() == (b ? WHITE_PAWN_Y : BLACK_PAWN_Y);
 
     /**
-     * A constructor setting the error message to "Promoted piece cannot reach a promotion square."
+     * A constructor setting the error message to "Promoted piece cannot reach a promotion square as a pawn."
      */
     public PromotedPawnSquares() {
-        super("Promoted piece cannot reach a promotion square.");
+        super("Promoted piece cannot reach a promotion square as a pawn.");
     }
 
     /**
@@ -69,6 +69,9 @@ public class PromotedPawnSquares extends AbstractDeduction{
             List<Path> pathsInUse = getCaptures(tempPaths, captures);
 
             if (pathsInUse.size() < this.detector.getCaptureData().getPawnsCapturedByPawns(white)) {
+                System.out.println(tempPaths);
+
+                System.out.println(this.detector.getCaptureData().getPawnsCapturedByPawns(white));
                 this.state = false;
                 return;
             }
@@ -93,7 +96,7 @@ public class PromotedPawnSquares extends AbstractDeduction{
                 if (!promotionNumbers.containsKey(pawn)) {
                     promotionNumbers.put(pawn, new HashMap<>());
                 }
-                promotionNumbers.get(pawn).put(path, 0);
+                promotionNumbers.get(pawn).put(Path.of(path.getFirst()), 0);
             });
         }
     }

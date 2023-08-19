@@ -196,42 +196,6 @@ public class PathfinderUtil {
                 p -> PATH_DEVIATION.apply(p) <= maxDeviation);
     }
 
-//    /**
-//     * Checks if the two given Paths are exclusive with the give List of forbidden Paths, then if one is exclusive,
-//     * returns the other, if both are exclusive, returns an empty Path, and if neither are exclusive, returns the
-//     * smallest Path
-//     * @param forbiddenPaths
-//     * @param p1
-//     * @param p2
-//     * @return
-//     */
-//
-//    private Path exclusion(List<Path> forbiddenPaths, Path p1, Path p2) {
-//        boolean p1NotExclusive;
-//        if (p1.isEmpty()) {
-//            p1NotExclusive = true;
-//        } else {
-//            p1NotExclusive = forbiddenPaths.stream().noneMatch(path ->
-//                            Pathfinder.pathsExclusive(p1, path));
-//        }
-//        boolean p2NotExclusive = forbiddenPaths.stream().noneMatch(path ->
-//                        Pathfinder.pathsExclusive(p2, path));
-//        if (!p1NotExclusive && !p2NotExclusive) {
-//            return new Path();
-//        }
-//        if (!p1NotExclusive) {
-//            return p2;
-//        }
-//        if (!p2NotExclusive) {
-//            return p1;
-//        }
-//
-//        if (!p1.isEmpty() && PATH_DEVIATION.apply(p1) < PATH_DEVIATION.apply(p2)) {
-//            return p1;
-//        }
-//        return p2;
-//    }
-
     /**
      * Calls Pathfinder.pathsExclusive, checking if the two given Paths are exclusive by the criteria listed in the
      * documentation for Pathfinder.pathsExclusive. To help decouple Deductions from the Pathfinder.
