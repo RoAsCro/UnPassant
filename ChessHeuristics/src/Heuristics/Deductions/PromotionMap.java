@@ -462,7 +462,9 @@ public class PromotionMap extends AbstractDeduction {
      * position and pawn origins in the last position
      */
     private Map<Path, List<Path>> mapPieceSquareOrigin(BoardInterface board, boolean white) {
-        int maxCaptures = (this.detector.getCaptureData().pawnTakeablePieces(white) - (board.getBoardFacts().pieceNumbers(!white))) - this.detector.getPawnData().minimumPawnCaptures(white);
+        int maxCaptures = (this.detector.getCaptureData().pawnTakeablePieces(white) -
+                (board.getBoardFacts().pieceNumbers(!white))) -
+                this.detector.getPawnData().minimumPawnCaptures(white);
         // reduce goal/Origin sets that contain too many captures
         this.goalOrigins.entrySet().stream()
                 .filter(entry -> entry.getKey().getY() == (white ? FINAL_RANK_Y : FIRST_RANK_Y)) // Correct colour
@@ -489,8 +491,9 @@ public class PromotionMap extends AbstractDeduction {
                         .stream()
                         .filter(Objects::nonNull)
                         .forEach(path -> pieceSquareOrigin.putIfAbsent(path, new LinkedList<>())));
+        Map<Coordinate, Path> promotedPieceMap = this.detector.getPromotionData().getPromotedPieceMap();
         this.goalOrigins.forEach((key, value) -> {
-            Path pieces = this.detector.getPromotionData().getPromotedPieceMap().get(key);
+            Path pieces = promotedPieceMap.get(key);
             pieceSquareOrigin.keySet().stream()
                     .filter(path -> pieces.contains(path.getFirst()))
                     .forEach(piece -> value.keySet()
@@ -768,7 +771,7 @@ public class PromotionMap extends AbstractDeduction {
      * Extends CombinedPawnMap.PawnMap to check combinations of promoted pieces and pawn origins, rather than of all
      * pawns of a given colour.
      */
-    private class TheoreticalPawnMap extends CombinedPawnMap.PawnMap {
+    private static class TheoreticalPawnMap extends CombinedPawnMap.PawnMap {
         /**
          * A constructor matching that of CombinedPawnMap.PawnMap.
          * @param white the colour of the pawns being mapped, true if white, false if black

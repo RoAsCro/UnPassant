@@ -23,7 +23,7 @@ public interface Deduction {
     void registerDetector(StateDetector detector);
 
     /**
-     * Runs the deduction the Deduction is intended to make, storing the information derived in the
+     * Runs the deduction that the Deduction is intended to make, storing the information derived in the
      * registered StateDetector. This will require that a StateDetector first be registered.
      * @param board the board whose information the deduction will draw from
      */

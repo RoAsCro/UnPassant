@@ -1,6 +1,7 @@
 package Heuristics.Deductions;
 
 import Heuristics.BoardInterface;
+import Heuristics.Detector.Data.PieceData;
 import Heuristics.Detector.StateDetector;
 import Heuristics.Path;
 import StandardChess.Coordinate;
@@ -104,10 +105,11 @@ public class PieceMap extends AbstractDeduction{
 
         // Find paths for potential promotions, then updat the PromotionNumbers with the data
         findPromotionPaths(board, potentialPromotions);
+        Map<String, Map<Path, Integer>> promotionNumbers =  this.detector.getPromotionData().getPromotionNumbers();
         potentialPromotions.forEach((key, value) -> {
             Map<Path, Integer> toPut = new HashMap<>();
             toPut.put(value, pieceNumber.get(key));
-            this.detector.getPromotionData().getPromotionNumbers().put(key, toPut);
+            promotionNumbers.put(key, toPut);
         });
 
         // Find certain promotions
@@ -119,10 +121,10 @@ public class PieceMap extends AbstractDeduction{
         certainPromotions.forEach((key, value) -> {
             Map<Path, Integer> toPut = new HashMap<>();
             toPut.put(value, 0);
-            if (!this.detector.getPromotionData().getPromotionNumbers().containsKey(key)) {
-                this.detector.getPromotionData().getPromotionNumbers().put(key, toPut);
+            if (!promotionNumbers.containsKey(key)) {
+                promotionNumbers.put(key, toPut);
             } else {
-                this.detector.getPromotionData().getPromotionNumbers().get(key).put(value, 0);
+                promotionNumbers.get(key).put(value, 0);
             }
         });
         // Map pieces to their promotion origins
@@ -140,9 +142,7 @@ public class PieceMap extends AbstractDeduction{
         int accountedPromotions = potentialPromotions.entrySet().stream().filter(entry -> {
             Path promotedPieces = entry.getValue();
             if (promotedPieces != null) {
-                int promotions = this.detector.getPromotionData()
-                        .getPromotionNumbers()
-                        .get(entry.getKey()).get(promotedPieces);
+                int promotions = promotionNumbers.get(entry.getKey()).get(promotedPieces);
                 int potentiallyPromoted = promotedPieces.size();
                 return potentiallyPromoted >= promotedPieces.size() - promotions;
             }
@@ -364,20 +364,21 @@ public class PieceMap extends AbstractDeduction{
      */
     private void kingMovementUpdate(BoardInterface board){
         String rook = "rook";
+        PieceData pieceData = this.detector.getPieceData();
         ROOK_COORDS.forEach(r -> {
             if (!board.getBoardFacts().getCoordinates(r.getY() == FIRST_RANK_Y, rook)
                     .contains(r)) {
-                this.detector.getPieceData().setRookMovement(r.getY() == FIRST_RANK_Y, r.getX() == Q_ROOK_X,
+                pieceData.setRookMovement(r.getY() == FIRST_RANK_Y, r.getX() == Q_ROOK_X,
                         true);
             }
         });
-        if (this.detector.getPieceData().getRookMovement(true, false)
-                && this.detector.getPieceData().getRookMovement(true, true)) {
-            this.detector.getPieceData().setKingMovement(true, true);
+        if (pieceData.getRookMovement(true, false)
+                && pieceData.getRookMovement(true, true)) {
+            pieceData.setKingMovement(true, true);
         }
-        if (this.detector.getPieceData().getRookMovement(false, false)
-                && this.detector.getPieceData().getRookMovement(false, true)) {
-            this.detector.getPieceData().setKingMovement(false, true);
+        if (pieceData.getRookMovement(false, false)
+                && pieceData.getRookMovement(false, true)) {
+            pieceData.setKingMovement(false, true);
         }
 
     }

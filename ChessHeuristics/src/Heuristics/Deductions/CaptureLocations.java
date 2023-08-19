@@ -356,7 +356,7 @@ public class CaptureLocations extends AbstractDeduction {
                                 .containsKey(new Coordinate(entry.getKey().getX(), white ? WHITE_PAWN_Y : BLACK_PAWN_Y)))
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
-        returnMap.putAll(this.detector.getPawnData().getPawnPaths(white)
+        returnMap.putAll(pathsInUse
                 .entrySet()
                 .stream()
                 .filter(entry -> !returnMap.containsKey(entry.getKey()))
