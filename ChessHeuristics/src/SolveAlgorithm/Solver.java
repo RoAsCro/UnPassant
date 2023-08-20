@@ -108,7 +108,11 @@ public class Solver {
     }
 
     /**
-     *
+     * Carries out a depth-first search through every possible move from the starting FEN up to the given depth.
+     * First, a state is popped from a stack of states, and its legality tested by a StateDetector.
+     * Then, if that state's depth is not the same as the given depth,
+     * valid moves from that state are found using an UnMoveMaker and tested against the FEN Predicate given
+     * at construction. Each valid move is then
      * @param startingFen
      * @param depth
      * @param any
@@ -175,36 +179,6 @@ public class Solver {
                                 + ":" + (currentDepth + 1)));
             } else if (finalCheck(any, currentFEN, currentBoard, recursionDepth, currentDepth)) {
                 finalStates.add(currentFEN + ":" + movement);
-//                if (any) {
-//                    CheckUtil.switchTurns(currentBoard);
-////                    if (!legalFirst || testState(currentBoard)) {
-//                    boolean pass = true;
-//                    if (compulsoryContinuation(currentBoard)) {
-//                        pass = !iterate(currentFEN,
-//                                1, true, recursionDepth + depth).isEmpty();
-//                    }
-//                    if (pass) {
-//                        finalStates.add(currentFEN + ":" + movement);
-//                        return finalStates;
-//                    }
-////                    }
-//                } else {
-////                    this.legalFirst = true;
-//                    if (this.additionalDepth == 0 || !iterate(currentFEN,
-//                            this.additionalDepth, true, recursionDepth + depth).isEmpty()) {
-//                        boolean pass = true;
-//                        if (this.additionalDepth == 0) {
-//                            CheckUtil.switchTurns(currentBoard);
-//                            if (compulsoryContinuation(currentBoard)) {
-//                                pass = !iterate(currentFEN,
-//                                        1, true,recursionDepth + depth).isEmpty();
-//                            }
-//                        }
-//                        if (pass) {
-//                            finalStates.add(currentFEN + ":" + movement);
-//                        }
-//                    }
-//                }
             }
         }
         return finalStates;
@@ -288,19 +262,16 @@ public class Solver {
      * description of the move
      */
     public List<String> iterateThroughMoves(ChessBoard board, Coordinate origin, String currentState) {
-        List<String> states = new LinkedList<>();
 
-        Coordinate[] moves = board.at(origin).getUnMoves(origin);
+        List<String> states = new LinkedList<>();
         String type = board.at(origin).getType();
         boolean white = board.getTurn().equals("white");
-        int y = origin.getY();
-        int x = origin.getX();
         boolean king = type.equals("king");
         boolean rook = type.equals("rook");
+
         if (king || rook) {
             String colour = white ? "white" : "black";
             // Don't try to move pieces that are locked by UnCastling
-            // TODO fix this
             if ((rook && (white && (origin.equals(Coordinates.WHITE_KING_ROOK) || origin.equals(Coordinates.WHITE_QUEEN_ROOK)) ||
                     (!white && origin.equals(Coordinates.BLACK_KING_ROOK) || origin.equals(Coordinates.BLACK_QUEEN_ROOK)))
             && board.canCastle(origin.getX() == Coordinates.WHITE_KING_ROOK.getX() ? "king" : "queen", colour))
@@ -308,10 +279,13 @@ public class Solver {
                 return states;
             }
         }
+
         Coordinate[] additionalMoves = new Coordinate[0];
         boolean addEnPassant = false;
         boolean addCastle = false;
         boolean addPromotion = false;
+        int y = origin.getY();
+        int x = origin.getX();
 
         // UnPromotion
         if (((white && y == FINAL_RANK_Y) || (!white && y == FIRST_RANK_Y)) && !king) {
@@ -340,6 +314,7 @@ public class Solver {
                     addPromotion, addEnPassant, addCastle));
         }
 
+        Coordinate[] moves = board.at(origin).getUnMoves(origin);
         states.addAll(tryMoves(board, moves, origin, currentState,
                 false, false, false));
         return states;
@@ -490,8 +465,6 @@ public class Solver {
         }
         return moveMaker.makeUnMove(origin, target);
     }
-
-
 
     /**
      * Checks if the Solver needs to continue adding depth as a result of a king currently being in check
