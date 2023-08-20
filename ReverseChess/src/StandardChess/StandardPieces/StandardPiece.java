@@ -6,7 +6,7 @@ import StandardChess.Piece;
 
 public class StandardPiece implements Piece {
 
-    private PieceStrategy strategy;
+    private final PieceStrategy strategy;
     private final String colour;
 
     public StandardPiece(String colour, PieceStrategy strategy) {

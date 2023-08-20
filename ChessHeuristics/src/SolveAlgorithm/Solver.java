@@ -479,9 +479,6 @@ public class Solver {
      * @return true if there is a compulsory move to be made, false otherwise
      */
     private boolean compulsoryContinuation(ChessBoard board) {
-//        System.out.println(CheckUtil.eitherInCheck(new BoardInterface(board)));
-//        System.out.println(!board.getReader().toFEN().split(" ")[3].equals("-"));
-
         return CheckUtil.eitherInCheck(new BoardInterface(board))
                 || !board.getReader().toFEN().split(" ")[3].equals("-");
     }

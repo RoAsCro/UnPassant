@@ -145,7 +145,7 @@ public class CombinedPawnMap extends AbstractDeduction {
      * @param white the currently checked player's colour, true if white, false if black
      * @return whether there was a change in the pawn Paths
      */
-    protected boolean exclude(BoardInterface board, boolean white) {
+    private boolean exclude(BoardInterface board, boolean white) {
         // Find pawns of the opposing player with single paths
         Map<Coordinate, List<Path>> singleOriginPawns = getSinglePathPawns(board, white);
         Map<Coordinate, List<Path>> checkedPlayerPaths = this.detector.getPawnData().getPawnPaths(white);
@@ -213,7 +213,7 @@ public class CombinedPawnMap extends AbstractDeduction {
     /**
      * Updates the PawnMaps
      */
-    protected void updatePawnMaps() {
+    private void updatePawnMaps() {
         this.blackPawnMap.reduce();
         this.whitePawnMap.reduce();
     }
@@ -331,7 +331,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          * (16 - takeable pieces) - opponent's remaining pieces
          * @return the max number of pieces the pawns can collectively take
          */
-        protected int capturedPieces() {
+        private int capturedPieces() {
             return this.detector.getCaptureData().pawnTakeablePieces(this.white) - (this.opponentPieceNumbers);
         }
 
@@ -394,7 +394,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          * If the sum of minimum captures exceeds the maximum number of pieces all pawns can take, the state is set
          * to false. If it does not, the remainder of this amount is set as the capturedPieces.
          */
-        protected void updateCaptureSet() {
+        private void updateCaptureSet() {
             int maxOffset = capturedPieces() -
                     this.pawnOrigins.entrySet().stream().map(entry -> {
                                 int x = entry.getKey().getX();
@@ -502,7 +502,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          * amounts of captures in the given Map of pawns and origins that exceed the possible captures that pawns
          * can make. Recursively goes through each possible combination of pawns and origins to achieve this.
          * It then removes those pawn/origin combinations from the Map that are found to be impossible
-         * due to their being no set of pawns/origins that permits them.
+         * due to there being no set of pawns/origins that permits them.
          * @param currentPawnOrigins the subset of the pawnOrigins being checked
          */
         protected void reduceIterHelperStart(Map<Coordinate, Path> currentPawnOrigins) {
