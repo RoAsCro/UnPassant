@@ -36,7 +36,4 @@ public class StandardPieceFactory implements PieceFactory {
                 this.pieces.get(type.toLowerCase()));
     }
 
-    public void register(String key, PieceStrategy value) {
-        this.pieces.put(key, value);
-    }
 }
