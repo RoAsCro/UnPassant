@@ -5,6 +5,10 @@ import StandardChess.Coordinate;
 import StandardChess.Coordinates;
 import StandardChess.Piece;
 
+/**
+ * An implementation of PieceStrategy for a bishop, describing its movement, additional moves, and how it updates the
+ * board after it moves.
+ */
 public class KingStrategy extends AbstractStrategy{
 
     private static final Coordinate[] WHITE_COORDS = new Coordinate[]
@@ -12,6 +16,9 @@ public class KingStrategy extends AbstractStrategy{
     private static final Coordinate[] BLACK_COORDS = new Coordinate[]
             {Coordinates.BLACK_KING, Coordinates.BLACK_KING_ROOK, Coordinates.BLACK_QUEEN_ROOK};
 
+    /**
+     * Constructs the PieceStrategy, setting its moves to vertical, horizontal, and diagonal.
+     */
     public KingStrategy() {
         super("king",
         new Coordinate[]{
@@ -31,12 +38,28 @@ public class KingStrategy extends AbstractStrategy{
                 : BLACK_COORDS;
     }
 
+    /**
+     * A helper method for tryMove() and tryUnMove, checking that the target is either both perpendicular or diagonal to
+     * the origin and one square away.
+     * @param origin the start Coordinate
+     * @param target the end Coordinate
+     * @param yDiff the y difference between the origin and target
+     * @return whether the origin and target fulfil the criteria for a normal king move
+     */
     private boolean normalMove(Coordinate origin, Coordinate target, int yDiff) {
         return (DIAGONAL.test(origin, target) || PERPENDICULAR.test(origin, target))
                 && Math.abs(origin.getX() - target.getX()) <= 1
                 && yDiff <= 1;
     }
 
+    /**
+     * Overrides AbstractStrategy.tryMove(). Checks first that the target is either both perpendicular or diagonal to
+     * the origin and one square away, or is a valid castle. Then functions identically to the method it overrides.
+     * @param origin the start Coordinate
+     * @param target the end Coordinate
+     * @param board the board the move is attempting to be made on
+     * @return whether the move can be made on the board
+     */
     @Override
     public boolean tryMove(Coordinate origin, Coordinate target, ChessBoard board) {
         int yDiff = Math.abs(origin.getY() - target.getY());
@@ -46,6 +69,15 @@ public class KingStrategy extends AbstractStrategy{
                 && castleCheck(origin, target, board)))
                 && super.tryMove(origin, target, board);
     }
+
+    /**
+     * Overrides AbstractStrategy.tryUnMove(). Checks first that the target is either both perpendicular or diagonal to
+     * the origin and one square away, or is a valid un castle. Then functions identically to the method it overrides.
+     * @param origin the start Coordinate
+     * @param target the end Coordinate
+     * @param board the board the un move is attempting to be made on
+     * @return whether the un move can be made on the board
+     */
     @Override
     public boolean tryUnMove(Coordinate origin, Coordinate target, ChessBoard board) {
         int yDiff = Math.abs(origin.getY() - target.getY());
@@ -53,6 +85,13 @@ public class KingStrategy extends AbstractStrategy{
                 || unCastleCheck(origin, target, board));
     }
 
+    /**
+     * Overrides AbstractStrategy.updateBoard().
+     * @param origin the start Coordinate
+     * @param target the end Coordinate
+     * @param board the board the move is attempting to be made on
+     * @param unMove whether this is an un move
+     */
     @Override
     public void updateBoard(Coordinate origin, Coordinate target, ChessBoard board, boolean unMove) {
         int xDiff = origin.getX() - target.getX();
@@ -75,21 +114,8 @@ public class KingStrategy extends AbstractStrategy{
                 board.remove(rookLocation);
             }
         }
+        super.updateBoard(origin, target, board, unMove);
     }
-
-//    @Override
-//    public Coordinate[] getMoves(Coordinate origin) {
-//        return new Coordinate[] {
-//                Coordinates.add(origin, Coordinates.UP),
-//                Coordinates.add(origin, Coordinates.RIGHT),
-//                Coordinates.add(origin, Coordinates.DOWN),
-//                Coordinates.add(origin, Coordinates.LEFT),
-//                Coordinates.add(origin, Coordinates.UP_RIGHT),
-//                Coordinates.add(origin, Coordinates.DOWN_RIGHT),
-//                Coordinates.add(origin, Coordinates.DOWN_LEFT),
-//                Coordinates.add(origin, Coordinates.UP_LEFT),
-//        };
-//    }
 
     private boolean castleCheck(Coordinate origin, Coordinate target, ChessBoard board) {
         String colour = board.at(origin).getColour();

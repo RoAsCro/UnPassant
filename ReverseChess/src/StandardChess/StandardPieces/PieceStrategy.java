@@ -44,7 +44,8 @@ public interface PieceStrategy {
      * Gets all possible moves one unit of movement away for the piece type from the given origin.
      * One unit of movement is the minimum distance a piece can travel using a given move. In most cases
      * this will be one square, but for example for knights this might be x + 2, y + 1.
-     * Note this does not take into consideration any way the move may be illegal, e.g. if the move is out of bounds.
+     * Note also this does not take into consideration any way the move may be illegal,
+     * e.g. if the move is out of bounds.
      * @param origin the start Coordinate of the moves
      * @param colour the colour of the piece as a String, "white" or "black"
      * @return an array containing all possible Coordinates this piece can move to

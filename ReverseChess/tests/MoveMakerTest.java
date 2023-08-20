@@ -1,6 +1,7 @@
 import StandardChess.BoardBuilder;
 import StandardChess.ChessBoard;
 import StandardChess.Coordinate;
+import StandardChess.UnMoveMaker;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -51,6 +52,21 @@ public class MoveMakerTest {
         Assertions.assertTrue(moveMaker.makeMove(new Coordinate(4, 0), new Coordinate(6, 0)));
         Assertions.assertEquals("rook", this.board.at(new Coordinate(5, 0)).getType());
         Assertions.assertEquals("null", this.board.at(new Coordinate(7, 0)).getType());
+
+    }
+
+    @Test
+    public void doubleMoveCastleEnPassant() {
+        Coordinate origin = new Coordinate(5, 6);
+        Coordinate target = new Coordinate(5, 4);
+        ChessBoard board = BoardBuilder.buildBoard("3k4/5p2/8/4P3/8/8/8/4K2R w K - 0 1");
+        MoveMaker moveMaker = new MoveMaker(board);
+        Assertions.assertTrue(moveMaker.makeMove(origin, target));
+
+        Assertions.assertTrue(moveMaker.makeMove(new Coordinate(4, 0), new Coordinate(6, 0)));
+
+        Assertions.assertFalse(moveMaker.makeMove(new Coordinate(4, 4), new Coordinate(5, 5)));
+
 
     }
 
