@@ -18,6 +18,7 @@ import static Heuristics.HeuristicsUtil.*;
  * A class that searches through a given FEN, looking for a number of valid sets of last moves up to a specified depth,
  * and of a specified amount. Additional conditions can also be given to make during testing. The number of valid sets
  * of moves to be found, and any additional depth, are specified separately from construction.
+ * @author Roland Crompton
  */
 public class Solver {
     /**A list of piece codes of pieces that can be un taken*/

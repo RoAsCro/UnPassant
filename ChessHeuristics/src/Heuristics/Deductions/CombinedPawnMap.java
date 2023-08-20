@@ -19,6 +19,7 @@ import static Heuristics.HeuristicsUtil.FIRST_RANK_Y;
  * pawns of the corresponding colour.
  * <p></p>
  * The state will be set to false if any pawn on the does not have a valid Path from an origin.
+ * @author Roland Crompton
  */
 public class CombinedPawnMap extends AbstractDeduction {
     /**A PawnMap of black pawns*/

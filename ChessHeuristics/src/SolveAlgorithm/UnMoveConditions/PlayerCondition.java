@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 
 /**
  * Example condition for UnMoves testing whether a move is made by the given player.
+ * @author Roland Crompton
  */
 public class PlayerCondition implements Predicate<String> {
     /**A character representing the player being checked*/

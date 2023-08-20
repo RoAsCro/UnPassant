@@ -9,6 +9,7 @@ import java.util.Map;
 /**
  * Provides a read-only interface for a StateDetector, providing the means to have a board state's
  * validity determined by a StateDetector, and providing the information required to form StateConditions.
+ * @author Roland Crompton
  */
 public interface DetectorInterface {
     /**

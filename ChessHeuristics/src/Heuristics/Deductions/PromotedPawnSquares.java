@@ -21,6 +21,7 @@ import static Heuristics.HeuristicsUtil.*;
  * determined and their Paths to their current location from pawn origins found,
  * and the maximum number of captures possible by pawns determined, as well as what missing pawns must have been
  * promoted, otherwise it will not be accurate.
+ * @author Roland Crompton
  */
 public class PromotedPawnSquares extends AbstractDeduction{
     /**A predicate testing that a given Coordinate is either on the white or black pawn y, depending on whether

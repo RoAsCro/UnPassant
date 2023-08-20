@@ -18,6 +18,7 @@ import static Heuristics.HeuristicsUtil.*;
 
 /**
  * A utility class containing various methods as shortcuts to common usages of the Pathfinder.
+ * @author Roland Crompton
  */
 public class PathfinderUtil {
     /**A Path/Integer Function that takes a Path and returns the number of captures made on that Path*/

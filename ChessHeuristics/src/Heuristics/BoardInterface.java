@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 /**
  * An interface for ChessBoards to use with the Heuristics package, providing read-only access to information
  * and containing additional information and functions to assist in making deductions about board states.
+ * @author Roland Crompton
  */
 public class BoardInterface {
     /**The ChessBoard this BoardInterface wraps, initialised at instantiation*/

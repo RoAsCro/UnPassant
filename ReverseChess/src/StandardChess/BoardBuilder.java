@@ -2,6 +2,7 @@ package StandardChess;
 
 /**
  * A builder for ChessBoards, providing static methods that take a FEN and ouput a ChessBoard.
+ * @author Roland Crompton
  */
 public class BoardBuilder {
     /**The ASCII value of 0*/

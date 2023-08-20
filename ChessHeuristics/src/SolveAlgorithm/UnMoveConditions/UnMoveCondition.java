@@ -6,6 +6,7 @@ import java.util.function.Predicate;
  * An example condition testing whether the given conditions are fulfilled. Specifically, will return true if the
  * tested move does NOT take place during the timing and location conditions, or if it does and fulfills all the other
  * conditions, otherwise false. The latter part of the condition is inverted is 'not' is true.
+ * @author Roland Crompton
  */
 public class UnMoveCondition implements Predicate<String>{
 

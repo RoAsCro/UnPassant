@@ -12,6 +12,7 @@ import Heuristics.Detector.Data.PromotionData;
  *  pieces, the CaptureData for information about captures, and the PromotionData for information about promotions.
  *  This interface is intended for use with Deductions, going through them sequentially to establish facts about,
  *  and test the legality of, a board state.
+ *  @author Roland Crompton
  */
 public interface StateDetector {
 

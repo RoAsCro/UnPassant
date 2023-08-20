@@ -21,6 +21,7 @@ import static Heuristics.HeuristicsUtil.*;
  * <p></p>
  * UnCastle must only be run after pawns, pieces, promoted pieces, missing promoted pieces, and paths from pawn origins
  * to promotion squares have all been determined and mapped, otherwise its results will not be accurate.
+ * @author Roland Crompton
  */
 public class UnCastle extends AbstractDeduction{
     /**The array location of the king's movement*/

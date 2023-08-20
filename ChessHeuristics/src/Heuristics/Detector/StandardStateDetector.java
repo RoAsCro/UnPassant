@@ -19,6 +19,7 @@ import static Heuristics.HeuristicsUtil.MAX_PIECES;
  * of a chess board state. This implementation requires that only one chess board be tested using a given instance
  * of StandardStateDetector. Attempting to use the same instance of StandardStateDetector to test two different
  * boards will not produce accurate results.
+ * @author Roland Crompton
  */
 public class StandardStateDetector implements StateDetector {
     /**The board being tested*/

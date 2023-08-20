@@ -9,6 +9,7 @@ import static Heuristics.HeuristicsUtil.MAX_PIECES;
 
 /**
  * An implementation of CaptureData.
+ * @author Roland Crompton
  */
 public class StandardCaptureData implements CaptureData {
     /**The location of black in the stored arrays and Lists*/

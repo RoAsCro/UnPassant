@@ -3,6 +3,7 @@ package SolveAlgorithm.UnMoveConditions;
 import java.util.function.Predicate;
 /**
  * Example condition for UnMoves testing whether a move is from one coordinate to another the given piece.
+ * @author Roland Crompton
  */
 public class LocationCondition implements Predicate<String> {
     /**The origin of the move*/

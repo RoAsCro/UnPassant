@@ -28,6 +28,7 @@ import static Heuristics.HeuristicsUtil.*;
  * <p></p>
  * PieceMap must only run deduce() after the pawns have been mapped, otherwise its results will not be
  * accurate.
+ * @author Roland Crompton
  */
 public class PieceMap extends AbstractDeduction{
     /**A Path containing standard rook coordinates for use in various methods */

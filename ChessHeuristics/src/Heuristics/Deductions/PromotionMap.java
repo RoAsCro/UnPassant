@@ -23,6 +23,7 @@ import static Heuristics.HeuristicsUtil.*;
  * PromotionMap must only be run after the pawns and pieces have been mapped, promoted pieces determined and linked
  * to promotion squares, and the maximum number of captures possible by pawns determined, otherwise it will not be
  * accurate.
+ * @author Roland Crompton
  */
 public class PromotionMap extends AbstractDeduction {
     /**An arbitrarily high number for reducing claims*/

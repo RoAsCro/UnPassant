@@ -4,6 +4,7 @@ import Heuristics.Path;
 
 /**
  * Stores data about captures in a chess game. For use with a StateDetector.
+ * @author Roland Crompton
  */
 public interface CaptureData {
     /**

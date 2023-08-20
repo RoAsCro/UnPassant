@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 
 /**
  * A Predicate for iterating over a whole chessboard.
+ * @author Roland Crompton
  */
 public class WholeBoardPredicate implements Predicate<BoardReader> {
     /**

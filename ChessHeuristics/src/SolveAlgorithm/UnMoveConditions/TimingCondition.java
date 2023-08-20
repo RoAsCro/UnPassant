@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 
 /**
  * Example condition for UnMoves testing whether a move is made at the given time.
+ * @author Roland Crompton
  */
 public class TimingCondition implements Predicate<String> {
     /**The inclusive ply from which the condition is true*/

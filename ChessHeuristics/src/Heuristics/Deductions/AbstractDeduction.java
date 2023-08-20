@@ -5,6 +5,7 @@ import Heuristics.Detector.StateDetector;
 /**
  * An abstract deduction implementing those methods whose implementation is
  * common to all deductions in UnPassant's the standard set.
+ * @author Roland Crompton
  */
 public abstract class AbstractDeduction implements Deduction {
     /**The Deduction's state, true by default, false if a board state is found to be impossible*/

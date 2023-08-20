@@ -13,6 +13,7 @@ import Heuristics.Detector.StateDetector;
  * <p></p>
  * Before running its deduce() method, a StateDetector must be registered in the Deduction. A Deductions will also
  * often require that other information be derived before it can produce accurate results.
+ * @author Roland Crompton
  */
 public interface Deduction {
     /**

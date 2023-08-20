@@ -5,6 +5,7 @@ import java.util.Map;
 /**
  * A utility class storing various commonly used bits of data in making deductions about chess boards as static
  * constants.
+ * @author Roland Crompton
  */
 public class HeuristicsUtil {
     /**The standard maximum number of pawns a player can have*/

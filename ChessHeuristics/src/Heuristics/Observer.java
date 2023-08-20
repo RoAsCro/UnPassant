@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * A helper class for BoardInterface storing derived information about a chess board.
+ * @author Roland Crompton
  */
 public class Observer {
     /**A Map of Strings of piece names and Paths of Coordinates of white pieces of that type*/

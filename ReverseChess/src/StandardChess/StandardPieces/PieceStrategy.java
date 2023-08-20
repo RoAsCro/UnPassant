@@ -6,6 +6,7 @@ import StandardChess.Coordinate;
 /**
  * A Strategy for use with the StandardPiece class containing information on how a piece moves, un moves, and updates
  * a board.
+ * @author Roland Crompton
  */
 public interface PieceStrategy {
     /**

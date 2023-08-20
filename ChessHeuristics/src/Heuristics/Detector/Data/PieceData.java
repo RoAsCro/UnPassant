@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * Stores data about non-pawn pieces in a chess game. For use with a StateDetector.
+ * @author Roland Crompton
  */
 public interface PieceData {
     /**

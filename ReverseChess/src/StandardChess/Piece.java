@@ -2,6 +2,7 @@ package StandardChess;
 
 /**
  * An interface for a class representing a piece on a chess board.
+ * @author Roland Crompton
  */
 public interface Piece {
 

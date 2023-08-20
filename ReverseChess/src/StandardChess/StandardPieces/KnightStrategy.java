@@ -6,6 +6,7 @@ import StandardChess.Coordinates;
 
 /**
  * An implementation of PieceStrategy for a bishop, describing its movement.
+ * @author Roland Crompton
  */
 public class KnightStrategy extends AbstractStrategy{
 

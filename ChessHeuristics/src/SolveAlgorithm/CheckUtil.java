@@ -6,6 +6,7 @@ import StandardChess.ChessBoard;
 
 /**
  * A utility class with static methods to assist in checking if kings are in check.
+ * @author Roland Crompton
  */
 public class CheckUtil {
 

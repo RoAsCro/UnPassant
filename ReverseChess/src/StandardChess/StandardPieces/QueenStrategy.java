@@ -6,6 +6,7 @@ import StandardChess.Coordinates;
 
 /**
  * An implementation of PieceStrategy for a bishop, describing its horizontal, vertical and diagonal movement.
+ * @author Roland Crompton
  */
 public class QueenStrategy extends AbstractStrategy{
 

@@ -8,6 +8,7 @@ import java.util.Map;
 
 /**
  * Stores data about pawns in a chess game. For use with a StateDetector.
+ * @author Roland Crompton
  */
 public interface PawnData {
     /**

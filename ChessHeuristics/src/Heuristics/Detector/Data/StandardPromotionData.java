@@ -9,6 +9,7 @@ import java.util.TreeMap;
 
 /**
  * An implementation of PromotionData.
+ * @author Roland Crompton
  */
 public class StandardPromotionData implements PromotionData {
     /** a Map of names of pieces, sets of those pieces, and how many of those pieces do not need to be

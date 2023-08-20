@@ -10,6 +10,7 @@ import java.util.Map;
 
 /**
  * An example of some possible StateConditions.
+ * @author Roland Crompton
  */
 public class StateConditions {
     /**

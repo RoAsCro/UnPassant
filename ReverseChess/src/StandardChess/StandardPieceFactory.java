@@ -7,6 +7,7 @@ import java.util.Map;
 /**
  * A singleton factory for StandardPieces. PieceStrategies of the same type are
  * all a single instance.
+ * @author Roland Crompton
  */
 public class StandardPieceFactory implements PieceFactory {
     /**Stores the instance of the StandardPieceFactory*/

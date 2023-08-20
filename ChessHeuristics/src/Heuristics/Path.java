@@ -8,6 +8,7 @@ import java.util.LinkedList;
 
 /**
  * An ordered List of Coordinates extending java.util.LinkedList.
+ * @author Roland Crompton
  */
 public class Path extends LinkedList<Coordinate> {
 

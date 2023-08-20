@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import static Heuristics.Deductions.PathfinderUtil.PATH_DEVIATION;
 /**
  * An implementation of PawnData
+ * @author Roland Crompton
  */
 public class StandardPawnData implements PawnData {
     /**The location of black in the stored Lists*/

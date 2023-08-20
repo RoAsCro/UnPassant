@@ -6,6 +6,7 @@ import StandardChess.Coordinates;
 
 /**
  * An implementation of PieceStrategy for a bishop, describing its horizontal and vertical movement.
+ * @author Roland Crompton
  */
 public class RookStrategy extends AbstractStrategy{
 

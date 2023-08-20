@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 
 /**
  * An abstract implementation of PieceStrategy, implementing those methods common to most standard Strategies.
+ * @author Roland Crompton
  */
 public abstract class AbstractStrategy implements PieceStrategy{
     /**A test of whether two Coordinates are diagonal to each other*/

@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 /**
  * An implementation of PieceData.
+ * @author Roland Crompton
  */
 public class StandardPieceData implements PieceData {
     /**The location of black in the stored arrays and Lists*/

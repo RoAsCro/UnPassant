@@ -13,6 +13,7 @@ import StandardChess.ChessBoard;
  * A factory providing methods for instantiating StateDetectors and DetectorInterfaces
  * without the calling class having to be aware of what implementation
  * of StateDetector, its data storage objects, or its Deductions, are being used.
+ * @author Roland Crompton
  */
 public class StateDetectorFactory {
 

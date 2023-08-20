@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 
 /**
  * An abstract class for testing DetectorInterfaces during the course of solving a retrograde chess problem.
+ * @author Roland Crompton
  */
 public abstract class StateCondition implements Predicate<DetectorInterface> {
     /**

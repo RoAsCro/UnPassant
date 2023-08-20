@@ -6,6 +6,7 @@ import StandardChess.Piece;
 
 /**
  * An implementation of Piece that uses PieceStrategies to determine its behaviour.
+ * @author Roland Crompton
  */
 public class StandardPiece implements Piece {
     /**Stores the PieceStrategy*/

@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 /**
  * Example condition for UnMoves testing whether the move is of the given type, a normal move, a capture, or an en
  * passant.
+ * @author Roland Crompton
  */
 public class MovementCondition implements Predicate<String> {
     /**A String representing the type of move being checked for*/

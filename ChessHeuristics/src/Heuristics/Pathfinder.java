@@ -17,6 +17,7 @@ import static Heuristics.HeuristicsUtil.FIRST_RANK_Y;
  * A class with static methods for searching for Paths of pieces. A Path in this context is an ordered
  * List of Coordinates containing no two of the same Coordinate, each Coordinate a given piece's smallest possible move
  * away from the last.
+ * @author Roland Crompton
  */
 public class Pathfinder {
     /**The maximum recursive depth to which Pathfinding may go - there should not be situation in which

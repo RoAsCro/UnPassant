@@ -24,6 +24,7 @@ import static Heuristics.HeuristicsUtil.*;
  * <p></p>
  * CaptureLocations must only run deduce() after the pawns and pieces have been mapped, cages determined,
  * and certain promotions discovered, otherwise its results will not be accurate.
+ * @author Roland Crompton
  */
 public class CaptureLocations extends AbstractDeduction {
     /**A BiPredicate of two Coordinates testing if the two coordinates do not have the same x and that one is dark,

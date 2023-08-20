@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 
 /**
  * Example condition for UnMoves testing whether a move moves a piece of the given type.
+ * @author Roland Crompton
  */
 public class PieceCondition implements Predicate<String> {
     /**A character representing the piece type*/

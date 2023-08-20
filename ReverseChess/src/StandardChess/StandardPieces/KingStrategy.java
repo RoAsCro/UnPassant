@@ -8,6 +8,7 @@ import StandardChess.Piece;
 /**
  * An implementation of PieceStrategy for a bishop, describing its movement, additional moves, and how it updates the
  * board after it moves.
+ * @author Roland Crompton
  */
 public class KingStrategy extends AbstractStrategy{
     /**The castle Coordinates if this king is black*/

@@ -3,6 +3,7 @@ package StandardChess;
 /**
  * A singleton null piece to use as a placeholder for Pieces when a reference to a Piece is needed
  * but a Piece may be absent, such as a blank space on a ChessBoard.
+ * @author Roland Crompton
  */
 public class NullPiece implements Piece{
     /**The current instance of NullPiece*/

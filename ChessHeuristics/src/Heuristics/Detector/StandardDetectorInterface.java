@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
 /**
  * An implementation of DetectorInterface, implementing all its methods plus a human-readable toString method.
  * <p></p>
- * StandardDetectorInterface is meant to work specifically with the implementation of StandardStateDetector
+ * StandardDetectorInterface is meant to work specifically with the implementation of StandardStateDetector.
+ * @author Roland Crompton
  */
 public class StandardDetectorInterface implements DetectorInterface {
     /**The StateDetector the DetectorInterface represents*/
