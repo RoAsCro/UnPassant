@@ -59,13 +59,38 @@ public class MoveMakerTest {
     public void doubleMoveCastleEnPassant() {
         Coordinate origin = new Coordinate(5, 6);
         Coordinate target = new Coordinate(5, 4);
-        ChessBoard board = BoardBuilder.buildBoard("3k4/5p2/8/4P3/8/8/8/4K2R w K - 0 1");
+        ChessBoard board = BoardBuilder.buildBoard("r3k3/5p2/8/4P3/8/8/8/4K2R b Kq - 0 1");
         MoveMaker moveMaker = new MoveMaker(board);
         Assertions.assertTrue(moveMaker.makeMove(origin, target));
 
         Assertions.assertTrue(moveMaker.makeMove(new Coordinate(4, 0), new Coordinate(6, 0)));
 
+        Assertions.assertTrue(moveMaker.makeMove(new Coordinate(4, 7), new Coordinate(2, 7)));
+
+
         Assertions.assertFalse(moveMaker.makeMove(new Coordinate(4, 4), new Coordinate(5, 5)));
+
+    }
+
+    @Test
+    public void doubleMovePawnMoveEnPassant() {
+        Coordinate origin = new Coordinate(5, 6);
+        Coordinate target = new Coordinate(5, 4);
+        ChessBoard board = BoardBuilder.buildBoard("3k4/5pp1/8/4P3/8/8/5P2/4K2R b K - 0 1");
+        MoveMaker moveMaker = new MoveMaker(board);
+        Assertions.assertTrue(moveMaker.makeMove(origin, target));
+
+        Assertions.assertTrue(moveMaker.makeMove(new Coordinate(5, 1), new Coordinate(5, 2)));
+        System.out.println(board.getReader().toFEN());
+
+        Assertions.assertTrue(moveMaker.makeMove(new Coordinate(6, 6), new Coordinate(6, 5)));
+        System.out.println(board.getReader().toFEN());
+
+        Assertions.assertFalse(moveMaker.makeMove(new Coordinate(4, 4), new Coordinate(5, 5)),
+                board.getReader().toFEN());
+        System.out.println(board.getReader().toFEN());
+
+
 
 
     }
