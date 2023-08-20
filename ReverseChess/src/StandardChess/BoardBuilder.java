@@ -1,20 +1,40 @@
 package StandardChess;
 
-
+/**
+ * A builder for ChessBoards, providing static methods that take a FEN and ouput a ChessBoard.
+ */
 public class BoardBuilder {
+    /**The ASCII value of 0*/
     private final static int VALUE_OF_ZERO = 48;
+    /**Stores an instance of a PieceFactory*/
+    private final static PieceFactory factory = StandardPieceFactory.getInstance();
+    /**The FEN for the normal starting position of a chess board*/
     private final static String INITIAL_POSITION = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -";
 
-    private final static PieceFactory factory = StandardPieceFactory.getInstance();
 
+    /**
+     * Builds a ChessBoard in the starting position.
+     * @return a ChessBoard in the starting position
+     */
     public static ChessBoard buildBoard() {
         return buildBoard(INITIAL_POSITION);
     }
 
+    /**
+     * Returns a ChessBoard that's a copy of the given ChessBoard.
+     * @param copiedBoard the board to  be copied
+     * @return a ChessBoard that's a copy of the given board
+     */
     public static ChessBoard buildBoard(ChessBoard copiedBoard) {
         return new StandardBoard(copiedBoard);
     }
 
+    /**
+     * Builds a board with the parameters of the given FEN.
+     * @param FEN the FEN
+     * @return a ChessBoard with the parameters of the FEN
+     * @throws IllegalArgumentException if the FEN is improperly formatted
+     */
     public static ChessBoard buildBoard(String FEN) throws IllegalArgumentException {
         String[] params = FEN.split(" ");
         int paramLength = params.length;
@@ -33,14 +53,8 @@ public class BoardBuilder {
         }
         board.setTurn(turn);
 
-        String castleInput;
         if (paramLength > 2) {
-            castleInput = params[2];
-//        }
-//        else {
-//            castleInput = castleParse(board);
-//        }
-        castleDecode(castleInput, board);
+            castleDecode(params[2], board);
         }
         if (paramLength > 3) {
             String enPassant = params[3];
@@ -48,37 +62,15 @@ public class BoardBuilder {
                 board.setEnPassant(new Coordinate((char) ((int)enPassant.charAt(0) - Coordinates.LOWER_ASCII_A), Integer.parseInt(enPassant.substring(1)) - 1));
             }
         }
-
-
         return board;
     }
 
-    private static String castleParse(ChessBoard board) {
-
-        String returnString = "";
-        if (castleParseHelper(board.at(Coordinates.WHITE_KING), "king", "white")) {
-            if (castleParseHelper(board.at(Coordinates.WHITE_KING_ROOK), "rook", "white")) {
-                returnString += "K";
-            }
-            if (castleParseHelper(board.at(Coordinates.WHITE_QUEEN_ROOK), "rook", "white")) {
-                returnString += "Q";
-            }
-        }
-        if (castleParseHelper(board.at(Coordinates.BLACK_KING), "king", "black")) {
-            if (castleParseHelper(board.at(Coordinates.BLACK_KING_ROOK), "rook", "black")) {
-                returnString += "k";
-            }
-            if (castleParseHelper(board.at(Coordinates.BLACK_QUEEN_ROOK), "rook", "black")) {
-                returnString += "q";
-            }
-        }
-        return returnString;
-    }
-
-    private static boolean castleParseHelper(Piece piece, String type, String colour) {
-        return piece != null && piece.getType().equals(type) && piece.getColour().equals(colour);
-    }
-
+    /**
+     * A helper method that sets the ChessBoard's castling parameters according to the input.
+     * @param input the castling parameters
+     * @param board the ChessBoard whose parameters are being set
+     * @throws IllegalArgumentException if the castling parameters are improperly formatted
+     */
     private static void castleDecode(String input, ChessBoard board) throws IllegalArgumentException {
         if (!input.equals("-")) {
             String king = "king";
@@ -98,6 +90,12 @@ public class BoardBuilder {
         }
     }
 
+    /**
+     * A helper method that reads the position given by the FEN and sets up the ChessBoard.
+     * @param FEN the section of the FEN that details the arrangement of pieces on the board
+     * @param board the ChessBoard being populated with pieces
+     * @throws IllegalArgumentException if the FEN is not properly formatted
+     */
     private static void positionDecode(String FEN, ChessBoard board) throws IllegalArgumentException {
         String[] rows = FEN.split("/");
         if (rows.length != ChessBoard.LENGTH) {
@@ -130,10 +128,5 @@ public class BoardBuilder {
         } catch (IndexOutOfBoundsException e) {
             throw new IllegalArgumentException("FEN not formatted correctly.");
         }
-
     }
-
-
-
-
 }
