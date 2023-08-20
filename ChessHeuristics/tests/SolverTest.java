@@ -685,14 +685,7 @@ public class SolverTest {
                     return (move.charAt(0) == 'P' && move.endsWith("f4"));
                 }
                 return true ;
-            }
-                    ,d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
-//                }
-                return true;
-            }
-            );
+            });
             solver.setNumberOfSolutions(100);
             solver.setAdditionalDepth(1);
 //            System.out.println(count);
@@ -877,11 +870,7 @@ public class SolverTest {
             if (!StateDetectorFactory.getDetector(board).testState()) {
                 continue;
             }
-            Solver solver = new Solver(
-                    s -> {
-
-                        return true;
-                    });
+            Solver solver = new Solver();
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 5);
@@ -1037,11 +1026,7 @@ public class SolverTest {
                     if (!StateDetectorFactory.getDetector(board).testState()) {
                         continue;
                     }
-                    Solver solver = new Solver(
-                            s -> {
-//                        System.out.println(s);
-                                return true;
-                            });
+                    Solver solver = new Solver();
                     solver.setNumberOfSolutions(1);
                     solver.setAdditionalDepth(0);
                     List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 3);
@@ -1078,10 +1063,7 @@ public class SolverTest {
                 System.out.println("c");
                 continue;
             }
-            Solver solver = new Solver(
-                    s -> {
-                        return true;
-                    });
+            Solver solver = new Solver();
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
 
@@ -1392,27 +1374,16 @@ public class SolverTest {
         int count = 0;
         for (String st : list) {
             count++;
-//            System.out.println(count);
             Solver solver = new Solver(
                     s -> {
                         String move = s.split(":")[1];
-//                System.out.println(s.split(":")[2]);
                         if (s.split(":")[2].equals("0")) {
-//                            System.out.println(s);
                             return !(move.charAt(0) == 'K');
                         }
                         return true ;
-                    }
-                    ,d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
-//                }
-                return true;
-            }
-            );
+                    });
             solver.setNumberOfSolutions(100);
             solver.setAdditionalDepth(0);
-//            System.out.println(count);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 1);
 //            Assertions.assertEquals(0, solutions.size());
 //            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
@@ -1437,17 +1408,7 @@ public class SolverTest {
         for (String st : list) {
             count++;
 //            System.out.println(count);
-            Solver solver = new Solver(
-                    s -> {
-                        return true ;
-                    }
-                    ,d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
-//                }
-                return true;
-            }
-            );
+            Solver solver = new Solver();
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(0);
 //            System.out.println(count);

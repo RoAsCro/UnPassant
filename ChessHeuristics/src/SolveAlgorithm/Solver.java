@@ -32,19 +32,61 @@ public class Solver {
     private int count = 0;
     private int testCount = 0;
 
-
+    /**
+     * Constructs a new Solver with no additional conditions.
+     */
     public Solver(){}
 
+    /**
+     * Constructs a new Solver with the given String Predicate to be carried out on every valid move. The tested
+     * String will be of the format: f:m:i
+     * <p>Where:</p>
+     * <p>f is the fen of the board state after the move.</p>
+     * <p>m is the move in  the format: patcb  ; where p is a character representing the moved piece, a is the
+     * coordinate (e.g. a1, c8, etc) of the start of the move were this a regular chess move and not an unmove,
+     * t is the type of move (-, x, e.p., O-O, or O-O-O), c is the captured piece,
+     * and b is the coordinate of the end of the move</p>
+     * <p>i is the un-ply number, starting at 0</p>
+     * <p></p>
+     * A move will not be considered valid if it does not meet this condition.
+     * @param fenPredicate A Predicate to be tested after every move
+     */
+    public Solver(Predicate<String> fenPredicate){
+        this.fenPredicate = fenPredicate;
+    }
+
+    /**
+     * Constructs a new Solver with the given String Predicate to be carried out on every valid move. The tested
+     * String will be of the format: f:m:i
+     * <p>Where:</p>
+     * <p>f is the fen of the board state after the move.</p>
+     * <p>m is the move in  the format: patcb  ; where p is a character representing the moved piece, a is the
+     * coordinate (e.g. a1, c8, etc) of the start of the move were this a regular chess move and not an unmove,
+     * t is the type of move (-, x, e.p., O-O, or O-O-O), c is the captured piece,
+     * and b is the coordinate of the end of the move</p>
+     * <p>i is the un-ply number, starting at 0</p>
+     * <p></p>
+     * Also takes a DetectorInterface Predicate, to be tested after every move.
+     * <p></p>
+     * A move will not be considered valid if it does not meet both these conditions.
+     * @param fenPredicate a Predicate to be tested after every move
+     * @param detectorPredicate a detector Predicate to be tested after every move
+     */
     public Solver(Predicate<String> fenPredicate, Predicate<DetectorInterface> detectorPredicate){
         this.fenPredicate = fenPredicate;
         this.detectorPredicate = detectorPredicate;
         this.allowNonIntrusiveMovement = false;
     }
 
-    public Solver(Predicate<String> fenPredicate){
-        this.fenPredicate = fenPredicate;
-    }
-
+    /**
+     * Begins the process of solving a last n moves retrograde chess puzzle to the depth given. Return all
+     * solutions found.
+     * @param board the ChessBoard whose state is to be tested
+     * @param depth the depth to which the puzzle will be solved, i.e. the number of moves back it will look
+     *              before concluding a state is valid
+     * @return all solutions found, but no more than the number set as the maximum number of solutions
+     * @throws IllegalArgumentException if the Reader of the ChessBoard given does not produce a valid FEN
+     */
     public List<String> solve(ChessBoard board, int depth) throws IllegalArgumentException {
         this.maxDepth = depth;
         if (this.legalFirst) {
@@ -65,6 +107,14 @@ public class Solver {
         return solutions;
     }
 
+    /**
+     *
+     * @param startingFen
+     * @param depth
+     * @param any
+     * @param recursionDepth
+     * @return
+     */
     private List<String> iterate(String startingFen, int depth, boolean any, int recursionDepth) {
         LinkedList<String> states = new LinkedList<>();
         LinkedList<String> finalStates = new LinkedList<>();
@@ -94,10 +144,8 @@ public class Solver {
             String[] stateDescription = state.split(":");
             String currentFEN = stateDescription[0];
             ChessBoard currentBoard = BoardBuilder.buildBoard(currentFEN);
+
             CheckUtil.switchTurns(currentBoard);
-//            if (allowNonIntrusiveMovement && nonIntrusiveMovement(state) && !testState(currentBoard)) {
-//                throw new RuntimeException(state);
-//            }
             if (!(allowNonIntrusiveMovement && nonIntrusiveMovement(state)) &&
                     !testState(currentBoard)) {
                 continue;
@@ -115,8 +163,7 @@ public class Solver {
                     if (!enPassantNull && !piece.equals(enPassant)) {
                         continue;
                     }
-                    newStates.addAll(iterateThroughMoves(currentBoard, piece, state, any
-                            && currentDepth == depth - 1));
+                    newStates.addAll(iterateThroughMoves(currentBoard, piece, state));
                 }
                 String addition = (!movement.equals("") ? ", " : "");
                 newStates.forEach(s ->
@@ -126,42 +173,90 @@ public class Solver {
                                 + addition
                                 + movement
                                 + ":" + (currentDepth + 1)));
-            } else {
-                if (any) {
-                    CheckUtil.switchTurns(currentBoard);
-//                    if (!legalFirst || testState(currentBoard)) {
-                    boolean pass = true;
-                    if (compulsoryContinuation(currentBoard)) {
-                        pass = !iterate(currentFEN,
-                                1, true, recursionDepth + depth).isEmpty();
-                    }
-                    if (pass) {
-                        finalStates.add(currentFEN + ":" + movement);
-                        return finalStates;
-                    }
+            } else if (finalCheck(any, currentFEN, currentBoard, recursionDepth, currentDepth)) {
+                finalStates.add(currentFEN + ":" + movement);
+//                if (any) {
+//                    CheckUtil.switchTurns(currentBoard);
+////                    if (!legalFirst || testState(currentBoard)) {
+//                    boolean pass = true;
+//                    if (compulsoryContinuation(currentBoard)) {
+//                        pass = !iterate(currentFEN,
+//                                1, true, recursionDepth + depth).isEmpty();
 //                    }
-                } else {
-//                    this.legalFirst = true;
-                    if (this.additionalDepth == 0 || !iterate(currentFEN,
-                            this.additionalDepth, true, recursionDepth + depth).isEmpty()) {
-                        boolean pass = true;
-                        if (this.additionalDepth == 0) {
-                            CheckUtil.switchTurns(currentBoard);
-                            if (compulsoryContinuation(currentBoard)) {
-                                pass = !iterate(currentFEN,
-                                        1, true,recursionDepth + depth).isEmpty();
-                            }
-                        }
-                        if (pass) {
-                            finalStates.add(currentFEN + ":" + movement);
-                        }
-                    }
-                }
+//                    if (pass) {
+//                        finalStates.add(currentFEN + ":" + movement);
+//                        return finalStates;
+//                    }
+////                    }
+//                } else {
+////                    this.legalFirst = true;
+//                    if (this.additionalDepth == 0 || !iterate(currentFEN,
+//                            this.additionalDepth, true, recursionDepth + depth).isEmpty()) {
+//                        boolean pass = true;
+//                        if (this.additionalDepth == 0) {
+//                            CheckUtil.switchTurns(currentBoard);
+//                            if (compulsoryContinuation(currentBoard)) {
+//                                pass = !iterate(currentFEN,
+//                                        1, true,recursionDepth + depth).isEmpty();
+//                            }
+//                        }
+//                        if (pass) {
+//                            finalStates.add(currentFEN + ":" + movement);
+//                        }
+//                    }
+//                }
             }
         }
         return finalStates;
     }
 
+    /**
+     * Checks whether any additional iterations need to be made before concluding that a board state is valid,
+     * and if so, carries them out, then returns whether a valid is state is found by them.
+     * <p></p>
+     * Reasons for additional iterations are that the additional depth hasn't yet been searched,
+     * or the current board state requires that a compulsory move, moving out of check, or the double move before
+     * an en pass, needs to be made.
+     * @param any if iterator is currently in "any" mode, searching for any solution, rather than as many as
+     *            the number of solutions
+     * @param currentFEN the current FEN being checked
+     * @param currentBoard the current board being checked
+     * @param recursionDepth the current depth of recursion
+     * @param depth the max depth of the current iteration
+     * @return true if all conditions are fulfilled, false otherwise
+     */
+    private boolean finalCheck(boolean any, String currentFEN, ChessBoard currentBoard, int recursionDepth, int depth) {
+        if (!any) {
+            if (!(this.additionalDepth == 0 || !iterate(currentFEN,
+                    this.additionalDepth, true, recursionDepth + depth).isEmpty())) {
+                return false;
+            }
+        }
+        CheckUtil.switchTurns(currentBoard);
+        if (any || this.additionalDepth == 0) {
+            if (compulsoryContinuation(currentBoard)) {
+                return !iterate(currentFEN,
+                        1, true, recursionDepth + depth).isEmpty();
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Converts the current move to a format similar to Long-Algebraic-Notation. The format is:
+     * <p>patcb<p/>
+     * <p>where p is a character representing the moved piece, a is the
+     * coordinate (e.g. a1, c8, etc) of the start of the move were this a regular forward chess move and not an unmove,
+     * t is the type of move (-, x, e.p., O-O, or O-O-O), c is the captured piece,
+     * and b is the coordinate of the end of the move</p>
+     * @param board the board the move was made on
+     * @param origin the starting position of the un move (not the move if were a forward move)
+     * @param target the end position of the un move (not the move if were a forward move)
+     * @param piece a character representing the piece taken, or a blank String
+     * @param castle whether a castle took place
+     * @param enPassant whether an en passant took place
+     * @return the String of the move
+     */
     private String toLAN(ChessBoard board, Coordinate origin, Coordinate target, String piece,
                          boolean castle, boolean enPassant) {
         String movementString = castle ? (origin.getX() < target.getX()? "O-O" : "O-O-O") :
@@ -189,11 +284,10 @@ public class Solver {
      * @param board the board on which the move will be made
      * @param origin the starting Coordinate of the move
      * @param currentState a String of the current board state, plus previous moves and turn number
-     * @param any
      * @return a List of Strings representing states resulting from legal moves, plus a colon-separated
      * description of the move
      */
-    public List<String> iterateThroughMoves(ChessBoard board, Coordinate origin, String currentState, boolean any) {
+    public List<String> iterateThroughMoves(ChessBoard board, Coordinate origin, String currentState) {
         List<String> states = new LinkedList<>();
 
         Coordinate[] moves = board.at(origin).getUnMoves(origin);
@@ -243,18 +337,35 @@ public class Solver {
 
         if (additionalMoves.length != 0) {
             states.addAll(tryMoves(board, additionalMoves, origin, currentState,
-                    addPromotion, addEnPassant, any, addCastle));
+                    addPromotion, addEnPassant, addCastle));
         }
 
         states.addAll(tryMoves(board, moves, origin, currentState,
-                false, false, any, false));
+                false, false, false));
         return states;
     }
 
+    /**
+     * For the set of moves given, converts each of them into a direction, then tries moving the given piece one
+     * unit of movement in each direction, continuing in a given direction until a move cannot be made, at each stage
+     * attempting the move both with and without each possible piece.
+     * Then it is checked that the move doesn't result in a king being in check on their opponent's turn, and that
+     * the FEN Predicate given at construction is true.
+     * <p>Returns a List of valid moves as a FEN followed by a colon (:) and a description of the move
+     * as laid out in the toLAN() method.</p>
+     * @param board the board moves are made on
+     * @param moves the set of moves to be checked, describing how the moved piece would move one unit of movement in
+     *              that direction
+     * @param origin where the moved piece currently is
+     * @param currentState the board state
+     * @param promotion whether a promotion is being un made
+     * @param enPassant whether an unpassant is being made
+     * @param castle whether an uncastle is being made
+     * @return a list of valid moves.
+     */
     private List<String> tryMoves(ChessBoard board, Coordinate[] moves,
                                   Coordinate origin, String currentState, boolean promotion,
                                   boolean enPassant,
-                                  boolean any,
                                   boolean castle) {
         boolean previousEnPassant = !board.getEnPassant().equals(Coordinates.NULL_COORDINATE);
         List<String> states = new LinkedList<>();
@@ -268,7 +379,7 @@ public class Solver {
             if (enPassant) {
                 pieces = List.of("p");
             }
-            for (int i = 1 ; ; i++) {
+            for (int i = 1 ; i <= ChessBoard.LENGTH; i++) {
                 boolean continueFlag = true;
                 if (previousEnPassant) {
                     i = 2;
@@ -285,25 +396,13 @@ public class Solver {
                         if (previousEnPassant) {
                             currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
                         }
-                        String move = currentBoard.getReader().toFEN() + ":"
+                        String moveDescriptor = currentBoard.getReader().toFEN() + ":"
                                 + toLAN(currentBoard, origin, target, piece, castle, enPassant);
                         CheckUtil.switchTurns(currentBoard);
                         if (CheckUtil.check(new BoardInterface(currentBoard))
-                        && this.fenPredicate.test(move +
-//                                (currentState.split(":").length > 1 ?
-                                        (":" + currentState.split(":")[2])
-//                                        : ":0")
-                        )){
-
-//                            CheckUtil.switchTurns(currentBoard);
-//                            if (previousEnPassant) {
-//                                currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
-//                            }
-//                            String boardAndMove = currentBoard.getReader().toFEN() + ":" + toLAN(currentBoard, origin, target, piece, castle, enPassant);
-                            states.add(move);
-//                            if (!legalFirst && any) {
-//                                break;
-//                            }
+                            && this.fenPredicate.test(moveDescriptor +
+                                        (":" + currentState.split(":")[2]))){
+                            states.add(moveDescriptor);
                         }
                     } else {
                         // May break from creating a pawn
@@ -360,7 +459,7 @@ public class Solver {
     public boolean testState(ChessBoard board) {
         testCount++;
         DetectorInterface detector = StateDetectorFactory.getDetectorInterface(board);
-        return detector.testState() && castleCheck(board, detector) && this.detectorPredicate.test(detector);
+        return detector.testState() && CheckUtil.castleCheck(board, detector) && this.detectorPredicate.test(detector);
     }
 
     /**
@@ -392,29 +491,7 @@ public class Solver {
         return moveMaker.makeUnMove(origin, target);
     }
 
-    /**
-     * Checks whether all the castling parameters set on the given ChessBoard match the castling parameters
-     * of the given DetectorInterface
-     * @param board the board being checked
-     * @param detector the DetectorInterface being checked
-     * @return true if the castling parameters match, false otherwise
-     */
-    private boolean castleCheck(ChessBoard board, DetectorInterface detector) {
-        boolean white = true;
-        for (int i = 0 ; i < 2 ; i++) {
-            String piece = "king";
-            for (int j = 0 ; j < 2 ; j++) {
-                if (board.canCastle(piece, white ? "white" : "black")) {
-                    if (!detector.canCastle(white, piece.equals("queen"))) {
-                        return false;
-                    }
-                }
-                piece = "queen";
-            }
-            white = false;
-        }
-        return true;
-    }
+
 
     /**
      * Checks if the Solver needs to continue adding depth as a result of a king currently being in check
