@@ -10,11 +10,12 @@ import StandardChess.Piece;
  * board after it moves.
  */
 public class KingStrategy extends AbstractStrategy{
-
-    private static final Coordinate[] WHITE_COORDS = new Coordinate[]
-            {Coordinates.WHITE_KING, Coordinates.WHITE_KING_ROOK, Coordinates.WHITE_QUEEN_ROOK};
+    /**The castle Coordinates if this king is black*/
     private static final Coordinate[] BLACK_COORDS = new Coordinate[]
             {Coordinates.BLACK_KING, Coordinates.BLACK_KING_ROOK, Coordinates.BLACK_QUEEN_ROOK};
+    /**The castle Coordinates if this king is white*/
+    private static final Coordinate[] WHITE_COORDS = new Coordinate[]
+            {Coordinates.WHITE_KING, Coordinates.WHITE_KING_ROOK, Coordinates.WHITE_QUEEN_ROOK};
 
     /**
      * Constructs the PieceStrategy, setting its moves to vertical, horizontal, and diagonal.
@@ -32,6 +33,12 @@ public class KingStrategy extends AbstractStrategy{
                 Coordinates.UP_LEFT});
     }
 
+    /**
+     * Returns a set of castling Coordinates describing the default locations of the king and two rooks
+     * depending on the colour String given.
+     * @param colour the king's colour as a String, "white" or "black"
+     * @return an array of this piece's castle Coordinates
+     */
     private Coordinate[] getCoordinateSet(String colour) {
         return colour.equals("white")
                 ? WHITE_COORDS
@@ -86,7 +93,8 @@ public class KingStrategy extends AbstractStrategy{
     }
 
     /**
-     * Overrides AbstractStrategy.updateBoard().
+     * Overrides AbstractStrategy.updateBoard(). Ensures the rook is correctly moved and replaced after castling,
+     * the functions identically to the method is overrides.
      * @param origin the start Coordinate
      * @param target the end Coordinate
      * @param board the board the move is attempting to be made on
@@ -100,16 +108,19 @@ public class KingStrategy extends AbstractStrategy{
         if (unMove) {
             if (castle) {
                 Coordinate rookLocation = new Coordinate(target.getX() + xDiff / 2, target.getY());
-                Coordinate placement = new Coordinate(origin.getX() + (xDiff > 0 ? xDiff / 2 : xDiff), origin.getY());
+                Coordinate placement = new Coordinate(origin.getX() + (xDiff > 0 ? xDiff / 2 : xDiff),
+                        origin.getY());
                 board.place(placement, board.at(rookLocation));
                 board.remove(rookLocation);
-                board.setCastle(placement.getX() == 0 ? "queen" : "king", placement.getY() == 0 ? "white" : "black", true);
+                board.setCastle(placement.getX() == 0 ? "queen" : "king", placement.getY() == 0 ? "white" : "black",
+                        true);
             }
         } else {
             board.setCastle("king", king.getColour(), false);
             board.setCastle("queen", king.getColour(), false);
             if (castle) {
-                Coordinate rookLocation = new Coordinate(target.getX() - (xDiff < 0 ? xDiff / 2 : xDiff), target.getY());
+                Coordinate rookLocation = new Coordinate(target.getX() - (xDiff < 0 ? xDiff / 2 : xDiff),
+                        target.getY());
                 board.place(new Coordinate(origin.getX() - xDiff / 2, origin.getY()), board.at(rookLocation));
                 board.remove(rookLocation);
             }
@@ -117,6 +128,13 @@ public class KingStrategy extends AbstractStrategy{
         super.updateBoard(origin, target, board, unMove);
     }
 
+    /**
+     * Checks if a move is a valid castle.
+     * @param origin the start Coordinate
+     * @param target the end Coordinate
+     * @param board the board the move is attempting to be made on
+     * @return true if the move is a valid castle
+     */
     private boolean castleCheck(Coordinate origin, Coordinate target, ChessBoard board) {
         String colour = board.at(origin).getColour();
         int xDiff = origin.getX() - target.getX();
@@ -133,6 +151,13 @@ public class KingStrategy extends AbstractStrategy{
 
     }
 
+    /**
+     * Checks if a move is a valid un castle.
+     * @param origin the start Coordinate
+     * @param target the end Coordinate
+     * @param board the board the move is attempting to be made on
+     * @return true if the move is a valid un castle
+     */
     private boolean unCastleCheck(Coordinate origin,Coordinate target, ChessBoard board) {
         String colour = board.at(origin).getColour();
         Coordinate[] coordinates = getCoordinateSet(colour);
@@ -176,11 +201,12 @@ public class KingStrategy extends AbstractStrategy{
     }
 
     /**
-     * This should only be called if all other castling checks have been carried out
-     * @param origin
-     * @param direction
-     * @param board
-     * @return
+     * This should only be called if all other castling checks have been carried out. Checks whether the king will
+     * be castling or un castling through check.
+     * @param origin the start Coordinate
+     * @param direction an integer describing the direction the king is castling in
+     * @param board the board the move is attempting to be made on
+     * @return true if the king is castling through check, false otherwise
      */
     private boolean castleCheckCheck(Coordinate origin, int direction, ChessBoard board) {
         Piece king = board.at(origin);
