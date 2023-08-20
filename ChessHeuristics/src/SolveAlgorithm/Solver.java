@@ -20,21 +20,24 @@ import static Heuristics.HeuristicsUtil.*;
  * of moves to be found, and any additional depth, are specified separately from construction.
  */
 public class Solver {
-    /**A String Predicate*/
+    /**A list of piece codes of pieces that can be un taken*/
+    private final static List<String> PIECES = List.of("", "p", "r", "b", "n", "q");
+    /**A String Predicate testing that a non-castle, non-en passant, non-capture move by a non-pawn piece takes place*/
     private static final Predicate<String> NORMAL_MOVE =
             new MovementCondition("-")
                     .and(new PieceCondition('P').negate());
-    Predicate<String> fenPredicate = p -> true;
-    private Predicate<DetectorInterface> detectorPredicate = d -> true;
+    /**A predicate testing if checks for non-intrusive movement can take place. Is set to false if a detector
+     * predicate is given at construction*/
     private boolean allowNonIntrusiveMovement = true;
+    /**The additional depth to which the Solver will go after the solve depth is met*/
     private int additionalDepth = 2;
-    private int maxDepth;
+    /**The number of solutions the Solver will find before returning all the solutions it's found*/
     private int numberOfSolutions = 10;
+    /**A DetectorInterface Predicate to be tested after every check that a board state is legal. True by default*/
+    private Predicate<DetectorInterface> detectorPredicate = d -> true;
+    /**A String Predicate to be tested after an un move's validity is tested. True by default*/
+    private Predicate<String> fenPredicate = p -> true;
 
-    private final static List<String> PIECES = List.of("", "p", "r", "b", "n", "q");
-
-    private int count = 0;
-    private int testCount = 0;
 
     /**
      * Constructs a new Solver with no additional conditions.
@@ -84,7 +87,7 @@ public class Solver {
 
     /**
      * Begins the process of solving a last n moves retrograde chess puzzle to the depth given. Return all
-     * solutions found.
+     * solutions found. The ChessBoard given should have its turn set to whichever colour is to un move next.
      * @param board the ChessBoard whose state is to be tested
      * @param depth the depth to which the puzzle will be solved, i.e. the number of moves back it will look
      *              before concluding a state is valid
@@ -92,19 +95,13 @@ public class Solver {
      * @throws IllegalArgumentException if the Reader of the ChessBoard given does not produce a valid FEN
      */
     public List<String> solve(ChessBoard board, int depth) throws IllegalArgumentException {
-        this.maxDepth = depth;
         List<String> solutions = new LinkedList<>();
         String originalBoard = board.getReader().toFEN();
         CheckUtil.switchTurns(board);
         if (testState(board)) {
             solutions = iterate(originalBoard, depth, false, 0);
         }
-        System.out.println("NIMTIME");
-        System.out.println(count);
-        System.out.println("TESTTIME");
-        System.out.println(testCount);
         System.out.println(solutions);
-
         return solutions;
     }
 
@@ -152,7 +149,7 @@ public class Solver {
             } else {
                 state = states.pop();
             }
-//            System.out.println(state);
+
             String[] stateDescription = state.split(":");
             String currentFEN = stateDescription[0];
             ChessBoard currentBoard = BoardBuilder.buildBoard(currentFEN);
@@ -413,11 +410,7 @@ public class Solver {
      * @return whether the move is non-intrusive
      */
     private boolean nonIntrusiveMovement(String move) {
-        boolean test = NORMAL_MOVE.test(move);
-        if (test) {
-            this.count++;
-        }
-        return test;
+        return NORMAL_MOVE.test(move);
     }
 
     /**
@@ -445,7 +438,6 @@ public class Solver {
      * @return whether the board state is legal
      */
     public boolean testState(ChessBoard board) {
-        testCount++;
         DetectorInterface detector = StateDetectorFactory.getDetectorInterface(board);
         return detector.testState() && CheckUtil.castleCheck(board, detector) && this.detectorPredicate.test(detector);
     }

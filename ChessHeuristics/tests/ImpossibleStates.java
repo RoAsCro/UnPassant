@@ -488,11 +488,11 @@ public class ImpossibleStates {
     } @Test
     void r2() {
 
-//        System.out.println("Test = " + test("rnbqkb2/pppppp2/8/2B5/8/BP3N2/P1PPPP2/RN1QKB2 w Qq - 0 1"));
+        System.out.println("Test = " + test("7K/8/8/8/8/6P1/5PPB/1k6 w - - 0 1"));
         Solver solver = new Solver();
         solver.setAdditionalDepth(0);
-        solver.setNumberOfSolutions(1);
-        System.out.println(solver.solve(BoardBuilder.buildBoard("8/8/8/1r1b4/B7/n1K5/8/3k4 w - - 0 1"), 1));
+//        solver.setNumberOfSolutions(1);
+//        System.out.println(solver.solve(BoardBuilder.buildBoard("8/8/8/1r1b4/B7/n1K5/8/3k4 w - - 0 1"), 1));
 
 //        System.out.println(new BoardInterface(BoardBuilder.buildBoard("rnbqkb2/pppppp2/8/2B5/8/BP3N2/P1PPPP2/RN1QKB2 w Qq - 0 1")).canKingCastle(true));
 //        System.out.println(
