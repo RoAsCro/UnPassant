@@ -13,9 +13,9 @@ import java.util.Map;
 public interface DetectorInterface {
     /**
      * Provides a Map of promotions made by the given player, in the format:
-     * <></>
+     * <p></p>
      * [s, [p, i]]
-     * <></>
+     * <p></p>
      * Where s is a String describing the piece's type, as well as whether it's light or dark if it's a bishop,
      * p is a Path containing the Coordinates of all pieces that may be promoted of that type,
      * and i is the number of those pieces that must be promoted.

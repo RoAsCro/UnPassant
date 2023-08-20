@@ -14,9 +14,9 @@ import static Heuristics.HeuristicsUtil.*;
 /**
  * PromotedPawnSquares is a Deduction that, for every pawn that has promoted and seemingly no longer on the board,
  * creates Paths from pawn origins that are not already accounted for to promotion squares.
- * <></>
+ * <p></p>
  * The state is set to false if a promoted-and-absent pawn has no valid Path from an origin to a promotion square.
- * <></>
+ * <p></p>
  * PromotedPawnSquares must only be run after the pawns and pieces have been mapped, promoted pieces
  * determined and their Paths to their current location from pawn origins found,
  * and the maximum number of captures possible by pawns determined, as well as what missing pawns must have been

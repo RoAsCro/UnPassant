@@ -18,14 +18,14 @@ import static Heuristics.HeuristicsUtil.*;
  * non-pawn pieces of the corresponding colour. In the process of doing so, it determines which pieces and which
  * squares are caged, and which pieces are promoted, and whether the king has been displaced by rook and queen
  * movement.
- * <></>
+ * <p></p>
  * For the purposes of the PieceMap, two Coordinates are considered to be able to be able to path to one another
  * if they can both either a. path to the other Coordinate, or b. path to a Coordinate(x, y) such that 2 < y < 7.
  * These Paths must also not be exclusive, as defined in the documentation of class Pathfinder, with any pawn Path.
- * <></>
+ * <p></p>
  * The state is set to false if there is a piece on the board that cannot path to a corresponding origin or
  * promotion square, or if there are more promotions than available pawns.
- * <></>
+ * <p></p>
  * PieceMap must only run deduce() after the pawns have been mapped, otherwise its results will not be
  * accurate.
  */
@@ -78,7 +78,7 @@ public class PieceMap extends AbstractDeduction{
      */
     @Override
     public void deduce(BoardInterface board) {
-        Arrays.stream(new int[]{2, 5, 4, 3, 0, 7}).forEach(x -> {
+        Arrays.stream(new int[]{Q_BISHOP_X, K_BISHOP_X, KING_X, QUEEN_X, Q_ROOK_X, K_ROOK_X}).forEach(x -> {
             findFromOrigin(board, x, true, false);
             findFromOrigin(board, x, false, false);
 
@@ -256,7 +256,7 @@ public class PieceMap extends AbstractDeduction{
                     .toList());
             promotions.forEach(c -> {
                 String name = pieceName +
-                        (bishopAddition ? ((c.getX() + c.getY()) % 2 == 0 ? "d" : "l") : "") +
+                        (bishopAddition ? (!Coordinates.light(c) ? "d" : "l") : "") +
                         (white ? "w" : "b");
                 if (!certainPromotions.containsKey(name)) {
                     certainPromotions.put(name, new Path());
@@ -278,8 +278,8 @@ public class PieceMap extends AbstractDeduction{
      * @param pieceNumber the String/Integer Map to be populated
      */
     private void makePieceNumberMap(BoardInterface board, Map<String, Path> pieces, Map<String, Integer> pieceNumber) {
-        for (int y  = 0 ; y < 8 ; y = y + 7) {
-            for (int x = 0; x < 8; x++) {
+        for (int y  = 0 ; y <= FINAL_RANK_Y ; y = y + 7) {
+            for (int x = 0; x <= FINAL_RANK_Y; x++) {
                 Coordinate origin = new Coordinate(x, y);
                 if (x == Q_KNIGHT_X || x == K_KNIGHT_X) {
                     continue;

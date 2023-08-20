@@ -17,11 +17,11 @@ import static Heuristics.HeuristicsUtil.*;
  * It does not take into account the captures of or by pawns that have promoted, and will not fail under the
  * assumption that these have not taken place, i.e., if a missing pawn cannot have been captured if it did
  * not promote, it will not be accounted for when the other deductions are rerun.
- * <></>
+ * <p></p>
  * The state will never be set to false, but in the course of making deductions, the CaptureLocations may
  * make a call to its registered StateDetector to rerun previously run Deductions with the new information it
  * has found.
- * <></>
+ * <p></p>
  * CaptureLocations must only run deduce() after the pawns and pieces have been mapped, cages determined,
  * and certain promotions discovered, otherwise its results will not be accurate.
  */
@@ -299,7 +299,7 @@ public class CaptureLocations extends AbstractDeduction {
      * by the BiPredicates. Two BiPredicates' conditions may not be fulfilled by the same two Coordinates on the Paths.
      * Returns the List of BiPredicates with the ones that have had their condition fulfilled removed.
      * If there are
-     * <></>
+     * <p></p>
      * If pawn = true all pawn Paths will be checked, otherwise only the Paths of pawns with one origin and one
      * Path from that origin.
      * @param white the player whose pawns are being checked, true if white, false if black

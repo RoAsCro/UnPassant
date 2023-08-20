@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 
 /**
  * PawnPositions is a deduction that checks that there are no pawn on the 1st or 8th ranks.
- * <></>
+ * <p></p>
  * It will be set to false if this is the case.
  */
 public class PawnPositions extends AbstractDeduction {

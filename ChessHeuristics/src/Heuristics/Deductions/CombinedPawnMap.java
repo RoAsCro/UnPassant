@@ -17,7 +17,7 @@ import static Heuristics.HeuristicsUtil.FIRST_RANK_Y;
 /**
  * The CombinedPawnMap is a Deduction which forms a map of potential Paths from squares on the 2nd and 7th ranks to
  * pawns of the corresponding colour.
- * <></>
+ * <p></p>
  * The state will be set to false if any pawn on the does not have a valid Path from an origin.
  */
 public class CombinedPawnMap extends AbstractDeduction {
@@ -277,7 +277,7 @@ public class CombinedPawnMap extends AbstractDeduction {
      * The PawnMap is a Deduction that links squares on the 2nd or 7th ranks to pawns of the colour given at
      * instantiation. A PawnMap is initialised with a boolean representing which player's pawns it is mapping,
      * true if white, false if black.
-     * <></>
+     * <p></p>
      * The state will be set to false if there is a pawn of the given colour that cannot be
      * linked to an origin.
      */
@@ -312,7 +312,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          * minus any that have already been claimed by other pawns or set of pawns. Any subsets origins from which
          * a subset of the pawns on the board of an equal size may have come from, if the pawns may not have come
          * from any other origins, is marked in the PawnData's originFree as not free.
-         * <></>
+         * <p></p>
          * If any pawn does not have a valid origin, this Deduction is set to false.
          * @param board the board to be checked
          */
@@ -327,7 +327,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          * Returns the max number of pieces pawns can capture. This is the standard number of pieces, 16,
          * minus the number of missing opposing pieces that cannot be taken by pawns according to what is currently
          * stored in the PawnData, minus the number of pieces the opposing player has remaining:
-         * <></>
+         * <p></p>
          * (16 - takeable pieces) - opponent's remaining pieces
          * @return the max number of pieces the pawns can collectively take
          */
@@ -390,7 +390,7 @@ public class CombinedPawnMap extends AbstractDeduction {
          * Updates the player's captureSet - a Map of Coordinates of pawns and the minimum number of pieces that
          * pawn must take. This is the smallest difference between the pawn's current x and the x's if it's potential
          * origins in pawnOrigins.
-         * <></>
+         * <p></p>
          * If the sum of minimum captures exceeds the maximum number of pieces all pawns can take, the state is set
          * to false. If it does not, the remainder of this amount is set as the capturedPieces.
          */

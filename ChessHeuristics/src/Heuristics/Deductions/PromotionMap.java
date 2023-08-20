@@ -16,10 +16,10 @@ import static Heuristics.HeuristicsUtil.*;
  * The PromotionMap looks at every promoted piece on the board and determines whether there is a valid set of
  * pawn origins, promotion squares, and promoted pieces for each one, then adds these to the existing pawn
  * paths stored in the PawnData.
- * <></>
+ * <p></p>
  * The state will be set to false if any promoted piece does not have a valid Path from a pawn origin
  * to a promotion square, then to the piece, without exceeding the maximum number of captures that may take place.
- * <></>
+ * <p></p>
  * PromotionMap must only be run after the pawns and pieces have been mapped, promoted pieces determined and linked
  * to promotion squares, and the maximum number of captures possible by pawns determined, otherwise it will not be
  * accurate.

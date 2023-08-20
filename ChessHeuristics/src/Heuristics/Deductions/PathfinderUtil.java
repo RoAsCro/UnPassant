@@ -36,7 +36,7 @@ public class PathfinderUtil {
     public Predicate<Path> firstRankCollision = path -> {
         Coordinate coordinate = path.getLast();
         return !(
-                (coordinate.getY() == 0 || coordinate.getY() == 7)
+                (coordinate.getY() == FIRST_RANK_Y || coordinate.getY() == FINAL_RANK_Y)
                         && !STANDARD_STARTS.get(coordinate.getX()).equals("rook")
                         && this.detector.getPieceData().getPiecePaths().containsKey(coordinate)
                         && !this.detector.getPieceData().getPiecePaths().get(coordinate).isEmpty()

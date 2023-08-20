@@ -7,10 +7,10 @@ import Heuristics.Detector.StateDetector;
 /**
  * An Interface for a Class that deduces information about a chess board from the position of pieces and the various
  * data stored in a StateDetector, in turn storing the information deduced in the data classes of that Detector.
- * <></>
+ * <p></p>
  * A Deduction has a state, representing whether, according to its deductions, the board it's been given is reachable
  * according to the rules of Chess.
- * <></>
+ * <p></p>
  * Before running its deduce() method, a StateDetector must be registered in the Deduction. A Deductions will also
  * often require that other information be derived before it can produce accurate results.
  */

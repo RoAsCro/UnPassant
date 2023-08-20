@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 /**
  * An implementation of DetectorInterface, implementing all its methods plus a human-readable toString method.
- * <></>
+ * <p></p>
  * StandardDetectorInterface is meant to work specifically with the implementation of StandardStateDetector
  */
 public class StandardDetectorInterface implements DetectorInterface {
@@ -42,9 +42,9 @@ public class StandardDetectorInterface implements DetectorInterface {
 
     /**
      * Provides a Map of promotions made by the given player, in the format:
-     * <></>
+     * <p></p>
      * [s, [p, i]]
-     * <></>
+     * <p></p>
      * Where s is a String describing the piece's type, as well as whether it's light or dark if it's a bishop,
      * p is a Path containing the Coordinates of all pieces that may be promoted of that type,
      * and i is the number of those pieces that must be promoted.

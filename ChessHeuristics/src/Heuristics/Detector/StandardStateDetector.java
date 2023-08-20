@@ -116,7 +116,7 @@ public class StandardStateDetector implements StateDetector {
      * given at instantiation. For each, the deduce() method is called, and the state of that Deduction and all
      * previous deductions checked. If at any stage any Deduction's state is false, testing ceases, and false
      * returned.
-     * <></>
+     * <p></p>
      * The board's turn should be the turn of the colour that would theoretically move next in an ordinary
      * chess game, or the turn of whoever just made an un-move.
      * @param board the BoardInterface representing the board to be checked

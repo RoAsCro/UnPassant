@@ -4,16 +4,33 @@ import Heuristics.BoardInterface;
 import Heuristics.Detector.DetectorInterface;
 import StandardChess.ChessBoard;
 
+/**
+ * A utility class with static methods to assist in checking if kings are in check.
+ */
 public class CheckUtil {
 
+    /**
+     * Checks if the colour whose turn it is not is in check.
+     * @param board the board being checked
+     * @return true if not in check, false otherwise
+     */
     public static boolean check(BoardInterface board) {
         return !board.inCheck(board.getTurn().equals("white") ? "black" : "white");
     }
+
+    /**
+     * Checks if either player is in check
+     * @param board the board being checked
+     * @return true if either player is in check, false otherwise
+     */
     public static boolean eitherInCheck(BoardInterface board) {
-//        board.getReader().toFEN().split();
         return (board.inCheck("white") || board.inCheck("black"));
     }
 
+    /**
+     * Changes whose turn it is in the given ChessBoard.
+     * @param board the board whose turn is being changed
+     */
     public static void switchTurns(ChessBoard board) {
         board.setTurn(board.getTurn().equals("white") ? "black" : "white");
     }
