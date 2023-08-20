@@ -92,7 +92,7 @@ public class StandardPiece implements Piece {
     public Coordinate[] getMoves(Coordinate origin){
         return this.strategy.getMoves(origin, this.colour);
     }
-    
+
     /**
      * Gets all possible un moves one unit of movement away for the piece type from the given origin.
      * One unit of movement is the minimum distance a piece can travel using a given move. In most cases
