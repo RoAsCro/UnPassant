@@ -91,6 +91,25 @@ public class GameTest {
         Assertions.assertTrue(FEN.contains("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
     }
 
+    @Test
+    public void testGameSeven() {
+        //Hernandez, Albert (2211) vs Moulton, Richard (1777)
+        //Date:	2016-08-25
+        //Event:	27th NATO Chess 2016, Shrivenham ENG
+        String FEN = gameTest("- d2 - d4 -/- d7 - d5 -/- c2 - c4 -/- c7 - c6 -/- b1 - c3 -/- g8 - f6 -/- c1 - f4 -/x d5 - c4 p/- a2 - a4 -/- f6 - d5 -/- f4 - d2 -/x d5 - c3 n/x d2 - c3 n/- b7 - b5 -/- e2 - e3 -/- c8 - b7 -/- b2 - b3 -/x c4 - b3 p/x d1 - b3 p/- a7 - a6 -/- g1 - f3 -/- b8 - d7 -/- f1 - e2 -/- e7 - e6 -/- e1 - g1 -/- d7 - f6 -/- f3 - e5 -/- d8 - d5 -/- e2 - c4 -/x b5 - c4 b/x b3 - b7 b/- c6 - c5 -/x b7 - f7 p/- e8 - d8 -/- c3 - a5 -/- d8 - c8 -/- f7 - c7 -",
+                "r1k2b1r/2Q3pp/p3pn2/B1pqN3/P1pP4/4P3/5PPP/R4RK1 w - -");
+        Assertions.assertTrue(FEN.contains("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
+    }
+
+    @Test
+    public void testGameEight() {
+        //Hasegawa, Emi (1752) vs Fong, Mi Yen (1885)
+        //Date:	2012-08-29
+        //Event:	40th Olympiad Women, Istanbul TUR
+        String FEN = gameTest("- d2 - d4 -/- g8 - f6 -/- c2 - c4 -/- g7 - g6 -/- g1 - f3 -/- f8 - g7 -/- b1 - c3 -/- d7 - d6 -/- e2 - e4 -/- e8 - g8 -/- f1 - d3 -/- e7 - e5 -/- d4 - d5 -/- b8 - d7 -/- b2 - b4 -/- f6 - h5 -/- e1 - g1 -/- d8 - e7 -/- c3 - e2 -/- c7 - c5 -/- b4 - b5 -/- f7 - f5 -/- a1 - b1 -/- f5 - f4 -/- g1 - h1 -/- g6 - g5 -/- e2 - g1 -/- g5 - g4 -/- f3 - d2 -/- e7 - h4 -/- f2 - f3 -/- h5 - g3 -",
+                "r1b2rk1/pp1n2bp/3p4/1PpPp3/2P1Pppq/3B1Pn1/P2N2PP/1RBQ1RNK b - -");
+        Assertions.assertTrue(FEN.contains("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
+    }
 
 
 }

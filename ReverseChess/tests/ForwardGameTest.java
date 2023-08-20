@@ -56,4 +56,22 @@ public class ForwardGameTest {
         tester.play("e2e4 g8f6 e4e5 f6d5 d2d4 d7d6 g1f3 b8c6 c2c4 d5b6 c1f4 c8g4 f1e2 d6e5 f4e5 c6e5 f3e5 g4e2 d1e2 d8d4 b1c3 g7g6 a1d1 d4f4 g2g3 f4f5 c3b5 f5c8 c4c5 b6a4 b5c7 c8c7 e2b5 c7c6 e5c6 b7c6 b5c6");
         Assertions.assertEquals("r3kb1r/p3pp1p/2Q3p1/2P5/n7/6P1/PP3P1P/3RK2R w KQkq -", tester.getBoard().getReader().toFEN());
     }
+
+    @Test
+    public void testSeven() {
+        //Hernandez, Albert (2211) vs Moulton, Richard (1777)
+        //Date:	2016-08-25
+        //Event:	27th NATO Chess 2016, Shrivenham ENG
+        tester.play("d2d4 d7d5 c2c4 c7c6 b1c3 g8f6 c1f4 d5c4 a2a4 f6d5 f4d2 d5c3 d2c3 b7b5 e2e3 c8b7 b2b3 c4b3 d1b3 a7a6 g1f3 b8d7 f1e2 e7e6 e1g1 d7f6 f3e5 d8d5 e2c4 b5c4 b3b7 c6c5 b7f7 e8d8 c3a5 d8c8 f7c7");
+        Assertions.assertEquals("r1k2b1r/2Q3pp/p3pn2/B1pqN3/P1pP4/4P3/5PPP/R4RK1 w - -", tester.getBoard().getReader().toFEN());
+    }
+
+    @Test
+    public void testEight() {
+        //Hasegawa, Emi (1752) vs Fong, Mi Yen (1885)
+        //Date:	2012-08-29
+        //Event:	40th Olympiad Women, Istanbul TUR
+        tester.play("d2d4 g8f6 c2c4 g7g6 g1f3 f8g7 b1c3 d7d6 e2e4 e8g8 f1d3 e7e5 d4d5 b8d7 b2b4 f6h5 e1g1 d8e7 c3e2 c7c5 b4b5 f7f5 a1b1 f5f4 g1h1 g6g5 e2g1 g5g4 f3d2 e7h4 f2f3 h5g3");
+        Assertions.assertEquals("r1b2rk1/pp1n2bp/3p4/1PpPp3/2P1Pppq/3B1Pn1/P2N2PP/1RBQ1RNK w - -", tester.getBoard().getReader().toFEN());
+    }
 }

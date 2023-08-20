@@ -1364,6 +1364,47 @@ public class SolverTest {
         // Type D - Finds the only last 4 moves available, set to 2 solutions, finds 1
     }
 
+//    @Test
+//    public void ArabianKnights1() {
+//        //pp7
+//
+//        List<String> list = List.of(
+//                "2bqk3/1p1ppp2/p1p2p2/Pn5p/4P1n1/1PN5/B1PP1PBP/R2QK1NR w KQ - 0 1"
+//        );
+//
+//        int count = 0;
+//        for (String st : list) {
+//            count++;
+////            System.out.println(count);
+//            System.out.println(st);
+//            ChessBoard board = BoardBuilder.buildBoard(st);
+//            board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
+//            if (!StateDetectorFactory.getDetector(board).testState()) {
+//                System.out.println("c");
+//                continue;
+//            }
+//            Solver solver = new Solver();
+//            solver.setNumberOfSolutions(1);
+//            solver.setAdditionalDepth(1);
+//
+//            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 4);
+//            System.out.println(solutions);
+////            if (count == 1) {
+////                Assertions.assertEquals(1, solutions.size());
+////                Assertions.assertTrue(solutions.get(0).contains("8/8/8/8/8/4P3/3PrpPP/5K1k"));
+////            } else {
+////                Assertions.assertEquals(1, solutions.size());
+////                Assertions.assertTrue(solutions.get(0).contains("8/8/8/8/8/4PpP1/3Pr2P/5K1k"));
+////
+////
+////            }
+//
+//
+//        }
+//        // Fails  - Doesn't account for later piece cages
+//        // Type D - Finds the only last 4 moves available, set to 2 solutions, finds 1
+//    }
+
     @Test
     public void ChessMysteries() {
         // pp89
@@ -1382,7 +1423,7 @@ public class SolverTest {
                         }
                         return true ;
                     });
-            solver.setNumberOfSolutions(100);
+            solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(0);
             List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 1);
 //            Assertions.assertEquals(0, solutions.size());
@@ -1422,34 +1463,41 @@ public class SolverTest {
     }
 
     @Test
-    public void DieScwalze() {
-        // pp89
+    public void ArbianKnights1() {
+        //
+        //pp3
+
         List<String> list = List.of(
-                "nBb2R1R/bqr5/kppp4/n3K2B/p1P1ppNN/rP2PPpp/P2P1QPP/8 b - - 0 1"
+                "8/8/8/1r1b4/B7/8/8/3k4 w - - 0 1"
         );
 
         int count = 0;
         for (String st : list) {
             count++;
 //            System.out.println(count);
-            Solver solver = new Solver(
-                    s -> true
-                    ,d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-////                    System.out.println(d.getPromotions().values().stream().flatMap(List::stream).toList());
-//                }
-                return true;
-            }
-            );
-            solver.setNumberOfSolutions(1);
-            solver.setAdditionalDepth(1);
-//            System.out.println(count);
-//            List<String> solutions = solver.solve(BoardBuilder.buildBoard(st), 30);
-//            System.out.println(solutions);
-//            Assertions.assertEquals(0, solutions.size());
-//            Assertions.assertTrue(solutions.stream().anyMatch(s -> s.contains("2b5/pp1p4/PR1P4/pqR2N2/2K5/2P5/1kP1PNP1/1nrnB3")));
-        }
 
+            for (int x = 0; x < 8; x++) {
+                for (int y = 0; y < 8; y++) {
+                    ChessBoard board = BoardBuilder.buildBoard(st);
+                    Coordinate target = new Coordinate(x, y);
+                    if (!board.at(target).getType().equals("null")) {
+                        continue;
+                    }
+                    board.place(target, StandardPieceFactory.getInstance().getPiece("K"));
+                    System.out.println(board.getReader().toFEN());
+
+                    Solver solver = new Solver();
+                    solver.setNumberOfSolutions(1);
+                    solver.setAdditionalDepth(1);
+                    List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 2);
+                    if (board.getReader().toFEN().contains("8/8/8/1r1b4/B7/2K5/8/3k4")) {
+                        Assertions.assertNotEquals(0, solutions.size());
+                    } else {
+                        Assertions.assertEquals(0, solutions.size());
+                    }
+                }
+            }
+        }
     }
 
 

@@ -14,15 +14,19 @@ import java.util.function.Predicate;
 
 import static Heuristics.HeuristicsUtil.*;
 
+/**
+ * A class that searches through a given FEN, looking for a number of valid sets of last moves up to a specified depth,
+ * and of a specified amount. Additional conditions can also be given to make during testing. The number of valid sets
+ * of moves to be found, and any additional depth, are specified separately from construction.
+ */
 public class Solver {
+    /**A String Predicate*/
     private static final Predicate<String> NORMAL_MOVE =
             new MovementCondition("-")
                     .and(new PieceCondition('P').negate());
     Predicate<String> fenPredicate = p -> true;
     private Predicate<DetectorInterface> detectorPredicate = d -> true;
     private boolean allowNonIntrusiveMovement = true;
-    private boolean legalFirstAlwaysTrue = false;
-    private boolean legalFirst = false;
     private int additionalDepth = 2;
     private int maxDepth;
     private int numberOfSolutions = 10;
@@ -89,9 +93,6 @@ public class Solver {
      */
     public List<String> solve(ChessBoard board, int depth) throws IllegalArgumentException {
         this.maxDepth = depth;
-        if (this.legalFirst) {
-            this.legalFirstAlwaysTrue = true;
-        }
         List<String> solutions = new LinkedList<>();
         String originalBoard = board.getReader().toFEN();
         CheckUtil.switchTurns(board);
@@ -109,15 +110,22 @@ public class Solver {
 
     /**
      * Carries out a depth-first search through every possible move from the starting FEN up to the given depth.
-     * First, a state is popped from a stack of states, and its legality tested by a StateDetector.
+     * First, a state is popped from a stack of states, and its legality tested by a StateDetector, and against the
+     * Detector Predicate given at construction.
      * Then, if that state's depth is not the same as the given depth,
      * valid moves from that state are found using an UnMoveMaker and tested against the FEN Predicate given
-     * at construction. Each valid move is then
-     * @param startingFen
-     * @param depth
-     * @param any
-     * @param recursionDepth
-     * @return
+     * at construction. Each valid move is then pushed to the stack.
+     * If the state's depth is the same as the given depth after testing, it is then checked if further
+     * iterations are required, either from compulsory moves, or additional depth being set, and if so further
+     * iterations are made in "any" mode, otherwise the state is added to the pool of solutions.
+     * Once the pool of solutions reaches the maximum number of solutions, or there are no more
+     * states in the stack, the process ends, returning all found solutions, if any.
+     * @param startingFen the first FEN in the pool.
+     * @param depth the depth to go to
+     * @param any whether to look for any valid solution, or as many as required to meet the set maximum, true for any,
+     *            false for all
+     * @param recursionDepth the current depth of recursion, initially 0
+     * @return a List of solutions found, if any
      */
     private List<String> iterate(String startingFen, int depth, boolean any, int recursionDepth) {
         LinkedList<String> states = new LinkedList<>();
@@ -144,7 +152,7 @@ public class Solver {
             } else {
                 state = states.pop();
             }
-
+//            System.out.println(state);
             String[] stateDescription = state.split(":");
             String currentFEN = stateDescription[0];
             ChessBoard currentBoard = BoardBuilder.buildBoard(currentFEN);
