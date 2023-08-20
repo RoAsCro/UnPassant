@@ -166,12 +166,7 @@ public class Solver {
             if (currentDepth != depth + recursionDepth) {
                 List<Coordinate> pieces = allPieces(currentBoard);
                 List<String> newStates = new LinkedList<>();
-                Coordinate enPassant = currentBoard.getEnPassant();
-                boolean enPassantNull = enPassant.equals(Coordinates.NULL_COORDINATE);
                 for (Coordinate piece : pieces) {
-                    if (!enPassantNull && !piece.equals(enPassant)) {
-                        continue;
-                    }
                     newStates.addAll(iterateThroughMoves(currentBoard, piece, state));
                 }
                 String addition = (!movement.equals("") ? ", " : "");
@@ -378,9 +373,6 @@ public class Solver {
 
                     if (makeJustMove(currentBoard, origin, target, piece, promotion, enPassant)){
                         CheckUtil.switchTurns(currentBoard);
-                        if (previousEnPassant) {
-                            currentBoard.setEnPassant(Coordinates.NULL_COORDINATE);
-                        }
                         String moveDescriptor = currentBoard.getReader().toFEN() + ":"
                                 + toLAN(currentBoard, origin, target, piece, castle, enPassant);
                         CheckUtil.switchTurns(currentBoard);

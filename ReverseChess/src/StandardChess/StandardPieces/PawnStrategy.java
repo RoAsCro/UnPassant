@@ -122,9 +122,12 @@ public class PawnStrategy extends AbstractStrategy {
 
     /**
      * Overrides AbstractStrategy.updateBoard(). For a forward move,
-     * if a double move is made, sets the en passant coordinate on the ChessBoard to the square between the origin and
+     * if a double move is made, sets the en passant Coordinate on the ChessBoard to the square between the origin and
      * the target; if an en passant is made, removes th piece between the origin and the target.
-     * For an un move
+     * For an un move,
+     * if a capture is made, the en passant Coordinate is set to the Coordinate of where the un captured pawn
+     * would be if this were an en passant - this relies on a separate class to correct it if this is wrong ;
+     * all other moves remove the en passant Coordinate
      * @param origin the start Coordinate
      * @param target the end Coordinate
      * @param board the board the move is attempting to be made on
@@ -136,7 +139,12 @@ public class PawnStrategy extends AbstractStrategy {
         int yDiff = origin.getY() - target.getY();
         String colour = board.at(origin).getColour();
         if (unMove) {
-            
+            if (xDiff != 0 && NOT_NULL.test(board.at(origin))) {
+                board.setEnPassant(new Coordinate(origin.getX(), origin.getY() - yDiff));
+            } else {
+                super.updateBoard(origin, target, board, unMove);
+            }
+
         } else {
             if (doubleMoveCheck(origin, colour, yDiff, 1)) {
                 board.setEnPassant(new Coordinate(origin.getX(), origin.getY() - yDiff / 2));
@@ -153,7 +161,15 @@ public class PawnStrategy extends AbstractStrategy {
         }
     }
 
-
+    /**
+     * Checks that the given y-difference is the target y times the appropriate modifier for if "black" or "white" is
+     * input.
+     * @param colour the colour of the pawn, "white" or "black"
+     * @param yDiff the y difference between a target and an origin
+     * @param targetY the y of the target
+     * @return if the y-difference is the target y times the appropriate modifier for if "black" or "white" is
+     *      input
+     */
     private boolean yCheck(String colour, int yDiff, int targetY) {
         int modifier = 1;
         if (colour.equals("white")) {
@@ -164,6 +180,17 @@ public class PawnStrategy extends AbstractStrategy {
         return yDiff == targetY * modifier;
     }
 
+    /**
+     * Tests that all are true: the x difference is the difference needed; the Piece at the target is either null
+     * or not null, depending on the value of "null"; the Piece at the target is not the colour given.
+     * @param xDiff the x difference
+     * @param requiredDiff the required x difference
+     * @param target the Coordinate location of the target
+     * @param notNull whether the target should not be null, true if it should not be null, false if it should
+     * @param board the board being checked
+     * @param notColour the colour the piece should not be
+     * @return whether all the above conditions are true
+     */
     private boolean xCheck(int xDiff, int requiredDiff,
                            Coordinate target, boolean notNull,
                            ChessBoard board, String notColour) {
@@ -172,8 +199,16 @@ public class PawnStrategy extends AbstractStrategy {
                 && (!board.at(target).getColour().equals(notColour));
     }
 
+    /**
+     * Checks if an en passant can take place.
+     * @param yDiff the y difference between an origin and target
+     * @param target the Coordinate location of the target
+     * @param colour the colour of the pawn, "white" or "black"
+     * @param board the board being checked
+     * @return true if an en passant can take place
+     */
     private boolean enPassantCheck(int yDiff, Coordinate target, String colour, ChessBoard board) {
-
+        System.out.println(yDiff);
         Coordinate ePTarget = new Coordinate(target.getX(), target.getY() + yDiff);
         Piece targetPiece = board.at(ePTarget);
         return board.getEnPassant().equals(target)
@@ -183,12 +218,14 @@ public class PawnStrategy extends AbstractStrategy {
                 !targetPiece.getColour().equals(colour);
     }
 
-    @Deprecated
-    private boolean unPassantCheck(int yDiff, Coordinate origin, ChessBoard board) {
-        Coordinate ePTarget = new Coordinate(origin.getX(), origin.getY() + yDiff);
-        return board.at(ePTarget).getType().equals("null");
-    }
-
+    /**
+     * Checks the move is an appropriate double move.
+     * @param origin the Coordinate location of the origin
+     * @param colour the colour of the pawn, "white" or "black"
+     * @param yDiff the y difference between an origin and target
+     * @param unMove a multiplier describing whether this is an un move, 1 for forward move, -1 for un move
+     * @return if this is a valid double move
+     */
     private boolean doubleMoveCheck(Coordinate origin, String colour, int yDiff, int unMove) {
         if (!yCheck(colour, yDiff, 2 * unMove)) {
             return false;
@@ -197,7 +234,4 @@ public class PawnStrategy extends AbstractStrategy {
         return (origin.getY() == 2 + yDiff / 2 && colour.equals("white"))
                 || (origin.getY() == 5 + yDiff / 2 && colour.equals("black"));
     }
-
-    //TODO promotion
-    //TODO can't unmove to back rank
 }

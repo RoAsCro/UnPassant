@@ -273,6 +273,38 @@ public class UnMoveMakerTest {
         Assertions.assertFalse(unMoveMaker.makeUnMove(origin, target));
     }
 
+    @Test
+    public void tryEnPassantThenNotDouble() {
+        Coordinate target = new Coordinate(1, 8);
+        Coordinate origin = new Coordinate(1, 7);
+        ChessBoard board1 = BoardBuilder.buildBoard("k7/8/8/8/8/1p6/8/K7 b - - 0 1");
+        UnMoveMaker unMoveMaker = new UnMoveMaker(board1);
+//        board.setTurn();
+        unMoveMaker.setCaptureFlag(true);
+        unMoveMaker.setEnPassantFlag(true);
+        unMoveMaker.setCapturePiece(StandardPieceFactory.getInstance().getPiece("P"));
+        System.out.println(unMoveMaker.makeUnMove(new Coordinate(1, 2), new Coordinate(0, 3)));
+        unMoveMaker.setCaptureFlag(false);
+        unMoveMaker.setEnPassantFlag(false);
+        System.out.println(board1.getReader().toFEN());
+        board1.setTurn("white");
+        Assertions.assertFalse(unMoveMaker.makeUnMove(new Coordinate(0, 0), new Coordinate(1, 0)));
+        board1.setTurn("white");
+        System.out.println(board1.getReader().toFEN());
+        Assertions.assertTrue(unMoveMaker.makeUnMove(new Coordinate(1, 3), new Coordinate(1, 1)));
+
+
+
+    }
+
+//    @Test
+//    public void tryMakeUnMovePawnUnPassant() {
+//        Coordinate target = new Coordinate(4, 3);
+//        Coordinate origin = new Coordinate(3, 2);
+//        makeUnMoveWithCapture(origin, target, "null", "pawn",  true, "p", this.boardTwo, true);
+//        Assertions.assertEquals("pawn", this.boardTwo.at(new Coordinate(3, 3)).getType());
+//    }
+
 
 
 }

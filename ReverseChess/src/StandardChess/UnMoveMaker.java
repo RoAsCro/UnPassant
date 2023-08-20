@@ -25,18 +25,21 @@ public class UnMoveMaker {
             return false;
         }
         Piece piece = this.board.at(origin);
-        Coordinate captureLocation = origin;
         if (!this.board.getTurn().equals(piece.getColour())) {
-            System.out.println(piece.getColour());
-
             return false;
         }
         boolean isWhite = this.board.getTurn().equals("white");
+        Coordinate ePLocation = board.getEnPassant();
+        if (!ePLocation.equals(Coordinates.NULL_COORDINATE) && (!ePLocation.equals(origin)
+                || !(Math.abs(origin.getY() - target.getY()) == 2))) {
+            System.out.println(ePLocation);
+            return false;
+        }
+        Coordinate captureLocation = origin;
         if (this.enPassantFlag) {
             captureLocation = new Coordinate(origin.getX(), origin.getY() - (isWhite ? 1 : -1));
             if (!this.board.at(captureLocation).getType().equals("null")
                     || !piece.getType().equals("pawn")) {
-
                 return false;
             }
         } else if (this.promotionFlag ) {
@@ -56,7 +59,6 @@ public class UnMoveMaker {
             if (!this.captureFlag && piece.getType().equals("pawn") && xDiff != 0) {
                 return false;
             } else if (this.captureFlag && piece.getType().equals("pawn") && xDiff == 0) {
-
                 return false;
             }
             else if (this.captureFlag && piece.getType().equals("king") && Math.abs(xDiff) == 2) {
@@ -65,9 +67,9 @@ public class UnMoveMaker {
             piece.updateBoard(origin, target, board, true);
             this.board.remove(origin);
             this.board.place(target, piece);
-            if (this.enPassantFlag) {
+            if (!this.enPassantFlag) {
 //                System.out.println();
-                this.board.setEnPassant(captureLocation);
+                this.board.setEnPassant(Coordinates.NULL_COORDINATE);
             }
             if (this.captureFlag) {
                 this.board.place(captureLocation, this.capturePiece);
