@@ -32,7 +32,7 @@ public class LocationCondition implements Predicate<String> {
     @Override
     public boolean test(String s) {
         String move = s.split(":")[1];
-        return (from.equals("-") || move.substring(1, 3).equals(from)) &&
-                (to.equals("-") || move.substring(move.length() - 2).equals(to));
+        return move.length() == 0 ||  ((from.equals("-") || move.substring(1, 3).equals(from)) &&
+                (to.equals("-") || move.substring(move.length() - 2).equals(to)));
     }
 }

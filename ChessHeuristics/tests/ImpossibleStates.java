@@ -7,10 +7,14 @@ import Heuristics.Detector.Data.StandardPromotionData;
 import Heuristics.Detector.StandardDetectorInterface;
 import Heuristics.Detector.StandardStateDetector;
 import SolveAlgorithm.Solver;
+import SolveAlgorithm.UnMoveConditions.MovementCondition;
+import SolveAlgorithm.UnMoveConditions.PieceCondition;
 import StandardChess.BoardBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.function.Predicate;
 
 public class ImpossibleStates {
 
@@ -491,7 +495,13 @@ public class ImpossibleStates {
         System.out.println(solver.solve(BoardBuilder.buildBoard("rnR1k2r/pp1p1ppp/4p3/1N1nP3/q4P2/5Q2/P2B2PP/4KB1R b Kkq - "), 1));
 
         System.out.println(new BoardInterface(BoardBuilder.buildBoard("rnbqkb2/pppppp2/8/2B5/8/BP3N2/P1PPPP2/RN1QKB2 w Qq - 0 1")).canKingCastle(true));
-//        System.out.println(test("r3kqR1/1p1pppp1/5B1P/6PN/4P2p/3Q1P2/2PK2pP/8 b q - 0 1"));
+        System.out.println(
+                new MovementCondition("-")
+                        .and(new PieceCondition('P').negate())
+                        .and(new PieceCondition('K').negate().or(s -> s.split(" ")[2].equals("-")))
+                        .and(new PieceCondition('R').negate().or(s -> s.split(" ")[2].equals("-")))
+                        .test("r3k2r/p1p1p1p1/bp3p1p/8/8/8/PPPPPPPP/2BQKB2 w - -:Ba6-c8, Pa2-a3, :2"));
+        //        System.out.println(test("r3kqR1/1p1pppp1/5B1P/6PN/4P2p/3Q1P2/2PK2pP/8 b q - 0 1"));
 //        System.out.println(this.detector.getPawnsCapturedByPawns(true));
 //        System.out.println(this.detector.getPawnsCapturedByPawns(false));
 //        System.out.println(this.detector.getPromotedPawns(true));

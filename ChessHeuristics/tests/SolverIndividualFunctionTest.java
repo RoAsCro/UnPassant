@@ -263,4 +263,23 @@ public class SolverIndividualFunctionTest {
                 .stream().anyMatch(s -> s.contains("r3k3/8/2K5/8/8/8/7P/8 w")));
     }
 
+    @Test
+    public void castlingViolationTest() {
+        Solver solver = new Solver(new UnMoveCondition(0, 99, '-', "-", "-", 'K',
+                '-', "-", true));
+        solver.setAdditionalDepth(0);
+        solver.setNumberOfSolutions(1);
+        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("4k2r/8/8/8/4K3/8/8/r7 b k - 0 1"), 1).size());
+    }
+
+    @Test
+    public void castlingViolationTestTwo() {
+        Solver solver = new Solver(new UnMoveCondition(0, 99, '-', "-", "-", 'K',
+                '-', "-", true));
+        solver.setAdditionalDepth(0);
+        solver.setNumberOfSolutions(1);
+        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("4k2r/8/8/8/4K3/8/8/7r b k - 0 1"), 1).size());
+    }
+
+
 }

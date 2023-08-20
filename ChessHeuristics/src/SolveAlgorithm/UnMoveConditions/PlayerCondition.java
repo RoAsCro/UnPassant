@@ -26,6 +26,7 @@ public class PlayerCondition implements Predicate<String> {
      */
     @Override
     public boolean test(String s) {
-        return s.split(" ")[1].charAt(0) == player || player == '-';
+        String move = s.split(":")[1];
+        return move.length() == 0 ||  move.charAt(0) == player || player == '-';
     }
 }

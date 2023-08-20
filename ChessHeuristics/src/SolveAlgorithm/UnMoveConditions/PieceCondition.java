@@ -24,6 +24,7 @@ public class PieceCondition implements Predicate<String> {
      */
     @Override
     public boolean test(String s) {
-        return s.split(":")[1].charAt(0) == piece || piece == '-';
+        String move = s.split(":")[1];
+        return move.length() == 0 || move.charAt(0) == piece || piece == '-';
     }
 }

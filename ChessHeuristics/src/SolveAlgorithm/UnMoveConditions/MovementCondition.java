@@ -26,6 +26,8 @@ public class MovementCondition implements Predicate<String> {
      */
     @Override
     public boolean test(String s) {
-        return movement.equals("any") || s.split(":")[1].contains(movement);
+        String move = s.split(":")[1];
+        return move.length() == 0 || (this.movement.equals("any") ||
+                (move.charAt(3) == this.movement.charAt(0) && move.contains(movement)));
     }
 }

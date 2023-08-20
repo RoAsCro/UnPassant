@@ -1041,14 +1041,7 @@ public class SolverTest {
                             s -> {
 //                        System.out.println(s);
                                 return true;
-                            }
-                            , d -> {
-//                if (d.getPromotions().values().stream().flatMap(List::stream).toList().isEmpty()) {
-//                    System.out.println(d.getPromotions());
-//                }
-                        return true;
-                    }
-                    );
+                            });
                     solver.setNumberOfSolutions(1);
                     solver.setAdditionalDepth(0);
                     List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 3);

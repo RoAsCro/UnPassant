@@ -26,6 +26,6 @@ public class CapturedPieceCondition implements Predicate<String> {
     @Override
     public boolean test(String s) {
         String move = s.split(":")[1];
-        return piece == '-' || move.charAt(move.length() - 3) == piece;
+        return move.length() == 0 || piece == '-' || move.charAt(move.length() - 3) == piece;
     }
 }

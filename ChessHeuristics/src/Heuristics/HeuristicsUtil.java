@@ -49,6 +49,6 @@ public class HeuristicsUtil {
     /**A Map of Strings of piece names and their corresponding code Strings for use with ReverseChess classes*/
     public final static Map<String, String> PIECE_CODES = Map.of(
             "rook", "r", "knight", "n", "bishop", "b", "queen", "q",
-            "king", "k"
+            "king", "k", "pawn", "p"
     );
 }
