@@ -1,7 +1,7 @@
 package StandardChess;
 
 /**
- * A class for making UnMoves on a ChessBoard.
+ * A class for making UnMoves on a ChessBoard and checking their legality.
  * @author Roland Crompton
  */
 public class UnMoveMaker {

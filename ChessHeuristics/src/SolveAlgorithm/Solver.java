@@ -15,12 +15,13 @@ import java.util.function.Predicate;
 import static Heuristics.HeuristicsUtil.*;
 
 /**
- * A class that searches through a given FEN, looking for a number of valid sets of last moves up to a specified depth,
+ * A class that searches through a given ChessBoard, looking for a number of valid sets of last moves up to a
+ * specified depth,
  * and of a specified amount. Additional conditions can also be given to make during testing. The number of valid sets
  * of moves to be found, and any additional depth, are specified separately from construction.
  * @author Roland Crompton
  */
-public class Solver {
+public class Solver implements RetroSolver {
     /**A list of piece codes of pieces that can be un taken*/
     private final static List<String> PIECES = List.of("", "p", "r", "b", "n", "q");
     /**A String Predicate testing that a non-castle, non-en passant, non-capture move by a non-pawn piece takes place*/
@@ -95,6 +96,7 @@ public class Solver {
      * @return all solutions found, but no more than the number set as the maximum number of solutions
      * @throws IllegalArgumentException if the Reader of the ChessBoard given does not produce a valid FEN
      */
+    @Override
     public List<String> solve(ChessBoard board, int depth) throws IllegalArgumentException {
         List<String> solutions = new LinkedList<>();
         String originalBoard = board.getReader().toFEN();
@@ -267,7 +269,7 @@ public class Solver {
      * @return a List of Strings representing states resulting from legal moves, plus a colon-separated
      * description of the move
      */
-    public List<String> iterateThroughMoves(ChessBoard board, Coordinate origin, String currentState) {
+    private List<String> iterateThroughMoves(ChessBoard board, Coordinate origin, String currentState) {
 
         List<String> states = new LinkedList<>();
         String type = board.at(origin).getType();
@@ -430,7 +432,7 @@ public class Solver {
      * @param board the board to be tested
      * @return whether the board state is legal
      */
-    public boolean testState(ChessBoard board) {
+    private boolean testState(ChessBoard board) {
         DetectorInterface detector = StateDetectorFactory.getDetectorInterface(board);
         return detector.testState() && CheckUtil.castleCheck(board, detector) && this.detectorPredicate.test(detector);
     }
@@ -477,19 +479,12 @@ public class Solver {
     }
 
     /**
-     * Returns the additional depth of the Solver.
-     * @return the additional depth
-     */
-    public int getAdditionalDepth() {
-        return additionalDepth;
-    }
-
-    /**
      * Sets the additional depth, the depth to which the Solver will go after it's reached the depth given
      * when solve() is called, searching instead for only one valid board state instead of as many as are set in the
      * number of solutions.
      * @param additionalDepth the additional depth for the Solver to  go to when solving
      */
+    @Override
     public void setAdditionalDepth(int additionalDepth) {
         this.additionalDepth = additionalDepth;
     }
@@ -499,6 +494,7 @@ public class Solver {
      * stop searching for solutions.
      * @param numberOfSolutions the number of solutions the solver will look for when solving
      */
+    @Override
     public void setNumberOfSolutions(int numberOfSolutions) {
         this.numberOfSolutions = numberOfSolutions;
     }

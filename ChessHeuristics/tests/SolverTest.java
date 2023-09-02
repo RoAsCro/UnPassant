@@ -156,10 +156,7 @@ public class SolverTest {
                 System.out.println(s);
                 ChessBoard b = BoardBuilder.buildBoard(s);
                 b.setTurn(b.getTurn().equals("white") ? "black" : "white");
-                // set max states to 100?
-                Solver solver = new Solver(string -> true, detectorInterface -> {
-                    return detectorInterface.canCastle(false, true) || detectorInterface.canCastle(false, false);
-                }
+                Solver solver = new Solver(string -> true, detectorInterface -> detectorInterface.canCastle(false, true) || detectorInterface.canCastle(false, false)
                 );
                 solver.setNumberOfSolutions(1);
                 solver.setAdditionalDepth(2);
@@ -231,7 +228,6 @@ public class SolverTest {
         // pp46
         Solver solver = new Solver(
                 s -> {
-                    System.out.println(s);
                     int depth = Integer.parseInt(s.split(":")[2]);
                     return depth >= 2 || !s.split(":")[1].contains("x");
                 }
@@ -511,7 +507,7 @@ public class SolverTest {
 
     @Test
     public void ChessMysteries17() {
-        // pp89
+        // pp91
         List<String> list = List.of(
                 "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
                 "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1",
@@ -886,7 +882,7 @@ public class SolverTest {
     @Test
     public void ChessMysteries28() {
         //
-        //pp126
+        //pp145
 
         List<String> list = List.of(
                 "2B5/8/6p1/6Pk/3P2qb/3p4/3PB1P1/2NrNKQR b - - 0 1"
@@ -921,7 +917,7 @@ public class SolverTest {
     @Test
     public void ChessMysteries29() {
         //
-        //pp126
+        //pp146
 
         List<String> list = List.of(
                 "7k/8/6KB/8/p7/8/Q7/8 b - - 0 1",
@@ -953,7 +949,7 @@ public class SolverTest {
     @Test
     public void ChessMysteries30() {
         //
-        //pp126
+        //pp146
 
         List<String> list = List.of(
                 "7r/pppppKpP/6P1/8/8/8/n7/8 w - - 0 1"
@@ -987,14 +983,14 @@ public class SolverTest {
                             });
                     solver.setNumberOfSolutions(1);
                     solver.setAdditionalDepth(1);
-//                    List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 3);
-////
-//                    if (target.equals(new Coordinate(2, 7))) {
-//                        Assertions.assertNotEquals(0, solutions.size());
-//                    } else {
-//                        Assertions.assertEquals(0, solutions.size());
+                    List<String> solutions = solver.solve(BoardBuilder.buildBoard(board.getReader().toFEN()), 3);
 //
-//                    }
+                    if (target.equals(new Coordinate(2, 7))) {
+                        Assertions.assertNotEquals(0, solutions.size());
+                    } else {
+                        Assertions.assertEquals(0, solutions.size());
+
+                    }
                 }
             }
         }
