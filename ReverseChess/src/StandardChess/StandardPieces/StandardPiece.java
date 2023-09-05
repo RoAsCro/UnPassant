@@ -39,7 +39,7 @@ public class StandardPiece implements Piece {
      */
     @Override
     public String getType() {
-        return this.strategy.getName();
+        return this.strategy.getType();
     }
 
     /**

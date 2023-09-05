@@ -45,7 +45,8 @@ public class PromotedPawnSquares extends AbstractDeduction{
     public void deduce(BoardInterface board) {
         Path emptyWhiteOrigins = findEmptyOrigins(true);
         Path emptyBlackOrigins = findEmptyOrigins(false);
-
+//        System.out.println(emptyBlackOrigins);
+//        System.out.println(emptyWhiteOrigins);
         putPaths(emptyWhiteOrigins, board, true);
         putPaths(emptyBlackOrigins, board, false);
     }
@@ -70,9 +71,6 @@ public class PromotedPawnSquares extends AbstractDeduction{
             List<Path> pathsInUse = getCaptures(tempPaths, captures);
 
             if (pathsInUse.size() < this.detector.getCaptureData().getPawnsCapturedByPawns(white)) {
-                System.out.println(tempPaths);
-
-                System.out.println(this.detector.getCaptureData().getPawnsCapturedByPawns(white));
                 this.state = false;
                 return;
             }
@@ -104,7 +102,7 @@ public class PromotedPawnSquares extends AbstractDeduction{
 
     /**
      * Finds those pawn origins of the given player which are both stored in the CaptureData as not being able
-     * to be captured by pawns and are listed free origins in the PawnData, and return them in a Path.
+     * to be captured by pawns and are listed as free origins in the PawnData, and return them in a Path.
      * @param white the player's colour, true if white, false if black
      * @return a Path of the Coordinates of the found pawn origins
      */
@@ -112,12 +110,9 @@ public class PromotedPawnSquares extends AbstractDeduction{
         Path promotedPawns = Path.of(this.detector.getCaptureData().getNonPawnCaptures(white)
                 .stream().filter(c -> PAWN_PREDICATE.test(c, white))
                 .collect(Collectors.toList()));
+
         Map<Coordinate, List<Path>> pawnPaths = this.detector.getPawnData().getPawnPaths(white);
-        return Path.of(promotedPawns.stream().filter(c -> (pawnPaths)
-                    .values().stream()
-                    .flatMap(l -> l.stream().map(LinkedList::getFirst))
-                    .noneMatch(c::equals))
-                .toList());
+        return promotedPawns;
     }
 
     /**

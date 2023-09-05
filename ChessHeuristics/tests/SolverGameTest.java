@@ -23,8 +23,8 @@ public class SolverGameTest {
                 Coordinate enPassant = this.board.getEnPassant();
                 this.board.setEnPassant(Coordinates.NULL_COORDINATE);
 //                this.board.setTurn(this.board.getTurn().equals("white") ? "black" : "white");
-                Assertions.assertNotEquals(0, solver.solve(this.board, 1).size(), this.board.getReader().toFEN());
-//                this.board.setTurn(this.board.getTurn().equals("white") ? "black" : "white");
+                Assertions.assertNotEquals(0, solver.solve(this.board.getReader().toFEN(), 1).size(), this.board.getReader().toFEN());
+                this.board.setTurn(this.board.getTurn().equals("white") ? "black" : "white");
                 this.board.setEnPassant(enPassant);
 
             });

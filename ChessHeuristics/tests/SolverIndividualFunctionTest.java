@@ -203,7 +203,7 @@ public class SolverIndividualFunctionTest {
                 '-', "-", false));
         solver.setAdditionalDepth(0);
         solver.setNumberOfSolutions(3);
-        List<String> solutions = solver.solve(BoardBuilder.buildBoard("k7/7R/8/8/8/7r/K7/RRRRRRR1 b - - 0 1"), 3);
+        List<String> solutions = solver.solve("k7/7R/8/8/8/7r/K7/RRRRRRR1 b - - 0 1", 3);
         System.out.println(solutions);
         Assertions.assertEquals(2, solutions.size());
         Assertions.assertTrue(solutions.get(0).contains("k7/7R/8/8/8/7r/1K6/RRRRRRR1")
@@ -218,7 +218,7 @@ public class SolverIndividualFunctionTest {
                 '-', "-", false));
         solver.setAdditionalDepth(1);
         solver.setNumberOfSolutions(3);
-        List<String> solutions = solver.solve(BoardBuilder.buildBoard("k7/7R/8/8/8/7r/K7/RRRRRRR1 b - - 0 1"), 3);
+        List<String> solutions = solver.solve("k7/7R/8/8/8/7r/K7/RRRRRRR1 b - - 0 1", 3);
         System.out.println(solutions);
         Assertions.assertEquals(2, solutions.size());
         Assertions.assertTrue(solutions.get(0).contains("k7/7R/8/8/8/7r/1K6/RRRRRRR1")
@@ -235,7 +235,7 @@ public class SolverIndividualFunctionTest {
         Solver solver = new Solver(enPassantFirstPly);
         solver.setAdditionalDepth(0);
         solver.setNumberOfSolutions(3);
-        List<String> solutions = solver.solve(BoardBuilder.buildBoard("k7/8/4P1K1/8/8/8/8/8 w - - 0 1"), 1);
+        List<String> solutions = solver.solve("k7/8/4P1K1/8/8/8/8/8 w - - 0 1", 1);
         System.out.println(solutions);
         Assertions.assertEquals(2, solutions.size());
 
@@ -243,7 +243,7 @@ public class SolverIndividualFunctionTest {
         solver = new Solver(enPassantFirstPly);
         solver.setAdditionalDepth(0);
         solver.setNumberOfSolutions(3);
-        solutions = solver.solve(BoardBuilder.buildBoard("k7/8/4PK2/8/8/8/8/8 w - - 0 1"), 1);
+        solutions = solver.solve("k7/8/4PK2/8/8/8/8/8 w - - 0 1", 1);
         System.out.println(solutions);
         Assertions.assertEquals(0, solutions.size());
     }
@@ -253,13 +253,13 @@ public class SolverIndividualFunctionTest {
         Solver solver = new Solver(p ->
                 !(p.split(":")[1].contains("x")) && !(p.split(":")[1].startsWith("R")));
         solver.setAdditionalDepth(0);
-        Assertions.assertTrue(solver.solve(BoardBuilder.buildBoard("5rk1/8/6K1/8/8/8/7P/8 b - - 0 1"), 1)
+        Assertions.assertTrue(solver.solve("5rk1/8/6K1/8/8/8/7P/8 b - - 0 1", 1)
                 .stream().anyMatch(s -> s.contains("4k2r/8/6K1/8/8/8/7P/8")));
 
         solver = new Solver(p ->
                 !(p.split(":")[1].contains("x")) && !(p.split(":")[1].startsWith("R")));
         solver.setAdditionalDepth(0);
-        Assertions.assertTrue(solver.solve(BoardBuilder.buildBoard("2kr4/8/2K5/8/8/8/7P/8 b - - 0 1"), 1)
+        Assertions.assertTrue(solver.solve("2kr4/8/2K5/8/8/8/7P/8 b - - 0 1", 1)
                 .stream().anyMatch(s -> s.contains("r3k3/8/2K5/8/8/8/7P/8 w")));
     }
 
@@ -269,7 +269,7 @@ public class SolverIndividualFunctionTest {
                 '-', "-", true));
         solver.setAdditionalDepth(0);
         solver.setNumberOfSolutions(1);
-        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("4k2r/8/8/8/4K3/8/8/r7 b k - 0 1"), 1).size());
+        Assertions.assertNotEquals(0, solver.solve("4k2r/8/8/8/4K3/8/8/r7 b k - 0 1", 1).size());
     }
 
     @Test
@@ -278,7 +278,7 @@ public class SolverIndividualFunctionTest {
                 '-', "-", true));
         solver.setAdditionalDepth(0);
         solver.setNumberOfSolutions(1);
-        Assertions.assertNotEquals(0, solver.solve(BoardBuilder.buildBoard("4k2r/8/8/8/4K3/8/8/7r b k - 0 1"), 1).size());
+        Assertions.assertNotEquals(0, solver.solve("4k2r/8/8/8/4K3/8/8/7r b k - 0 1", 1).size());
     }
 
 

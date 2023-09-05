@@ -48,13 +48,13 @@ public class StateConditions {
             }
             List<Map<String, Map<Path, Integer>>> maps = new LinkedList<>();
             if (player < 1) {
-                maps.add(detectorInterface.getPromotions(true));
-            } if (player > -1) {
                 maps.add(detectorInterface.getPromotions(false));
+            } if (player > -1) {
+                maps.add(detectorInterface.getPromotions(true));
             }
             int count = 0;
             for (Map<String, Map<Path, Integer>> map : maps) {
-                count += map.entrySet().stream().filter(e -> pieces.contains(e.getKey().split(" ")[0]))
+                count += map.entrySet().stream()
                         .map(e -> e.getValue().values().stream().reduce(Integer::sum).orElse(0))
                         .reduce(Integer::sum).orElse(0);
             }

@@ -209,7 +209,6 @@ public class PawnStrategy extends AbstractStrategy {
      * @return true if an en passant can take place
      */
     private boolean enPassantCheck(int yDiff, Coordinate target, String colour, ChessBoard board) {
-        System.out.println(yDiff);
         Coordinate ePTarget = new Coordinate(target.getX(), target.getY() + yDiff);
         Piece targetPiece = board.at(ePTarget);
         return board.getEnPassant().equals(target)

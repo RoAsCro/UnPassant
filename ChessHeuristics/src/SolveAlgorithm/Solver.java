@@ -39,7 +39,8 @@ public class Solver implements RetroSolver {
     private Predicate<DetectorInterface> detectorPredicate = d -> true;
     /**A String Predicate to be tested after an un move's validity is tested. True by default*/
     private Predicate<String> fenPredicate = p -> true;
-
+    int success = 0;
+    int failure = 0;
 
     /**
      * Constructs a new Solver with no additional conditions.
@@ -90,21 +91,23 @@ public class Solver implements RetroSolver {
     /**
      * Begins the process of solving a last n moves retrograde chess puzzle to the depth given. Return all
      * solutions found. The ChessBoard given should have its turn set to whichever colour is to un move next.
-     * @param board the ChessBoard whose state is to be tested
+     * @param FEN the FEN of the chess board whose state is to be tested
      * @param depth the depth to which the puzzle will be solved, i.e. the number of moves back it will look
      *              before concluding a state is valid
      * @return all solutions found, but no more than the number set as the maximum number of solutions
      * @throws IllegalArgumentException if the Reader of the ChessBoard given does not produce a valid FEN
      */
     @Override
-    public List<String> solve(ChessBoard board, int depth) throws IllegalArgumentException {
+    public List<String> solve(String FEN, int depth) throws IllegalArgumentException {
         List<String> solutions = new LinkedList<>();
-        String originalBoard = board.getReader().toFEN();
+        ChessBoard board = BoardBuilder.buildBoard(FEN);
         CheckUtil.switchTurns(board);
         if (testState(board)) {
-            solutions = iterate(originalBoard, depth, false, 0);
+            solutions = iterate(FEN, depth, false, 0);
         }
         System.out.println(solutions);
+        System.out.println("s: " + success);
+        System.out.println("f: " + failure);
         return solutions;
     }
 
@@ -280,10 +283,13 @@ public class Solver implements RetroSolver {
         if (king || rook) {
             String colour = white ? "white" : "black";
             // Don't try to move pieces that are locked by UnCastling
-            if ((rook && (white && (origin.equals(Coordinates.WHITE_KING_ROOK) || origin.equals(Coordinates.WHITE_QUEEN_ROOK)) ||
-                    (!white && origin.equals(Coordinates.BLACK_KING_ROOK) || origin.equals(Coordinates.BLACK_QUEEN_ROOK)))
+            if ((rook && (white && (origin.equals(Coordinates.WHITE_KING_ROOK) ||
+                    origin.equals(Coordinates.WHITE_QUEEN_ROOK)) ||
+                    (!white && origin.equals(Coordinates.BLACK_KING_ROOK) ||
+                            origin.equals(Coordinates.BLACK_QUEEN_ROOK)))
             && board.canCastle(origin.getX() == Coordinates.WHITE_KING_ROOK.getX() ? "king" : "queen", colour))
-                    || (king && (board.canCastle("queen", colour) || board.canCastle("king", colour)))) {
+                    || (king && (board.canCastle("queen", colour) ||
+                    board.canCastle("king", colour)))) {
                 return states;
             }
         }
@@ -405,7 +411,14 @@ public class Solver implements RetroSolver {
      * @return whether the move is non-intrusive
      */
     private boolean nonIntrusiveMovement(String move) {
-        return NORMAL_MOVE.test(move);
+        boolean normal = NORMAL_MOVE.test(move);
+        if (normal) {
+            // REMOVE BEFORE FINISHING
+            success += 1;
+            return true;
+        }
+        failure += 1;
+        return false;
     }
 
     /**
@@ -433,6 +446,7 @@ public class Solver implements RetroSolver {
      * @return whether the board state is legal
      */
     private boolean testState(ChessBoard board) {
+
         DetectorInterface detector = StateDetectorFactory.getDetectorInterface(board);
         return detector.testState() && CheckUtil.castleCheck(board, detector) && this.detectorPredicate.test(detector);
     }
@@ -474,8 +488,8 @@ public class Solver implements RetroSolver {
      * @return true if there is a compulsory move to be made, false otherwise
      */
     private boolean compulsoryContinuation(ChessBoard board) {
-        return CheckUtil.eitherInCheck(new BoardInterface(board))
-                || !board.getReader().toFEN().split(" ")[3].equals("-");
+        return CheckUtil.eitherInCheck(new BoardInterface(board)) //A king is in check
+                || !board.getReader().toFEN().split(" ")[3].equals("-"); //There is an outstanding double move
     }
 
     /**

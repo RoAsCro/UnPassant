@@ -49,7 +49,7 @@ public class PathfinderUtil {
     public Predicate<Coordinate> secondRankCollision = coordinate -> {
         int y = coordinate.getY();
         if ((y == WHITE_PAWN_Y || y == BLACK_PAWN_Y)) {
-            Map<Coordinate, List<Path>> map = this.detector.getPawnData().getPawnPaths(y == 1);
+            Map<Coordinate, List<Path>> map = this.detector.getPawnData().getPawnPaths(y == WHITE_PAWN_Y);
             return !(map.containsKey(coordinate));
         }
         return true;

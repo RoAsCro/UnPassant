@@ -119,8 +119,6 @@ public class Pathfinder {
         Coordinate[] moves = piece.getMoves(origin);
         for (Coordinate target : moves) {
             if (depth != 0 && path.size() + 1 > depth) {
-//                shortestPath.addAll(path);
-//                shortestPath.add(target);
                 shortestPath = Path.of();
                 break;
             }

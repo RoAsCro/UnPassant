@@ -43,7 +43,6 @@ public class UnMoveMaker {
         Coordinate ePLocation = board.getEnPassant();
         if (!ePLocation.equals(Coordinates.NULL_COORDINATE) && (!ePLocation.equals(origin)
                 || !(Math.abs(origin.getY() - target.getY()) == 2))) {
-            System.out.println(ePLocation);
             return false;
         }
         Coordinate captureLocation = origin;

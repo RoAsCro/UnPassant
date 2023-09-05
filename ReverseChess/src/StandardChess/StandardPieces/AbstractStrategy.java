@@ -74,7 +74,7 @@ public abstract class AbstractStrategy implements PieceStrategy{
      * @return the piece's name
      */
     @Override
-    public String getName() {
+    public String getType() {
         return this.name;
     }
 

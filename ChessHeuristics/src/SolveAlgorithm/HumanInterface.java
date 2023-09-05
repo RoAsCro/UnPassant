@@ -9,10 +9,6 @@ import java.util.List;
 public class HumanInterface {
     static String fen = "4k2r/8/8/8/2p5/5P2/2P2PP1/3b1RK1 w k -";
     private static final List<Character> PIECES = List.of('-', 'P', 'K', 'R', 'N', 'B', 'Q');
-//    private static List<UnMoveCondition> conditions = new LinkedList<>();
-//    {
-//            new UnMoveCondition(true, 0, 2, '-', "-",
-//                    "-", '-', '-', "x", true)};
 
     public static void main(String[] args) {
             HumanInterface humanInterface;
@@ -44,7 +40,7 @@ public class HumanInterface {
             Solver solver = new Solver();
             solver.setNumberOfSolutions(2);
             solver.setAdditionalDepth(0);
-            System.out.println(solver.solve(BoardBuilder.buildBoard(args[0]), 2));
+//            System.out.println(solver.solve(BoardBuilder.buildBoard(args[0]), 2));
 
     }
 

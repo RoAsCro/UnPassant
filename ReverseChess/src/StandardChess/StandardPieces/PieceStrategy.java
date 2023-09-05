@@ -10,10 +10,10 @@ import StandardChess.Coordinate;
  */
 public interface PieceStrategy {
     /**
-     * Returns the piece's name - this will be the piece's type.
-     * @return the piece's name
+     * Returns the piece's type.
+     * @return the piece's type
      */
-    String getName();
+    String getType();
 
     /**
      * Tries a move on a ChessBoard, starting at the origin, ending at the target.

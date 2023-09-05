@@ -1,11 +1,10 @@
 import Heuristics.BoardInterface;
 import Heuristics.Deductions.*;
+import Heuristics.Detector.*;
 import Heuristics.Detector.Data.StandardCaptureData;
 import Heuristics.Detector.Data.StandardPawnData;
 import Heuristics.Detector.Data.StandardPieceData;
 import Heuristics.Detector.Data.StandardPromotionData;
-import Heuristics.Detector.StandardDetectorInterface;
-import Heuristics.Detector.StandardStateDetector;
 import SolveAlgorithm.Solver;
 import SolveAlgorithm.UnMoveConditions.MovementCondition;
 import SolveAlgorithm.UnMoveConditions.PieceCondition;
@@ -488,7 +487,24 @@ public class ImpossibleStates {
     } @Test
     void r2() {
 
-        System.out.println("Test = " + test("7K/8/8/8/8/6P1/5PPB/1k6 w - - 0 1"));
+//        System.out.println("Test = " + test("r3k2r/p1pq1ppp/1pnp1n2/b2P4/B5b1/1PNQ2N1/1PP2PPP/R3K2R w KQkq"));
+//        new Solver().solve("r3k2r/p1pq1ppp/1pnp1n2/b2P4/6b1/BPNQ2N1/1PP2PPP/R3K2R w KQkq", 1);
+        StateDetector d = StateDetectorFactory
+                .getDetector("rqr5/1pRp1bpp/k1p5/2P1p1Pp/K7/1P3N1P/PQ1P1PP1/5B2 b");
+        d.testState();
+        System.out.println(d.getPromotionData().getPromotionNumbers());
+        System.out.println(d.getState());
+        System.out.println(d.getErrorMessage());
+
+
+        System.out.println(d.getPawnData().getPawnPaths(true));
+        System.out.println(d.getPawnData().getPawnPaths(false));
+
+
+        DetectorInterface d1 = StateDetectorFactory
+                .getDetectorInterface("2nR3K/pk1Rp1p1/p2p4/P1p5/1Pp4B/2PP2P1/4P2P/n7 b");
+        d1.testState();
+        System.out.println(d1);
         Solver solver = new Solver();
         solver.setAdditionalDepth(0);
 //        solver.setNumberOfSolutions(1);

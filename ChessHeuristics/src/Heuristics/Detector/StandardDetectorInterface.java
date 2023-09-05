@@ -165,7 +165,7 @@ public class StandardDetectorInterface implements DetectorInterface {
         StringBuilder stringBuilder = new StringBuilder();
 
         if (!this.detector.getState()) {
-            stringBuilder.append("Board is not valid: ").append(this.detector.getErrorMessage());
+            stringBuilder.append("Board is not valid: ").append(this.detector.getErrorMessage()).append("\n");
         }
 
         stringBuilder.append("Pawn origins:\n");

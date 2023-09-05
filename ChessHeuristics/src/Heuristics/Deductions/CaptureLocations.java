@@ -73,14 +73,18 @@ public class CaptureLocations extends AbstractDeduction {
         if (whiteRemovals + blackRemovals != 0) {
             this.detector.reTest(board);
         }
+//        System.out.println(detector.getCaptureData().getNonPawnCaptures(true));
+//        System.out.println(detector.getCaptureData().getNonPawnCaptures(false));
         this.detector.getCaptureData().getNonPawnCaptures(true).addAll(pawnCaptureLocations(true, board));
         this.detector.getCaptureData().getNonPawnCaptures(false).addAll(pawnCaptureLocations(false, board));
+//        System.out.println(detector.getCaptureData().getNonPawnCaptures(true));
+//        System.out.println(detector.getCaptureData().getNonPawnCaptures(false));
 
     }
 
     /**
      * Finds those missing non-pawn pieces of the opposing player that cannot have been captured
-     * by the given player's pawns, storing them ni the CaptureData, and returning the quantity.
+     * by the given player's pawns, storing them in the CaptureData, and returning the quantity.
      * @param board the board to be checked
      * @param white the player whose pawns' captures are being checked, true if white, false if black
      * @return the number of non-pawn pieces of the opposing player that cannot have been captured by pawns
@@ -274,10 +278,10 @@ public class CaptureLocations extends AbstractDeduction {
             for (int x = 0 ; x <= K_ROOK_X ; x++) {
                     Coordinate c = new Coordinate(x, y);
                     // If that origin has no pawn
-                    if (pawnOrigins
-                            .stream().filter(c1 -> c1.getY() == y)
-                            .noneMatch(c::equals)) {
-                        pawnPredicates.add((c1, c2) ->(c1.equals(c) && c2.equals(c)) || c1.getX() != c2.getX() && Math.abs(c2.getX() - c.getX()) <= unaccountedCaptures);
+                    if (this.detector.getPawnData().getOriginFree(white).get(c)) {
+//                        System.out.println(c);
+                        pawnPredicates.add((c1, c2) ->(c1.equals(c) && c2.equals(c)) || c1.getX() != c2.getX()
+                                && Math.abs(c2.getX() - c.getX()) <= unaccountedCaptures);
                         missingPawns.add(c);
                     }
                 }
@@ -338,7 +342,7 @@ public class CaptureLocations extends AbstractDeduction {
 
     /**
      * Returns a Map of Coordinates of pawn locations, and a List of their Paths, for
-     * every pawn of the given player could only have taken the Path currently stored in the PawnData's
+     * every pawn of the given player that could only have taken the Path currently stored in the PawnData's
      * pawnPaths, as well as those that fulfill the pattern of being on the first rank away from their starting rank
      * with a pawn of the same colour y-1 away from them. These are the pawns and Paths that are usable for making
      * definite statements about captures made by pawns.
