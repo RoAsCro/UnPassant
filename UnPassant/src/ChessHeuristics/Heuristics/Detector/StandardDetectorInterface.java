@@ -4,6 +4,7 @@ import ChessHeuristics.Heuristics.BoardInterface;
 import ChessHeuristics.Heuristics.HeuristicsUtil;
 import ChessHeuristics.Heuristics.Path;
 import ReverseChess.StandardChess.Coordinate;
+import ReverseChess.StandardChess.Coordinates;
 
 import java.util.List;
 import java.util.Map;
@@ -173,9 +174,9 @@ public class StandardDetectorInterface implements DetectorInterface {
         for (int i = 0 ; i < 2 ; i++) {
             stringBuilder.append(white ? "White" : "Black").append(":\n");
             getPawnMap(white).forEach((key, value) -> {
-                stringBuilder.append(key).append(": ");
+                stringBuilder.append(Coordinates.readableString(key)).append(": ");
                 stringBuilder.append(value.stream()
-                        .map(Coordinate::toString).collect(Collectors.joining(", ")));
+                        .map(Coordinates::readableString).collect(Collectors.joining(", ")));
                 stringBuilder.append("\n");
             });
             stringBuilder.append("\n");
@@ -187,7 +188,7 @@ public class StandardDetectorInterface implements DetectorInterface {
         for (int i = 0 ; i < 2 ; i++) {
             stringBuilder.append(white ? "White" : "Black").append(":\n");
             stringBuilder.append(getCages(white).stream()
-                    .map(Coordinate::toString)
+                    .map(Coordinates::readableString)
                     .collect(Collectors.joining(", ")));
             stringBuilder.append("\n");
             white = false;
@@ -201,7 +202,9 @@ public class StandardDetectorInterface implements DetectorInterface {
             getPromotions(white).forEach((key, value) -> {
                 stringBuilder.append(key).append(":\n");
                 stringBuilder.append(value.entrySet()
-                        .stream().map(e1 -> e1.getKey() + ", " + e1.getValue() + "\n")
+                        .stream().map(e1 -> e1.getKey().stream().map(Coordinates::readableString)
+                                .collect(Collectors.joining(", "))
+                                + "; " + e1.getValue() + "\n")
                         .collect(Collectors.joining(", ")));
             });
             stringBuilder.append("\n");
