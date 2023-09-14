@@ -5,11 +5,8 @@ Un Passant is a prototype tool for assisting in solving retrograde analysis ches
 Given a FEN, it will attempt to find the last _n_ single moves, where _n_ is the number input.
 
 Its functionality is detailed herein.
-<<<<<<< HEAD
- 
 
-=======
->>>>>>> 2a0c5d7af263fc8ca2967c8f90b9589a07dddb68
+
 -------------------------
 1. Illegal positions
 2. Additional Criteria
