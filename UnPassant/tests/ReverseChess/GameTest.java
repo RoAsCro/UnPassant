@@ -1,6 +1,5 @@
 package ReverseChess;
 
-import ReverseChess.Games.Game;
 import ReverseChess.StandardChess.Coordinate;
 import ReverseChess.StandardChess.NullPiece;
 import ReverseChess.StandardChess.StandardPieceFactory;

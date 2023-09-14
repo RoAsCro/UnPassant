@@ -1,11 +1,13 @@
-package ReverseChess.Games;
-
+package ReverseChess;
 
 
 import ReverseChess.StandardChess.*;
 
 import java.util.LinkedList;
 
+/**
+ * Class for assisting in testing games
+ */
 public class Game {
     private UnMoveMaker unMoveMaker;
     private ChessBoard board;
