@@ -12,7 +12,8 @@ import java.util.List;
 
 public class SolverIndividualFunctionTest {
 
-    public void makeMoveTest(String fen, Coordinate origin, Coordinate target, boolean pass, String piece, boolean promotion) {
+    public void makeMoveTest(String fen, Coordinate origin, Coordinate target, boolean pass, String piece,
+                             boolean promotion) {
         makeMoveTest(fen, origin, target, pass, piece, promotion, false);
 
     }
@@ -25,7 +26,8 @@ public class SolverIndividualFunctionTest {
         makeMoveTest(fen, origin, target, pass, piece, false);
     }
 
-    public void makeMoveTest(String fen, Coordinate origin, Coordinate target, boolean pass, String piece, boolean promotion, boolean enPassant) {
+    public void makeMoveTest(String fen, Coordinate origin, Coordinate target, boolean pass, String piece,
+                             boolean promotion, boolean enPassant) {
         ChessBoard board = BoardBuilder.buildBoard(fen);
         Assertions.assertEquals(pass, new Solver().makeMove(board,
                 origin, target, piece, promotion, enPassant), (board.getReader().toFEN()));

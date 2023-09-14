@@ -6,18 +6,13 @@ import ChessHeuristics.Heuristics.Detector.Data.StandardCaptureData;
 import ChessHeuristics.Heuristics.Detector.Data.StandardPawnData;
 import ChessHeuristics.Heuristics.Detector.Data.StandardPieceData;
 import ChessHeuristics.Heuristics.Detector.Data.StandardPromotionData;
-import ChessHeuristics.Heuristics.Detector.StandardDetectorInterface;
 import ChessHeuristics.Heuristics.Detector.StandardStateDetector;
-import ChessHeuristics.Heuristics.Detector.StateDetector;
-import ChessHeuristics.Heuristics.Detector.StateDetectorFactory;
-import ChessHeuristics.SolverAlgorithm.CheckUtil;
-import ChessHeuristics.SolverAlgorithm.Solver;
 import ReverseChess.StandardChess.BoardBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ImpossibleStates {
+public class ImpossibleStatesTest {
 
     StandardStateDetector detector;
     PieceMap pm;
@@ -31,7 +26,8 @@ public class ImpossibleStates {
         PromotionMap prm = new PromotionMap();
         PromotedPawnSquares pps = new PromotedPawnSquares();
         this.uc = new UnCastle();
-        this.detector = new StandardStateDetector(new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(),
+        this.detector = new StandardStateDetector(
+                new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(),
                 cpm,
                 pm,
                 cl,
@@ -145,11 +141,6 @@ public class ImpossibleStates {
         Assertions.assertFalse(test("rnbqkbnr/ppp1pppp/8/3P4/3p4/8/PPP1PP1P/RNBQKBNR w - - 0 1"));
     }
 
-//    @Test
-//    void impossibleMapSix() {
-//        Assertions.assertFalse(test("rnbqkbnr/pp2pppp/8/3P4/3p4/8/PPP1PP1P/RNBQKBNR w KQkq - 0 1"));
-//    }
-
     @Test
     void impossibleMapSeven() {
         Assertions.assertFalse(test("rnbqkbnr/2p1pppp/P3p3/p7/8/8/1PPPPPPP/RNBQKB1R w - - 0 1"));
@@ -227,7 +218,6 @@ public class ImpossibleStates {
 
     @Test
     void promotionCaptureRook() {
-//        Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPP4/4PPPP/1NBQKBNR w Kkq - 0 1"));
         Assertions.assertFalse(test("rnbqkbnr/ppppp1pp/4p3/8/8/PPPPP3/5PPP/1NBQKBNR w - - 0 1"));
     }
 
@@ -265,8 +255,6 @@ public class ImpossibleStates {
     void badPromotionLocation() {
         Assertions.assertFalse(test("rnbqkbn1/ppppppp1/6p1/2PB4/P2P4/5P2/1P2P1P1/R1BQKBNR w - - 0 1"));
     }
-
-
 
     @Test
     void test() {
@@ -442,7 +430,6 @@ public class ImpossibleStates {
     }
     @Test
     void promotionMapCombinedPawnMapWithCagedPieces() {
-        // Later Checks Don't Account For Earlier Discovered Missing pawns
         Assertions.assertFalse(test("1nbqk2r/pppppp1p/5n2/5q2/5Q2/5N2/PPPPPP1P/RNBQK2R w - - 0 1"));
     }
 
@@ -454,41 +441,8 @@ public class ImpossibleStates {
 
 
     @Test
-    void pawnsOnepromotedOneDidNot() {
+    void pawnsOnePromotedOneDidNot() {
         Assertions.assertTrue(test("rnbqkbnr/2pppppp/8/P7/8/3R2P1/1PPPP1PP/2BQKBNR w Kkq - 0 1"));
-    }
-
-    @Test
-    void r() {
-
-        System.out.println(test("rnbqkbnr/ppp1pppp/8/8/4N3/8/PPP1PPPP/RNBQKBNR w kq"));
-        System.out.println(this.detector.getPromotionData().getPromotionNumbers());
-        System.out.println(this.detector.getPromotionData().getPromotedPieceMap());
-        
-        System.out.println(new StandardDetectorInterface(detector).getPromotions(true));
-        System.out.println(this.detector.getPieceData().getRookMovement(false, true));
-
-        System.out.println(this.detector.getPawnData().getPawnPaths(false));
-        System.out.println(this.detector.getPawnData().getPawnPaths(true));
-        
-
-        
-
-
-
-    } @Test
-    void r2() {
-        System.out.println(CheckUtil.multiCheck(new BoardInterface(BoardBuilder.buildBoard("rnbqkbnr/ppppppp1/8/8/8/1P6/1PPPPPPP/RNBQKBNR"))));
-//        System.out.println("Test = " + test("r3k2r/p1pq1ppp/1pnp1n2/b2P4/B5b1/1PNQ2N1/1PP2PPP/R3K2R w KQkq"));
-//        new Solver().solve("r3k2r/p1pq1ppp/1pnp1n2/b2P4/6b1/BPNQ2N1/1PP2PPP/R3K2R w KQkq", 1);
-        StateDetector d = StateDetectorFactory
-                .getDetector("rnbqkbnr/ppppppp1/8/8/8/1P6/1PPPPPPP/RNBQKBNR");
-        d.testState();
-        System.out.println(d.getPromotionData().getPromotionNumbers());
-        System.out.println(d.getState());
-        System.out.println(d.getErrorMessage());
-        new Solver().solve("rnbqkbnr/ppp1pppp/8/8/4N3/8/PPP1PPPP/RNBQKBNR w kq", 1);
-
     }
 
 

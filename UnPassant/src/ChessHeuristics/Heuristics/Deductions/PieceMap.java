@@ -103,7 +103,7 @@ public class PieceMap extends AbstractDeduction{
                 .filter((entry) -> entry.getValue().size() > pieceNumber.get(entry.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        // Find paths for potential promotions, then updat the PromotionNumbers with the data
+        // Find paths for potential promotions, then update the PromotionNumbers with the data
         findPromotionPaths(board, potentialPromotions);
         Map<String, Map<Path, Integer>> promotionNumbers =  this.detector.getPromotionData().getPromotionNumbers();
         potentialPromotions.forEach((key, value) -> {
@@ -384,18 +384,18 @@ public class PieceMap extends AbstractDeduction{
     }
 
     /**
-     * Checks if a king must have been disaplced by the movement of a rook or queen
+     * Checks if a king must have been displaced by the movement of a rook or queen
      * @param board the board to be checked
      */
     private void kingDisplaced(BoardInterface board) {
         // Does not account for the possibility that these pieces are promoted
-        int minnimumCaptures = this.detector.getPawnData().minimumPawnCaptures(false);
+        int minimumCaptures = this.detector.getPawnData().minimumPawnCaptures(false);
 
-        boolean allPiecesTakenByPawnsW = minnimumCaptures != 0 && minnimumCaptures ==
+        boolean allPiecesTakenByPawnsW = minimumCaptures != 0 && minimumCaptures ==
                 this.detector.getCaptureData().pawnTakeablePieces(true)
                         - board.getBoardFacts().pieceNumbers(true);
-        minnimumCaptures = this.detector.getPawnData().minimumPawnCaptures(true);
-        boolean allPiecesTakenByPawnsB = minnimumCaptures != 0 && minnimumCaptures ==
+        minimumCaptures = this.detector.getPawnData().minimumPawnCaptures(true);
+        boolean allPiecesTakenByPawnsB = minimumCaptures != 0 && minimumCaptures ==
                 this.detector.getCaptureData().pawnTakeablePieces(false)
                         - board.getBoardFacts().pieceNumbers(false);
 

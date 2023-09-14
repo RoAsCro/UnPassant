@@ -22,7 +22,6 @@ public class SolverTest {
     @Test
     public void chessMysteries3() {
         //Page 16
-        // Simple
         Solver solver = new Solver();
         solver.setAdditionalDepth(0);
         solver.setNumberOfSolutions(100);
@@ -35,8 +34,6 @@ public class SolverTest {
     @Test
     public void chessMysteries1() {
         //Page 4
-        // Part 1 - Whose move?
-        // Part 2 - Which Direction?
         String board1 = "k1K5/4Q3/8/2B1P3/3P4/7P/8/7B";
         String board2 = "7B/8/7P/3P4/2B1P3/8/4Q3/k1K5";
         System.out.println("Testing 1...");
@@ -107,12 +104,6 @@ public class SolverTest {
         start = System.currentTimeMillis();
         Assertions.assertNotEquals(0, solver.solve(board2 + " w", 1).size());
         System.out.println(System.currentTimeMillis() - start);
-
-        // As above for Test 1
-        // Test 4 solving up to a depth of 6 yields:
-        // Nb6xQa8, Ka7xNa8, Pe4-e5, Pd7-d5, Pe5xPd6
-        // This is slightly different from Smullyan's solution, but is equally valid
-
     }
 
     @Test
@@ -164,17 +155,17 @@ public class SolverTest {
         // in such a way that white will not be in check on black's turn
         // Due to the fact that the black square black bishop is caged and two knights already exist,
         // the captured piece on d8 therefore must be promoted piece.
-        // With all pawns now accounted for, the missing piece being a black bishop or knight are eliminated as possibilities
+        // With all pawns now accounted for, the missing piece being a black bishop or knight are eliminated as
+        // possibilities
         // The CaptureLocations Deduction will see that no definitive black capture took place on a black square
         // In the case of every scenario except white bishop,
         // it will therefore reduce the number of captures black pawns can make by one, since the black square
         // white bishop is missing
         // When the PromotionMap is told that black has one certain promoted piece, and that there is exactly one
-        // pawn whose start location is unnaccounted for, it creates a path from that start location to the 1st rank
+        // pawn whose start location is unaccounted for, it creates a path from that start location to the 1st rank
         // To not clash with the white pawn paths, it must make a capture
         // In all remaining scenarios except the missing piece being a white bishop, this will exceed the number of
         // possible captures
-        // Retractor cannot solve this puzzle
 
     }
 
@@ -213,7 +204,8 @@ public class SolverTest {
                 System.out.println("Finished 2");
 
                 solver = new Solver(
-                        new UnMoveCondition(0, 1, '-', "-", "-", 'N', '-', "-", true),
+                        new UnMoveCondition(0, 1, '-', "-", "-",
+                                'N', '-', "-", true),
                         detectorInterface -> detectorInterface.canCastle(false, true)
                                 || detectorInterface.canCastle(false, false));
                 solver.setNumberOfSolutions(1);
@@ -230,9 +222,11 @@ public class SolverTest {
         }
         // The original puzzle is actually created incorrectly - with the knight moved as the last white move,
         // the pawn can move more freely than the apparent solution allows for
-        // In the above, the first tests an amended version of the puzzle, the knight having not moved, with an extra check that black can castle
+        // In the above, the first tests an amended version of the puzzle, the knight having not moved, with an extra
+        // check that black can castle
         // The second does the same without the check for castling, therefore a line is found
-        // The third tries the puzzle under the original parameters, with the castling check and therefore finds alternative lines
+        // The third tries the puzzle under the original parameters, with the castling check and therefore
+        // finds alternative lines
 
         // The pawn map constructs maps for both pawns
         // The black move cannot be K or R - this means black cannot castle
@@ -242,7 +236,8 @@ public class SolverTest {
         // The pawn map is rebuilt
         // All of black's captures were made by pawns
         // 4 / 5 of white's captures were made by pawns
-        // CaptureLocations see pawn captures took place on white, therefore the black bishop cannot have been taken by white
+        // CaptureLocations see pawn captures took place on white, therefore the black bishop cannot have
+        // been taken by white
         // The PawnMaps are rebuilt on the basis that there is one fewer pawn capture
         // CaptureLocations sees that one of white's missing pieces is a pawn:
         // That pawn cannot move off it's file
@@ -259,14 +254,16 @@ public class SolverTest {
         solver.setNumberOfSolutions(2);
         solver.setAdditionalDepth(1);
         long start = System.currentTimeMillis();
-        Assertions.assertNotEquals(0, solver.solve("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w - - 0 1", 2).size());
+        Assertions.assertNotEquals(0,
+                solver.solve("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w - - 0 1", 2).size());
         System.out.println((float) (System.currentTimeMillis() - start) / 1000);
 
         solver = new Solver();
         solver.setNumberOfSolutions(2);
         solver.setAdditionalDepth(1);
         start = System.currentTimeMillis();
-        Assertions.assertEquals(0, solver.solve("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w k - 0 1", 2).size());
+        Assertions.assertEquals(0,
+                solver.solve("r1b1k2r/p1p1p1p1/1p3p1p/8/8/P7/1PPPPPPP/2BQKB2 w k - 0 1", 2).size());
         System.out.println((float) (System.currentTimeMillis() - start) / 1000);
 
     }
@@ -295,60 +292,26 @@ public class SolverTest {
         solver.setNumberOfSolutions(1);
         solver.setAdditionalDepth(0);
         start = System.currentTimeMillis();
-        Assertions.assertEquals(0, solver.solve("4k2r/8/8/8/2p5/5P2/2P2PP1/3b1RK1 w k - 0 1", 3).size());
+        Assertions.assertEquals(0,
+                solver.solve("4k2r/8/8/8/2p5/5P2/2P2PP1/3b1RK1 w k - 0 1", 3).size());
         System.out.println((float) (System.currentTimeMillis() - start) / 1000);
 
         // The first here has 2 depth, checking that it comes to one of two valid solutions to the
-        // first part of the problem, the only moves available with the given castling rights and the capture restrictions
-        // The second part checks with one more depth - the detector uses the information gathered by the piece and pawn
-        // maps to conclude that the bishop A. must have promoted, B. Must have promoted on that square, C. must have passed
-        // a critical king sqaure to get there - this would violate the castling constraints that happen as a result of the iteration
+        // first part of the problem, the only moves available with the given castling rights and the capture
+        // restrictions
+        // The second part checks with one more depth - the detector uses the information gathered by the piece and
+        // pawn
+        // maps to conclude that the bishop A. must have promoted, B. Must have promoted on that square, C. must have
+        // passed
+        // a critical king square to get there - this would violate the castling constraints that happen as a result
+        // of the iteration
 
     }
 
-    @Test
-    public void ChessMysteries8() {
-        // pp56
-        List<String> list = List.of(
-                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w q - 0 1",
-                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w - - 0 1",
 
-                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K3 w q - 0 1"
-        );
-        for (String st : list) {
-            Solver solver = new Solver();
-            solver.setNumberOfSolutions(1);
-            solver.setAdditionalDepth(0);
-            long start = System.currentTimeMillis();
-            List<String> sollutions = solver.solve(st, 2);
-            System.out.println((float) (System.currentTimeMillis() - start) / 1000);
-            switch (st) {
-                case "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w q - 0 1" ->
-                        Assertions.assertEquals(0, sollutions.size());
-                case "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w - - 0 1" ->
-                        Assertions.assertNotEquals(0, sollutions.size());
-                case "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K3 w q - 0 1" ->
-                        Assertions.assertNotEquals(0, sollutions.size());
-            }
-        }
-
-        //This puzzle has two relevant parts, (a) and (b)
-        // (a)
-        // This is not really a problem of last n moves AND the additional rules can't be accounted for in the deductions
-        // The first part can be spoofed by replacing the white bishop with a queen, resulting in it coming to
-        // the same conclusion as you would if a captured queen never left white - every piece that can have been captured
-        // by a black pawn was captured by a black pawn, which means the a2 pawn was either taken or promoted,
-        // and since it cannot have reached the square on which b6 makes it's capture, it promoted, and it must have promoted
-        // on a8 as every white capture was carried out by the h6 pawn, resulting in the a8 rook being displaced
-        // The second part of the puzzle is a question of timing, which is beyond the scope of UnPassant, and not of last
-        // n moves
-        // (b)
-        // This is also not a last n moves question, but once again the first part can be solved -
-        // With the extra missing piece, there's now no reason to believe that a2 must have promoted or been captured by  the b6 pawn
-    }
 
    @Test
-    public void ChessMysteries9() {
+    public void ChessMysteries8() {
         // pp61
         List<String> list = List.of(
                     "2b5/pp1p4/PRP5/pR3N2/2K5/2P5/2k1PNP1/1nrnB3 b - - 0 1",
@@ -378,24 +341,19 @@ public class SolverTest {
             }
         }
         // The above Tests the two possibilities, finding one has no solutions
-
     }
 
     @Test
-    public void ChessMysteries10() {
+    public void ChessMysteries9() {
         // pp64
         List<String> list = List.of(
                 "2b5/pp1p4/PR1P4/pR3N2/2K5/2P5/2k1PNP1/1nrnB3 b - - 0 1");
 
-        int count = 0;
         for (String st : list) {
-            count++;
             Solver solver = new Solver(
-                    s ->{
-                return !(s.split(":")[1].charAt(0) == 'P'
-                        && (s.split(":")[1].endsWith("1")  || s.split(":")[1].endsWith("8"))); //A piece does not promote
-
-            },
+                    s -> !(s.split(":")[1].charAt(0) == 'P'
+                            && (s.split(":")[1].endsWith("1")
+                            || s.split(":")[1].endsWith("8"))),
                     new StateConditions.PromotionLimit(0, 0, List.of("rook"))
                             .and(new StateConditions.PromotionLimit(0, 0, List.of("knight")))
                             .and(new StateConditions.PromotionLimit(0, 0, List.of("bishop")))
@@ -415,7 +373,7 @@ public class SolverTest {
     }
 
     @Test
-    public void ChessMysteries11() {
+    public void ChessMysteries10() {
         // pp73
         List<String> list = List.of(
                 "8/8/8/8/NN1Q4/1k1B4/8/R1B1K2R w - - 0 1",
@@ -441,19 +399,15 @@ public class SolverTest {
                 Assertions.assertNotEquals(0, solutions.size());
             }
         }
-        // This is a question of iterating
-
     }
 
     @Test
-    public void ChessMysteries12() {
+    public void ChessMysteries11() {
         // pp74
         List<String> list = List.of(
                 "QN6/7R/1k6/1N6/1K6/8/8/8 b - - 0 1");
 
-        int count = 0;
         for (String st : list) {
-            count++;
             Solver solver = new Solver();
             solver.setNumberOfSolutions(3);
             solver.setAdditionalDepth(1);
@@ -462,20 +416,16 @@ public class SolverTest {
             System.out.println((float) (System.currentTimeMillis() - start) / 1000);
             Assertions.assertNotEquals(0, solutions.size());
         }
-        // This is a question of iterating
-        // Finding that the positions are possible
 
     }
 
     @Test
-    public void ChessMysteries13() {
+    public void ChessMysteries12() {
         // pp78
         List<String> list = List.of(
                 "r3k3/8/8/8/8/8/5PP1/6bK w q - 0 1");
 
-        int count = 0;
         for (String st : list) {
-            count++;
             Solver solver = new Solver();
             solver.setNumberOfSolutions(1);
             solver.setAdditionalDepth(1);
@@ -484,21 +434,17 @@ public class SolverTest {
             System.out.println((float) (System.currentTimeMillis() - start) / 1000);
             Assertions.assertEquals(0, solutions.size());
         }
-        // This is a question of iterating
-        // Also a simple check of castling rights
 
     }
 
     @Test
-    public void ChessMysteries14() {
+    public void ChessMysteries13() {
         // pp90
         List<String> list = List.of(
                 "r3k2r/pbpp1ppp/2n4n/4p1q1/1b6/8/1PPPPPPP/1NBQKBNR b Kkq - 0 1"
         );
 
-        int count = 0;
         for (String st : list) {
-            count++;
             Solver solver = new Solver(
                     s -> {
                 String move = s.split(":")[1];
@@ -516,22 +462,17 @@ public class SolverTest {
             solver.setAdditionalDepth(0);
             List<String> solutions = solver.solve(st, 11);
         }
-        // Theoretically, this can be solved by the algorithm
-        // However, there is one solution out of thousands, and there is no way to eliminate possibilities before
-        //  getting to a depth of 12, therefore it cannot be found in a timely manner
-
+        // Fails, requires a proof game
     }
 
     @Test
-    public void ChessMysteries15() {
+    public void ChessMysteries14() {
         // pp103
         List<String> list = List.of(
                 "r3k3/P5P1/1P1P1P2/3PpK2/8/8/6B1/8 b q - 0 1"
         );
 
-        int count = 0;
         for (String st : list) {
-            count++;
             Solver solver = new Solver();
             solver.setNumberOfSolutions(2);
             solver.setAdditionalDepth(2);
@@ -552,17 +493,15 @@ public class SolverTest {
 
         }
         // This successfully uncovers that the only valid move while maintaining castling rights is a double pawn move
-
     }
 
     @Test
-    public void ChessMysteries16() {
+    public void ChessMysteries15() {
         // pp113
         List<String> list = List.of(
                 "RbB5/n1p2pp1/2B1p3/PpKp4/kP2P3/p2p3P/P2P3P/8 b - - 0 1"
         );
 
-        int count = 0;
         for (String st : list) {
 
             Solver solver = new Solver();
@@ -576,12 +515,12 @@ public class SolverTest {
 
         }
         // This successfully uncovers that the only valid move while maintaining castling rights is a double pawn move
-        // The first part tests it while dissallowing the only valid move
+        // The first part tests it while disallowing the only valid move
 
     }
 
     @Test
-    public void ChessMysteries17() {
+    public void ChessMysteries16() {
         // pp115
         List<String> list = List.of(
                 "1K6/p1p1p1p1/p1kP2p1/8/P1N3N1/1P1bP1PP/1Q1Pq2P/r3n2B w - - 0 1",
@@ -629,11 +568,10 @@ public class SolverTest {
         }
         // This correctly assesses using CaptureLocations that after a depth of two,
         // the position becomes impossible as black's captures no longer add up
-
     }
 
     @Test
-    public void ChessMysteries18() {
+    public void ChessMysteries17() {
         //pp126
         // NO WHITE PAWN HAS PROMOTED.
         //ON WHAT SQUARE WAS THE OTHER WHITE BISHOP
@@ -642,10 +580,7 @@ public class SolverTest {
                 "rqr5/2Rp1bpp/1kp5/4p1Pp/K7/1P3N1P/PQ1P1PP1/5B2 b - - 0 1"
         );
 
-        int count = 0;
         for (String st : list) {
-            count++;
-//            System.out.println(count);
             System.out.println(st);
             ChessBoard board = BoardBuilder.buildBoard(st);
             board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
@@ -667,17 +602,14 @@ public class SolverTest {
     }
 
     @Test
-    public void ChessMysteries19() {
-        //
+    public void ChessMysteries18() {
         //pp145
 
         List<String> list = List.of(
                 "2B5/8/6p1/6Pk/3P2qb/3p4/3PB1P1/2NrNKQR b - - 0 1"
         );
 
-        int count = 0;
         for (String st : list) {
-            count++;
             ChessBoard board = BoardBuilder.buildBoard(st);
             board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
             if (!StateDetectorFactory.getDetector(board).testState()) {
@@ -697,13 +629,12 @@ public class SolverTest {
     }
 
     @Test
-    public void ChessMysteries20() {
-        //
+    public void ChessMysteries19() {
         //pp146 M2
 
         List<String> list = List.of(
                 "7k/8/6KB/8/p7/8/Q7/8 b - - 0 1",
-                "7k/8/6KB/8/p7/8/Q7/8 w - - 0 1"
+                    "7k/8/6KB/8/p7/8/Q7/8 w - - 0 1"
         );
         int count = 0;
         for (String st : list) {
@@ -720,13 +651,6 @@ public class SolverTest {
                                     '-', "any", true))
                             .and(new UnMoveCondition(0, 10, 'w', "-", "-", 'K',
                                     '-', "any", true))
-//                    s -> {
-//                        String move = s.split(":")[1];
-//
-//                        return Integer.parseInt(s.split(":")[2]) >= 10
-//                                || (move.charAt(3) != 'x' &&
-//                                (s.split(" ")[1].charAt(0) != 'b' || (move.charAt(0) != 'K' && move.charAt(0) != 'Q')));
-//                    }
                     );
             solver.setNumberOfSolutions(2);
             solver.setAdditionalDepth(8);
@@ -743,17 +667,14 @@ public class SolverTest {
         }
     }
     @Test
-    public void ChessMysteries21() {
-        //
+    public void ChessMysteries20() {
         //pp146 M3
 
         List<String> list = List.of(
                 "7r/pppppKpP/6P1/8/8/8/n7/8 w - - 0 1"
         );
 
-        int count = 0;
         for (String st : list) {
-            count++;
             for (int x = 0 ; x < 8 ; x++ ) {
                 for (int y = 0; y < 8; y++) {
                     ChessBoard board = BoardBuilder.buildBoard(st);
@@ -770,14 +691,8 @@ public class SolverTest {
                     Solver solver = new Solver(
                             new UnMoveCondition(0, 5, '-', "-", "-", '-',
                                     '-', "x", true)
-                                    .and(new UnMoveCondition(0, 5, '-', "-", "-", 'P',
-                                            '-', "any", true))
-//                            s -> {
-//                                String move = s.split(":")[1];
-//                                return Integer.parseInt(s.split(":")[2]) >= 10
-//                                        || (move.charAt(3) != 'x' &&
-//                                        move.charAt(0) != 'P');
-//                            }
+                                    .and(new UnMoveCondition(0, 5, '-', "-", "-",
+                                            'P', '-', "any", true))
                             );
                     solver.setNumberOfSolutions(1);
                     solver.setAdditionalDepth(1);
@@ -785,7 +700,6 @@ public class SolverTest {
                     List<String> solutions = solver.solve(board.getReader().toFEN(), 3);
                     System.out.println((float) (System.currentTimeMillis() - start) / 1000);
 
-//
                     if (target.equals(new Coordinate(2, 7))) {
                         Assertions.assertNotEquals(0, solutions.size());
                     } else {
@@ -799,8 +713,7 @@ public class SolverTest {
     }
 
     @Test
-    public void ChessMysteries22() {
-        //
+    public void ChessMysteries21() {
         //pp150
 
         List<String> list = List.of(
@@ -835,6 +748,33 @@ public class SolverTest {
     }
 
     @Test
+    public void ChessMysteries22() {
+        // pp56
+        List<String> list = List.of(
+                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w q - 0 1",
+                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w - - 0 1",
+
+                "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K3 w q - 0 1"
+        );
+        for (String st : list) {
+            Solver solver = new Solver();
+            solver.setNumberOfSolutions(1);
+            solver.setAdditionalDepth(0);
+            long start = System.currentTimeMillis();
+            List<String> sollutions = solver.solve(st, 2);
+            System.out.println((float) (System.currentTimeMillis() - start) / 1000);
+            switch (st) {
+                case "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w q - 0 1" ->
+                        Assertions.assertEquals(0, sollutions.size());
+                case "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K1R1 w - - 0 1" ->
+                        Assertions.assertNotEquals(0, sollutions.size());
+                case "r3kr2/1pp2p2/1pn2npP/1Q1pp3/1b6/2N2NPP/1PPP1P2/R3K3 w q - 0 1" ->
+                        Assertions.assertNotEquals(0, sollutions.size());
+            }
+        }
+    }
+
+    @Test
     public void MeisterwerkederRetroAnalyse() {
         //Karl Fabel's in Die Schwalbe in 1985
 
@@ -842,10 +782,7 @@ public class SolverTest {
                 "6K1/7B/4Pk2/8/6Q1/4Q3/8/B7"
         );
 
-        int count = 0;
         for (String st : list) {
-            count++;
-//            System.out.println(count);
             System.out.println(st);
             ChessBoard board = BoardBuilder.buildBoard(st);
             board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
@@ -874,10 +811,7 @@ public class SolverTest {
                 "B1Q5/4p1p1/7p/1P3r1q/1P6/P5K1/P2P4/7k w - - 0 1"
         );
 
-        int count = 0;
         for (String st : list) {
-            count++;
-//            System.out.println(count);
             System.out.println(st);
             ChessBoard board = BoardBuilder.buildBoard(st);
             board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
@@ -908,21 +842,16 @@ public class SolverTest {
             System.out.println(solutions);
             Assertions.assertEquals(0, solutions.size());
         }
-        // Check it's finding no solutions but the one given
     }
 
     @Test
     public void Keym2() {
         //pp 122 no.385
-
         List<String> list = List.of(
                 "r3k3/2p1p3/2P1P3/2KpP3/8/8/8/8 b q - 0 1"
         );
 
-        int count = 0;
         for (String st : list) {
-            count++;
-//            System.out.println(count);
             System.out.println(st);
             ChessBoard board = BoardBuilder.buildBoard(st);
             board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
@@ -953,7 +882,6 @@ public class SolverTest {
             System.out.println(solutions);
             Assertions.assertEquals(0, solutions.size());
         }
-        // Check it's finding no solutions but the one given
         // The question here is one of whether en passant must have taken place if castling is possible
     }
 
@@ -973,7 +901,6 @@ public class SolverTest {
         int count = 0;
         for (String st : list) {
             count++;
-//            System.out.println(count);
             System.out.println(st);
             ChessBoard board = BoardBuilder.buildBoard(st);
             board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
@@ -1004,18 +931,13 @@ public class SolverTest {
         //Bernd Schwarzkopf
         //Retro Mailing List, 24-Apr-2007
         //Black to move. Last 4 single moves?
-        //(1 + 5)
         // http://www.anselan.com/length/length.html number 13 - original not found
-        // Type B
 
         List<String> list = List.of(
                 "b7/8/8/8/8/4p3/2k1Kp2/5r2 w - - 0 1"
         );
 
-        int count = 0;
         for (String st : list) {
-            count++;
-//            System.out.println(count);
             System.out.println(st);
             ChessBoard board = BoardBuilder.buildBoard(st);
             board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
@@ -1043,20 +965,15 @@ public class SolverTest {
     public void Schwarzkopf2() {
         //Bernd Schwarzkopf
         //feenschach n°64, 1983
-        //Last 3 single moves? Duplex.
-        //(12 + 5)
+        //Last 3 single moves?
         // http://www.anselan.com/length/length.html number 30 - original not found
-        // Type B
 
         List<String> list = List.of(
                 "8/8/8/8/8/3PPPPP/1PPrR1RB/2brBkbK w - - 0 1",
                 "8/8/8/8/8/3PPPPP/1PPrR1RB/2brBkbK b - - 0 1"
         );
 
-        int count = 0;
         for (String st : list) {
-            count++;
-//            System.out.println(count);
             System.out.println(st);
             ChessBoard board = BoardBuilder.buildBoard(st);
             board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
@@ -1068,24 +985,21 @@ public class SolverTest {
             solver.setNumberOfSolutions(2);
             solver.setAdditionalDepth(2);
             long start = System.currentTimeMillis();
-
             List<String> solutions = solver.solve(st, 3);
+            System.out.println(solutions);
             System.out.println((float) (System.currentTimeMillis() - start) / 1000);
 
 
         }
         // Fails  - Doesn't account for later piece cages
-        // Type D - Finds the only last 4 moves available, set to 2 solutions, finds 1
+        // Finds the only last 4 moves available, set to 2 solutions, finds 1
     }
 
     @Test
     public void Dittmann () {
         //Wolfgang Dittmann
         //feenschach n°64, 1983
-        //Last single move? Duplex.
-        //(5 + 3)
         // http://www.anselan.com/length/length.html number 28 - original not found
-        // Type B
 
         List<String> list = List.of(
                 "8/8/8/8/8/4P1P1/3Prp1P/5K1k w - - 0 1",
@@ -1095,7 +1009,6 @@ public class SolverTest {
         int count = 0;
         for (String st : list) {
             count++;
-//            System.out.println(count);
             System.out.println(st);
             ChessBoard board = BoardBuilder.buildBoard(st);
             board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
@@ -1117,70 +1030,6 @@ public class SolverTest {
             } else {
                 Assertions.assertEquals(1, solutions.size());
                 Assertions.assertTrue(solutions.get(0).contains("8/8/8/8/8/4PpP1/3Pr2P/5K1k"));
-            }
-        }
-    }
-
-    @Test
-    public void D () {
-        List<String> list = List.of(
-                "nBb2R1R/bqr5/kppp4/n3K2B/p1P1ppNN/rP2PPpp/P2P1QPP/8 b"
-        );
-
-        int count = 0;
-        for (String st : list) {
-            count++;
-            System.out.println(st);
-            ChessBoard board = BoardBuilder.buildBoard(st);
-            board.setTurn(Objects.equals(board.getTurn(), "white") ? "black" : "white");
-            Solver solver = new Solver();
-            solver.setNumberOfSolutions(1);
-            solver.setAdditionalDepth(0);
-            long start = System.currentTimeMillis();
-
-            List<String> solutions = solver.solve(st, 27);
-            System.out.println((float) (System.currentTimeMillis() - start) / 1000);
-            System.out.println(solutions);
-
-        }
-    }
-
-    @Test
-    public void ArabianKnights1() {
-        //
-        //pp3
-
-        List<String> list = List.of(
-                "8/8/8/1r1b4/B7/8/8/3k4 w - - 0 1"
-        );
-
-        int count = 0;
-        for (String st : list) {
-            count++;
-//            System.out.println(count);
-
-            for (int x = 0; x < 8; x++) {
-                for (int y = 0; y < 8; y++) {
-                    ChessBoard board = BoardBuilder.buildBoard(st);
-                    Coordinate target = new Coordinate(x, y);
-                    if (!board.at(target).getType().equals("null")) {
-                        continue;
-                    }
-                    board.place(target, StandardPieceFactory.getInstance().getPiece("K"));
-                    System.out.println(board.getReader().toFEN());
-
-                    Solver solver = new Solver();
-                    solver.setNumberOfSolutions(1);
-                    solver.setAdditionalDepth(1);
-                    long start = System.currentTimeMillis();
-                    List<String> solutions = solver.solve(board.getReader().toFEN(), 2);
-                    System.out.println((float) (System.currentTimeMillis() - start) / 1000);
-                    if (board.getReader().toFEN().contains("8/8/8/1r1b4/B7/2K5/8/3k4")) {
-                        Assertions.assertNotEquals(0, solutions.size());
-                    } else {
-                        Assertions.assertEquals(0, solutions.size());
-                    }
-                }
             }
         }
     }

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Generator/Genertator.iml" filepath="$PROJECT_DIR$/Generator/Genertator.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/UnPassant.iml" filepath="$PROJECT_DIR$/.idea/UnPassant.iml" />
     </modules>
   </component>

@@ -45,9 +45,6 @@ public class Solver implements RetroSolver {
     private Predicate<DetectorInterface> detectorPredicate = d -> true;
     /**A String Predicate to be tested after an un move's validity is tested. True by default*/
     private Predicate<String> fenPredicate = p -> true;
-    int success = 0;
-    int failure = 0;
-
 
     /**
      * Constructs a new Solver with no additional conditions.
@@ -113,9 +110,6 @@ public class Solver implements RetroSolver {
         if (testState(board)) {
             solutions = iterate(FEN, depth, false, 0);
         }
-        System.out.println(solutions);
-        System.out.println("s: " + success);
-        System.out.println("f: " + failure);
         return solutions;
     }
 
@@ -428,14 +422,7 @@ public class Solver implements RetroSolver {
      * @return whether the move is non-intrusive
      */
     private boolean nonIntrusiveMovement(String move) {
-        boolean normal = NORMAL_MOVE.test(move);
-        if (normal) {
-            // REMOVE BEFORE FINISHING
-            success += 1;
-            return true;
-        }
-        failure += 1;
-        return false;
+        return NORMAL_MOVE.test(move);
     }
 
     /**
@@ -468,7 +455,8 @@ public class Solver implements RetroSolver {
             return this.boardRegister.get(boardInterface);
         }
         DetectorInterface detector = StateDetectorFactory.getDetectorInterface(board);
-        boolean toReturn = detector.testState() && CheckUtil.castleCheck(board, detector) && this.detectorPredicate.test(detector);
+        boolean toReturn = detector.testState() && CheckUtil.castleCheck(board, detector)
+                && this.detectorPredicate.test(detector);
         this.boardRegister.put(boardInterface, toReturn);
         return toReturn;
     }

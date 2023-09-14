@@ -50,7 +50,7 @@ public class Observer {
      * Gets the Coordinates of all pieces of the given colour as a Map of Strings of piece types and Paths of
      * Coordinates of the pieces of that type.
      * @param colour the colour of the pieces as a String, white or black
-     * @return
+     * @return a Map of names of pieces and Paths of their locations for the given colour
      */
     public Map<String, Path> getAllCoordinates(String colour) {
         return colour.equals("white")

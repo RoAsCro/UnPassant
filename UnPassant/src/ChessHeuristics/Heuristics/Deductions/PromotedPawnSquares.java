@@ -45,8 +45,6 @@ public class PromotedPawnSquares extends AbstractDeduction{
     public void deduce(BoardInterface board) {
         Path emptyWhiteOrigins = findEmptyOrigins(true);
         Path emptyBlackOrigins = findEmptyOrigins(false);
-//        System.out.println(emptyBlackOrigins);
-//        System.out.println(emptyWhiteOrigins);
         putPaths(emptyWhiteOrigins, board, true);
         putPaths(emptyBlackOrigins, board, false);
     }
@@ -107,12 +105,9 @@ public class PromotedPawnSquares extends AbstractDeduction{
      * @return a Path of the Coordinates of the found pawn origins
      */
     private Path findEmptyOrigins(boolean white) {
-        Path promotedPawns = Path.of(this.detector.getCaptureData().getNonPawnCaptures(white)
+        return Path.of(this.detector.getCaptureData().getNonPawnCaptures(white)
                 .stream().filter(c -> PAWN_PREDICATE.test(c, white))
                 .collect(Collectors.toList()));
-
-        Map<Coordinate, List<Path>> pawnPaths = this.detector.getPawnData().getPawnPaths(white);
-        return promotedPawns;
     }
 
     /**

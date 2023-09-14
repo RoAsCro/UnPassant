@@ -654,7 +654,7 @@ public class PromotionMap extends AbstractDeduction {
             List<Coordinate> captured = new LinkedList<>();
             this.detector.getPawnData().getPawnPaths(true).entrySet()
                     .stream().filter(e -> e.getValue().size() == 1)
-                    .forEach(e -> captured.addAll(captureColours(e.getValue().get(0), list, true)));
+                    .forEach(e -> captured.addAll(captureColours(e.getValue().get(0), list)));
             this.detector.getCaptureData().getNonPawnCaptures(true).addAll(
                     list.stream().filter(c -> !captured.contains(c)).toList()
             );
@@ -666,7 +666,7 @@ public class PromotionMap extends AbstractDeduction {
                     .toList();
             this.detector.getPawnData().getPawnPaths(false).entrySet()
                     .stream().filter(e -> e.getValue().size() == 1)
-                    .forEach(e -> capturedTwo.addAll(captureColours(e.getValue().get(0), listTwo, false)));
+                    .forEach(e -> capturedTwo.addAll(captureColours(e.getValue().get(0), listTwo)));
             this.detector.getCaptureData().getNonPawnCaptures(false).addAll(
                     listTwo.stream().filter(c -> !capturedTwo.contains(c)).toList()
             );
@@ -682,10 +682,9 @@ public class PromotionMap extends AbstractDeduction {
          * Checks whether the new pawn Paths capture bishops.
          * @param path the Path to be checked
          * @param list the List of Coordinates of uncaged bishops not captured by pawns on the board
-         * @param white the colour of the pawns being checked
          * @return a List containing a subset of Coordinates in list, those that can be captured by pawn Paths found
          */
-        public List<Coordinate> captureColours(Path path, List<Coordinate> list, boolean white) {
+        public List<Coordinate> captureColours(Path path, List<Coordinate> list) {
             List<Coordinate> coordinateList = new LinkedList<>();
             for (int i = 0; i < path.size() - 1; i++) {
                 if (path.get(i).getX() != path.get(i+1).getX()) {

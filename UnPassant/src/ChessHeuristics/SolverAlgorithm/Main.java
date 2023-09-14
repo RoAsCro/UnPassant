@@ -13,9 +13,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class HumanInterface {
-    static String fen = "4k2r/8/8/8/2p5/5P2/2P2PP1/3b1RK1 w k -";
-    private static final List<Character> PIECES = List.of('-', 'P', 'K', 'R', 'N', 'B', 'Q');
+public class Main {
 
     public static void main(String[] args) {
         boolean go = true;
@@ -128,7 +126,7 @@ public class HumanInterface {
             if (System.console().readLine().equals("p")) {
                 System.out.println("Format the condition as the following separated by commas:");
                 System.out.println("1. The player in question (w/b/-)");
-                System.out.println("2. The type of piece in question (queen, pawn. - if irrelevant.)");
+                System.out.println("2. The type of piece in question (queen, knight. - if irrelevant.)");
                 System.out.println("3. The maximum number of promoted piece");
 
                 System.out.println("If nobody may promote, type 'n'");

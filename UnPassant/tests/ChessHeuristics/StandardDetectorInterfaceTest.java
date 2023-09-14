@@ -16,7 +16,8 @@ public class StandardDetectorInterfaceTest {
                 .getDetectorInterface("r2qk2r/ppp2p2/2np1np1/2b1p3/N5B1/5NP1/PP1PPP2/R1B2RK1 w - - 0 1");
         detectorInterface.testState();
         detectorInterface.getCages(true).remove(new Coordinate(2, 0));
-        Assertions.assertEquals(Path.of(new Coordinate(0, 0), new Coordinate(2, 0)), detectorInterface.getCages(true));
+        Assertions.assertEquals(Path.of(new Coordinate(0, 0), new Coordinate(2, 0)),
+                detectorInterface.getCages(true));
     }
 
     @Test
@@ -41,7 +42,8 @@ public class StandardDetectorInterfaceTest {
         Path path = Path.of(new Coordinate(1, 0), new Coordinate(6, 0), new Coordinate(7, 2));
         detectorInterface.getPromotions(true).get("knight").remove(path);
         Assertions.assertTrue(detectorInterface.getPromotions(true).get("knight").containsKey(path));
-        detectorInterface.getPromotions(true).get("knight").keySet().forEach(k -> k.remove(new Coordinate(1, 0)));
+        detectorInterface.getPromotions(true).get("knight").keySet().forEach(k -> k.remove(
+                new Coordinate(1, 0)));
         Assertions.assertTrue(detectorInterface.getPromotions(true).get("knight").containsKey(path));
     }
 

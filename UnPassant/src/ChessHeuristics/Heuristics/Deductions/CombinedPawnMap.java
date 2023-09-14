@@ -51,7 +51,7 @@ public class CombinedPawnMap extends AbstractDeduction {
 
     /**
      * Forms a map of the given board, creating Paths from pawn/origin combinations established by the individual
-     * PawnMaps and makink sure none of them are exclusive with Paths of the other player's pawns.
+     * PawnMaps and making sure none of them are exclusive with Paths of the other player's pawns.
      * @param board the board to be checked
      */
     @Override
@@ -199,7 +199,7 @@ public class CombinedPawnMap extends AbstractDeduction {
             if (!(path.contains(Coordinates.NULL_COORDINATE))) {
                 pathList.add(path);
             } else {
-                //Remove those the origin that cannot be pathed from from the pawnOrigin of the player
+                //Remove those the origin that cannot be pathed fom the pawnOrigin of the player
                 forRemoval.add(new Coordinate[]{path.getLast(), path.getFirst()});
             }
         });

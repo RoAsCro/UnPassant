@@ -22,8 +22,6 @@ public class StateConditions {
         private final int player;
         /**The maximum number of pieces the given players can collectively have*/
         private final int number;
-        /**A List of the types of pieces included in the check*/
-        private final List<String> pieces;
 
         /**
          * Constructs a StateCondition that returns false if the specified players have more promoted pieces of the
@@ -35,8 +33,8 @@ public class StateConditions {
         public PromotionLimit(int player, int number, List<String> pieces) {
             this.player = player;
             this.number = number;
-            this.pieces = pieces;
         }
+
         /**
          * Returns false if the specified players have more promoted pieces of the
          * specified types than the given number.
@@ -54,8 +52,8 @@ public class StateConditions {
             }
             int count = 0;
             for (Map<String, Map<Path, Integer>> map : maps) {
-                count += map.entrySet().stream()
-                        .map(e -> e.getValue().values().stream().reduce(Integer::sum).orElse(0))
+                count += map.values().stream()
+                        .map(pathIntegerMap -> pathIntegerMap.values().stream().reduce(Integer::sum).orElse(0))
                         .reduce(Integer::sum).orElse(0);
             }
             return count <= number;

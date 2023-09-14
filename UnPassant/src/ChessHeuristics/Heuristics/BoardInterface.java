@@ -4,6 +4,7 @@ package ChessHeuristics.Heuristics;
 
 import ReverseChess.StandardChess.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -24,12 +25,14 @@ public class BoardInterface {
     private Coordinate blackKing;
     /**The Coordinate of the white king, found at instantiation*/
     private Coordinate whiteKing;
-    private int hash;
+    /**The board's hash code for checking against baords of equivalent legality.*/
+    private final int hash;
 
 
     /**
      * A constructor taking a ChessBoard that this BoardInterface will represent.
-     * Additionally, locates kings and pieces to be stored in the Observer
+     * Additionally, locates kings and pieces to be stored in the Observer, as well as calculating and storing the
+     * hash code.
      * @param board the ChessBoard this BoardInterface will represent
      */
     public BoardInterface(ChessBoard board) {
@@ -166,12 +169,28 @@ public class BoardInterface {
         return this.board.canCastle(queenSide ? "queen" : "king", white ? "white" : "black");
     }
 
-
+    /**
+     * Returns the BoardInterface's hash code. This is calculated based on:
+     * <p>The position of pawns</p>
+     * <p>The position of pieces in ranks 1, 2, 7, and 8</p>
+     * <p>The number of each type of piece for each colour</p>
+     * <p></p>
+     * Two boards with all the above criteria the same will have the same hash code.
+     * @return the hash code
+     */
     @Override
     public int hashCode() {
         return this.hash;
     }
 
+    /**
+     * Checks if two boards have equivalent legality. Two boards have equivalent legality if they have the same:
+     * <p>Position of pawns</p>
+     * <p>Position of pieces in ranks 1, 2, 7, and 8</p>
+     * <p>Number of each type of piece for each colour</p>
+     * <p></p>
+     * @return true if two boards have an equivalent legality
+     */
     @Override
     public boolean equals(Object o) {
         if (o instanceof BoardInterface b) {
@@ -180,7 +199,10 @@ public class BoardInterface {
         return false;
     }
 
-
+    /**
+     * Calculates the hash code.
+     * @return the hash code
+     */
     public int hashInit() {
         String[] FENArray = getReader().toFEN().split(" ")[0].split("/");
         String smallFEN = FENArray[0] + FENArray[1] + FENArray[6] + FENArray[7];
@@ -190,32 +212,40 @@ public class BoardInterface {
                 this.observer.getCoordinates(false, "pawn")
                         .stream().map(Coordinate::toString).collect(Collectors.joining()) +
                 smallFEN +
-                this.observer.getCoordinates(true, "bishop")
+                hashHelper(this.observer.getCoordinates(true, "bishop")
                         .stream().filter(Coordinates::light)
-                        .toList().size() +
-                this.observer.getCoordinates(true, "bishop")
+                        .toList()) +
+                hashHelper(this.observer.getCoordinates(true, "bishop")
                         .stream().filter(c -> !Coordinates.light(c))
-                        .toList().size() +
-                this.observer.getCoordinates(false, "bishop")
+                        .toList()) +
+                hashHelper(this.observer.getCoordinates(false, "bishop")
                         .stream().filter(Coordinates::light)
-                        .toList().size() +
-                this.observer.getCoordinates(false, "bishop")
+                        .toList()) +
+                hashHelper(this.observer.getCoordinates(false, "bishop")
                         .stream().filter(c -> !Coordinates.light(c))
-                        .toList().size() +
-                this.observer.getCoordinates(true, "rook").size() +
-                this.observer.getCoordinates(false, "rook").size() +
-                this.observer.getCoordinates(true, "queen").size() +
-                this.observer.getCoordinates(false, "queen").size() +
-                this.observer.getCoordinates(true, "king").size() +
-                this.observer.getCoordinates(false, "king").size() +
-                this.observer.getCoordinates(true, "knight").size() +
-                this.observer.getCoordinates(false, "knight").size());
+                        .toList()) +
+                hashHelper(this.observer.getCoordinates(true, "rook")) +
+                hashHelper(this.observer.getCoordinates(false, "rook")) +
+                hashHelper(this.observer.getCoordinates(true, "queen")) +
+                hashHelper(this.observer.getCoordinates(false, "queen")) +
+                hashHelper(this.observer.getCoordinates(true, "king")) +
+                hashHelper(this.observer.getCoordinates(false, "king")) +
+                hashHelper(this.observer.getCoordinates(true, "knight")) +
+                hashHelper(this.observer.getCoordinates(false, "knight")));
         return string.hashCode();
     }
-    public String hashHelper(Path path) {
-        if (path.size() == 10) {
-            return "a";
-        }
-        return "" + path.size();
+
+    /**
+     * Helper method for hashInit(). Converts the size of Lists of Coordinates into base 12,
+     * where decimal 10 = a, and decimal 11 = b.
+     * @param path the List of Coordinates whose size is to be converted. Should not be larger than size 11
+     * @return a string representing the size of the List in base 12
+     */
+    public String hashHelper(List<Coordinate> path) {
+        return switch (path.size()) {
+            case 10 -> "a";
+            case 11 -> "b";
+            default -> "" + path.size();
+        };
     }
 }

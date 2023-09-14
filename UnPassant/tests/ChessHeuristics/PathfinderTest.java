@@ -101,7 +101,6 @@ public class PathfinderTest {
     void findPawnTakeCondition() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
         Coordinate target = new Coordinate(2, 5);
-//        List<Integer>  =
         int x = 4;
         Path path = Pathfinder.findShortestPath(StandardPieceFactory.getInstance().getPiece("P"),
                 new Coordinate(x,1),
@@ -117,7 +116,6 @@ public class PathfinderTest {
     void findPawnTakeConditionSucceed() {
         BoardInterface board = new BoardInterface(BoardBuilder.buildBoard());
         Coordinate target = new Coordinate(2, 5);
-//        List<Integer>  =
         int x = 4;
         Path path = Pathfinder.findShortestPath(StandardPieceFactory.getInstance().getPiece("P"),
                 new Coordinate(x,1),
@@ -126,7 +124,6 @@ public class PathfinderTest {
                 p -> PATH_DEVIATION.apply(p) < 4
         );
         System.out.println(path);
-//        Assertions.assertEquals(0, path.size());
     }
 
     @Test

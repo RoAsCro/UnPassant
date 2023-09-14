@@ -24,7 +24,8 @@ public class PromotionSquaresTest {
         CaptureLocations cl = new CaptureLocations();
         PromotionMap prm = new PromotionMap();
         this.pps = new PromotedPawnSquares();
-        this.detector = new StandardStateDetector(new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(),
+        this.detector = new StandardStateDetector(
+                new StandardPawnData(), new StandardCaptureData(), new StandardPromotionData(), new StandardPieceData(),
                 cpm,
                 pm,
                 cl,
@@ -56,11 +57,6 @@ public class PromotionSquaresTest {
         Assertions.assertTrue(test("rnbqk1nr/p1pppp1p/p4p2/8/8/8/1PPPPPPP/RNBQKB1R w - - 0 1"));
     }
 
-    @Test
-    void testUnReachableWrongDirection() {
-        //This scenario is not covered by the current implementation
-//        Assertions.assertFalse(test("rnbqkbnr/pppppp1p/8/4P3/8/8/PPPPP1PP/RNBQKBNR w - - 0 1"));
-    }
 
     @Test
     void testUnReachableWrongDirectionTwo() {
@@ -84,7 +80,6 @@ public class PromotionSquaresTest {
     @Test
     void promotion() {
         Assertions.assertTrue(test("rnbqkbnr/1pp1pp2/1pp3p1/4p3/8/8/PPP3PP/R1BQKB1R w - - 0 1"));
-        
     }
 
     @Test
@@ -107,7 +102,6 @@ public class PromotionSquaresTest {
     @Test
     void promotionPathDueToCaged() {
         Assertions.assertTrue(test("1nbqkbnr/p1pp1ppp/1p3p2/8/8/8/PP1PPPPP/RNBQKBNR w - - 0 1"));
-        
     }
 
     @Test

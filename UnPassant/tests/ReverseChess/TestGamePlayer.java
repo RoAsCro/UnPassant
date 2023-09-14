@@ -1,6 +1,5 @@
 package ReverseChess;
 
-import ReverseChess.MoveMaker;
 import ReverseChess.StandardChess.BoardBuilder;
 import ReverseChess.StandardChess.ChessBoard;
 import ReverseChess.StandardChess.Coordinate;

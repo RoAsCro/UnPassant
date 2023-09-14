@@ -17,7 +17,7 @@ public class Game {
     public Game(String fen) throws IllegalArgumentException {
         this.board = fen.equals("")
                 ? BoardBuilder.buildBoard()
-                : BoardBuilder.buildBoard(fen);;
+                : BoardBuilder.buildBoard(fen);
         this.unMoveMaker = new UnMoveMaker(this.board);
     }
 
@@ -34,7 +34,7 @@ public class Game {
             this.unMoveMaker = new UnMoveMaker(board);
             return true;
         } catch (IllegalArgumentException e) {
-            // TODO
+
             return false;
         }
     }

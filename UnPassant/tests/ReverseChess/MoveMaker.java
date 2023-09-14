@@ -6,7 +6,7 @@ import ReverseChess.StandardChess.Piece;
 
 public class MoveMaker {
 
-    private ChessBoard board;
+    private final ChessBoard board;
 
     public MoveMaker(ChessBoard board) {
         this.board = board;

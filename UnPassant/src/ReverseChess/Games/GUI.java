@@ -59,7 +59,6 @@ public class GUI {
         layout.setVerticalGroup(
                 layout.createSequentialGroup()
                         .addComponent(panel)
-//                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(undo)
                                 .addComponent(redo)
@@ -196,10 +195,6 @@ public class GUI {
             this.guiInterface = guiInterface;
         }
 
-//        public void setBoard(ChessBoard board) {
-//            this.board = board;
-//        }
-
         @Override
         public void paint(Graphics g) {
             Image boardIcon;
@@ -215,7 +210,6 @@ public class GUI {
             g.drawImage(boardIcon, 0, 0,
                     8 * SQUARE_SIZE, 8 * SQUARE_SIZE,
                     this);
-            long start = System.nanoTime();
 
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {

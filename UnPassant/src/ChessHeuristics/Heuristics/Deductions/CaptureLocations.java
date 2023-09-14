@@ -72,13 +72,8 @@ public class CaptureLocations extends AbstractDeduction {
         if (whiteRemovals + blackRemovals != 0) {
             this.detector.reTest(board);
         }
-//        System.out.println(detector.getCaptureData().getNonPawnCaptures(true));
-//        System.out.println(detector.getCaptureData().getNonPawnCaptures(false));
         this.detector.getCaptureData().getNonPawnCaptures(true).addAll(pawnCaptureLocations(true, board));
         this.detector.getCaptureData().getNonPawnCaptures(false).addAll(pawnCaptureLocations(false, board));
-//        System.out.println(detector.getCaptureData().getNonPawnCaptures(true));
-//        System.out.println(detector.getCaptureData().getNonPawnCaptures(false));
-
     }
 
     /**
@@ -188,7 +183,7 @@ public class CaptureLocations extends AbstractDeduction {
                     }));
         }
 
-        int innaccessibleTakenRooks = 0;
+        int inaccessibleTakenRooks = 0;
         //Check each rook is only pathing to one pawn
         for (int i = 0 ; i < rooks.size() ; i++){
             boolean increase = false;
@@ -196,20 +191,20 @@ public class CaptureLocations extends AbstractDeduction {
             int size = reachable.get(coordinate.getX()).size();
             if (size == 0) {
                 increase = true;
-                innaccessibleTakenRooks += 1;
+                inaccessibleTakenRooks += 1;
             } else if (!(rooks.size() == 1) && !(size > 1)) {
                 int rookX = Math.abs(coordinate.getX() - HeuristicsUtil.K_ROOK_X);
                 if (reachable.get(rookX).size() == 1
                         && !reachable.get(rookX).contains(coordinate)) {
                     increase = true;
-                    innaccessibleTakenRooks += 1;
+                    inaccessibleTakenRooks += 1;
                 }
             }
             if (increase) {
                 this.detector.getCaptureData().getNonPawnCaptures(white).add(coordinate);
             }
         }
-        return innaccessibleTakenRooks;
+        return inaccessibleTakenRooks;
     }
 
     /**
@@ -271,14 +266,10 @@ public class CaptureLocations extends AbstractDeduction {
             List<Coordinate> missingPawns = new LinkedList<>();
             int y = white ? HeuristicsUtil.WHITE_PAWN_Y : HeuristicsUtil.BLACK_PAWN_Y;
 
-            Path pawnOrigins = Path.of(this.detector.getPawnData().getPawnPaths(white).values().stream()
-                    .flatMap(l -> l.stream().map(LinkedList::getFirst))
-                    .collect(Collectors.toSet()));
             for (int x = 0; x <= HeuristicsUtil.K_ROOK_X ; x++) {
                     Coordinate c = new Coordinate(x, y);
                     // If that origin has no pawn
                     if (this.detector.getPawnData().getOriginFree(white).get(c)) {
-//                        System.out.println(c);
                         pawnPredicates.add((c1, c2) ->(c1.equals(c) && c2.equals(c)) || c1.getX() != c2.getX()
                                 && Math.abs(c2.getX() - c.getX()) <= unaccountedCaptures);
                         missingPawns.add(c);

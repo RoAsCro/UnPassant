@@ -57,15 +57,6 @@ public class BoardBuilderTest {
         Assertions.assertFalse(boardTwo.canCastle("king", "black"));
         Assertions.assertTrue(boardTwo.canCastle("queen", "black"));
 
-//        boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
-//        uniformCastlingTest(false, boardTwo);
-//
-//        boardTwo = BoardBuilder.buildBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w");
-//        uniformCastlingTest(true, boardTwo);
-//
-//        boardTwo = BoardBuilder.buildBoard("1nbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQ1BNR w");
-//        uniformCastlingTest(false, boardTwo);
-
     }
 
     public void uniformCastlingTest(boolean flag, ChessBoard board) {
