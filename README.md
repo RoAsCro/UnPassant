@@ -39,7 +39,7 @@ How to input these is detailed in part 3.
 
 3. Usage
 
-4. Un Passant in its current form is run from the command line.
+Un Passant in its current form is run from the command line.
 
 To compile Un Passant, go to UnPassant/UnPassant/src, and enter the following into the command line:
    javac ReverseChess/StandardChess/*.java ReverseChess/StandardChess/StandardPieces/*.java ChessHeuristics/Heuristics/*.java ChessHeuristics/Heuristics/Deductions/*.java ChessHeuristics/Heuristics/Detector/*.java ChessHeuristics/Heuristics/Detector/Data/*.java ChessHeuristics/SolverAlgorithm/*.java ChessHeuristics/SolverAlgorithm/UnMoveConditions/*.java
