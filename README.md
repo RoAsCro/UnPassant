@@ -5,11 +5,11 @@ Un Passant is a prototype tool for assisting in solving retrograde analysis ches
 Given a FEN, it will attempt to find the last _n_ single moves, where _n_ is the number input.
 
 Its functionality is detailed herein.
-
+-------------------------
 1. Illegal positions
 2. Additional Criteria
 3. Usage
-
+-------------------------
 
 
 1. Illegal positions
@@ -28,13 +28,16 @@ There will be many illegal positions that Un Passant will fail to detect.
 If the retro you are attempting to solve has additional criteria, such as that no piece has promoted during the game, Un Passant can take these as inputs.
 
 Supported additional criteria include:
+
 Un-move criteria - any restrictions on how pieces have moved in the last few turns
+
 Board state criteria - restrictions either on the number of promotions or specifying that a given side can castle
 
 How to input these is detailed in part 3.
 
 3. Usage
-Un Passant in its current form is run from the command line.
+
+4. Un Passant in its current form is run from the command line.
 
 To compile Un Passant, go to UnPassant/UnPassant/src, and enter the following into the command line:
    javac ReverseChess/StandardChess/*.java ReverseChess/StandardChess/StandardPieces/*.java ChessHeuristics/Heuristics/*.java ChessHeuristics/Heuristics/Deductions/*.java ChessHeuristics/Heuristics/Detector/*.java ChessHeuristics/Heuristics/Detector/Data/*.java ChessHeuristics/SolverAlgorithm/*.java ChessHeuristics/SolverAlgorithm/UnMoveConditions/*.java
